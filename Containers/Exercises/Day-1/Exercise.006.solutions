@@ -1,0 +1,38 @@
+# Exercise 006 - Local directory volume mapping - Solutions
+
+1) mkdir local-dir
+
+2) docker run -d --name local-dir-mapping-test --rm --publish 8080:80 --volume <your-local-path>/local-dir:/usr/share/nginx/html nginx
+d4a042cb50ae2b308cd21e7c2115414498dc1ec05868309c6e279ee91fe13594
+
+3) Nothing. It is still empty, and it's a different behavior from volume. In fact:
+
+> nc -v localhost 8080
+Connection to localhost 8080 port [tcp/http-alt] succeeded!
+
+GET /
+<html>
+<head><title>403 Forbidden</title></head>
+<body>
+<center><h1>403 Forbidden</h1></center>
+<hr><center>nginx/1.15.8</center>
+</body>
+</html>
+
+4) echo "Local dir test" > local-dir/index.html
+
+> nc -v localhost 8080
+Connection to localhost 8080 port [tcp/http-alt] succeeded!
+GET /
+Local dir test
+
+5) docker stop local-dir-mapping-test
+local-dir-mapping-test
+
+6) docker run -d --name local-dir-mapping-test-relaunch --rm --publish 8080:80 --volume /home/rasca/local-dir:/usr/share/nginx/html nginx
+de580805dd174450fcaa437cb8b913c34f90fe7ee5a0bfb9b2042d07c216b638
+
+> nc -v localhost 8080
+Connection to localhost 8080 port [tcp/http-alt] succeeded!
+GET /
+Local dir test

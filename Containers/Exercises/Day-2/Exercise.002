@@ -1,0 +1,16 @@
+# Exercise 002 - Checking image filesystems
+
+0) Install jq command;
+
+1) Pull the image "nginx:latest" form the docker registry;
+
+2) Pull the image "nginx:alpine" form the docker registry;
+
+3) Pull the image "stretch-slim" form the docker registry;
+
+4) Pull the image "alpine" form the docker registry;
+
+5) Using docker image inspect define and demonstrate on which filesystems are
+   the nginx images based on;
+
+* TIP: the jq argument to che the container filesystems is '.[].RootFS'

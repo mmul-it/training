@@ -1,0 +1,31 @@
+# Exercise 001 - Creating a local registry - Solutions
+
+1) docker pull registry
+
+2) mkdir /home/<youruser>/registry
+
+3) docker run --detach --publish 5000:5000 --name registry --restart=always --volume /home/rasca/registry:/var/lib/registry registry
+
+4) find /home/<youruser>/registry
+registry/
+
+Yes, it is empty.
+
+5) docker pull nginx:latest
+
+> docker tag nginx:latest localhost:5000/nginx:latest
+
+6) docker push localhost:5000/nginx:latest
+The push refers to repository [localhost:5000/nginx]
+b7efe781401d: Pushed 
+c9c2a3696080: Pushed 
+7b4e562e58dc: Pushed 
+latest: digest: sha256:e2847e35d4e0e2d459a7696538cbfea42ea2d3b8a1ee8329ba7e68694950afd3 size: 948
+
+> curl http://localhost:5000/v2/_catalog
+{"repositories":["nginx"]}
+
+> ./registry.py -r http://localhost:5000
+---------------------------------
+Image: nginx
+  tag: latest

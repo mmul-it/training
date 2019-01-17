@@ -1,0 +1,11 @@
+# Exercise 003 - Logging into a registry
+
+0) Verify that you can't pull the nginx:latest container image from the host
+   www.mmul.it at port 5000;
+
+1) Use the credentials dockertraining/l3tstr41n to log into a registry at the
+   address www.mmul.it, port 5000;
+
+2) Try to pull again the image "nginx:latest" form the docker registry;
+
+3) Look at the status of the image locally;

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: max-pod-number
+spec:
+  hard:
+    pods: 6

@@ -1,0 +1,13 @@
+apiVersion: "v1"
+kind: "LimitRange"
+metadata:
+  name: "project-limits"
+spec:
+  limits:
+    - type: "Container"
+      default:
+        # "m" stands for millicore
+        # https://www.noqcks.io/notes/2016/12/14/kubernetes-understanding-millicores/
+        # If you have 4 cores, then the CPU capacity of the node is 4000m.
+        # 4 * 1000m = 4000m
+        cpu: "250m"

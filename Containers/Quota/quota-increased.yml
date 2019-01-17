@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: project-quota
+spec:
+  hard:
+    cpu: "2400m"

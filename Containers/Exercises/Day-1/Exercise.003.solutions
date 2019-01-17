@@ -1,0 +1,42 @@
+# Exercise 003 - Volume mapping - Solutions
+
+1) docker volume create test-volum
+
+2) sudo find /var/lib/docker/volumes/test-volume -ls
+   934978      4 drwxr-xr-x   3 root     root         4096 Jan 15 15:14 /var/lib/docker/volumes/test-volume
+   934979      4 drwxr-xr-x   2 root     root         4096 Jan 15 15:14 /var/lib/docker/volumes/test-volume/_data
+
+3) docker run -d --name volume-mapping-test --rm --publish 8080:80 --volume test-volume:/var/www/html nginx
+
+4) sudo find /var/lib/docker/volumes/test-volume -ls
+   934978      4 drwxr-xr-x   3 root     root         4096 Jan 15 16:30 /var/lib/docker/volumes/test-volume
+   934979      4 drwxr-xr-x   2 root     root         4096 Jan 15 16:30 /var/lib/docker/volumes/test-volume/_data
+   934983      4 -rw-r--r--   1 root     root          612 Dec 25 10:56 /var/lib/docker/volumes/test-volume/_data/index.html
+   934982      4 -rw-r--r--   1 root     root          494 Dec 25 10:56 /var/lib/docker/volumes/test-volume/_data/50x.html
+
+5) docker exec -it volume-mapping-test /bin/bash
+root@297fc2c8da8f:/# echo "Volume test" > /usr/share/nginx/html/index.html
+root@297fc2c8da8f:/# exit
+exit
+
+> nc -v localhost 8080
+Connection to localhost 8080 port [tcp/http-alt] succeeded!
+GET /
+Volume test
+
+6) docker stop volume-mapping-test
+volume-mapping-test
+
+7) sudo find /var/lib/docker/volumes/test-volume -ls
+   934978      4 drwxr-xr-x   3 root     root         4096 Jan 15 16:30 /var/lib/docker/volumes/test-volume
+   934979      4 drwxr-xr-x   2 root     root         4096 Jan 15 16:30 /var/lib/docker/volumes/test-volume/_data
+   934983      4 -rw-r--r--   1 root     root           12 Jan 15 16:35 /var/lib/docker/volumes/test-volume/_data/index.html
+   934982      4 -rw-r--r--   1 root     root          494 Dec 25 10:56 /var/lib/docker/volumes/test-volume/_data/50x.html
+
+8) docker run -d --name volume-mapping-test-relaunch --rm --publish 8080:80 --volume test-volume:/usr/share/nginx/html nginx
+d33499d1dc4f87adf00dda6ef6f860addfd400deda1938e313009dc9dbd1c683
+
+> nc -v localhost 8080
+Connection to localhost 8080 port [tcp/http-alt] succeeded!
+GET /
+Volume test

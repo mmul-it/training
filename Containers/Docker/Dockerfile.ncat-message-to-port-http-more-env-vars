@@ -1,0 +1,18 @@
+# Don't use fedora here, ncat will fail
+# See https://github.com/nmap/nmap/issues/1410
+FROM ubuntu:latest
+
+ENV NCAT_TEST_FILE "/tmp/TEST_FILE"
+ENV NCAT_TEST_FILE_CONTENT "Container test"
+ENV NCAT_HEADER "HTTP/1.1 200 OK"
+ENV NCAT_COMMAND "cat $NCAT_TEST_FILE"
+ENV NCAT_PORT "8888"
+
+RUN apt-get update && \
+    apt-get install -y nmap && \
+    apt-get clean
+
+CMD echo "$NCAT_TEST_FILE_CONTENT" > $NCAT_TEST_FILE && \
+    /usr/bin/ncat -l $NCAT_PORT -k -c "echo $NCAT_HEADER; echo; $NCAT_COMMAND"
+
+EXPOSE $NCAT_PORT
