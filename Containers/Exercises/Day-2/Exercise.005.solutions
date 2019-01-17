@@ -1,0 +1,15 @@
+# Exercise 005 - Create a custom image - Solutions
+
+1) mkdir mycontainer && cd mycontainer
+
+2) Use the Exercise.0005.Dockerfile contained in this directory;
+
+3) docker build -it myfirstapp:1 .
+
+4) docker run --detach --name myfirstapp --publish 8888 myfirstapp:v1
+
+5) nc -v localhost 8888
+Connection to localhost 8888 port [tcp/*] succeeded!
+HTTP/1.1 200 OK
+
+Container test
