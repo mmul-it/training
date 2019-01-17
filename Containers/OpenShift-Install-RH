@@ -1,11 +1,13 @@
 # https://blog.centos.org/2018/11/okd-v3-11-packages-now-available/
+
 # Which gets you basically to:
-sudo rpm -Uvh http://mirror.centos.org/centos/7/extras/x86_64/Packages/centos-release-openshift-origin311-1-2.el7.centos.noarch.rpm
+sudo yum localinstall http://mirror.centos.org/centos/7/extras/x86_64/Packages/centos-release-openshift-origin311-1-2.el7.centos.noarch.rpm
 
 # First you'll need this package:
-sudo yum install atomic-openshift-utils
+sudo yum install openshift-ansible
 
-# Then a start inventory, like:
+# Then a start inventory to customize, like:
+sudo cp /usr/share/doc/openshift-ansible-docs-3.11.37/docs/example-inventories/hosts.example inventory
 
 #######
 [nodes]
