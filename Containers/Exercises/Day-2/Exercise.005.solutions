@@ -6,7 +6,7 @@
 
 3) docker build -it myfirstapp:1 .
 
-4) docker run --detach --name myfirstapp --publish 8888 myfirstapp:v1
+4) docker run --detach --name myfirstapp --publish 8888:8888 myfirstapp:v1
 
 5) nc -v localhost 8888
 Connection to localhost 8888 port [tcp/*] succeeded!
