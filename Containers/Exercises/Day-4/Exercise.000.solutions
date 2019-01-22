@@ -1,0 +1,29 @@
+# Exercise 000 - Exposing your application
+
+1) oc new-app mysql MYSQL_USER=user MYSQL_PASSWORD=pass MYSQL_DATABASE=testdb -l db=mysql -o yaml > dc-mysql.yaml
+   oc create -f dc-mysql.yaml
+
+2) oc get dc
+   oc get pods
+   oc get svc
+
+3) nc -zv <cluster ip> 3306 # KO from outside the cluster
+   nc -zv <cluster ip> 3306 # OK from any node
+   nc -zv <node ip> 3306 # KO from outside the cluster
+   nc -zv <node ip> 3306 # KP from other nodes
+
+4) oc edit svc mysql
+   ...
+   ports:
+  - name: 3306-tcp
+    port: 3306
+    protocol: TCP
+    targetPort: 3306
+    nodePort: 30003
+   ...
+   type: NodePort
+
+5) oc get svc
+
+6) nc -zv <node1 ip> 30003 # OK from outside the cluster
+   nc -zv <node2 ip> 30003 # OK from outside the cluster

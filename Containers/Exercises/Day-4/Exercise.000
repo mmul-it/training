@@ -1,0 +1,16 @@
+# Exercise 000 - Exposing your application
+
+1) Deploy again your mysql application, this time without removing the
+   Service part
+
+2) Verify if the DeploymentConfig, Pods and Service are up&running
+
+3) Check if mysql is reachable (either with just a netcat) from
+   inside and outside the OpenShift Cluster
+
+4) Edit the service to be a NodePort type and expose on port 30003
+
+5) Verify the Service state and configuration
+
+6) Check if mysql is reachable (either with just a netcat) from
+   inside and outside the OpenShift Cluster
