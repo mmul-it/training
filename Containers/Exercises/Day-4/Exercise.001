@@ -1,0 +1,22 @@
+# Exercise 001 - Create a secure route
+
+1) Deploy a tomcat application. It will generate a service which
+   respond to port 8080
+
+2) Expose the service
+
+3) Try connecting with protocol HTTP and HTTPS
+
+4) Delete the created route
+
+5) Generate a certificate
+
+6) Create an edge route passing the key and the certificate
+
+7) Try connecting with protocol HTTP and HTTPS
+
+8) Either if you obtain a publicly signed certificate, in a
+   production environment there will be a problem. Can you
+   identify that?
+
+9) How can you manage this problem?
