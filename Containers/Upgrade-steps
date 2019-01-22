@@ -1,8 +1,0 @@
-- Disable the 3.7 repository and enable the 3.8 and 3.9 repositories on each master and node host.
-- Ensure that you have the latest version of the atomic-openshift-utils package on each Red Hat Enterprise Linux 7 system.
-- Optionally, review the node selectors in your inventory file.
-- Disable swap memory on all the nodes.
-- Set the openshift_deployment_type=openshift-enterprise variable in the inventory file.
-- Optionally, if you are using a custom Docker registry, specify the address of your registry to the openshift_web_console_prefix and template_service_broker_prefix variables.
-- Update with a single or multiple phases strategy by using the appropriate set of Ansible Playbooks.
-- Reboot all hosts. After rebooting, review the upgrade.

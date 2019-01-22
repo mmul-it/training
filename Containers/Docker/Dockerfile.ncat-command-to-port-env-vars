@@ -1,9 +1,0 @@
-FROM fedora:latest
-
-RUN yum install -y nmap-ncat
-
-EXPOSE 3333
-
-ENV NCAT_COMMAND "/usr/bin/date"
-
-CMD ["/usr/bin/ncat", "-l", "3333", "-k", "-c", "$NCAT_COMMAND"]
