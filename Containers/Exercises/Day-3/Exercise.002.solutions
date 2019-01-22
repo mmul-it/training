@@ -1,0 +1,16 @@
+# Exercise 000 - Using registry.py to interact with repos - Solutions
+
+1) oc new-app mysql MYSQL_USER=user MYSQL_PASSWORD=pass MYSQL_DATABASE=testdb -l db=mysql -o yaml > dc-mysql.yaml
+
+3) change spec:replicas: from 1 to 2
+   add "zone: backend" in metadata:labels: and in spec:template:metadata:labels:
+   inside the DeploymentConfig resource.
+   delete last resource (with kind: Service)
+
+4) oc create -f dc-mysql.yaml
+
+5) oc describe dc/mysql
+   oc get pods
+   oc logs mysql-....
+
+6) oc delete -f dc-mysql.yaml
