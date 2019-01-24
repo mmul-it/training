@@ -1,4 +1,4 @@
-# Exercise 000 - Using registry.py to interact with repos - Solutions
+# Exercise 002 - Create a DeploymentConfig on OpenShift - Solutions
 
 1) oc new-app mysql MYSQL_USER=user MYSQL_PASSWORD=pass MYSQL_DATABASE=testdb -l db=mysql -o yaml > dc-mysql.yaml
 
