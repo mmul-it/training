@@ -1,6 +1,6 @@
 # Exercise 001 - Creating a local registry
 
-1) Pull the image "registry" form the docker registry;
+1) Pull the image "registry" from the docker registry;
 
 2) Create a local directory named "registry" that will be the registry storage;
 

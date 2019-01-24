@@ -1,4 +1,4 @@
-# Exercise 004 - Using host networking to expose ports - Solutions
+# Exercise 003 - Using host networking to expose ports - Solutions
 
 1) docker run -d --name network-host-test --rm --network host nginx
 

@@ -1,4 +1,4 @@
-# Exercise 004 - Using host networking to expose ports
+# Exercise 003 - Using host networking to expose ports
 
 1) Pull and run the "nginx" container image with the name "network-host-test";
 

@@ -1,4 +1,4 @@
-# Exercise 003 - Logging into a registry
+# Exercise 003 - Logging into a registry - Solutions
 
 0) docker image pull www.mmul.it:5000/nginx:latest
 Error response from daemon: Get https://www.mmul.it:5000/v2/nginx/manifests/latest: no basic auth credentials

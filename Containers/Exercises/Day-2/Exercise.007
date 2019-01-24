@@ -1,4 +1,4 @@
-# Exercise 007 - 
+# Exercise 007 - Check why a container failed via journald
 
 1) Pull from www.mmul.it, at port 5000, the broken-nginx image. Authenticate
    yourself with user "dockertraining" and password "l3tstr41n";

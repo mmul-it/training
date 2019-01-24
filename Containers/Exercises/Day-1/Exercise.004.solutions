@@ -1,4 +1,4 @@
-# Exercise 003 - Volume mapping - Solutions
+# Exercise 004 - Volume mapping - Solutions
 
 1) docker volume create test-volum
 
@@ -6,7 +6,7 @@
    934978      4 drwxr-xr-x   3 root     root         4096 Jan 15 15:14 /var/lib/docker/volumes/test-volume
    934979      4 drwxr-xr-x   2 root     root         4096 Jan 15 15:14 /var/lib/docker/volumes/test-volume/_data
 
-3) docker run -d --name volume-mapping-test --rm --publish 8080:80 --volume test-volume:/var/www/html nginx
+3) docker run -d --name volume-mapping-test --rm --publish 8080:80 --volume test-volume:/usr/share/nginx/html nginx
 
 4) sudo find /var/lib/docker/volumes/test-volume -ls
    934978      4 drwxr-xr-x   3 root     root         4096 Jan 15 16:30 /var/lib/docker/volumes/test-volume

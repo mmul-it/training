@@ -1,4 +1,4 @@
-# Exercise 007 - 
+# Exercise 007 - Check why a container failed via journald - Solutions
 
 1) docker image pull www.mmul.it:5000/nginx:latest
 
