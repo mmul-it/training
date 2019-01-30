@@ -1,7 +1,7 @@
 # Exercise 001 - Create a secure route
 
-1) oc new-app tomcat -o yaml > tomcat.yaml
-   oc create -f tomcat.yaml
+1) oc new-app tomcat
+   oc status
    oc get dc
    oc get pods
    oc get svc
@@ -20,6 +20,7 @@
 
 6) oc create route edge --service=tomcat --key=example.key --cert=example.crt
    oc status
+   oc get route
 
 7) curl http://...     # KO
    curl -k https://... # OK
