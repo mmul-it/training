@@ -8,9 +8,13 @@
 3) Check if mysql is reachable (either with just a netcat) from
    inside and outside the OpenShift Cluster
 
-4) Edit the service to be a NodePort type and expose on port 30003
+4) Delete the service
 
-5) Verify the Service state and configuration
+5) Create a new NodePort service, mapping port 30003
 
-6) Check if mysql is reachable (either with just a netcat) from
+6) Verify the status and the service object
+
+7) Verify the Service yaml
+
+8) Check if mysql is reachable (either with just a netcat) from
    inside and outside the OpenShift Cluster

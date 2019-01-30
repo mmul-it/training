@@ -1,29 +1,53 @@
 # Exercise 000 - Exposing your application
 
-1) oc new-app mysql MYSQL_USER=user MYSQL_PASSWORD=pass MYSQL_DATABASE=testdb -l db=mysql -o yaml > dc-mysql.yaml
-   oc create -f dc-mysql.yaml
+1) oc new-app mysql MYSQL_USER=user MYSQL_PASSWORD=pass MYSQL_DATABASE=testdb -l db=mysql
 
-2) oc get dc
+2) oc status
+   oc get dc
    oc get pods
    oc get svc
+
+### On OpenShift
 
 3) nc -zv <cluster ip> 3306 # KO from outside the cluster
    nc -zv <cluster ip> 3306 # OK from any node
    nc -zv <node ip> 3306 # KO from outside the cluster
-   nc -zv <node ip> 3306 # KP from other nodes
+   nc -zv <node ip> 3306 # OK from other nodes
 
-4) oc edit svc mysql
-   ...
-   ports:
-  - name: 3306-tcp
-    port: 3306
-    protocol: TCP
-    targetPort: 3306
-    nodePort: 30003
-   ...
-   type: NodePort
+### On Minishift
 
-5) oc get svc
+3) # Obtain the Minishift node internal-IP
+   oc login -u system:admin
+   oc get node -o wide
+   # Enter the minishift VM
+   minishift ssh
+   # Check reachability
+   nc -zv <cluster ip> 3306 # OK
+   nc -zv <node internal-IP> 3306 # KO
 
-6) nc -zv <node1 ip> 30003 # OK from outside the cluster
+###
+
+4) oc delete svc mysql
+
+5) oc create service nodeport mysql --tcp=30003:3306
+
+6) oc status
+   oc get svc
+
+7) oc get svc mysql -o yaml
+
+### On OpenShift
+If ports doesn't reply correctly you must add firewall rules
+
+8) nc -zv <node1 ip> 30003 # OK from outside the cluster
    nc -zv <node2 ip> 30003 # OK from outside the cluster
+
+### On Minishift
+If ports doesn't reply correctly you must add firewall rules
+
+8) minishift ssh
+   nc -zv <cluster IP> 3306 # KO
+   nc -zv <cluster IP> 30003 # OK
+   nc -zv <node internal-IP> 30003 # OK
+
+###
