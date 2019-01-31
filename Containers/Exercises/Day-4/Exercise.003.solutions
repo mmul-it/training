@@ -1,0 +1,15 @@
+# Create a project and switch between projects
+
+1) oc get project
+
+2) oc new-project test --description "Test Project for course" --display-name "Test Project"
+
+3) oc get project
+   (browse the OpenShift web interface)
+
+4) oc project myproject
+
+5) oc whoami # developer
+   oc get project
+   oc login -u system:admin
+   oc get project

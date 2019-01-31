@@ -1,0 +1,11 @@
+# Create a project and switch between projects
+
+1) Get current projects
+
+2) Create a new project
+
+3) See the new project either from cli and from web interface
+
+4) Switch from different projects
+
+5) See if different users (system:admin, developer, etc.) can see different projects
