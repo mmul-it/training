@@ -1,0 +1,18 @@
+# Bind developer and admin users to different roles
+
+1) Become system:admin
+
+2) Get current role bindings and see who can create different things (pod, project, etc.)
+
+3) Remove developer user from the admin role
+
+4) Check now who can create different things (pod, project, etc.)
+
+5) Become developer
+
+6) Try creating a new project
+
+7) Reassign admin role to developer
+
+8) Check if normal functionalities are restored for developer user
+

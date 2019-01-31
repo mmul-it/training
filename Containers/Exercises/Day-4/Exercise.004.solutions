@@ -1,0 +1,25 @@
+# Bind developer and admin users to different roles
+
+1) oc login -u system:admin
+
+2) oc get rolebindings -o wide
+   oc adm policy who-can create pods
+   oc adm policy who-can create projects
+
+3) oc adm policy remove-role-from-user admin developer
+
+4) oc get rolebindings -o wide
+   oc adm policy who-can create pods
+   oc adm policy who-can create projects
+
+5) oc login -u developer
+
+6) oc new-project test # KO
+
+7) oc adm policy add-role-to-user admin developer
+
+8) oc new-project test # OK
+   oc adm policy who-can create pods
+   oc adm policy who-can create projects
+   oc delete project test # OK
+
