@@ -1,0 +1,21 @@
+# Create a custom role
+
+1) oc whoami # developer
+   oc new-app tomcat  # OK
+   oc delete all -l app=tomcat
+
+2) oc login -u system:admin
+   oc create role view --verb=get,list,watch --resource pods
+
+3) oc adm policy add-role-to-user view developer
+   oc adm policy remove-role-from-user admin developer
+
+4) oc login -u developer
+   oc new-app tomcat # KO
+
+5) oc login -u system:admin
+
+6) oc adm policy add-role-to-user admin developer
+   oc adm policy remove-role-from-user view developer
+
+7) oc delete role view

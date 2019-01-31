@@ -1,0 +1,16 @@
+# Create a custom role
+
+1) As developer try to run a new app (i.e. tomcat).
+   Check that everything is ok then delete it
+
+2) Switch to system:admin and create a new 'view' role which can get pods
+
+3) Assign the new role and delete the 'admin' role to developer user
+
+4) As developer try to run a new app
+
+5) Switch back to system:admin
+
+6) Recover initial roles
+
+7) Delete the new created role
