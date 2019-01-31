@@ -1,0 +1,15 @@
+# Create a user and see which binds are created
+
+1) Switch to admin and check current users and identities
+
+2) Create a new user and check how users and identities changes
+
+3) Create a new identity and check how users and identities changes
+
+4) Map the new identity to the previously created user
+
+5) Try to login with the new user
+
+6) Delete the new identity and check how users and identities changes
+
+7) Delete the new user and check how users and identities changes

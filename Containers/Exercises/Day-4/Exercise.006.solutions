@@ -1,0 +1,28 @@
+# Create a user and see which binds are created
+
+1) oc login -u system:admin
+   oc get user
+   oc get identity
+
+2) oc create user frank
+   oc get user
+   oc get identity
+
+3) oc create identity anypassword:frank
+   oc get user
+   oc get identity
+
+4) oc create useridentitymapping anypassword:frank frank
+   oc get useridentitymapping
+   oc get user
+
+5) oc login -u frank
+   oc whoami
+
+6) oc login -u system:admin
+   oc delete identity anypassword:frank
+   oc get identity
+
+7) oc delete user frank
+   oc get user
+   oc get identity
