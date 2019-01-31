@@ -1,0 +1,40 @@
+# Find HAProxy stats page details and the SDN configured in minishift
+
+1) oc project default
+   oc get pod -o wide
+
+2) oc describe pod router...
+   ...
+   STATS_PASSWORD: <pwd>
+   STATS_PORT:     1936
+   STATS_USERNAME: <user>
+   ...
+
+### On OpenShift
+
+3) oc describe pod router-... | grep Node\:
+   ssh <NODE>
+   firewall-cmd --permanent --zone=public --add-port=1936
+   firewall-cmd --reload
+   nc -zv <IP> 1936 # OK
+
+### On Minishift
+
+3) minishift ssh
+   ip addr show eth0
+   nc -zv <IP> 1936 # OK
+
+#######
+
+4) curl -u STATS_USERNAME:STATS_PASSWORD http://<IP>:1936/metrics
+
+## Find and read minishift master configuration file
+
+5) minishift ssh
+   docker ps | grep controller | grep hypershift
+
+6) docker exec -it f1f48830ef11 /bin/sh
+   
+7) vi /etc/origin/master/master-config.yaml
+
+(if networkPluginName: attribute is empty, the default value was applied)
