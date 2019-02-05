@@ -1,0 +1,49 @@
+# Attach a PVC object to a DC, then create a new one updating a DC
+
+1) oc get pvc     # you must have the nfs-claim previously created
+
+2) oc get status  # you must have at least one dc deployed and running (i.e. the nginx one
+                    previously created)
+
+3) oc edit dc/nginx
+
+4) spec:template:spec:containers:
+
+   volumeMounts:
+   - name: data
+     mountPath: "/data"
+
+   spec:template:spec:
+
+   volumes:
+   - name: data
+     persistentVolumeClaim:
+       claimName: "nfs-claim"
+
+5) oc logs -f dc/nginx
+
+6) oc get pods
+   oc describe pod nginx-...
+
+7) oc exec -it nginx-... /bin/bash
+   ls -l /data
+   touch /data/prova
+
+8) oc edit dc/nginx
+   remove following attributes:
+   - spec:template:spec:containers:volumeMounts:
+   - spec:template:spec:volumes:
+
+9) oc get pods
+   oc exec -it nginx-... /bin/bash
+   ls -l /data   # no such file or directory
+
+10) oc set volume dc nginx --add --name=nginx-volume-1 -m /newdata -t pvc --claim-name=nginx-volume-claim --claim-size=2Gi --claim-mode='ReadWriteMany'
+
+11) oc get pods
+    oc describe pod nginx-...
+	oc exec -it nginx-... /bin/bash
+	ls -l /newdata   # ok
+
+12) oc get pvc
+    oc describe pvc nginx-volume-claim
