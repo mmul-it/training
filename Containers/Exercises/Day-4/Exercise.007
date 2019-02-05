@@ -1,0 +1,22 @@
+# Explore current SCC and add more permissions to a deployment
+
+1) As system:admin, look at available scc and explore some details
+   (like anyuid, privileged and restricted)
+   ...
+
+2) As developer try deploying a new app based on a container which require root privileges
+   (like nginx:latest docker-image)
+
+3) Show logs and see why the pod can't run
+
+4) Create a new ServiceAccount named 'useroot'
+
+5) As system:admin use the add-scc-to-user policy to add anyuid scc to useroot service account
+
+6) Then, as developer, edit the current DeploymentConfig
+
+7) Add useroot as serviceAccountName attribute inside spec:template:spec: attribute
+
+8) On exit, DeploymentConfig will be update and a new deployment was fired.
+   Look at logs and show if pods are running correctly
+
