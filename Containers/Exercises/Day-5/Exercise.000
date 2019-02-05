@@ -1,0 +1,17 @@
+# Create a PVC and see details of bounded PV
+
+1) Create a NFS share on your Linux host
+
+2) Eventually, apply firewall rules to permit access to this share
+
+3) Create a new yaml to define a new PersistenVolume backed by the nfs share
+   previously created.
+
+4) Define the PersistentVolume in OpenShift and show its details
+
+5) Create a new yaml to define a new PersistentVolumeClaim backed by the
+   PersistentVolume previously created
+
+6) Define the PersistentVolumeClaim in OpenShift
+   
+7) Show if it was bounded to the correct Volume and it's details

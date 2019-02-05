@@ -1,0 +1,53 @@
+# Create a PVC and see details of bounded PV
+
+1) mkdir /share
+   chown nfsnobody: /share
+   chmod 0700 /share
+   echo '/share *(rw,all_squash)' >> /etc/exports
+   systemctl restart nfs-server
+
+2) firewall-cmd --permanent --add-service=nfs
+   firewall-cmd --permanent --add-service=mountd
+   firewall-cmd --permanent --add-service=rpc-bind
+   firewall-cmd --reload
+
+3) vi nfs-persistent-volume.yaml
+
+   apiVersion: v1
+   kind: PersistenVolume
+   metadata:
+     name: nfs
+	 labels:
+	   storage-tier: nfs
+   spec:
+     capacity:
+	   storage: 5Gi
+	 accessModes:
+	 - ReadWriteOnce
+	 nfs:
+	   path: /share
+	   server: 192.168.122.50
+	 persistenVolumeReclaimPolicy: Recycle
+
+4) oc create -f nfs-persistent-volume.yaml
+   oc describe pv nfs
+
+5) vi nfs-persistent-volume-claim.yaml
+
+   apiVersion: v1
+   kind: PersistentVolumeClaim
+   metadata:
+     name: nfs-claim
+	 labels:
+	   storage-tier: nfs
+   spec:
+     accessModes:
+	 - ReadWriteOnce
+	 resources:
+	   requests:
+	     storage: 1Gi
+	
+6) oc create -f nfs-persistent-volume-claim.yaml
+   
+7) oc get pvc nfs-claim
+   oc describe pvc nfs-claim
