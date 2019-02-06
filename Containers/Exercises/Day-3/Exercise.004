@@ -1,0 +1,25 @@
+# Exercise 004 - Run a local built container on OpenShift
+
+1) Create a new project named my-second-project;
+
+2) Create a simple Dockerfile that prints the date every 5 seconds
+   indefinitely. You can rely on [1];
+
+3) Make yourself able to interact with the OpenShift docker registry;
+
+4) Build this container and tag it "my-second-project/print-date";
+
+5) Tag this container so it can be pushed into the OpenShift registry and try
+   to push it;
+
+6) Why it failed?
+
+7) Login into the OpenShift docker registry;
+
+8) Try again to push the container;
+
+9) Create a new app based on this container;
+
+10) Check it works and that the pod produces the message we expect;
+
+[1] https://github.com/mmul-it/docker/blob/master/print-date/Dockerfile

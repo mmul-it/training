@@ -1,25 +1,21 @@
-# Exercise 002 - Create a DeploymentConfig on OpenShift
+# Exercise 002 - First OpenShift deployment
 
-1) Create a yml or json file containing DeploymentConfig specifications.
-   You can obtain a prepared yaml to explore use oc-new app with yaml output
-   Run
+1) As user developer create a project named my-first-project;
 
-     oc new-app mysql MYSQL_USER=user MYSQL_PASSWORD=pass MYSQL_DATABASE=testdb -l db=mysql -o yaml > dc-mysql.yaml
+2) Create a new application named my-first-application that will deploy the
+   mysql container with these environment variable passed on the command line:
+   - MYSQL_USER=user
+   - MYSQL_PASSWORD=pass
+   - MYSQL_DATABASE=testdb
 
-2) Explore the yaml; you can customize it before creating the resources on
-   OpenShift. There are 3 different resources defined in this yaml:
-   - ImageStreamingTag: this resource provides a metod to keep an image in the
-     OpenShift internal registry synced with an external registry
-   - DeploymentConfig: here the DeploymentConfig which keep informations about
-     how Pods are composed, how many replicas, and when to react to changes
-   - Service: a method to expose our applications outside the OpenShift cluster.
-     We will explore Services in the next chapter
+3) Explore the status of your deployment;
 
-3) Customize the DeploymentConfig resource to add a label zone=dmz and
-   ensure at least 2 replicas of the Pods. Also remove the Service part
+4) Using oc port-forward expose locally the 3306 port from the pod that is
+   running;
 
-4) Create the resources on your OpenShift cluster with oc create
+5) Check that the service is accessible;
 
-5) Observing the results
+6) Delete my-first-project;
 
-6) Deleting all the resources
+BONUS) Check that the mysql container image is now part of the OpenShift
+       registry;

@@ -1,0 +1,115 @@
+# Exercise 001 - Explore the various OpenShift elements - Solutions
+
+1) eval $(minishift oc-env)
+
+2) oc login -u admin
+Logged into "https://192.168.42.154:8443" as "admin" using existing credentials.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+> oc login -u system:admin
+Logged into "https://192.168.42.154:8443" as "system:admin" using existing credentials.
+
+You have access to the following projects and can switch between them with 'oc project <projectname>':
+
+  * default
+    first-project
+    kube-dns
+    kube-proxy
+    kube-public
+    kube-system
+    openshift
+    openshift-apiserver
+    openshift-controller-manager
+    openshift-core-operators
+    openshift-infra
+    openshift-node
+    openshift-service-cert-signer
+    openshift-web-console
+
+Using project "default".
+
+> oc status
+In project default on server https://192.168.42.154:8443
+
+svc/docker-registry - 172.30.1.1:5000
+  dc/docker-registry deploys docker.io/openshift/origin-docker-registry:v3.11.0 
+    deployment #1 deployed 13 days ago - 1 pod
+
+svc/kubernetes - 172.30.0.1:443 -> 8443
+
+svc/router - 172.30.103.53 ports 80, 443, 1936
+  dc/router deploys docker.io/openshift/origin-haproxy-router:v3.11.0 
+    deployment #1 deployed 13 days ago - 1 pod
+
+View details with 'oc describe <resource>/<name>' or list everything with 'oc get all'.
+
+3) oc login -u system:admin
+...
+
+> oc adm policy add-cluster-role-to-user cluster-admin admin
+cluster role "cluster-admin" added: "admin"
+
+> oc login -u admin
+Logged into "https://192.168.42.154:8443" as "admin" using existing credentials.
+
+You have access to the following projects and can switch between them with 'oc project <projectname>':
+
+  * default
+    first-project
+    kube-dns
+    kube-proxy
+    kube-public
+    kube-system
+    openshift
+    openshift-apiserver
+    openshift-controller-manager
+    openshift-core-operators
+    openshift-infra
+    openshift-node
+    openshift-service-cert-signer
+    openshift-web-console
+
+Using project "default".
+
+4) Check first the actual docker host you're pointing at:
+
+> docker images
+REPOSITORY                        TAG                 IMAGE ID            CREATED             SIZE
+nginx-index                       latest              9880b9b56794        12 days ago         17.7MB
+myapp                             v1                  0918a6af0af8        2 weeks ago         140MB
+strange-image                     latest              da7cefe6eba6        2 weeks ago         108MB
+nginx                             latest              42b4762643dc        2 weeks ago         109MB
+...
+
+Now with eval, gain permissions to access Docker:
+
+> eval $(minishift docker-env)
+
+5) env | grep DOCKER
+DOCKER_CERT_PATH=/home/rasca/.minishift/certs
+DOCKER_TLS_VERIFY=1
+DOCKER_HOST=tcp://192.168.42.154:2376
+
+> docker images
+REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
+openshift/origin-control-plane                 v3.11.0             5cd0e1999c8f        24 hours ago        825MB
+openshift/origin-hyperkube                     v3.11.0             19adb51612ce        24 hours ago        506MB
+openshift/origin-hypershift                    v3.11.0             7ad80d384403        24 hours ago        546MB
+openshift/origin-control-plane                 <none>              5f0f64523703        8 days ago          825MB
+openshift/origin-hyperkube                     <none>              084900cf8685        8 days ago          506MB
+openshift/origin-hypershift                    <none>              2248b6956c8e        8 days ago          546MB
+openshift/origin-docker-registry               v3.11.0             755abed0e0d3        2 weeks ago         310MB
+openshift/origin-node                          v3.11.0             ebaf42bcf04c        2 weeks ago         1.16GB
+openshift/origin-control-plane                 <none>              f50d191a6e70        2 weeks ago         825MB
+openshift/origin-docker-builder                v3.11.0             9a7dfa52db43        2 weeks ago         458MB
+openshift/origin-haproxy-router                v3.11.0             514d4ad1c7be        2 weeks ago         407MB
+openshift/origin-deployer                      v3.11.0             1d6acc7f7b2c        2 weeks ago         380MB
+openshift/origin-hyperkube                     <none>              55b69888e60b        2 weeks ago         506MB
+openshift/origin-cli                           v3.11.0             0ecd757f09e7        2 weeks ago         380MB
+openshift/origin-hypershift                    <none>              f26589f66866        2 weeks ago         546MB
+openshift/origin-pod                           v3.11.0             5c972059a954        2 weeks ago         258MB
+openshift/origin-web-console                   v3.11.0             be30b6cce5fa        3 months ago        339MB
+openshift/origin-service-serving-cert-signer   v3.11               47dadf9d43b6        3 months ago        276MB
