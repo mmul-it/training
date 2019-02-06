@@ -1,0 +1,32 @@
+# Deploy some applications from git and from Docker images
+
+1) oc status
+
+2) oc new-app --name=test --docker-image=tomee:latest
+   oc logs -f dc/test
+
+3) oc expose svc/test
+   oc status
+   curl http://...
+
+4) oc delete all -l app=test
+
+5) oc new-app --name=test2 https://github.com/mmul-it/docker --context-dir=ncat-msg-http-port
+   oc status
+   oc logs -f bc/test2
+   oc logs -f dc/test2
+
+6) oc expose svc/test2
+   oc status
+   curl http://...
+
+7) oc delete all -l app=test2
+
+8) oc new-app --name=ruby https://github.com/openshift/ruby-hello-world
+   oc status
+   oc logs -f bc/ruby
+   oc logs -f dc/ruby
+
+9) oc expose svc/ruby
+   oc status
+   curl http://...

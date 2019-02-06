@@ -1,0 +1,23 @@
+# Deploy some applications from git and from Docker images
+
+1) Look at current minishift status
+
+2) Trying deploy a new app from a container image on docker hub (i.e. tomee), then follow the DeploymentConfig
+   logs to ensure the app will deploy correctly
+
+3) Try to expose the service and reach the app from a browser
+
+4) Remove the deployed app (you can use oc delete all and selectors)
+
+5) Deploy a new app from a Git repository with a Dockerfile in it (i.e. https://github.com/mmul-it/docker,
+   path ncat-msg-http-port/).
+   Ensure the DeploymentConfig was created and see what happen in the BuildConfig object
+
+6) Try exposing this new app and reach that with a browser
+
+7) Remove the deployed app
+
+8) Deploy a new app from a Git repository with source code in it (i.e. https://github.com/openshift/ruby-hello-world)
+   Ensure the DeploymentConfig was created and follow what's happening in the BuildConfig object
+
+9) Try exposing this new app and reach that with a browser
