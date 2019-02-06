@@ -1,0 +1,14 @@
+# Try build, deploy, and expose a php application via S2I
+
+1) oc new-app --name=phptest https://github.com/jtdagmaj/PHP_helloworld
+
+2) oc status
+   oc logs -f bc/phptest
+
+3) oc status
+
+4) oc expose svc/phptest
+   oc status
+
+5) curl http://...
+
