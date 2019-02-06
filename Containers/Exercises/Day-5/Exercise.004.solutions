@@ -1,0 +1,34 @@
+# Create an ImageStream for nginx:alpine and verify available images
+
+1) vi nginx-imagestream.yaml
+
+2) enter the following yaml
+
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  creationTimestamp: null
+  name: nginx
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+  - from:
+      kind: DockerImage
+      name: nginx:alpine
+    generation: null
+    importPolicy: {}
+    name: alpine
+
+3) oc create -f nginx-imagestream.yaml
+
+4) oc get is
+   oc describe is nginx
+
+5) oc get image    # Error
+
+6) oc login -u system:admin
+
+7) oc get image    # OK
+
+8) oc get image | grep nginx@shar256...   # OK
