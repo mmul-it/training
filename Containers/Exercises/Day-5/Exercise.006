@@ -1,0 +1,13 @@
+# Try to scale-up an application, then scale-down and configure autoscaling
+
+1) Choose a running DeploymentConfig to scale
+
+2) Scale up to 3 replicas. See the DeploymentConfig status change over time
+
+3) Obtain the pod list
+
+4) Scale down to 1 replica. Watch the pods to see status changes
+
+5) Set an autoscale rule on the DeploymentConfig which schedule up to 3 Pods when usage pass 50%.
+   Show how DeploymentConfig description change with autoscale enabled
+
