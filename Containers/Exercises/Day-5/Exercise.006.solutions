@@ -1,0 +1,14 @@
+# Try to scale-up an application, then scale-down and configure autoscaling
+
+1) oc status
+
+2) oc scale --replicas=3 dc nginx
+   oc status
+
+3) oc get pods
+
+4) oc scale --replicas=1 dc nginx
+   oc get pods   # multiple time, see pods passing the Terminating phase then disappear
+
+5) oc autoscale dc nginx --min 1 --max 3 --cpu-percent=50
+   oc describe dc nginx    # Autoscaling:	between 1 and 3 replicas targeting 5% cpu average per pod

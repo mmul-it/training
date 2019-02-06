@@ -1,0 +1,12 @@
+# Try build, deploy, and expose a php application via S2I
+
+1) Deploy a new app based on a simple php repository (i.e. https://github.com/jtdagmaj/PHP_helloworld)
+
+2) Check if a BuildConfig was fired by the DeploymentConfig and follow its output
+
+3) After the build, check if a Pod was correctly scheduled and a Service was created
+
+4) Expose the Service and retrieve the exposed url
+
+5) Try accessing it with a browser
+
