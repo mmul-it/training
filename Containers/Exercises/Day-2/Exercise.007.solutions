@@ -6,7 +6,7 @@
 
 > docker tag www.mmul.it:5000/broken-nginx:latest broken-nginx
 
-2) docker run --detach --name broken-nginx --rm --publish 8080:80 broken-nginx
+2) docker run --detach --name broken-nginx --publish 8080:80 broken-nginx
 
 3) docker ps -a
 CONTAINER ID        IMAGE                             COMMAND                  CREATED             STATUS                    PORTS                    NAMES
