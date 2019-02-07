@@ -1,6 +1,10 @@
 # Exercise 007 - Check why a container failed via journald - Solutions
 
-1) docker image pull www.mmul.it:5000/nginx:latest
+1) docker login -u dockertraining www.mmul.it:5000
+
+> docker image pull www.mmul.it:5000/broken-nginx:latest
+
+> docker tag www.mmul.it:5000/broken-nginx:latest broken-nginx
 
 2) docker run --detach --name broken-nginx --rm --publish 8080:80 broken-nginx
 
