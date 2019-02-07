@@ -1,0 +1,39 @@
+# Create a new template
+
+1) oc new-app --name=mmul https://github.com/mmul-it/docker --context-dir=ncat-msg-http-port -o yaml > mmul-template.yaml
+
+2) vi mmul-template.yaml
+   - Replace items: with objects:
+   - Replace every instance of 'app: mmul' or 'name: mmul' with 'app: ${NAME}' and 'name: ${NAME}'
+   - Replace every instance of 'mmul:latest' with '${NAME}:latest'
+   - Replace 'replicas: 1' inside DeploymentConfig spec: attribute with 'replicas: ${REPLICAS}'
+   - Replace 'spec:ports:' attributes inside the Service object with 'name: ${NAME}-tcp' and 'port: "${{PORT}}"'
+   - Replace 'kind: List' with 'kind: Template'
+   - Replace 'metadata: {}' with
+       metadata:
+	     name: mmul-template
+
+3) At the end of the file, add:
+
+   parameters:
+   - name: NAME
+     description: The application name
+     value: mmul
+   - name: REPLICAS
+     description: Replicas of the application
+     value: "1"
+   - name: PORT
+     description: The Service port
+     value: "8080"
+
+4) oc create -f mmul-template.yaml
+   oc get template
+   oc describe template mmul-template
+
+5) oc new-app -p NAME=testmmul mmul-template
+   oc status
+   oc logs bc/testmmul
+
+6) oc expose svc/testmmul
+   oc status
+   curl http://...
