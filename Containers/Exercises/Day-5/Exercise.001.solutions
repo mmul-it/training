@@ -1,49 +1,230 @@
-# Attach a PVC object to a DC, then create a new one updating a DC
+# Exercise 001 - Attach a PVC object to a DC, then create a new one updating a DC - Solutions
 
-1) oc get pvc     # you must have the nfs-claim previously created
+1) oc whoami
+developer
 
-2) oc get status  # you must have at least one dc deployed and running (i.e. the nginx one
-                    previously created)
+> oc get pvc | grep nfs-claim
+nfs-claim   Bound     nfs       5Gi        RWO                           2m
+
+2) oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://nginx-myproject.192.168.64.5.nip.io to pod port 80-tcp (svc/nginx)
+  dc/nginx deploys istag/nginx:latest
+    deployment #14 deployed 16 hours ago - 1 pod
+    deployment #13 failed 16 hours ago: newer deployment was found running
+    deployment #12 deployed 3 days ago
 
 3) oc edit dc/nginx
 
-4) spec:template:spec:containers:
+4) Inside spec:template:spec:containers: add
 
-   volumeMounts:
-   - name: data
-     mountPath: "/data"
+volumeMounts:
+- name: data
+  mountPath: "/data"
 
-   spec:template:spec:
+Then inside spec:template:spec: add
 
-   volumes:
-   - name: data
-     persistentVolumeClaim:
-       claimName: "nfs-claim"
+volumes:
+- name: data
+  persistentVolumeClaim:
+    claimName: "nfs-claim"
+
+Save and exit
+
+deploymentconfig.apps.openshift.io/nginx edited
 
 5) oc logs -f dc/nginx
+--> Scaling up nginx-15 from 0 to 1, scaling down nginx-14 from 1 to 0 (keep 1 pods available, don't exceed 2 pods)
+    Scaling nginx-15 up to 1
+    Scaling nginx-14 down to 0
+--> Success
 
 6) oc get pods
-   oc describe pod nginx-...
+NAME             READY     STATUS    RESTARTS   AGE
+nginx-15-6h75z   1/1       Running   0          34s
 
-7) oc exec -it nginx-... /bin/bash
-   ls -l /data
-   touch /data/prova
+> oc describe pod nginx-15-6h75z
+Name:               nginx-15-6h75z
+Namespace:          myproject
+Priority:           0
+PriorityClassName:  <none>
+Node:               localhost/192.168.64.5
+Start Time:         Fri, 08 Feb 2019 01:38:07 +0100
+Labels:             app=nginx
+                    deployment=nginx-15
+                    deploymentconfig=nginx
+Annotations:        openshift.io/deployment-config.latest-version=15
+                    openshift.io/deployment-config.name=nginx
+                    openshift.io/deployment.name=nginx-15
+                    openshift.io/generated-by=OpenShiftNewApp
+                    openshift.io/scc=anyuid
+Status:             Running
+IP:                 172.17.0.10
+Controlled By:      ReplicationController/nginx-15
+Containers:
+  nginx:
+    Container ID:   docker://e2e701ae3ba14f43a876ca99d743a452b4ffb9b642e76d564351c80d7b7cdc2e
+    Image:          nginx@sha256:f630aa07be1af4ce6cbe1d5e846bb6bb3b5ba6bfec0ec0edc08ba48d8c1d9b0f
+    Image ID:       docker-pullable://docker.io/nginx@sha256:f630aa07be1af4ce6cbe1d5e846bb6bb3b5ba6bfec0ec0edc08ba48d8c1d9b0f
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Fri, 08 Feb 2019 01:38:10 +0100
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /data from data (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from useroot-token-xkkgj (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  data:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  nfs-claim
+    ReadOnly:   false
+  useroot-token-xkkgj:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  useroot-token-xkkgj
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     <none>
+Events:
+  Type    Reason     Age   From                Message
+  ----    ------     ----  ----                -------
+  Normal  Scheduled  14h   default-scheduler   Successfully assigned myproject/nginx-15-6h75z to localhost
+  Normal  Pulling    14h   kubelet, localhost  pulling image "nginx@sha256:f630aa07be1af4ce6cbe1d5e846bb6bb3b5ba6bfec0ec0edc08ba48d8c1d9b0f"
+  Normal  Pulled     14h   kubelet, localhost  Successfully pulled image "nginx@sha256:f630aa07be1af4ce6cbe1d5e846bb6bb3b5ba6bfec0ec0edc08ba48d8c1d9b0f"
+  Normal  Created    14h   kubelet, localhost  Created container
+  Normal  Started    14h   kubelet, localhost  Started container
+
+7) oc exec -it nginx-15-6h75z /bin/bash
+root@nginx-15-6h75z:/#
+
+root@nginx-15-6h75z:/# ls -l /data
+total 0
+root@nginx-15-6h75z:/# touch /data/prova
+root@nginx-15-6h75z:/# ls -l /data
+total 0
+-rw-r--r--. 1 4294967294 root 0 Feb  8  2019 prova
+root@nginx-15-6h75z:/# exit
 
 8) oc edit dc/nginx
-   remove following attributes:
-   - spec:template:spec:containers:volumeMounts:
-   - spec:template:spec:volumes:
+
+Remove following attributes:
+- spec:template:spec:containers:volumeMounts:
+- spec:template:spec:volumes:
+
+Save and quit
+
+deploymentconfig.apps.openshift.io/nginx edited
 
 9) oc get pods
-   oc exec -it nginx-... /bin/bash
-   ls -l /data   # no such file or directory
+NAME             READY     STATUS    RESTARTS   AGE
+nginx-16-dnjs9   1/1       Running   0          29s
+
+> oc exec -it nginx-16-dnjs9 /bin/bash
+root@nginx-16-dnjs9:/#
+
+root@nginx-16-dnjs9:/# ls -l /data
+ls: cannot access '/data': No such file or directory
+root@nginx-16-dnjs9:/# exit
 
 10) oc set volume dc nginx --add --name=nginx-volume-1 -m /newdata -t pvc --claim-name=nginx-volume-claim --claim-size=2Gi --claim-mode='ReadWriteMany'
+deploymentconfig.apps.openshift.io/nginx volume updated
 
 11) oc get pods
-    oc describe pod nginx-...
-	oc exec -it nginx-... /bin/bash
-	ls -l /newdata   # ok
+NAME             READY     STATUS    RESTARTS   AGE
+nginx-17-shzmk   1/1       Running   0          17s
+
+> oc describe pod nginx-17-shzmk
+Name:               nginx-17-shzmk
+Namespace:          myproject
+Priority:           0
+PriorityClassName:  <none>
+Node:               localhost/192.168.64.5
+Start Time:         Fri, 08 Feb 2019 02:09:26 +0100
+Labels:             app=nginx
+                    deployment=nginx-17
+                    deploymentconfig=nginx
+Annotations:        openshift.io/deployment-config.latest-version=17
+                    openshift.io/deployment-config.name=nginx
+                    openshift.io/deployment.name=nginx-17
+                    openshift.io/generated-by=OpenShiftNewApp
+                    openshift.io/scc=anyuid
+Status:             Running
+IP:                 172.17.0.10
+Controlled By:      ReplicationController/nginx-17
+Containers:
+  nginx:
+    Container ID:   docker://47fa0525f60f81027871858cbffd7816659498ff8601430ed896dbcb4a876b67
+    Image:          nginx@sha256:f630aa07be1af4ce6cbe1d5e846bb6bb3b5ba6bfec0ec0edc08ba48d8c1d9b0f
+    Image ID:       docker-pullable://docker.io/nginx@sha256:f630aa07be1af4ce6cbe1d5e846bb6bb3b5ba6bfec0ec0edc08ba48d8c1d9b0f
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Fri, 08 Feb 2019 02:09:29 +0100
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /newdata from nginx-volume-1 (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from useroot-token-xkkgj (ro)
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:
+  nginx-volume-1:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  nginx-volume-claim
+    ReadOnly:   false
+  useroot-token-xkkgj:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  useroot-token-xkkgj
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     <none>
+Events:
+  Type    Reason     Age   From                Message
+  ----    ------     ----  ----                -------
+  Normal  Scheduled  14h   default-scheduler   Successfully assigned myproject/nginx-17-shzmk to localhost
+  Normal  Pulling    14h   kubelet, localhost  pulling image "nginx@sha256:f630aa07be1af4ce6cbe1d5e846bb6bb3b5ba6bfec0ec0edc08ba48d8c1d9b0f"
+  Normal  Pulled     14h   kubelet, localhost  Successfully pulled image "nginx@sha256:f630aa07be1af4ce6cbe1d5e846bb6bb3b5ba6bfec0ec0edc08ba48d8c1d9b0f"
+  Normal  Created    14h   kubelet, localhost  Created container
+  Normal  Started    14h   kubelet, localhost  Started container
+
+> oc exec -it nginx-17-shzmk /bin/bash
+root@nginx-17-shzmk:/#
+
+root@nginx-17-shzmk:/# ls -l /newdata 
+total 0
+root@nginx-17-shzmk:/# exit
 
 12) oc get pvc
-    oc describe pvc nginx-volume-claim
+NAME                 STATUS    VOLUME    CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+nfs-claim            Bound     nfs       5Gi        RWO                           36m
+nginx-volume-claim   Bound     pv0006    100Gi      RWO,ROX,RWX                   1m
+
+> oc describe pvc nginx-volume-claim
+Name:          nginx-volume-claim
+Namespace:     myproject
+StorageClass:
+Status:        Bound
+Volume:        pv0006
+Labels:        <none>
+Annotations:   pv.kubernetes.io/bind-completed=yes
+               pv.kubernetes.io/bound-by-controller=yes
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      100Gi
+Access Modes:  RWO,ROX,RWX
+Events:        <none>
