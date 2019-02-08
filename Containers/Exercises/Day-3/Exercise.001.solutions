@@ -93,6 +93,19 @@ DOCKER_CERT_PATH=/home/rasca/.minishift/certs
 DOCKER_TLS_VERIFY=1
 DOCKER_HOST=tcp://192.168.42.154:2376
 
+If you are running Minishift on a different host (like when using VirtualBox on
+Windows) you'll need to first copy the certs local variable into the directory
+of your user via scp or winscp Windows program:
+
+> scp -r .minishift/certs <YOUR USER>@<YOUR MACHINE>:
+
+And then export the variables from the command line:
+
+DOCKER_CERT_PATH=/home/<YOUR USER>/certs
+DOCKER_TLS_VERIFY=1
+DOCKER_HOST=tcp://<MINISHIFT IP ADDRESS>:2376
+
+
 > docker images
 REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
 openshift/origin-control-plane                 v3.11.0             5cd0e1999c8f        24 hours ago        825MB
