@@ -1,53 +1,96 @@
-# Create a PVC and see details of bounded PV
+# Exercise 000 - Create a PVC and see details of bounded PV - Solutions
 
 1) mkdir /share
-   chown nfsnobody: /share
-   chmod 0700 /share
-   echo '/share *(rw,all_squash)' >> /etc/exports
-   systemctl restart nfs-server
+
+> chown nfsnobody: /share
+
+> chmod 0700 /share
+
+> echo '/share *(rw,all_squash)' >> /etc/exports
+
+> systemctl restart nfs-server
 
 2) firewall-cmd --permanent --add-service=nfs
-   firewall-cmd --permanent --add-service=mountd
-   firewall-cmd --permanent --add-service=rpc-bind
-   firewall-cmd --reload
 
-3) vi nfs-persistent-volume.yaml
+> firewall-cmd --permanent --add-service=mountd
 
-   apiVersion: v1
-   kind: PersistenVolume
-   metadata:
-     name: nfs
-	 labels:
-	   storage-tier: nfs
-   spec:
-     capacity:
-	   storage: 5Gi
-	 accessModes:
-	 - ReadWriteOnce
-	 nfs:
-	   path: /share
-	   server: 192.168.122.50
-	 persistenVolumeReclaimPolicy: Recycle
+> firewall-cmd --permanent --add-service=rpc-bind
+
+> firewall-cmd --reload
+
+3) cat << EOF > nfs-persistent-volume.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs
+  labels:
+    storage-tier: nfs
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+  - ReadWriteOnce
+  nfs:
+    path: /share
+    server: 192.168.122.50
+  persistenVolumeReclaimPolicy: Recycle
+EOF
 
 4) oc create -f nfs-persistent-volume.yaml
-   oc describe pv nfs
+persistentvolume/nfs created
 
-5) vi nfs-persistent-volume-claim.yaml
+> oc describe pv nfs
+Name:            nfs
+Labels:          storage-tier=nfs
+Annotations:     <none>
+Finalizers:      [kubernetes.io/pv-protection]
+StorageClass:
+Status:          Available
+Claim:
+Reclaim Policy:  Retain
+Access Modes:    RWO
+Capacity:        5Gi
+Node Affinity:   <none>
+Message:
+Source:
+    Type:      NFS (an NFS mount that lasts the lifetime of a pod)
+    Server:    192.168.122.50
+    Path:      /share
+    ReadOnly:  false
+Events:        <none>
 
-   apiVersion: v1
-   kind: PersistentVolumeClaim
-   metadata:
-     name: nfs-claim
-	 labels:
-	   storage-tier: nfs
-   spec:
-     accessModes:
-	 - ReadWriteOnce
-	 resources:
-	   requests:
-	     storage: 1Gi
+5) cat << EOF > nfs-persistent-volume-claim.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-claim
+  labels:
+    storage-tier: nfs
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+EOF
 	
 6) oc create -f nfs-persistent-volume-claim.yaml
+persistentvolumeclaim/nfs-claim created
    
 7) oc get pvc nfs-claim
-   oc describe pvc nfs-claim
+NAME        STATUS    VOLUME    CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+nfs-claim   Bound     nfs       5Gi        RWO                           13s
+
+> oc describe pvc nfs-claim
+Name:          nfs-claim
+Namespace:     myproject
+StorageClass:
+Status:        Bound
+Volume:        nfs
+Labels:        storage-tier=nfs
+Annotations:   pv.kubernetes.io/bind-completed=yes
+               pv.kubernetes.io/bound-by-controller=yes
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      5Gi
+Access Modes:  RWO
+Events:        <none>
