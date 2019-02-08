@@ -57,7 +57,7 @@ mysql-1-v78qd   1/1       Running   0          1m
 
 5) Install MySQL client:
 
-yum -y install mariadb 
+> yum -y install mariadb 
 
 Query the local port:
 

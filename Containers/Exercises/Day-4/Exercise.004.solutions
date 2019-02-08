@@ -1,25 +1,46 @@
-# Bind developer and admin users to different roles
+# Exercise 004 - Playing with cluster roles - Solutions
 
-1) oc login -u system:admin
+1) oc login -u admin
 
-2) oc get rolebindings -o wide
-   oc adm policy who-can create pods
-   oc adm policy who-can create projects
+> oc describe clusterrole self-provisioner
+Name:         self-provisioner
+Labels:       <none>
+Annotations:  authorization.openshift.io/system-only=true
+              openshift.io/description=A user that can request projects.
+              rbac.authorization.kubernetes.io/autoupdate=true
+PolicyRule:
+  Resources                             Non-Resource URLs  Resource Names  Verbs
+  ---------                             -----------------  --------------  -----
+  projectrequests                       []                 []              [create]
+  projectrequests.project.openshift.io  []                 []              [create]
 
-3) oc adm policy remove-role-from-user admin developer
 
-4) oc get rolebindings -o wide
-   oc adm policy who-can create pods
-   oc adm policy who-can create projects
+2) oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated system:authenticated:oauth
+
+3) oc login -u developer
+
+> oc new-project my-new-project
+Error from server (Forbidden): You may not request a new project via this API.
+
+4) oc login -u admin
+
+> oc adm policy add-cluster-role-to-user self-provisioner developer
+cluster role "self-provisioner" added: "developer"
 
 5) oc login -u developer
 
-6) oc new-project test # KO
+> oc new-project my-new-project
 
-7) oc adm policy add-role-to-user admin developer
+6) oc delete project my-new-project
 
-8) oc new-project test # OK
-   oc adm policy who-can create pods
-   oc adm policy who-can create projects
-   oc delete project test # OK
+> oc login -u admin
 
+> oc adm policy remove-cluster-role-from-user self-provisioner developer
+
+> oc adm policy add-cluster-role-to-group self-provisioner system:authenticated system:authenticated:oauth
+
+> oc login -u developer
+
+> oc new-project my-new-project
+
+> oc delete project my-new-project
