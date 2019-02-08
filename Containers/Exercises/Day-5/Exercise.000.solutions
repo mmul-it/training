@@ -36,7 +36,10 @@ spec:
   persistenVolumeReclaimPolicy: Recycle
 EOF
 
-4) oc create -f nfs-persistent-volume.yaml
+4) oc whoami
+system:admin
+
+> oc create -f nfs-persistent-volume.yaml
 persistentvolume/nfs created
 
 > oc describe pv nfs
