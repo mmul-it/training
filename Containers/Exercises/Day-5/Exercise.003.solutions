@@ -1,32 +1,334 @@
-# Deploy some applications from git and from Docker images
+# Exercise 003 - Deploy some applications from git and from Docker images - Solutions
 
-1) oc status
+1) oc whoami
+developer
+
+> oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://nginx-myproject.192.168.64.5.nip.io to pod port 80-tcp (svc/nginx)
+  dc/nginx deploys istag/nginx:latest 
+    deployment #17 deployed 15 hours ago - 1 pod
+    deployment #16 deployed 15 hours ago
+    deployment #15 deployed 15 hours ago
 
 2) oc new-app --name=test --docker-image=tomee:latest
-   oc logs -f dc/test
+--> Found Docker image 793ac56 (47 hours old) from Docker Hub for "tomee:latest"
+
+    * An image stream tag will be created as "test:latest" that will track this image
+    * This image will be deployed in deployment config "test"
+    * Port 8080/tcp will be load balanced by service "test"
+      * Other containers can access this service through the hostname "test"
+    * WARNING: Image "tomee:latest" runs as the 'root' user which may not be permitted by your cluster administrator
+
+--> Creating resources ...
+    imagestream.image.openshift.io "test" created
+    deploymentconfig.apps.openshift.io "test" created
+    service "test" created
+--> Success
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose svc/test'
+    Run 'oc status' to view your app.
+
+> oc logs -f dc/test
+--> Scaling test-1 to 1
+--> Success
+
 
 3) oc expose svc/test
-   oc status
-   curl http://...
+route.route.openshift.io/test exposed
+
+> oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://nginx-myproject.192.168.64.5.nip.io to pod port 80-tcp (svc/nginx)
+  dc/nginx deploys istag/nginx:latest 
+    deployment #17 deployed 15 hours ago - 1 pod
+    deployment #16 deployed 15 hours ago
+    deployment #15 deployed 15 hours ago
+
+http://test-myproject.192.168.64.5.nip.io to pod port 8080-tcp (svc/test)
+  dc/test deploys istag/test:latest 
+    deployment #1 deployed 15 hours ago - 1 pod
+
+> curl http://test-myproject.192.168.64.5.nip.io
+<!doctype html><html lang="en"><head><title>HTTP Status 404 – Not Found...
 
 4) oc delete all -l app=test
+pod "test-1-8b59b" deleted
+replicationcontroller "test-1" deleted
+service "test" deleted
+deploymentconfig.apps.openshift.io "test" deleted
+imagestream.image.openshift.io "test" deleted
+route.route.openshift.io "test" deleted
 
 5) oc new-app --name=test2 https://github.com/mmul-it/docker --context-dir=ncat-msg-http-port
-   oc status
-   oc logs -f bc/test2
-   oc logs -f dc/test2
+--> Found Docker image 47b1996 (2 days old) from Docker Hub for "ubuntu:latest"
+
+    * An image stream tag will be created as "ubuntu:latest" that will track the source image
+    * A Docker build using source code from https://github.com/mmul-it/docker will be created
+      * The resulting image will be pushed to image stream tag "test2:latest"
+      * Every time "ubuntu:latest" changes a new build will be triggered
+    * This image will be deployed in deployment config "test2"
+    * Port 8888/tcp will be load balanced by service "test2"
+      * Other containers can access this service through the hostname "test2"
+    * WARNING: Image "ubuntu:latest" runs as the 'root' user which may not be permitted by your cluster administrator
+
+--> Creating resources ...
+    imagestream.image.openshift.io "ubuntu" created
+    imagestream.image.openshift.io "test2" created
+    buildconfig.build.openshift.io "test2" created
+    deploymentconfig.apps.openshift.io "test2" created
+    service "test2" created
+--> Success
+    Build scheduled, use 'oc logs -f bc/test2' to track its progress.
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose svc/test2'
+    Run 'oc status' to view your app.
+
+> oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://nginx-myproject.192.168.64.5.nip.io to pod port 80-tcp (svc/nginx)
+  dc/nginx deploys istag/nginx:latest
+    deployment #17 deployed 15 hours ago - 1 pod
+    deployment #16 deployed 15 hours ago
+    deployment #15 deployed 15 hours ago
+
+svc/test2 - 172.30.11.191:8888
+  dc/test2 deploys istag/test2:latest <- bc/test2 docker builds https://github.com/mmul-it/docker on istag/ubuntu:latest
+      not built yet
+    deployment #1 waiting on image or update
+
+> oc logs -f bc/test2
+Cloning "https://github.com/mmul-it/docker" ...
+	Commit:	6db5093388fffc3e15965a0836e33ab62f8b29e2 (Adding sample print-data and general comments)
+	Author:	Raoul Scarazzini <rasca@mmul.it>
+	Date:	Wed Feb 6 15:31:42 2019 +0100
+Replaced Dockerfile FROM image ubuntu:latest
+Step 1/9 : FROM ubuntu@sha256:be159ff0e12a38fd2208022484bee14412680727ec992680b66cdead1ba76d19
+ ---> 47b19964fb50
+Step 2/9 : ENV NCAT_MESSAGE "Container test"
+ ---> Using cache
+ ---> 431a2beb0821
+Step 3/9 : ENV NCAT_HEADER "HTTP/1.1 200 OK"
+ ---> Using cache
+ ---> cf6f1609ba5f
+Step 4/9 : ENV NCAT_PORT "8888"
+ ---> Using cache
+ ---> b30875e8ad23
+Step 5/9 : RUN apt-get update &&     apt-get install -y nmap &&     apt-get clean
+ ---> Using cache
+ ---> 67b410594a89
+Step 6/9 : CMD /usr/bin/ncat -l $NCAT_PORT -k -c "echo $NCAT_HEADER; echo; echo $NCAT_MESSAGE"
+ ---> Using cache
+ ---> b8203eb45153
+Step 7/9 : EXPOSE $NCAT_PORT
+ ---> Using cache
+ ---> bb37368961e7
+Step 8/9 : ENV "OPENSHIFT_BUILD_NAME" "test2-1" "OPENSHIFT_BUILD_NAMESPACE" "myproject" "OPENSHIFT_BUILD_SOURCE" "https://github.com/mmul-it/docker" "OPENSHIFT_BUILD_COMMIT" "6db5093388fffc3e15965a0836e33ab62f8b29e2"
+ ---> Running in df87dc20db67
+ ---> f6c235914004
+Removing intermediate container df87dc20db67
+Step 9/9 : LABEL "io.openshift.build.commit.author" "Raoul Scarazzini \u003crasca@mmul.it\u003e" "io.openshift.build.commit.date" "Wed Feb 6 15:31:42 2019 +0100" "io.openshift.build.commit.id" "6db5093388fffc3e15965a0836e33ab62f8b29e2" "io.openshift.build.commit.message" "Adding sample print-data and general comments" "io.openshift.build.commit.ref" "master" "io.openshift.build.name" "test2-1" "io.openshift.build.namespace" "myproject" "io.openshift.build.source-context-dir" "ncat-msg-http-port" "io.openshift.build.source-location" "https://github.com/mmul-it/docker"
+ ---> Running in fa5b3d0b046f
+ ---> acc51758f2b7
+Removing intermediate container fa5b3d0b046f
+Successfully built acc51758f2b7
+Pushing image 172.30.1.1:5000/myproject/test2:latest ...
+Push successful
+
+> oc logs -f dc/test2
+
+> oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://nginx-myproject.192.168.64.5.nip.io to pod port 80-tcp (svc/nginx)
+  dc/nginx deploys istag/nginx:latest
+    deployment #17 deployed 15 hours ago - 1 pod
+    deployment #16 deployed 15 hours ago
+    deployment #15 deployed 15 hours ago
+
+svc/test2 - 172.30.11.191:8888
+  dc/test2 deploys istag/test2:latest <- bc/test2 docker builds https://github.com/mmul-it/docker on istag/ubuntu:latest
+    deployment #1 deployed 15 hours ago - 1 pod
 
 6) oc expose svc/test2
-   oc status
-   curl http://...
+route.route.openshift.io/test2 exposed
+
+> oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://nginx-myproject.192.168.64.5.nip.io to pod port 80-tcp (svc/nginx)
+  dc/nginx deploys istag/nginx:latest
+    deployment #17 deployed 15 hours ago - 1 pod
+    deployment #16 deployed 15 hours ago
+    deployment #15 deployed 15 hours ago
+
+http://test2-myproject.192.168.64.5.nip.io to pod port 8888-tcp (svc/test2)
+  dc/test2 deploys istag/test2:latest <- bc/test2 docker builds https://github.com/mmul-it/docker on istag/ubuntu:latest
+    deployment #1 deployed 15 hours ago - 1 pod
+
+> curl http://test2-myproject.192.168.64.5.nip.io
+Container test
 
 7) oc delete all -l app=test2
+pod "test2-1-xff2x" deleted
+replicationcontroller "test2-1" deleted
+service "test2" deleted
+deploymentconfig.apps.openshift.io "test2" deleted
+buildconfig.build.openshift.io "test2" deleted
+build.build.openshift.io "test2-1" deleted
+imagestream.image.openshift.io "test2" deleted
+imagestream.image.openshift.io "ubuntu" deleted
+route.route.openshift.io "test2" deleted
 
 8) oc new-app --name=ruby https://github.com/openshift/ruby-hello-world
-   oc status
-   oc logs -f bc/ruby
-   oc logs -f dc/ruby
+--> Found Docker image e42d0dc (8 months old) from Docker Hub for "centos/ruby-22-centos7"
+
+    Ruby 2.2
+    --------
+    Ruby 2.2 available as container is a base platform for building and running various Ruby 2.2 applications and frameworks. Ruby is the interpreted scripting language for quick and easy object-oriented programming. It has many features to process text files and to do system management tasks (as in Perl). It is simple, straight-forward, and extensible.
+
+    Tags: builder, ruby, ruby22
+
+    * An image stream tag will be created as "ruby-22-centos7:latest" that will track the source image
+    * A Docker build using source code from https://github.com/openshift/ruby-hello-world will be created
+      * The resulting image will be pushed to image stream tag "ruby:latest"
+      * Every time "ruby-22-centos7:latest" changes a new build will be triggered
+    * This image will be deployed in deployment config "ruby"
+    * Port 8080/tcp will be load balanced by service "ruby"
+      * Other containers can access this service through the hostname "ruby"
+
+--> Creating resources ...
+    imagestream.image.openshift.io "ruby-22-centos7" created
+    imagestream.image.openshift.io "ruby" created
+    buildconfig.build.openshift.io "ruby" created
+    deploymentconfig.apps.openshift.io "ruby" created
+    service "ruby" created
+--> Success
+    Build scheduled, use 'oc logs -f bc/ruby' to track its progress.
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose svc/ruby'
+    Run 'oc status' to view your app.
+
+> oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://nginx-myproject.192.168.64.5.nip.io to pod port 80-tcp (svc/nginx)
+  dc/nginx deploys istag/nginx:latest
+    deployment #17 deployed 15 hours ago - 1 pod
+    deployment #16 deployed 15 hours ago
+    deployment #15 deployed 15 hours ago
+
+svc/ruby - 172.30.128.172:8080
+  dc/ruby deploys istag/ruby:latest <-
+    bc/ruby docker builds https://github.com/openshift/ruby-hello-world on istag/ruby-22-centos7:latest
+      build #1 running for 15 hours
+    deployment #1 waiting on image or update
+
+> oc logs -f bc/ruby
+Cloning "https://github.com/openshift/ruby-hello-world" ...
+	Commit:	787f1beae9956c959c6af62ee43bfdda73769cf7 (Merge pull request #78 from bparees/v22)
+	Author:	Ben Parees <bparees@users.noreply.github.com>
+	Date:	Thu Jan 17 17:21:03 2019 -0500
+Replaced Dockerfile FROM image centos/ruby-22-centos7
+Step 1/13 : FROM centos/ruby-22-centos7@sha256:a18c8706118a5c4c9f1adf045024d2abf06ba632b5674b23421019ee4d3edcae
+ ---> e42d0dccf073
+Step 2/13 : USER default
+ ---> Using cache
+ ---> 1808ba30b9c9
+Step 3/13 : EXPOSE 8080
+ ---> Using cache
+ ---> 090cd1417a52
+Step 4/13 : ENV RACK_ENV production
+ ---> Using cache
+ ---> 2e26196c5057
+Step 5/13 : ENV RAILS_ENV production
+ ---> Using cache
+ ---> d201518e916e
+Step 6/13 : COPY . /opt/app-root/src/
+ ---> Using cache
+ ---> b38c35daa152
+Step 7/13 : RUN scl enable rh-ruby22 "bundle install"
+ ---> Using cache
+ ---> 4ed8d6363ae5
+Step 8/13 : CMD scl enable rh-ruby22 ./run.sh
+ ---> Using cache
+ ---> a4f67b1a43bd
+Step 9/13 : USER root
+ ---> Using cache
+ ---> 782fcc95be2f
+Step 10/13 : RUN chmod og+rw /opt/app-root/src/db
+ ---> Using cache
+ ---> b1c52c3eb401
+Step 11/13 : USER default
+ ---> Using cache
+ ---> a8767061a871
+Step 12/13 : ENV "OPENSHIFT_BUILD_NAME" "ruby-1" "OPENSHIFT_BUILD_NAMESPACE" "myproject" "OPENSHIFT_BUILD_SOURCE" "https://github.com/openshift/ruby-hello-world" "OPENSHIFT_BUILD_COMMIT" "787f1beae9956c959c6af62ee43bfdda73769cf7"
+ ---> Using cache
+ ---> df43b27c6870
+Step 13/13 : LABEL "io.openshift.build.commit.author" "Ben Parees \u003cbparees@users.noreply.github.com\u003e" "io.openshift.build.commit.date" "Thu Jan 17 17:21:03 2019 -0500" "io.openshift.build.commit.id" "787f1beae9956c959c6af62ee43bfdda73769cf7" "io.openshift.build.commit.message" "Merge pull request #78 from bparees/v22" "io.openshift.build.commit.ref" "master" "io.openshift.build.name" "ruby-1" "io.openshift.build.namespace" "myproject" "io.openshift.build.source-location" "https://github.com/openshift/ruby-hello-world"
+ ---> Using cache
+ ---> 791a87523539
+Successfully built 791a87523539
+Pushing image 172.30.1.1:5000/myproject/ruby:latest ...
+Pushed 3/12 layers, 25% complete
+Pushed 4/12 layers, 33% complete
+Pushed 5/12 layers, 42% complete
+Pushed 6/12 layers, 50% complete
+Pushed 7/12 layers, 58% complete
+Pushed 8/12 layers, 67% complete
+Pushed 9/12 layers, 75% complete
+Pushed 10/12 layers, 83% complete
+Pushed 11/12 layers, 92% complete
+Pushed 12/12 layers, 100% complete
+Push successful
+
+> oc logs -f dc/ruby
+WARNING: If you plan to load any of ActiveSupport's core extensions to Hash, be
+sure to do so *before* loading Sinatra::Application or Sinatra::Base. If not,
+you may disregard this warning.
+Set SINATRA_ACTIVESUPPORT_WARNING=false in the environment to hide this warning.
+[2019-02-08 01:20:41] INFO  WEBrick 1.3.1
+[2019-02-08 01:20:41] INFO  ruby 2.2.9 (2017-12-15) [x86_64-linux]
+== Sinatra (v2.0.5) has taken the stage on 8080 for production with backup from WEBrick
+[2019-02-08 01:20:41] INFO  WEBrick::HTTPServer#start: pid=15 port=8080
+
+> oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://nginx-myproject.192.168.64.5.nip.io to pod port 80-tcp (svc/nginx)
+  dc/nginx deploys istag/nginx:latest 
+    deployment #17 deployed 15 hours ago - 1 pod
+    deployment #16 deployed 15 hours ago
+    deployment #15 deployed 15 hours ago
+
+svc/ruby - 172.30.128.172:8080
+  dc/ruby deploys istag/ruby:latest <-
+    bc/ruby docker builds https://github.com/openshift/ruby-hello-world on istag/ruby-22-centos7:latest 
+    deployment #1 deployed 15 hours ago - 1 pod
 
 9) oc expose svc/ruby
-   oc status
-   curl http://...
+route.route.openshift.io/ruby exposed
+
+> oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://nginx-myproject.192.168.64.5.nip.io to pod port 80-tcp (svc/nginx)
+  dc/nginx deploys istag/nginx:latest
+    deployment #17 deployed 15 hours ago - 1 pod
+    deployment #16 deployed 15 hours ago
+    deployment #15 deployed 15 hours ago
+
+http://ruby-myproject.192.168.64.5.nip.io to pod port 8080-tcp (svc/ruby)
+  dc/ruby deploys istag/ruby:latest <-
+    bc/ruby docker builds https://github.com/openshift/ruby-hello-world on istag/ruby-22-centos7:latest
+    deployment #1 deployed 15 hours ago - 1 pod
+
+> curl http://ruby-myproject.192.168.64.5.nip.io
+<!DOCTYPE html>
+<html>
+<head>
+...
+

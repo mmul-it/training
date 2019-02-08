@@ -79,10 +79,10 @@ Containers:
       /var/run/secrets/kubernetes.io/serviceaccount from useroot-token-xkkgj (ro)
 Conditions:
   Type              Status
-  Initialized       True
-  Ready             True
-  ContainersReady   True
-  PodScheduled      True
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
 Volumes:
   data:
     Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
@@ -206,7 +206,7 @@ Events:
 > oc exec -it nginx-17-shzmk /bin/bash
 root@nginx-17-shzmk:/#
 
-root@nginx-17-shzmk:/# ls -l /newdata
+root@nginx-17-shzmk:/# ls -l /newdata 
 total 0
 root@nginx-17-shzmk:/# exit
 

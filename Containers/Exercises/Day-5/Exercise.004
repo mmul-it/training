@@ -1,17 +1,15 @@
-# Create an ImageStream for nginx:alpine and verify available images
+# Exercise 004 - Create an ImageStream for nginx:alpine and verify available images
 
-1) Start editing a new yaml
+1) Create an ImageStream definition which pull the nginx:alpine docker image
 
-2) Enter the ImageStream definition which pull the nginx:alpine docker image
+2) Create the ImageStream object in OpenShift
 
-3) Create the ImageStream object in OpenShift
+3) Show if the new ImageStream is available and look at the detail (i.e. the image provided by the stream)
 
-4) Show if the new ImageStream is available and look at the detail (i.e. the image provided by the stream)
+4) Try listing images inside the OpenShift cluster
 
-5) Try listing images inside the OpenShift cluster
+5) Switch to system:admin account
 
-6) Switch to system:admin account
+6) Try listing images inside the OpenShift cluster
 
-7) Try listing images inside the OpenShift cluster
-
-8) Verify if the image provided by the stream are inside the OpenShift images
+7) Verify if the image provided by the stream are inside the OpenShift images

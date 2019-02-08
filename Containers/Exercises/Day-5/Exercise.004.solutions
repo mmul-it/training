@@ -1,9 +1,9 @@
-# Create an ImageStream for nginx:alpine and verify available images
+# Exercise 004 - Create an ImageStream for nginx:alpine and verify available images - Solutions
 
-1) vi nginx-imagestream.yaml
+1) oc whoami
+developer
 
-2) enter the following yaml
-
+> cat << EOF > nginx-imagestream.yaml
 apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
@@ -19,16 +19,67 @@ spec:
     generation: null
     importPolicy: {}
     name: alpine
+EOF
 
 3) oc create -f nginx-imagestream.yaml
+imagestream.image.openshift.io/nginx created
 
 4) oc get is
-   oc describe is nginx
+NAME      DOCKER REPO                       TAGS      UPDATED
+nginx     172.30.1.1:5000/myproject/nginx   alpine    19 seconds ago
 
-5) oc get image    # Error
+> oc describe is nginx
+Name:			nginx
+Namespace:		myproject
+Created:		15 hours ago
+Labels:			<none>
+Annotations:		openshift.io/image.dockerRepositoryCheck=2019-02-08T01:59:13Z
+Docker Pull Spec:	172.30.1.1:5000/myproject/nginx
+Image Lookup:		local=false
+Unique Images:		1
+Tags:			1
+
+alpine
+  tagged from nginx:alpine
+
+  * nginx@sha256:c9a462bce16d85dde1861d45aebfae80c812d733187d045cbb7ffe3d71ac37bd
+      15 hours ago
+
+5) oc get image
+No resources found.
+Error from server (Forbidden): images.image.openshift.io is forbidden: User "developer" cannot list images.image.openshift.io at the cluster scope: no RBAC policy matched
 
 6) oc login -u system:admin
+Logged into "https://192.168.64.5:8443" as "system:admin" using existing credentials.
 
-7) oc get image    # OK
+You have access to the following projects and can switch between them with 'oc project <projectname>':
 
-8) oc get image | grep nginx@shar256...   # OK
+    default
+    kube-dns
+    kube-proxy
+    kube-public
+    kube-system
+  * myproject
+    openshift
+    openshift-apiserver
+    openshift-controller-manager
+    openshift-core-operators
+    openshift-infra
+    openshift-node
+    openshift-service-cert-signer
+    openshift-web-console
+
+Using project "myproject".
+
+7) oc get image
+NAME                                                                      DOCKER REF
+sha256:01220e5bd6f9df02c484a4369bd9530a42f68b65c74508ddbabf2bee552bf88d   docker.io/centos/mariadb-101-centos7@sha256:01220e5bd6f9df02c484a4369bd9530a42f68b65c74508ddbabf2bee552bf88d
+sha256:081831b23f9d846ea1fdc9973354ba7dd1aedf66f29d768a35f037357ff16ad3   mediawiki@sha256:081831b23f9d846ea1fdc9973354ba7dd1aedf66f29d768a35f037357ff16ad3
+...
+
+8) oc describe is nginx | awk '/nginx@sha/ {print $2}'
+nginx@sha256:c9a462bce16d85dde1861d45aebfae80c812d733187d045cbb7ffe3d71ac37bd
+
+> oc get image | grep nginx@sha256:c9a462bce16d85dde1861d45aebfae80c812d733187d045cbb7ffe3d71ac37bd
+sha256:c9a462bce16d85dde1861d45aebfae80c812d733187d045cbb7ffe3d71ac37bd   nginx@sha256:c9a462bce16d85dde1861d45aebfae80c812d733187d045cbb7ffe3d71ac37bd
+
