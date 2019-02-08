@@ -1,21 +1,70 @@
-# Create a custom role
+# Exercise 005 - Create a user that can view an existing project - Solutions
 
-1) oc whoami # developer
-   oc new-app tomcat  # OK
-   oc delete all -l app=tomcat
+1) oc login -u developer
+Logged into "https://192.168.42.154:8443" as "developer" using existing credentials.
+...
 
-2) oc login -u system:admin
-   oc create role view --verb=get,list,watch --resource pods
+> oc new-project my-shared-project
+Now using project "my-shared-project" on server "https://192.168.42.154:8443".
+...
 
-3) oc adm policy add-role-to-user view developer
-   oc adm policy remove-role-from-user admin developer
+> oc new-app tomcat
+--> Found Docker image a0de3d8 (46 hours old) from Docker Hub for "tomcat"
+...
 
-4) oc login -u developer
-   oc new-app tomcat # KO
+> oc status
+In project my-shared-project on server https://192.168.42.154:8443
 
-5) oc login -u system:admin
+svc/tomcat - 172.30.183.11:8080
+  dc/tomcat deploys istag/tomcat:latest 
+    deployment #1 deployed 2 minutes ago - 1 pod
 
-6) oc adm policy add-role-to-user admin developer
-   oc adm policy remove-role-from-user view developer
+2) oc login -u admin
 
-7) oc delete role view
+> oc create user test1
+user.user.openshift.io/test1 created
+
+3) oc login -u test2
+Authentication required for https://192.168.42.154:8443 (openshift)
+Username: test2
+Password: <WHATEVER TEXT IS GOOD HERE>
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+> oc project my-shared-project
+error: You are not a member of project "my-shared-project".
+You are not a member of any projects. You can request a project to be created with the 'new-project' command.
+To see projects on another server, pass '--server=<server>'.
+
+4) oc adm policy add-role-to-user view test1 -n my-shared-project
+role "view" added: "test1"
+
+5) oc login -u test1
+Logged into "https://192.168.42.154:8443" as "test1" using existing credentials.
+
+You have one project on this server: "my-shared-project"
+
+Using project "my-shared-project".
+
+> oc status  
+In project my-shared-project on server https://192.168.42.154:8443
+
+svc/tomcat - 172.30.183.11:8080
+  dc/tomcat deploys istag/tomcat:latest 
+    deployment #1 deployed 8 minutes ago - 1 pod
+
+> oc new-app tomcat
+--> Found image a0de3d8 (46 hours old) in image stream "my-shared-project/tomcat" under tag "latest" for "tomcat"
+
+    * This image will be deployed in deployment config "tomcat"
+    * Port 8080/tcp will be load balanced by service "tomcat"
+      * Other containers can access this service through the hostname "tomcat"
+    * WARNING: Image "my-shared-project/tomcat:latest" runs as the 'root' user which may not be permitted by your cluster administrator
+
+--> Creating resources ...
+    error: deploymentconfigs.apps.openshift.io is forbidden: User "test2" cannot create deploymentconfigs.apps.openshift.io in the namespace "my-shared-project": no RBAC policy matched
+    error: services is forbidden: User "test2" cannot create services in the namespace "my-shared-project": no RBAC policy matched
+--> Failed

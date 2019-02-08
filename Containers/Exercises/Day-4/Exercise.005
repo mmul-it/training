@@ -1,16 +1,14 @@
-# Create a custom role
+# Exercise 005 - Create a user that can view an existing project
 
-1) As developer try to run a new app (i.e. tomcat).
-   Check that everything is ok then delete it
+1) As user "developer" create a project named "my-shared-project" and deploy a
+   tomcat application in it;
 
-2) Switch to system:admin and create a new 'view' role which can get pods
+2) As the admin user, create a user named "test1";
 
-3) Assign the new role and delete the 'admin' role to developer user
+3) Login as "test1" and try to switch to the previously created project;
 
-4) As developer try to run a new app
+4) As admin user add role "view" to user test1 for the project 
+   "my-shared-project";
 
-5) Switch back to system:admin
-
-6) Recover initial roles
-
-7) Delete the new created role
+5) Check that now you are capable of viewing the contents of the project but
+   not to deploy anything new;
