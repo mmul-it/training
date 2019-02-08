@@ -1,29 +1,96 @@
-# Explore current SCC and add more permissions to a deployment
+# Exercise 004 - Explore current SCC and add more permissions to a deployment - Solutions
 
-1) oc login -u system:admin
-   oc get scc
-   oc describe anyuid
-   oc describe privileged
-   oc describe restricted
-   ...
+1) oc login -u admin
+
+> oc get scc
+NAME               PRIV      CAPS      SELINUX     RUNASUSER          FSGROUP     SUPGROUP    PRIORITY   READONLYROOTFS   VOLUMES
+anyuid             false     []        MustRunAs   RunAsAny           RunAsAny    RunAsAny    10         false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
+...
+
+> oc describe scc/anyuid
+Name:						anyuid
+Priority:					10
+Access:						
+  Users:					<none>
+  Groups:					system:cluster-admins
+Settings:					
+  Allow Privileged:				false
+  Allow Privilege Escalation:			0xc4206917fc
+  Default Add Capabilities:			<none>
+  Required Drop Capabilities:			MKNOD
+  Allowed Capabilities:				<none>
+  Allowed Seccomp Profiles:			<none>
+  Allowed Volume Types:				configMap,downwardAPI,emptyDir,persistentVolumeClaim,projected,secret
+  Allowed Flexvolumes:				<all>
+  Allowed Unsafe Sysctls:			<none>
+  Forbidden Sysctls:				<none>
+  Allow Host Network:				false
+  Allow Host Ports:				false
+  Allow Host PID:				false
+  Allow Host IPC:				false
+  Read Only Root Filesystem:			false
+  Run As User Strategy: RunAsAny		
+    UID:					<none>
+    UID Range Min:				<none>
+    UID Range Max:				<none>
+  SELinux Context Strategy: MustRunAs		
+    User:					<none>
+    Role:					<none>
+    Type:					<none>
+    Level:					<none>
+  FSGroup Strategy: RunAsAny			
+    Ranges:					<none>
+  Supplemental Groups Strategy: RunAsAny	
+    Ranges:					<none>
+
+> oc describe scc/privileged
+...
+
+> oc describe scc/restricted
+...
 
 2) oc login -u developer
-   oc new-app --name=nginx --docker-image=nginx:latest
+
+> oc new-project scc-test
+Now using project "scc-test" on server "https://192.168.42.154:8443".
+
+> oc new-app --name=nginx --docker-image=nginx:latest
 
 3) oc logs -f dc/nginx
-   oc status
-   ...
-   # Pod will be in crash looping
+--> Scaling nginx-1 to 1
+
+> oc status
+In project scc-test on server https://192.168.42.154:8443
+
+svc/nginx - 172.30.44.139:80
+  dc/nginx deploys istag/nginx:latest 
+    deployment #1 running for 36 seconds - 0/1 pods
+
+> oc logs nginx-1-nwhqs -c nginx
+2019/02/08 16:23:39 [warn] 1#1: the "user" directive makes sense only if the master process runs with super-user privileges, ignored in /etc/nginx/nginx.conf:2
+nginx: [warn] the "user" directive makes sense only if the master process runs with super-user privileges, ignored in /etc/nginx/nginx.conf:2
+2019/02/08 16:23:39 [emerg] 1#1: mkdir() "/var/cache/nginx/client_temp" failed (13: Permission denied)
+nginx: [emerg] mkdir() "/var/cache/nginx/client_temp" failed (13: Permission denied)
 
 4) oc create serviceaccount useroot
+serviceaccount/useroot created
 
-5) oc login -u system:admin
-   oc adm policy add-scc-to-user anyuid -z useroot
+5) oc login -u admin
+
+> oc project scc-test
+Now using project "scc-test" on server "https://192.168.42.154:8443".
+
+> oc adm policy add-scc-to-user anyuid -z useroot
+scc "anyuid" added to: ["system:serviceaccount:my-shared-project:useroot"]
 
 6) oc login -u developer
-   oc edit dc/nginx
 
-7) # add the serviceAccountName: attribute inside spec:template:spec: attribute
+> oc project scc-test
+Now using project "scc-test" on server "https://192.168.42.154:8443".
+
+> oc edit dc/nginx
+
+7) Add the serviceAccountName: attribute inside spec:template:spec: attribute
    ...
    spec:
      ...
@@ -34,6 +101,20 @@
 	     serviceAccountName: useroot
 		 ...
 
-8) oc logs -f dc/nginx
-   # now pods will start correctly
+deploymentconfig.apps.openshift.io/nginx edited
 
+Or you can use the oc patch command like this:
+
+> oc patch dc/nginx --patch '{"spec":{"template":{"spec":{"serviceAccountName": "useroot"}}}}'
+deploymentconfig.apps.openshift.io/nginx patched
+
+8) oc status
+In project scc-test on server https://192.168.42.154:8443
+
+svc/nginx - 172.30.179.76:80
+  dc/nginx deploys istag/nginx:latest 
+    deployment #2 deployed 14 seconds ago - 1 pod
+    deployment #1 deployed about a minute ago
+
+
+1 warning, 2 infos identified, use 'oc status --suggest' to see details.

@@ -1,53 +1,104 @@
-# Exercise 000 - Exposing your application
+# Exercise 005 - Exposing your application - Solutions
 
-1) oc new-app mysql MYSQL_USER=user MYSQL_PASSWORD=pass MYSQL_DATABASE=testdb -l db=mysql
+1) oc new-project new-mysql
+Now using project "new-mysql" on server "https://192.168.42.154:8443".
+
+> oc new-app mysql MYSQL_USER=user MYSQL_PASSWORD=pass MYSQL_DATABASE=testdb -l db=mysql
+--> Found image 526bdb4 (3 weeks old) in image stream "openshift/mysql" under tag "5.7" for "mysql"
+...
 
 2) oc status
-   oc get dc
-   oc get pods
-   oc get svc
+In project new-mysql on server https://192.168.42.154:8443
 
-### On OpenShift
+svc/mysql - 172.30.185.113:3306
+  dc/mysql deploys openshift/mysql:5.7 
+    deployment #1 deployed 16 seconds ago - 1 pod
 
-3) nc -zv <cluster ip> 3306 # KO from outside the cluster
-   nc -zv <cluster ip> 3306 # OK from any node
-   nc -zv <node ip> 3306 # KO from outside the cluster
-   nc -zv <node ip> 3306 # OK from other nodes
 
-### On Minishift
+2 infos identified, use 'oc status --suggest' to see details.
 
-3) # Obtain the Minishift node internal-IP
-   oc login -u system:admin
-   oc get node -o wide
-   # Enter the minishift VM
-   minishift ssh
-   # Check reachability
-   nc -zv <cluster ip> 3306 # OK
-   nc -zv <node internal-IP> 3306 # KO
+> oc get dc
+NAME      REVISION   DESIRED   CURRENT   TRIGGERED BY
+mysql     1          1         1         config,image(mysql:5.7)
 
-###
+> oc get pods
+NAME            READY     STATUS    RESTARTS   AGE
+mysql-1-wfl5k   1/1       Running   0          33s
+
+> oc get svc
+NAME      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+mysql     ClusterIP   172.30.185.113   <none>        3306/TCP   38s
+
+3) Inside the Minishift machine (minishift ssh) run:
+
+> nc -v 172.30.185.113 3306
+Ncat: Version 7.50 ( https://nmap.org/ncat )
+Ncat: Connected to 172.30.185.113:3306.
+J
+5.7.2150_I... ... ...
+
+Outside the Minishift machine:
+
+> nc -v 172.30.185.113 3306
+Ncat: Version 7.50 ( https://nmap.org/ncat )
+Ncat: Connection timed out.
 
 4) oc delete svc mysql
 
-5) oc create service nodeport mysql --tcp=30003:3306
+5) oc create service nodeport mysql --tcp=30000:3306
 
 6) oc status
-   oc get svc
+In project new-mysql on server https://192.168.42.154:8443
+
+svc/mysql (all nodes):31996 -> 3306
+  dc/mysql deploys openshift/mysql:5.7 
+    deployment #1 deployed 11 minutes ago - 1 pod
+
+
+2 infos identified, use 'oc status --suggest' to see details.
+
+> oc get svc
+NAME      TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)           AGE
+mysql     NodePort   172.30.30.219   <none>        30000:31996/TCP   2m
 
 7) oc get svc mysql -o yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: 2019-02-08T17:25:38Z
+  labels:
+    app: mysql
+  name: mysql
+  namespace: new-mysql
+  resourceVersion: "791320"
+  selfLink: /api/v1/namespaces/new-mysql/services/mysql
+  uid: 8d18c7ae-2bc6-11e9-9593-5254005b72d1
+spec:
+  clusterIP: 172.30.30.219
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: 30000-3306
+    nodePort: 31996
+    port: 30000
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    app: mysql
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}
 
-### On OpenShift
-If ports doesn't reply correctly you must add firewall rules
+8) Inside the Minishift machine (minishift ssh) run:
 
-8) nc -zv <node1 ip> 30003 # OK from outside the cluster
-   nc -zv <node2 ip> 30003 # OK from outside the cluster
+> nc -v 172.30.30.219 30000
+Ncat: Version 7.50 ( https://nmap.org/ncat )
+Ncat: Connected to 172.30.185.113:31272.
+J
+5.7.2150_I... ... ...
 
-### On Minishift
-If ports doesn't reply correctly you must add firewall rules
+Outside the Minishift machine:
 
-8) minishift ssh
-   nc -zv <cluster IP> 3306 # KO
-   nc -zv <cluster IP> 30003 # OK
-   nc -zv <node internal-IP> 30003 # OK
-
-###
+> nc -v 172.30.30.219 30000
+Ncat: Version 7.50 ( https://nmap.org/ncat )
+Ncat: Connection timed out.
