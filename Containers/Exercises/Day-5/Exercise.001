@@ -1,4 +1,4 @@
-# Attach a PVC object to a DC, then create a new one updating a DC
+# Exercise 001 - Attach a PVC object to a DC, then create a new one updating a DC
 
 1) Ensure you have the PV and the PVC already created (in previously exercise)
 
