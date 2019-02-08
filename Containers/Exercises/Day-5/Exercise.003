@@ -1,4 +1,4 @@
-# Deploy some applications from git and from Docker images
+# Exercise 003 - Deploy some applications from git and from Docker images
 
 1) Look at current minishift status
 
