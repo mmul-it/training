@@ -1,14 +1,20 @@
-# Exercise 005 - Create a user that can view an existing project
+# Exercise 000 - Exposing your application
 
-1) As user "developer" create a project named "my-shared-project" and deploy a
-   tomcat application in it;
+1) Deploy again your mysql application, this time without removing the
+   Service part
 
-2) As the admin user, create a user named "test1";
+2) Verify if the DeploymentConfig, Pods and Service are up&running
 
-3) Login as "test1" and try to switch to the previously created project;
+3) Check if mysql is reachable (either with just a netcat) from
+   inside and outside the OpenShift Cluster
 
-4) As admin user add role "view" to user test1 for the project 
-   "my-shared-project";
+4) Delete the service
 
-5) Check that now you are capable of viewing the contents of the project but
-   not to deploy anything new;
+5) Create a new NodePort service, mapping port 30003
+
+6) Verify the status and the service object
+
+7) Verify the Service yaml
+
+8) Check if mysql is reachable (either with just a netcat) from
+   inside and outside the OpenShift Cluster

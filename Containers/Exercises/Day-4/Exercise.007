@@ -1,22 +1,20 @@
-# Explore current SCC and add more permissions to a deployment
+# Find HAProxy stats page details and the SDN configured in minishift
 
-1) As system:admin, look at available scc and explore some details
-   (like anyuid, privileged and restricted)
-   ...
+## Find and query HAProxy stats page
 
-2) As developer try deploying a new app based on a container which require root privileges
-   (like nginx:latest docker-image)
+1) Switch to 'default' OpenShift project and identify the router pod
 
-3) Show logs and see why the pod can't run
+2) Extract HAProxy STATS username, password and port
 
-4) Create a new ServiceAccount named 'useroot'
+3) Identify where router pod is running and ensure firewall port to STATS page is open
 
-5) As system:admin use the add-scc-to-user policy to add anyuid scc to useroot service account
+4) Query the metrics stat page with curl
 
-6) Then, as developer, edit the current DeploymentConfig
+## Find and read minishift master configuration file
 
-7) Add useroot as serviceAccountName attribute inside spec:template:spec: attribute
+5) Find the container which have the network configuration
+   (controller container with 'hypershift' command running)
 
-8) On exit, DeploymentConfig will be update and a new deployment was fired.
-   Look at logs and show if pods are running correctly
+6) Enter the container
 
+7) Read the master configuration yaml for the networkPluginName: attribute

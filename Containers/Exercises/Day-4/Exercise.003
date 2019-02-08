@@ -1,11 +1,14 @@
-# Create a project and switch between projects
+# Exercise 005 - Create a user that can view an existing project
 
-1) Get current projects
+1) As user "developer" create a project named "my-shared-project" and deploy a
+   tomcat application in it;
 
-2) Create a new project
+2) As the admin user, create a user named "test1";
 
-3) See the new project either from cli and from web interface
+3) Login as "test1" and try to switch to the previously created project;
 
-4) Switch from different projects
+4) As admin user add role "view" to user test1 for the project 
+   "my-shared-project";
 
-5) See if different users (system:admin, developer, etc.) can see different projects
+5) Check that now you are capable of viewing the contents of the project but
+   not to deploy anything new;

@@ -1,15 +1,22 @@
-# Exercise 004 - Playing with cluster roles
+# Explore current SCC and add more permissions to a deployment
 
-1) As user admin, describe the cluster role named "self-provisioner";
+1) As system:admin, look at available scc and explore some details
+   (like anyuid, privileged and restricted)
+   ...
 
-2) Remove the cluster role "self-provisioner" from the two virtual groups
-   system:authenticated and system:authenticated:oauth;
+2) As developer try deploying a new app based on a container which require root privileges
+   (like nginx:latest docker-image)
 
-3) As the developer user try to create a new project named "my-new-project";
+3) Show logs and see why the pod can't run
 
-4) Since it didn't work, become admin again and add the cluster role
-   "self-provisioner" to the single user developer;
+4) Create a new ServiceAccount named 'useroot'
 
-5) As developer user try now to create a new project named "my-new-project";
+5) As system:admin use the add-scc-to-user policy to add anyuid scc to useroot service account
 
-6) Restore the original cluster configuration;
+6) Then, as developer, edit the current DeploymentConfig
+
+7) Add useroot as serviceAccountName attribute inside spec:template:spec: attribute
+
+8) On exit, DeploymentConfig will be update and a new deployment was fired.
+   Look at logs and show if pods are running correctly
+

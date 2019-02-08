@@ -1,34 +1,15 @@
-# Exercise 001 - Create a secure route
+# Create a project and switch between projects
 
-1) oc new-app tomcat
-   oc status
-   oc get dc
-   oc get pods
-   oc get svc
+1) oc get project
 
-2) oc expose svc tomcat
-   oc status
+2) oc new-project test --description "Test Project for course" --display-name "Test Project"
 
-3) curl http://...     # OK
-   curl -k https://... # KO
+3) oc get project
+   (browse the OpenShift web interface)
 
-4) oc delete route tomcat
+4) oc project myproject
 
-5) openssl genrsa -out example.key 2048
-   openssl req -new -key example.key -out example.csr -subj "/C=IT/ST=Italy/L=Milan/O=Example/OU=IT/CN=test.example.com"
-   openssl x509 -req -days 365 -in example.csr -signkey example.key -out example.crt
-
-6) oc create route edge --service=tomcat --key=example.key --cert=example.crt
-   oc status
-   oc get route
-
-7) curl http://...     # KO
-   curl -k https://... # OK
-
-8) oc create route will autogenerate the DNS name. This will probably
-   be different than the one available in the certificate. Browsers will
-   notice this and mark the website as insecure
-
-9) You can provide the --hostname parameter to route matching the CN field
-   in the certificate. But the DNS have to resolve that name with our cluster
-   public IP address, otherwise the OpenShift router can't manage the request
+5) oc whoami # developer
+   oc get project
+   oc login -u system:admin
+   oc get project

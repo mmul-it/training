@@ -1,70 +1,53 @@
-# Exercise 005 - Create a user that can view an existing project - Solutions
+# Exercise 000 - Exposing your application
 
-1) oc login -u developer
-Logged into "https://192.168.42.154:8443" as "developer" using existing credentials.
-...
+1) oc new-app mysql MYSQL_USER=user MYSQL_PASSWORD=pass MYSQL_DATABASE=testdb -l db=mysql
 
-> oc new-project my-shared-project
-Now using project "my-shared-project" on server "https://192.168.42.154:8443".
-...
+2) oc status
+   oc get dc
+   oc get pods
+   oc get svc
 
-> oc new-app tomcat
---> Found Docker image a0de3d8 (46 hours old) from Docker Hub for "tomcat"
-...
+### On OpenShift
 
-> oc status
-In project my-shared-project on server https://192.168.42.154:8443
+3) nc -zv <cluster ip> 3306 # KO from outside the cluster
+   nc -zv <cluster ip> 3306 # OK from any node
+   nc -zv <node ip> 3306 # KO from outside the cluster
+   nc -zv <node ip> 3306 # OK from other nodes
 
-svc/tomcat - 172.30.183.11:8080
-  dc/tomcat deploys istag/tomcat:latest 
-    deployment #1 deployed 2 minutes ago - 1 pod
+### On Minishift
 
-2) oc login -u admin
+3) # Obtain the Minishift node internal-IP
+   oc login -u system:admin
+   oc get node -o wide
+   # Enter the minishift VM
+   minishift ssh
+   # Check reachability
+   nc -zv <cluster ip> 3306 # OK
+   nc -zv <node internal-IP> 3306 # KO
 
-> oc create user test1
-user.user.openshift.io/test1 created
+###
 
-3) oc login -u test2
-Authentication required for https://192.168.42.154:8443 (openshift)
-Username: test2
-Password: <WHATEVER TEXT IS GOOD HERE>
-Login successful.
+4) oc delete svc mysql
 
-You don't have any projects. You can try to create a new project, by running
+5) oc create service nodeport mysql --tcp=30003:3306
 
-    oc new-project <projectname>
+6) oc status
+   oc get svc
 
-> oc project my-shared-project
-error: You are not a member of project "my-shared-project".
-You are not a member of any projects. You can request a project to be created with the 'new-project' command.
-To see projects on another server, pass '--server=<server>'.
+7) oc get svc mysql -o yaml
 
-4) oc adm policy add-role-to-user view test1 -n my-shared-project
-role "view" added: "test1"
+### On OpenShift
+If ports doesn't reply correctly you must add firewall rules
 
-5) oc login -u test1
-Logged into "https://192.168.42.154:8443" as "test1" using existing credentials.
+8) nc -zv <node1 ip> 30003 # OK from outside the cluster
+   nc -zv <node2 ip> 30003 # OK from outside the cluster
 
-You have one project on this server: "my-shared-project"
+### On Minishift
+If ports doesn't reply correctly you must add firewall rules
 
-Using project "my-shared-project".
+8) minishift ssh
+   nc -zv <cluster IP> 3306 # KO
+   nc -zv <cluster IP> 30003 # OK
+   nc -zv <node internal-IP> 30003 # OK
 
-> oc status  
-In project my-shared-project on server https://192.168.42.154:8443
-
-svc/tomcat - 172.30.183.11:8080
-  dc/tomcat deploys istag/tomcat:latest 
-    deployment #1 deployed 8 minutes ago - 1 pod
-
-> oc new-app tomcat
---> Found image a0de3d8 (46 hours old) in image stream "my-shared-project/tomcat" under tag "latest" for "tomcat"
-
-    * This image will be deployed in deployment config "tomcat"
-    * Port 8080/tcp will be load balanced by service "tomcat"
-      * Other containers can access this service through the hostname "tomcat"
-    * WARNING: Image "my-shared-project/tomcat:latest" runs as the 'root' user which may not be permitted by your cluster administrator
-
---> Creating resources ...
-    error: deploymentconfigs.apps.openshift.io is forbidden: User "test2" cannot create deploymentconfigs.apps.openshift.io in the namespace "my-shared-project": no RBAC policy matched
-    error: services is forbidden: User "test2" cannot create services in the namespace "my-shared-project": no RBAC policy matched
---> Failed
+###

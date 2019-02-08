@@ -1,39 +1,40 @@
-# Explore current SCC and add more permissions to a deployment
+# Find HAProxy stats page details and the SDN configured in minishift
 
-1) oc login -u system:admin
-   oc get scc
-   oc describe anyuid
-   oc describe privileged
-   oc describe restricted
+1) oc project default
+   oc get pod -o wide
+
+2) oc describe pod router...
+   ...
+   STATS_PASSWORD: <pwd>
+   STATS_PORT:     1936
+   STATS_USERNAME: <user>
    ...
 
-2) oc login -u developer
-   oc new-app --name=nginx --docker-image=nginx:latest
+### On OpenShift
 
-3) oc logs -f dc/nginx
-   oc status
-   ...
-   # Pod will be in crash looping
+3) oc describe pod router-... | grep Node\:
+   ssh <NODE>
+   firewall-cmd --permanent --zone=public --add-port=1936
+   firewall-cmd --reload
+   nc -zv <IP> 1936 # OK
 
-4) oc create serviceaccount useroot
+### On Minishift
 
-5) oc login -u system:admin
-   oc adm policy add-scc-to-user anyuid -z useroot
+3) minishift ssh
+   ip addr show eth0
+   nc -zv <IP> 1936 # OK
 
-6) oc login -u developer
-   oc edit dc/nginx
+#######
 
-7) # add the serviceAccountName: attribute inside spec:template:spec: attribute
-   ...
-   spec:
-     ...
-	 template:
-	   ...
-	   spec:
-	     ...
-	     serviceAccountName: useroot
-		 ...
+4) curl -u STATS_USERNAME:STATS_PASSWORD http://<IP>:1936/metrics
 
-8) oc logs -f dc/nginx
-   # now pods will start correctly
+## Find and read minishift master configuration file
 
+5) minishift ssh
+   docker ps | grep controller | grep hypershift
+
+6) docker exec -it f1f48830ef11 /bin/sh
+   
+7) vi /etc/origin/master/master-config.yaml
+
+(if networkPluginName: attribute is empty, the default value was applied)
