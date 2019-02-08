@@ -1,20 +1,15 @@
-# Find HAProxy stats page details and the SDN configured in minishift
+# Exercise 004 - Playing with cluster roles
 
-## Find and query HAProxy stats page
+1) As user admin, describe the cluster role named "self-provisioner";
 
-1) Switch to 'default' OpenShift project and identify the router pod
+2) Remove the cluster role "self-provisioner" from the two virtual groups
+   system:authenticated and system:authenticated:oauth;
 
-2) Extract HAProxy STATS username, password and port
+3) As the developer user try to create a new project named "my-new-project";
 
-3) Identify where router pod is running and ensure firewall port to STATS page is open
+4) Since it didn't work, become admin again and add the cluster role
+   "self-provisioner" to the single user developer;
 
-4) Query the metrics stat page with curl
+5) As developer user try now to create a new project named "my-new-project";
 
-## Find and read minishift master configuration file
-
-5) Find the container which have the network configuration
-   (controller container with 'hypershift' command running)
-
-6) Enter the container
-
-7) Read the master configuration yaml for the networkPluginName: attribute
+6) Restore the original cluster configuration;

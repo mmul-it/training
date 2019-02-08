@@ -1,28 +1,34 @@
-# Create a user and see which binds are created
+# Exercise 001 - Create a secure route
 
-1) oc login -u system:admin
-   oc get user
-   oc get identity
+1) oc new-app tomcat
+   oc status
+   oc get dc
+   oc get pods
+   oc get svc
 
-2) oc create user frank
-   oc get user
-   oc get identity
+2) oc expose svc tomcat
+   oc status
 
-3) oc create identity anypassword:frank
-   oc get user
-   oc get identity
+3) curl http://...     # OK
+   curl -k https://... # KO
 
-4) oc create useridentitymapping anypassword:frank frank
-   oc get useridentitymapping
-   oc get user
+4) oc delete route tomcat
 
-5) oc login -u frank
-   oc whoami
+5) openssl genrsa -out example.key 2048
+   openssl req -new -key example.key -out example.csr -subj "/C=IT/ST=Italy/L=Milan/O=Example/OU=IT/CN=test.example.com"
+   openssl x509 -req -days 365 -in example.csr -signkey example.key -out example.crt
 
-6) oc login -u system:admin
-   oc delete identity anypassword:frank
-   oc get identity
+6) oc create route edge --service=tomcat --key=example.key --cert=example.crt
+   oc status
+   oc get route
 
-7) oc delete user frank
-   oc get user
-   oc get identity
+7) curl http://...     # KO
+   curl -k https://... # OK
+
+8) oc create route will autogenerate the DNS name. This will probably
+   be different than the one available in the certificate. Browsers will
+   notice this and mark the website as insecure
+
+9) You can provide the --hostname parameter to route matching the CN field
+   in the certificate. But the DNS have to resolve that name with our cluster
+   public IP address, otherwise the OpenShift router can't manage the request

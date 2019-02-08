@@ -1,46 +1,39 @@
-# Exercise 004 - Playing with cluster roles - Solutions
+# Explore current SCC and add more permissions to a deployment
 
-1) oc login -u admin
+1) oc login -u system:admin
+   oc get scc
+   oc describe anyuid
+   oc describe privileged
+   oc describe restricted
+   ...
 
-> oc describe clusterrole self-provisioner
-Name:         self-provisioner
-Labels:       <none>
-Annotations:  authorization.openshift.io/system-only=true
-              openshift.io/description=A user that can request projects.
-              rbac.authorization.kubernetes.io/autoupdate=true
-PolicyRule:
-  Resources                             Non-Resource URLs  Resource Names  Verbs
-  ---------                             -----------------  --------------  -----
-  projectrequests                       []                 []              [create]
-  projectrequests.project.openshift.io  []                 []              [create]
+2) oc login -u developer
+   oc new-app --name=nginx --docker-image=nginx:latest
 
+3) oc logs -f dc/nginx
+   oc status
+   ...
+   # Pod will be in crash looping
 
-2) oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated system:authenticated:oauth
+4) oc create serviceaccount useroot
 
-3) oc login -u developer
+5) oc login -u system:admin
+   oc adm policy add-scc-to-user anyuid -z useroot
 
-> oc new-project my-new-project
-Error from server (Forbidden): You may not request a new project via this API.
+6) oc login -u developer
+   oc edit dc/nginx
 
-4) oc login -u admin
+7) # add the serviceAccountName: attribute inside spec:template:spec: attribute
+   ...
+   spec:
+     ...
+	 template:
+	   ...
+	   spec:
+	     ...
+	     serviceAccountName: useroot
+		 ...
 
-> oc adm policy add-cluster-role-to-user self-provisioner developer
-cluster role "self-provisioner" added: "developer"
+8) oc logs -f dc/nginx
+   # now pods will start correctly
 
-5) oc login -u developer
-
-> oc new-project my-new-project
-
-6) oc delete project my-new-project
-
-> oc login -u admin
-
-> oc adm policy remove-cluster-role-from-user self-provisioner developer
-
-> oc adm policy add-cluster-role-to-group self-provisioner system:authenticated system:authenticated:oauth
-
-> oc login -u developer
-
-> oc new-project my-new-project
-
-> oc delete project my-new-project
