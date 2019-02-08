@@ -101,10 +101,9 @@ of your user via scp or winscp Windows program:
 
 And then export the variables from the command line:
 
-DOCKER_CERT_PATH=/home/<YOUR USER>/certs
-DOCKER_TLS_VERIFY=1
-DOCKER_HOST=tcp://<MINISHIFT IP ADDRESS>:2376
-
+export DOCKER_CERT_PATH=/home/<YOUR USER>/certs
+export DOCKER_TLS_VERIFY=1
+export DOCKER_HOST=tcp://<MINISHIFT IP ADDRESS>:2376
 
 > docker images
 REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
