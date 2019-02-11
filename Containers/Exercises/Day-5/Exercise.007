@@ -1,4 +1,4 @@
-# Create a new template
+# Exercise 007 - Create a new template
 
 1) Export the oc new-app output in yaml format using the GitHub repo https://github.com/mmul-it/docker with
    the context dir ncat-msg-http-port and the name mmul in a new yaml file
@@ -13,3 +13,5 @@
 5) Try deploying a new app from this template. Check if everyting is ok and follow the BuildConfig
 
 6) Try exposing the new app and check from a browser if works
+
+7) Try deploying, exposing and check a new app from the same template.

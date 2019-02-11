@@ -1,17 +1,174 @@
-# Create a new template
+# Exercise 007 - Create a new template - Solutions
 
 1) oc new-app --name=mmul https://github.com/mmul-it/docker --context-dir=ncat-msg-http-port -o yaml > mmul-template.yaml
 
 2) vi mmul-template.yaml
    - Replace items: with objects:
-   - Replace every instance of 'app: mmul' or 'name: mmul' with 'app: ${NAME}' and 'name: ${NAME}'
+   - Replace 'name: ubuntu' in 'name: ubuntu-${NAME}' inside the ImageStream object
+   - Replace every instance of 'app: mmul', 'name: mmul' and 'deploymentconfig: mmul' with 'app: ${NAME}', 'name: ${NAME}' and 'deploymentconfig: ${NAME}'
    - Replace every instance of 'mmul:latest' with '${NAME}:latest'
-   - Replace 'replicas: 1' inside DeploymentConfig spec: attribute with 'replicas: ${REPLICAS}'
+   - Replace 'replicas: 1' inside DeploymentConfig spec: attribute with 'replicas: "${{REPLICAS}}"'
    - Replace 'spec:ports:' attributes inside the Service object with 'name: ${NAME}-tcp' and 'port: "${{PORT}}"'
    - Replace 'kind: List' with 'kind: Template'
    - Replace 'metadata: {}' with
        metadata:
 	     name: mmul-template
+
+> cat mmul-template.yaml
+apiVersion: v1
+objects:
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: ${NAME}
+    name: ubuntu-${NAME}
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/imported-from: ubuntu:latest
+      from:
+        kind: DockerImage
+        name: ubuntu:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${NAME}:latest
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: ncat-msg-http-port
+      git:
+        uri: https://github.com/mmul-it/docker
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ubuntu:latest
+      type: Docker
+    triggers:
+    - github:
+        secret: EMatnURD7sMeDZq_fkb4
+      type: GitHub
+    - generic:
+        secret: 4JTWNrVvfrWFfxqj3PTS
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    replicas: "${{REPLICAS}}"
+    selector:
+      app: ${NAME}
+      deploymentconfig: ${NAME}
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: ${NAME}
+          deploymentconfig: ${NAME}
+      spec:
+        containers:
+        - image: ${NAME}:latest
+          name: ${NAME}
+          ports:
+          - containerPort: 8888
+            protocol: TCP
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${NAME}
+        from:
+          kind: ImageStreamTag
+          name: ${NAME}:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    ports:
+    - name: ${NAME}-tcp
+      port: "${{PORT}}"
+      protocol: TCP
+      targetPort: 8888
+    selector:
+      app: ${NAME}
+      deploymentconfig: ${NAME}
+  status:
+    loadBalancer: {}
+kind: Template
+metadata:
+  name: mmul-template
 
 3) At the end of the file, add:
 
@@ -26,14 +183,271 @@
      description: The Service port
      value: "8080"
 
-4) oc create -f mmul-template.yaml
-   oc get template
-   oc describe template mmul-template
+> cat mmul-template.yaml
+...
+kind: Template
+metadata:
+  name: mmul-template
+parameters:
+- name: NAME
+  description: The application name
+  value: mmul
+- name: REPLICAS
+  description: Replicas of the application
+  value: "1"
+- name: PORT
+  description: The Service port
+  value: "8080"
+
+4) oc create -f mmul-template.yaml 
+template.template.openshift.io/mmul-template created
+
+> oc get template
+NAME            DESCRIPTION   PARAMETERS    OBJECTS
+mmul-template                 3 (all set)   5
+
+> oc describe template mmul-template
+Name:		mmul-template
+Namespace:	myproject
+Created:	12 seconds ago
+Labels:		<none>
+Annotations:	<none>
+
+Parameters:		 
+    Name:		NAME
+    Description:	The application name
+    Required:		false
+    Value:		mmul
+
+    Name:		REPLICAS
+    Description:	Replicas of the application
+    Required:		false
+    Value:		1
+
+    Name:		PORT
+    Description:	The Service port
+    Required:		false
+    Value:		8080
+
+
+Object Labels:	<none>
+
+Message:	<none>
+
+Objects:				 
+    ImageStream.image.openshift.io	ubuntu-${NAME}
+    ImageStream.image.openshift.io	${NAME}
+    BuildConfig.build.openshift.io	${NAME}
+    DeploymentConfig.apps.openshift.io	${NAME}
+    Service				${NAME}
 
 5) oc new-app -p NAME=testmmul mmul-template
-   oc status
-   oc logs bc/testmmul
+--> Deploying template "myproject/mmul-template" to project myproject
+
+     * With parameters:
+        * NAME=testmmul
+        * REPLICAS=1
+        * PORT=8080
+
+--> Creating resources ...
+    imagestream.image.openshift.io "ubuntu-testmmul" created
+    imagestream.image.openshift.io "testmmul" created
+    buildconfig.build.openshift.io "testmmul" created
+    deploymentconfig.apps.openshift.io "testmmul" created
+    service "testmmul" created
+--> Success
+    Build scheduled, use 'oc logs -f bc/testmmul' to track its progress.
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose svc/testmmul'
+    Run 'oc status' to view your app.
+
+> oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://phptest-myproject.192.168.64.5.nip.io to pod port 8080-tcp (svc/phptest)
+  dc/phptest deploys istag/phptest:latest <-
+    bc/phptest source builds https://github.com/jtdagmaj/PHP_helloworld on openshift/php:7.1
+    deployment #1 deployed 15 minutes ago - 1 pod
+
+svc/testmmul - 172.30.196.183:8080 -> 8888
+  dc/testmmul deploys istag/testmmul:latest <-
+    bc/testmmul docker builds https://github.com/mmul-it/docker on istag/ubuntu:latest
+    deployment #1 running for 4 seconds - 1 pod
+
+
+5 infos identified, use 'oc status --suggest' to see details.
+
+> oc logs -f bc/testmmul
+Cloning "https://github.com/mmul-it/docker" ...
+	Commit:	6db5093388fffc3e15965a0836e33ab62f8b29e2 (Adding sample print-data and general comments)
+	Author:	Raoul Scarazzini <rasca@mmul.it>
+	Date:	Wed Feb 6 15:31:42 2019 +0100
+Replaced Dockerfile FROM image ubuntu:latest
+Step 1/9 : FROM ubuntu@sha256:be159ff0e12a38fd2208022484bee14412680727ec992680b66cdead1ba76d19
+ ---> 47b19964fb50
+Step 2/9 : ENV NCAT_MESSAGE "Container test"
+ ---> Using cache
+ ---> 431a2beb0821
+Step 3/9 : ENV NCAT_HEADER "HTTP/1.1 200 OK"
+ ---> Using cache
+ ---> cf6f1609ba5f
+Step 4/9 : ENV NCAT_PORT "8888"
+ ---> Using cache
+ ---> b30875e8ad23
+Step 5/9 : RUN apt-get update &&     apt-get install -y nmap &&     apt-get clean
+ ---> Using cache
+ ---> 67b410594a89
+Step 6/9 : CMD /usr/bin/ncat -l $NCAT_PORT -k -c "echo $NCAT_HEADER; echo; echo $NCAT_MESSAGE"
+ ---> Using cache
+ ---> b8203eb45153
+Step 7/9 : EXPOSE $NCAT_PORT
+ ---> Using cache
+ ---> bb37368961e7
+Step 8/9 : ENV "OPENSHIFT_BUILD_NAME" "testmmul-1" "OPENSHIFT_BUILD_NAMESPACE" "myproject" "OPENSHIFT_BUILD_SOURCE" "https://github.com/mmul-it/docker" "OPENSHIFT_BUILD_COMMIT" "6db5093388fffc3e15965a0836e33ab62f8b29e2"
+ ---> Using cache
+ ---> 14fc79a49c49
+Step 9/9 : LABEL "io.openshift.build.commit.author" "Raoul Scarazzini \u003crasca@mmul.it\u003e" "io.openshift.build.commit.date" "Wed Feb 6 15:31:42 2019 +0100" "io.openshift.build.commit.id" "6db5093388fffc3e15965a0836e33ab62f8b29e2" "io.openshift.build.commit.message" "Adding sample print-data and general comments" "io.openshift.build.commit.ref" "master" "io.openshift.build.name" "testmmul-1" "io.openshift.build.namespace" "myproject" "io.openshift.build.source-context-dir" "ncat-msg-http-port" "io.openshift.build.source-location" "https://github.com/mmul-it/docker"
+ ---> Using cache
+ ---> c5387a6b6759
+Successfully built c5387a6b6759
+Pushing image 172.30.1.1:5000/myproject/testmmul:latest ...
+Push successful
 
 6) oc expose svc/testmmul
-   oc status
-   curl http://...
+route.route.openshift.io/testmmul exposed
+
+> oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://phptest-myproject.192.168.64.5.nip.io to pod port 8080-tcp (svc/phptest)
+  dc/phptest deploys istag/phptest:latest <-
+    bc/phptest source builds https://github.com/jtdagmaj/PHP_helloworld on openshift/php:7.1
+    deployment #1 deployed 16 minutes ago - 1 pod
+
+http://testmmul-myproject.192.168.64.5.nip.io to pod port testmmul-tcp (svc/testmmul)
+  dc/testmmul deploys istag/testmmul:latest <-
+    bc/testmmul docker builds https://github.com/mmul-it/docker on istag/ubuntu:latest
+    deployment #1 deployed about a minute ago - 1 pod
+
+
+4 infos identified, use 'oc status --suggest' to see details.
+
+> curl http://testmmul-myproject.192.168.64.5.nip.io
+Container test
+
+7) oc new-app -p NAME=test2mmul -p PORT=9999  mmul-template
+--> Deploying template "myproject/mmul-template" to project myproject
+
+     * With parameters:
+        * NAME=test2mmul
+        * REPLICAS=1
+        * PORT=9999
+
+--> Creating resources ...
+    imagestream.image.openshift.io "ubuntu-test2mmul" created
+    imagestream.image.openshift.io "test2mmul" created
+    buildconfig.build.openshift.io "test2mmul" created
+    deploymentconfig.apps.openshift.io "test2mmul" created
+    service "test2mmul" created
+--> Success
+    Build scheduled, use 'oc logs -f bc/test2mmul' to track its progress.
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose svc/test2mmul' 
+    Run 'oc status' to view your app.
+
+> oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://phptest-myproject.192.168.64.5.nip.io to pod port 8080-tcp (svc/phptest)
+  dc/phptest deploys istag/phptest:latest <-
+    bc/phptest source builds https://github.com/jtdagmaj/PHP_helloworld on openshift/php:7.1 
+    deployment #1 deployed 32 minutes ago - 1 pod
+
+svc/test2mmul - 172.30.238.108:9999 -> 8888
+  dc/test2mmul deploys istag/test2mmul:latest <-
+    bc/test2mmul docker builds https://github.com/mmul-it/docker on istag/ubuntu:latest 
+    deployment #1 deployed 20 seconds ago - 1 pod
+
+http://testmmul-myproject.192.168.64.5.nip.io to pod port testmmul-tcp (svc/testmmul)
+  dc/testmmul deploys istag/testmmul:latest <-
+    bc/testmmul docker builds https://github.com/mmul-it/docker on istag/ubuntu:latest 
+    deployment #1 deployed 17 minutes ago - 1 pod
+
+> oc logs bc/test2mmul
+Cloning "https://github.com/mmul-it/docker" ...
+	Commit:	6db5093388fffc3e15965a0836e33ab62f8b29e2 (Adding sample print-data and general comments)
+	Author:	Raoul Scarazzini <rasca@mmul.it>
+	Date:	Wed Feb 6 15:31:42 2019 +0100
+Replaced Dockerfile FROM image ubuntu:latest
+Step 1/9 : FROM ubuntu@sha256:be159ff0e12a38fd2208022484bee14412680727ec992680b66cdead1ba76d19
+ ---> 47b19964fb50
+Step 2/9 : ENV NCAT_MESSAGE "Container test"
+ ---> Using cache
+ ---> 431a2beb0821
+Step 3/9 : ENV NCAT_HEADER "HTTP/1.1 200 OK"
+ ---> Using cache
+ ---> cf6f1609ba5f
+Step 4/9 : ENV NCAT_PORT "8888"
+ ---> Using cache
+ ---> b30875e8ad23
+Step 5/9 : RUN apt-get update &&     apt-get install -y nmap &&     apt-get clean
+ ---> Using cache
+ ---> 67b410594a89
+Step 6/9 : CMD /usr/bin/ncat -l $NCAT_PORT -k -c "echo $NCAT_HEADER; echo; echo $NCAT_MESSAGE"
+ ---> Using cache
+ ---> b8203eb45153
+Step 7/9 : EXPOSE $NCAT_PORT
+ ---> Using cache
+ ---> bb37368961e7
+Step 8/9 : ENV "OPENSHIFT_BUILD_NAME" "test2mmul-1" "OPENSHIFT_BUILD_NAMESPACE" "myproject" "OPENSHIFT_BUILD_SOURCE" "https://github.com/mmul-it/docker" "OPENSHIFT_BUILD_COMMIT" "6db5093388fffc3e15965a0836e33ab62f8b29e2"
+ ---> Using cache
+ ---> 22cfcb1dec5e
+Step 9/9 : LABEL "io.openshift.build.commit.author" "Raoul Scarazzini \u003crasca@mmul.it\u003e" "io.openshift.build.commit.date" "Wed Feb 6 15:31:42 2019 +0100" "io.openshift.build.commit.id" "6db5093388fffc3e15965a0836e33ab62f8b29e2" "io.openshift.build.commit.message" "Adding sample print-data and general comments" "io.openshift.build.commit.ref" "master" "io.openshift.build.name" "test2mmul-1" "io.openshift.build.namespace" "myproject" "io.openshift.build.source-context-dir" "ncat-msg-http-port" "io.openshift.build.source-location" "https://github.com/mmul-it/docker"
+ ---> Using cache
+ ---> b9a6dda76961
+Successfully built b9a6dda76961
+Pushing image 172.30.1.1:5000/myproject/test2mmul:latest ...
+Push successful
+
+> oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://phptest-myproject.192.168.64.5.nip.io to pod port 8080-tcp (svc/phptest)
+  dc/phptest deploys istag/phptest:latest <-
+    bc/phptest source builds https://github.com/jtdagmaj/PHP_helloworld on openshift/php:7.1 
+    deployment #1 deployed 33 minutes ago - 1 pod
+
+svc/test2mmul - 172.30.238.108:9999 -> 8888
+  dc/test2mmul deploys istag/test2mmul:latest <-
+    bc/test2mmul docker builds https://github.com/mmul-it/docker on istag/ubuntu:latest 
+    deployment #1 deployed 56 seconds ago - 1 pod
+
+http://testmmul-myproject.192.168.64.5.nip.io to pod port testmmul-tcp (svc/testmmul)
+  dc/testmmul deploys istag/testmmul:latest <-
+    bc/testmmul docker builds https://github.com/mmul-it/docker on istag/ubuntu:latest 
+    deployment #1 deployed 18 minutes ago - 1 pod
+
+> oc expose svc/test2mmul
+route.route.openshift.io/test2mmul exposed
+
+> oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://phptest-myproject.192.168.64.5.nip.io to pod port 8080-tcp (svc/phptest)
+  dc/phptest deploys istag/phptest:latest <-
+    bc/phptest source builds https://github.com/jtdagmaj/PHP_helloworld on openshift/php:7.1 
+    deployment #1 deployed 33 minutes ago - 1 pod
+
+http://test2mmul-myproject.192.168.64.5.nip.io to pod port test2mmul-tcp (svc/test2mmul)
+  dc/test2mmul deploys istag/test2mmul:latest <-
+    bc/test2mmul docker builds https://github.com/mmul-it/docker on istag/ubuntu:latest 
+    deployment #1 deployed about a minute ago - 1 pod
+
+http://testmmul-myproject.192.168.64.5.nip.io to pod port testmmul-tcp (svc/testmmul)
+  dc/testmmul deploys istag/testmmul:latest <-
+    bc/testmmul docker builds https://github.com/mmul-it/docker on istag/ubuntu:latest 
+    deployment #1 deployed 18 minutes ago - 1 pod
+
+> curl http://test2mmul-myproject.192.168.64.5.nip.io
+Container test
+
