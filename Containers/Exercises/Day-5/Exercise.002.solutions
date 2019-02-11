@@ -1,0 +1,90 @@
+# Exercise 002 - Attach a PVC object to a DC, then create a new one updating a DC - Solutions
+
+1) oc login -u admin --password casual https://192.168.42.154:8443
+Login successful.
+
+> oc get pv nfs
+NAME      CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS    CLAIM                STORAGECLASS   REASON    AGE
+nfs       5Gi        RWX            Retain           Bound     pvc-test/nfs-claim                            3m
+> oc get pvc nfs-claim
+NAME        STATUS    VOLUME    CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+nfs-claim   Bound     nfs       5Gi        RWX                           4m
+
+2) oc login -u developer --password casual https://192.168.42.154:8443
+Login successful.
+
+> oc new-app tomcat
+--> Found Docker image 1685883 (2 days old) from Docker Hub for "tomcat"
+...
+
+> oc status
+...
+svc/tomcat - 172.30.27.217:8080
+  dc/tomcat deploys istag/tomcat:latest 
+    deployment #1 deployed 13 seconds ago - 1 pod
+...
+
+3) oc edit dc/tomcat
+
+Inside "spec:template:spec:containers:" add
+
+volumeMounts:
+- name: data
+  mountPath: "/data"
+
+Then inside "spec:template:spec:" add
+
+volumes:
+- name: data
+  persistentVolumeClaim:
+    claimName: "nfs-claim"
+
+Save and exit:
+
+deploymentconfig.apps.openshift.io/tomcat edited
+
+or, to do the same, use the oc command:
+
+> oc set volume dc tomcat --add --name=tomcat -m /data -t pvc --claim-name=nfs-claim
+deploymentconfig.apps.openshift.io/tomcat volume updated
+
+5) oc get pods
+NAME             READY     STATUS    RESTARTS   AGE
+tomcat-2-s2xrs   1/1       Running   0          1m
+
+6) oc describe pod nginx-15-6h75z
+Name:               tomcat-2-s2xrs
+Namespace:          pvc-test
+...
+    Mounts:
+      /data from tomcat (rw)
+...
+Volumes:
+  tomcat:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  nfs-claim
+    ReadOnly:   false
+...
+
+
+7) oc exec -it tomcat-2-s2xrs /bin/bash
+I have no name!@tomcat-2-s2xrs:/usr/local/tomcat$ ls -la /data/
+total 0
+drwx------. 2 nobody nogroup  6 Feb 11 13:29 .
+drwxr-xr-x. 1 root   root    40 Feb 11 14:08 ..
+I have no name!@tomcat-2-s2xrs:/usr/local/tomcat$ touch /data/TESTFILE
+I have no name!@tomcat-2-s2xrs:/usr/local/tomcat$ ls -la /data/TESTFILE 
+-rw-r--r--. 1 nobody nogroup 0 Feb 11 14:13 /data/TESTFILE
+ 
+8) On the exporting host (so the NFS server):
+
+[root@minishift-services ~]# touch /share/NEWTESTFILE
+
+On the Pod console that was left open:
+
+> I have no name!@tomcat-2-s2xrs:/usr/local/tomcat$ ls -la /data/
+total 0
+drwx------. 2 nobody nogroup 41 Feb 11 14:16 .
+drwxr-xr-x. 1 root   root    40 Feb 11 14:08 ..
+-rw-r--r--. 1 root   root     0 Feb 11 14:16 NEWTESTFILE
+-rw-r--r--. 1 nobody nogroup  0 Feb 11 14:13 TESTFILE

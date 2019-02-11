@@ -1,31 +1,18 @@
-# Exercise 001 - Attach a PVC object to a DC, then create a new one updating a DC
+# Exercise 001 - Create a PVC and see details of bounded PV
 
-1) Ensure you have the PV and the PVC already created (in previously exercise)
+1) Create a NFS share on your Linux host;
 
-2) Ensure you have an app running (check for a DeploymentConfig, i.e. the nginx one
-   previously created in Day 4)
+2) Apply firewall rules to permit access to this share;
 
-3) Edit the DeploymentConfig
+3) Create a new yaml to define a new PersistenVolume backed by the nfs share
+   previously created;
 
-4) Add the volumeMounts: attribute in spec:template:spec:containers: pointing to a Pod
-   volume named 'data'. Also add a volumes: attribute in spec:template:spec: which
-   define a volume named 'data' which point to the previously created PVC
+4) As user "admin" define the PersistentVolume in OpenShift and show its
+   details;
 
-5) Show if the updated DeploymentConfig deploy a new pod
+5) Create a new yaml to define a new PersistentVolumeClaim backed by the
+   PersistentVolume previously created;
 
-6) Get the new pod name and explore its attributes
-
-7) Open a shell inside the pod and try to work in the /data path
-
-8) Remove the volumeMounts: and the volumes: attributes from the DeploymentConfig
-
-9) Ensure a new pod will be scheduled, get the new name, open a shell inside it and
-   try to access the /data path
-
-10) Try adding a new PersistentVolumeClaim to the deployment using the CLI command oc
-    set volume --add mounting in a /newdata path
-
-11) Get the new deployed pod name, show it details and try accessing the /newdata path
-    inside it
-
-12) Check the new PersistentVolumeClaim and it details
+6) As user "developer" define the PersistentVolumeClaim in OpenShift;
+   
+7) Show if it was bounded to the correct Volume and it's details;
