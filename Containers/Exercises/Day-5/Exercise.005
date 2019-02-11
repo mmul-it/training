@@ -1,4 +1,4 @@
-# Try build, deploy, and expose a php application via S2I
+# Exercise 005 - Try build, deploy, and expose a php application via S2I
 
 1) Deploy a new app based on a simple php repository (i.e. https://github.com/jtdagmaj/PHP_helloworld)
 
