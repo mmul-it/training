@@ -1,4 +1,4 @@
-# Exercise 005 - Create a user that can view an existing project
+# Exercise 003 - Create a user that can view an existing project
 
 1) As user "developer" create a project named "my-shared-project" and deploy a
    tomcat application in it;
