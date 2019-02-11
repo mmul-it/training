@@ -1,108 +1,35 @@
-# Exercise 005 - Try build, deploy, and expose a php application via S2I - Solutions
+# Exercise 005 - Build, deploy, and expose a php application via S2I - Solutions
 
-1) oc new-app --name=phptest https://github.com/jtdagmaj/PHP_helloworld
---> Found image c8f99d5 (3 weeks old) in image stream "openshift/php" under tag "7.1" for "php"
+1) oc login -u developer --password casual https://192.168.42.154:8443
+Login successful.
 
-    Apache 2.4 with PHP 7.1
-    -----------------------
-    PHP 7.1 available as container is a base platform for building and running various PHP 7.1 applications and frameworks. PHP is an HTML-embedded scripting language. PHP attempts to make it easy for developers to write dynamically generated web pages. PHP also offers built-in database integration for several commercial and non-commercial database management systems, so writing a database-enabled webpage with PHP is fairly simple. The most common use of PHP coding is probably as a replacement for CGI scripts.
+> oc new-project s2i-test
 
-    Tags: builder, php, php71, rh-php71
-
-    * The source repository appears to match: php
-    * A source build using source code from https://github.com/jtdagmaj/PHP_helloworld will be created
-      * The resulting image will be pushed to image stream tag "phptest:latest"
-      * Use 'start-build' to trigger a new build
-    * This image will be deployed in deployment config "phptest"
-    * Ports 8080/tcp, 8443/tcp will be load balanced by service "phptest"
-      * Other containers can access this service through the hostname "phptest"
-
---> Creating resources ...
-    imagestream.image.openshift.io "phptest" created
-    buildconfig.build.openshift.io "phptest" created
-    deploymentconfig.apps.openshift.io "phptest" created
-    service "phptest" created
+> oc new-app --name=php-s2i-test https://github.com/mmul-it/docker/ --context-dir=s2i-php-helloworld
+...
 --> Success
-    Build scheduled, use 'oc logs -f bc/phptest' to track its progress.
+    Build scheduled, use 'oc logs -f bc/php-s2i-test' to track its progress.
     Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
-     'oc expose svc/phptest'
+     'oc expose svc/php-s2i-test' 
     Run 'oc status' to view your app.
 
 2) oc status
-In project myproject on server https://192.168.64.5:8443
+...
+svc/php-s2i-test - 172.30.216.111 ports 8080, 8443
+  dc/php-s2i-test deploys istag/php-s2i-test:latest <-
+    bc/php-s2i-test source builds https://github.com/mmul-it/docker/ on openshift/php:7.1 
+    deployment #1 deployed 43 seconds ago - 1 pod
+...
 
-svc/phptest - 172.30.140.192 ports 8080, 8443
-  dc/phptest deploys istag/phptest:latest <-
-    bc/phptest source builds https://github.com/jtdagmaj/PHP_helloworld on openshift/php:7.1
-      build #1 running for 2 seconds
-    deployment #1 waiting on image or update
+Look at the output: bc/php-s2i-test says it's a "source builds" and will use
+"openshift/php:7.1" source to image definition interna to OpenShift.
 
-
-2 infos identified, use 'oc status --suggest' to see details.
-
-> oc logs -f bc/phptest
-Cloning "https://github.com/jtdagmaj/PHP_helloworld" ...
-	Commit:	5d183eb65b4afa0653d90ba2ec5ef008884aee85 (fix readme)
-	Author:	OISHI AOI <oishi@lepra.jp>
-	Date:	Fri Mar 25 19:09:22 2016 +0900
-Using 172.30.1.1:5000/openshift/php@sha256:c57649d94a04b6df67aabd7a7643e533d6d5d72e488e9a8d297ae17aae200a15 as the s2i builder image
-tar: scripts: time stamp 2019-02-11 10:29:06 is 0.093810037 s in the future
-tar: src/.git/HEAD: time stamp 2019-02-11 10:29:06 is 0.093336153 s in the future
-tar: src/.git/branches: time stamp 2019-02-11 10:29:06 is 0.09318808 s in the future
-tar: src/.git/config: time stamp 2019-02-11 10:29:06 is 0.0930772 s in the future
-tar: src/.git/description: time stamp 2019-02-11 10:29:06 is 0.092929957 s in the future
-tar: src/.git/hooks/applypatch-msg.sample: time stamp 2019-02-11 10:29:06 is 0.09281206 s in the future
-tar: src/.git/hooks/commit-msg.sample: time stamp 2019-02-11 10:29:06 is 0.092698872 s in the future
-tar: src/.git/hooks/post-update.sample: time stamp 2019-02-11 10:29:06 is 0.092588993 s in the future
-tar: src/.git/hooks/pre-applypatch.sample: time stamp 2019-02-11 10:29:06 is 0.092523183 s in the future
-tar: src/.git/hooks/pre-commit.sample: time stamp 2019-02-11 10:29:06 is 0.091927957 s in the future
-tar: src/.git/hooks/pre-push.sample: time stamp 2019-02-11 10:29:06 is 0.091810085 s in the future
-tar: src/.git/hooks/pre-rebase.sample: time stamp 2019-02-11 10:29:06 is 0.091742175 s in the future
-tar: src/.git/hooks/prepare-commit-msg.sample: time stamp 2019-02-11 10:29:06 is 0.091668792 s in the future
-tar: src/.git/hooks/update.sample: time stamp 2019-02-11 10:29:06 is 0.091603369 s in the future
-tar: src/.git/hooks: time stamp 2019-02-11 10:29:06 is 0.09157046 s in the future
-tar: src/.git/index: time stamp 2019-02-11 10:29:06 is 0.091496519 s in the future
-tar: src/.git/info/exclude: time stamp 2019-02-11 10:29:06 is 0.091270724 s in the future
-tar: src/.git/info: time stamp 2019-02-11 10:29:06 is 0.091207099 s in the future
-tar: src/.git/logs/HEAD: time stamp 2019-02-11 10:29:06 is 0.091086106 s in the future
-tar: src/.git/logs/refs/heads/master: time stamp 2019-02-11 10:29:06 is 0.090948355 s in the future
-tar: src/.git/logs/refs/heads: time stamp 2019-02-11 10:29:06 is 0.090913749 s in the future
-tar: src/.git/logs/refs/remotes/origin/HEAD: time stamp 2019-02-11 10:29:06 is 0.09077812 s in the future
-tar: src/.git/logs/refs/remotes/origin: time stamp 2019-02-11 10:29:06 is 0.090729393 s in the future
-tar: src/.git/logs/refs/remotes: time stamp 2019-02-11 10:29:06 is 0.090701553 s in the future
-tar: src/.git/logs/refs: time stamp 2019-02-11 10:29:06 is 0.090678342 s in the future
-tar: src/.git/logs: time stamp 2019-02-11 10:29:06 is 0.090656123 s in the future
-tar: src/.git/objects/0f/f446e93ebc65e6439cb5a56ce35974d08c096f: time stamp 2019-02-11 10:29:06 is 0.090521313 s in the future
-tar: src/.git/objects/0f: time stamp 2019-02-11 10:29:06 is 0.090486927 s in the future
-tar: src/.git/objects/5d/183eb65b4afa0653d90ba2ec5ef008884aee85: time stamp 2019-02-11 10:29:06 is 0.090393238 s in the future
-tar: src/.git/objects/5d: time stamp 2019-02-11 10:29:06 is 0.090293954 s in the future
-tar: src/.git/objects/d3/e34cc681f4aee8e38c45ca91091d67d571b573: time stamp 2019-02-11 10:29:06 is 0.090166906 s in the future
-tar: src/.git/objects/d3: time stamp 2019-02-11 10:29:06 is 0.090102133 s in the future
-tar: src/.git/objects/e3/8f915e28ee844e22c9d65c82b88a81c60dcc54: time stamp 2019-02-11 10:29:06 is 0.090011962 s in the future
-tar: src/.git/objects/e3: time stamp 2019-02-11 10:29:06 is 0.089978228 s in the future
-tar: src/.git/objects/info: time stamp 2019-02-11 10:29:06 is 0.089915786 s in the future
-tar: src/.git/objects/pack: time stamp 2019-02-11 10:29:06 is 0.089846381 s in the future
-tar: src/.git/objects: time stamp 2019-02-11 10:29:06 is 0.089821981 s in the future
-tar: src/.git/packed-refs: time stamp 2019-02-11 10:29:06 is 0.089757847 s in the future
-tar: src/.git/refs/heads/master: time stamp 2019-02-11 10:29:06 is 0.089625018 s in the future
-tar: src/.git/refs/heads: time stamp 2019-02-11 10:29:06 is 0.089590849 s in the future
-tar: src/.git/refs/remotes/origin/HEAD: time stamp 2019-02-11 10:29:06 is 0.089454223 s in the future
-tar: src/.git/refs/remotes/origin: time stamp 2019-02-11 10:29:06 is 0.089419738 s in the future
-tar: src/.git/refs/remotes: time stamp 2019-02-11 10:29:06 is 0.0893959 s in the future
-tar: src/.git/refs/tags: time stamp 2019-02-11 10:29:06 is 0.086099308 s in the future
-tar: src/.git/refs: time stamp 2019-02-11 10:29:06 is 0.086016374 s in the future
-tar: src/.git/shallow: time stamp 2019-02-11 10:29:06 is 0.085895414 s in the future
-tar: src/.git: time stamp 2019-02-11 10:29:06 is 0.085831308 s in the future
-tar: src/README.md: time stamp 2019-02-11 10:29:06 is 0.085761778 s in the future
-tar: src/index.php: time stamp 2019-02-11 10:29:06 is 0.085646922 s in the future
-tar: src: time stamp 2019-02-11 10:29:06 is 0.08556182 s in the future
----> Installing application source...
-=> sourcing 20-copy-config.sh ...
----> 10:29:05     Processing additional arbitrary httpd configuration provided by s2i ...
-=> sourcing 00-documentroot.conf ...
-=> sourcing 50-mpm-tuning.conf ...
-=> sourcing 40-ssl-certs.sh ...
-Pushing image 172.30.1.1:5000/myproject/phptest:latest ...
+> oc logs -f bc/php-s2i-test
+Cloning "https://github.com/mmul-it/docker/" ...
+	Commit:	cdb281058084231a73962196513a70f70d74d79a (Add s2i php helloworld test)
+	Author:	Raoul Scarazzini <rasca@mmul.it>
+	Date:	Mon Feb 11 16:37:43 2019 +0100
+...
 Pushed 5/10 layers, 50% complete
 Pushed 6/10 layers, 70% complete
 Pushed 7/10 layers, 80% complete
@@ -112,30 +39,31 @@ Pushed 10/10 layers, 100% complete
 Push successful
 
 3) oc status
-In project myproject on server https://192.168.64.5:8443
-
-svc/phptest - 172.30.140.192 ports 8080, 8443
-  dc/phptest deploys istag/phptest:latest <-
-    bc/phptest source builds https://github.com/jtdagmaj/PHP_helloworld on openshift/php:7.1
-    deployment #1 deployed 4 seconds ago - 1 pod
-
-
-2 infos identified, use 'oc status --suggest' to see details.
+...
+svc/php-s2i-test - 172.30.196.218 ports 8080, 8443
+  dc/php-s2i-test deploys istag/php-s2i-test:latest <-
+    bc/php-s2i-test source builds https://github.com/jtdagmaj/PHP_helloworld on openshift/php:7.1 
+    deployment #1 deployed 15 seconds ago - 1 pod
+...
 
 4) oc expose svc/phptest
-route.route.openshift.io/phptest exposed
+route.route.openshift.io/php-s2i-test exposed
 
 > oc status
-In project myproject on server https://192.168.64.5:8443
+...
+http://php-s2i-test-s2i-test.192.168.42.154.nip.io to pod port 8080-tcp (svc/php-s2i-test)
+  dc/php-s2i-test deploys istag/php-s2i-test:latest <-
+    bc/php-s2i-test source builds https://github.com/mmul-it/docker/ on openshift/php:7.1 
+    deployment #1 deployed 4 minutes ago - 1 pod
+...
 
-http://phptest-myproject.192.168.64.5.nip.io to pod port 8080-tcp (svc/phptest)
-  dc/phptest deploys istag/phptest:latest <-
-    bc/phptest source builds https://github.com/jtdagmaj/PHP_helloworld on openshift/php:7.1
-    deployment #1 deployed 15 seconds ago - 1 pod
+5) curl http://php-s2i-test-s2i-test.192.168.42.154.nip.io
+Welcome in MMUL!
 
+BONUS) oc login -u admin
+Logged into "https://192.168.42.154:8443" as "admin" using existing credentials.
+...
 
-2 infos identified, use 'oc status --suggest' to see details.
+> oc get is php -n openshift -o yaml > openshift-php.yaml
 
-5) curl http://phptest-myproject.192.168.64.5.nip.io
-Hello World!
-
+Check the contents of openshift-php.yaml

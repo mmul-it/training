@@ -1,17 +1,21 @@
-# Exercise 007 - Create a new template
+# Exercise 007 - Create a custom template
 
-1) Export the oc new-app output in yaml format using the GitHub repo https://github.com/mmul-it/docker with
-   the context dir ncat-msg-http-port and the name mmul in a new yaml file
+1) As developer user create a new project named "template-test". Export the oc
+   new-app output in yaml format using the GitHub repo
+   https://github.com/mmul-it/docker with the context dir ncat-msg-http-port
+   and the name "my-template" in a new yaml file;
 
-2) Edit the file replacing everything necessary to makes it a Template with three parameters: NAME, REPLICAS
-   and PORT
+2) Edit the file replacing everything necessary to make it a Template with
+   three parameters: NAME, REPLICAS and PORT;
 
-3) Add the parameters section with default values and descriptions for each parameter
+3) Add the parameters section with default values and descriptions for each
+   parameter;
 
-4) Create the template and check if parameters are defined correctly
+4) Create the template and check if parameters are defined correctly;
 
-5) Try deploying a new app from this template. Check if everyting is ok and follow the BuildConfig
+5) Deploy a new app from this template. Check if everyting is ok and follow the
+   BuildConfig;
 
-6) Try exposing the new app and check from a browser if works
+6) Expose the new app and check from a browser if works;
 
-7) Try deploying, exposing and check a new app from the same template.
+7) Deploy, expose and check a new app from the same template;

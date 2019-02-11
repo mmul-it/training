@@ -1,12 +1,17 @@
-# Exercise 005 - Try build, deploy, and expose a php application via S2I
+# Exercise 005 - Build, deploy, and expose a php application via S2I
 
-1) Deploy a new app based on a simple php repository (i.e. https://github.com/jtdagmaj/PHP_helloworld)
+1) Create a new project name "s2i-test" and deploy a new app based on a simple
+   php repository (i.e. https://github.com/jtdagmaj/PHP_helloworld);
 
-2) Check if a BuildConfig was fired by the DeploymentConfig and follow its output
+2) Check if a BuildConfig was fired by the DeploymentConfig and follow its
+   output;
 
-3) After the build, check if a Pod was correctly scheduled and a Service was created
+3) After the build, check if a Pod was correctly scheduled and a Service was
+   created;
 
-4) Expose the Service and retrieve the exposed url
+4) Expose the Service and retrieve the exposed url;
 
-5) Try accessing it with a browser
+5) Try accessing it with a browser;
 
+BONUS) Export the "php" image stream definition related to the openshift
+       project and check its contents;

@@ -1,13 +1,20 @@
-# Exercise 006 - Try to scale-up an application, then scale-down and configure autoscaling
+# Exercise 006 - Scale-up, scale-down and configure autoscale
 
-1) Choose a running DeploymentConfig to scale
+1) As user "developer" create a project named "scale-test" and deploy an
+   application named "scale-docker-app", using the container build named 
+   "ncat-msg-http-port" available on https://github.com/mmul-it/docker;
 
-2) Scale up to 3 replicas. See the DeploymentConfig status change over time
+2) Scale up to 3 replicas. See the DeploymentConfig status change over time;
 
-3) Obtain the pod list
+3) Check the pod list;
 
-4) Scale down to 1 replica. Watch the pods to see status changes
+4) Scale down to 1 replica. Watch the pods to see status changes;
 
-5) Set an autoscale rule on the DeploymentConfig which schedule up to 3 Pods when usage pass 50%.
-   Show how DeploymentConfig description change with autoscale enabled
+5) Set an autoscale rule on the DeploymentConfig which schedule up to 3 Pods
+   when usage pass 50%. Show how DeploymentConfig description change with
+   autoscale enabled;
+   NOTE: in Minishift this is the only verification you can do, because of the
+         inner limits of the project. Check [1] to try install metrics in
+         Minishift.
 
+[1] https://github.com/minishift/minishift/issues/2447
