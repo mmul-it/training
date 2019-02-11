@@ -1,34 +1,104 @@
 # Exercise 001 - Create a secure route
 
-1) oc new-app tomcat
-   oc status
-   oc get dc
-   oc get pods
-   oc get svc
+1) oc new-project secure-route
+
+> oc new-app tomcat
+
+> oc status
+...
+svc/tomcat - 172.30.175.255:8080
+  dc/tomcat deploys istag/tomcat:latest
+    deployment #1 running for 16 seconds - 1 pod
+...
+
+> oc get dc
+NAME      REVISION   DESIRED   CURRENT   TRIGGERED BY
+tomcat    1          1         1         config,image(tomcat:latest)   oc get dc
+
+> oc get pods
+NAME             READY     STATUS    RESTARTS   AGE
+tomcat-1-tfjfz   1/1       Running   0          46s
+
+> oc get svc
+NAME      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+tomcat    ClusterIP   172.30.175.255   <none>        8080/TCP   53s   oc get pods
 
 2) oc expose svc tomcat
-   oc status
+route.route.openshift.io/tomcat exposed
 
-3) curl http://...     # OK
-   curl -k https://... # KO
+> oc status
+...
+http://tomcat-secure-route.192.168.42.154.nip.io to pod port 8080-tcp (svc/tomcat)
+  dc/tomcat deploys istag/tomcat:latest 
+    deployment #1 deployed about a minute ago - 1 pod
+...
+
+3) curl http://tomcat-secure-route.192.168.42.154.nip.io
+...
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Apache Tomcat/8.5.38</title>
+...
+
+> curl -k https://tomcat-secure-route.192.168.42.154.nip.io
+...
+      <h1>Application is not available</h1>
+      <p>The application is currently not serving requests at this endpoint. It may not have been started or is still starting.</p>
+...
 
 4) oc delete route tomcat
+route.route.openshift.io "tomcat" deleted
 
-5) openssl genrsa -out example.key 2048
-   openssl req -new -key example.key -out example.csr -subj "/C=IT/ST=Italy/L=Milan/O=Example/OU=IT/CN=test.example.com"
-   openssl x509 -req -days 365 -in example.csr -signkey example.key -out example.crt
+5) openssl genrsa -out mmul.key 2048
+Generating RSA private key, 2048 bit long modulus
+.......+++
+...........+++
+e is 65537 (0x10001)
 
-6) oc create route edge --service=tomcat --key=example.key --cert=example.crt
-   oc status
-   oc get route
+> openssl req -new -key mmul.key -out mmul.csr -subj "/C=IT/ST=Italy/L=Milan/O=MMUL/OU=IT/CN=test.mmul.local"
+> ls mmul.csr 
+mmul.csr
 
-7) curl http://...     # KO
-   curl -k https://... # OK
+> openssl x509 -req -days 365 -in mmul.csr -signkey mmul.key -out mmul.crt
+Signature ok
+subject=/C=IT/ST=Italy/L=Milan/O=MMUL/OU=IT/CN=test.mmul.local
+Getting Private key
 
-8) oc create route will autogenerate the DNS name. This will probably
-   be different than the one available in the certificate. Browsers will
-   notice this and mark the website as insecure
+6) oc create route edge --service=tomcat --key=mmul.key --cert=mmul.crt
+route.route.openshift.io/tomcat created
 
-9) You can provide the --hostname parameter to route matching the CN field
-   in the certificate. But the DNS have to resolve that name with our cluster
-   public IP address, otherwise the OpenShift router can't manage the request
+> oc status
+...
+https://tomcat-secure-route.192.168.42.154.nip.io to pod port 8080-tcp (svc/tomcat)
+  dc/tomcat deploys istag/tomcat:latest 
+    deployment #1 deployed 6 minutes ago - 1 pod
+...
+
+> oc get route
+NAME      HOST/PORT                                   PATH      SERVICES   PORT       TERMINATION   WILDCARD
+tomcat    tomcat-secure-route.192.168.42.154.nip.io             tomcat     8080-tcp   edge          None
+
+7) curl http://tomcat-secure-route.192.168.42.154.nip.i
+...
+      <h1>Application is not available</h1>
+      <p>The application is currently not serving requests at this endpoint. It may not have been started or is still starting.</p>
+...
+
+> curl -k https://tomcat-secure-route.192.168.42.154.nip.io
+...
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Apache Tomcat/8.5.38</title>
+...
+
+8) oc create route will autogenerate the DNS name. This will probably be
+   different than the one available in the certificate. Browsers will notice
+   this and mark the website as insecure;
+
+9) You can provide the --hostname parameter to route matching the CN field in
+   the certificate. But the DNS have to resolve that name with our cluster
+   public IP address, otherwise the OpenShift router can't manage the request;
