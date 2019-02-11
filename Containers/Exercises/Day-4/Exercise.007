@@ -1,20 +1,17 @@
-# Find HAProxy stats page details and the SDN configured in minishift
+# Exercise 007 -  Find HAProxy stats page details and the SDN configured in minishift
 
-## Find and query HAProxy stats page
+1) Switch to 'default' OpenShift project and identify the router pod;
 
-1) Switch to 'default' OpenShift project and identify the router pod
+2) Extract HAProxy STATS username, password and port;
 
-2) Extract HAProxy STATS username, password and port
+3) Identify where router pod is running and ensure firewall port to STATS page
+   is open;
 
-3) Identify where router pod is running and ensure firewall port to STATS page is open
+4) Query the metrics stat page with curl;
 
-4) Query the metrics stat page with curl
+5) Find the container which have the network configuration (controller
+   container with 'hypershift' command running);
 
-## Find and read minishift master configuration file
+6) Enter the container;
 
-5) Find the container which have the network configuration
-   (controller container with 'hypershift' command running)
-
-6) Enter the container
-
-7) Read the master configuration yaml for the networkPluginName: attribute
+7) Read the master configuration yaml for the networkPluginName: attribute;
