@@ -1,14 +1,66 @@
-# Try to scale-up an application, then scale-down and configure autoscaling
+# Exercise 006 - Try to scale-up an application, then scale-down and configure autoscaling - Solutions
 
 1) oc status
+In project myproject on server https://192.168.64.5:8443
 
-2) oc scale --replicas=3 dc nginx
-   oc status
+http://phptest-myproject.192.168.64.5.nip.io to pod port 8080-tcp (svc/phptest)
+  dc/phptest deploys istag/phptest:latest <-
+    bc/phptest source builds https://github.com/jtdagmaj/PHP_helloworld on openshift/php:7.1
+    deployment #1 deployed 3 minutes ago - 1 pod
+
+
+2 infos identified, use 'oc status --suggest' to see details.
+
+2) oc scale --replicas=3 dc/phptest
+deploymentconfig.apps.openshift.io/phptest scaled
+
+> oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://phptest-myproject.192.168.64.5.nip.io to pod port 8080-tcp (svc/phptest)
+  dc/phptest deploys istag/phptest:latest <-
+    bc/phptest source builds https://github.com/jtdagmaj/PHP_helloworld on openshift/php:7.1
+    deployment #1 deployed 4 minutes ago - 1/3 pods
+
+
+2 infos identified, use 'oc status --suggest' to see details.
+
+> oc status
+In project myproject on server https://192.168.64.5:8443
+
+http://phptest-myproject.192.168.64.5.nip.io to pod port 8080-tcp (svc/phptest)
+  dc/phptest deploys istag/phptest:latest <-
+    bc/phptest source builds https://github.com/jtdagmaj/PHP_helloworld on openshift/php:7.1
+    deployment #1 deployed 4 minutes ago - 3 pods
+
+
+2 infos identified, use 'oc status --suggest' to see details.
+
 
 3) oc get pods
+NAME              READY     STATUS      RESTARTS   AGE
+phptest-1-build   0/1       Completed   0          5m
+phptest-1-f7l5b   1/1       Running     0          4m
+phptest-1-g8g4t   1/1       Running     0          38s
 
-4) oc scale --replicas=1 dc nginx
-   oc get pods   # multiple time, see pods passing the Terminating phase then disappear
+4) oc scale --replicas=1 dc/phptest
+deploymentconfig.apps.openshift.io/phptest scaled
 
-5) oc autoscale dc nginx --min 1 --max 3 --cpu-percent=50
-   oc describe dc nginx    # Autoscaling:	between 1 and 3 replicas targeting 5% cpu average per pod
+> oc get pods
+NAME              READY     STATUS        RESTARTS   AGE
+phptest-1-build   0/1       Completed     0          5m
+phptest-1-f7l5b   1/1       Running       0          5m
+phptest-1-g8g4t   0/1       Terminating   0          1m
+phptest-1-kqv76   0/1       Terminating   0          1m
+
+> oc get pods
+NAME              READY     STATUS      RESTARTS   AGE
+phptest-1-build   0/1       Completed   0          5m
+phptest-1-f7l5b   1/1       Running     0          5m
+
+5) oc autoscale dc/phptest --min 1 --max 3 --cpu-percent=50
+horizontalpodautoscaler.autoscaling/phptest autoscaled
+
+> oc describe dc/phptest | grep Autoscaling
+Autoscaling:	between 1 and 3 replicas targeting 50% cpu average per pod
+

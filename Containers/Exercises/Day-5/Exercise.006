@@ -1,4 +1,4 @@
-# Try to scale-up an application, then scale-down and configure autoscaling
+# Exercise 006 - Try to scale-up an application, then scale-down and configure autoscaling
 
 1) Choose a running DeploymentConfig to scale
 
