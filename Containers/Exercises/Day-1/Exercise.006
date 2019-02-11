@@ -1,6 +1,7 @@
 # Exercise 006 - Local directory volume mapping
 
-1) Create a folder on your homedir named "local-dir";
+1) Create a folder on your homedir named "local-dir" and enable the correct
+   SELinux context for the directory if you are on CentOS/Red Hat;
 
 2) Run a nginx container image named "local-dir-mapping-test", exposing on
    localhost the 8080 port mapping also the newly created volume into the

@@ -2,6 +2,11 @@
 
 1) mkdir local-dir
 
+Do not forget to assign the correct SELinux context on the directory, if you
+are on a CentOS/Red Hat system:
+
+> chcon -R -t container_file_t local-dir
+
 2) docker run -d --name local-dir-mapping-test --rm --publish 8080:80 --volume <your-local-path>/local-dir:/usr/share/nginx/html nginx
 d4a042cb50ae2b308cd21e7c2115414498dc1ec05868309c6e279ee91fe13594
 
