@@ -1,4 +1,4 @@
-# Exercise 001 - Create a secure route
+# Exercise 001 - Create a secure route - Solutions
 
 1) oc new-project secure-route
 
