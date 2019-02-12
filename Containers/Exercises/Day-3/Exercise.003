@@ -15,11 +15,11 @@
    - Service: a method to expose our applications outside the OpenShift cluster.
      We will explore Services in further chapters;
 
-3) Customize the DeploymentConfig resource to add a label zone=dmz and ensure
+3) Customize the DeploymentConfig resource to add a label "zone: dmz" and ensure
    at least 2 replicas of the Pods. Also remove the Service part;
 
 4) Create the resources on your OpenShift cluster with oc create;
 
 5) Observe the results;
 
-6) Delete all the resources;
+6) Delete all the resources using the specific tag "zone: dmz" created above;

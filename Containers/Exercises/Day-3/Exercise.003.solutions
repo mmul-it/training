@@ -73,6 +73,8 @@ mysql-1-k6n7d   1/1       Running   0          1m
 ...
 ...
 
-6) oc delete -f dc-mysql.yaml
-imagestreamtag.image.openshift.io "mysql:5.7" deleted
+6) oc delete all -l zone=dmz
+pod "mysql-1-fb726" deleted
+pod "mysql-1-z6nbq" deleted
+replicationcontroller "mysql-1" deleted
 deploymentconfig.apps.openshift.io "mysql" deleted

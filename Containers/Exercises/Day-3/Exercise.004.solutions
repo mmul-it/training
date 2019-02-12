@@ -1,8 +1,6 @@
 # Exercise 004 - Run a local built container on OpenShift - Solutions
 
-1) Create a new project named my-second-project;
-
-oc new-project my-second-project
+1) oc new-project my-second-project
 
 2) mkdir print-date
 
