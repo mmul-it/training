@@ -24,9 +24,9 @@ svc/tomcat - 172.30.183.11:8080
 > oc create user test1
 user.user.openshift.io/test1 created
 
-3) oc login -u test2
+3) oc login -u test1
 Authentication required for https://192.168.42.154:8443 (openshift)
-Username: test2
+Username: test1
 Password: <WHATEVER TEXT IS GOOD HERE>
 Login successful.
 
@@ -39,7 +39,9 @@ error: You are not a member of project "my-shared-project".
 You are not a member of any projects. You can request a project to be created with the 'new-project' command.
 To see projects on another server, pass '--server=<server>'.
 
-4) oc adm policy add-role-to-user view test1 -n my-shared-project
+4) oc login -u admin
+
+> oc adm policy add-role-to-user view test1 -n my-shared-project
 role "view" added: "test1"
 
 5) oc login -u test1
@@ -65,6 +67,6 @@ svc/tomcat - 172.30.183.11:8080
     * WARNING: Image "my-shared-project/tomcat:latest" runs as the 'root' user which may not be permitted by your cluster administrator
 
 --> Creating resources ...
-    error: deploymentconfigs.apps.openshift.io is forbidden: User "test2" cannot create deploymentconfigs.apps.openshift.io in the namespace "my-shared-project": no RBAC policy matched
-    error: services is forbidden: User "test2" cannot create services in the namespace "my-shared-project": no RBAC policy matched
+    error: deploymentconfigs.apps.openshift.io is forbidden: User "test1" cannot create deploymentconfigs.apps.openshift.io in the namespace "my-shared-project": no RBAC policy matched
+    error: services is forbidden: User "test1" cannot create services in the namespace "my-shared-project": no RBAC policy matched
 --> Failed
