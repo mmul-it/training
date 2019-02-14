@@ -52,7 +52,7 @@ deploymentconfig.apps.openshift.io/tomcat volume updated
 NAME             READY     STATUS    RESTARTS   AGE
 tomcat-2-s2xrs   1/1       Running   0          1m
 
-6) oc describe pod nginx-15-6h75z
+6) oc describe pod tomcat-2-s2xrs
 Name:               tomcat-2-s2xrs
 Namespace:          pvc-test
 ...
