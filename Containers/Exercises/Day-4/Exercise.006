@@ -1,7 +1,7 @@
 # Exercise 006 - Create a secure route
 
-1) Deploy a tomcat application. It will generate a service which respond to
-   port 8080;
+1) As developer, create a project named "secure-route" and deploy a tomcat
+   application in it. It will generate a service which respond to port 8080;
 
 2) Expose the service;
 

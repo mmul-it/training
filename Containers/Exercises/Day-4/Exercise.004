@@ -1,4 +1,4 @@
-# Exercise 004 -Explore current SCC and add more permissions to a deployment
+# Exercise 004 - Explore current SCC and add more permissions to a deployment
 
 1) As admin, look at available SCCs and explore some details (like anyuid,
    privileged and restricted);
