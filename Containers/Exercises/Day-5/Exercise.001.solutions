@@ -91,6 +91,10 @@ EOF
 6) oc login -u developer --password casual https://192.168.42.154:8443
 Login successful.
 
+> oc new-project "nfs-volume-test"
+Now using project "nfs-volume-test" on server "https://192.168.42.154:8443".
+...
+
 > oc create -f nfs-persistent-volume-claim.yaml
 persistentvolumeclaim/nfs-claim created
    
