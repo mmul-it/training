@@ -1,6 +1,8 @@
 # Exercise 005 - Build, deploy, and expose a php application via S2I - Solutions
 
-1) oc login -u developer --password casual https://192.168.42.154:8443
+1) sudo yum -y install git
+
+> oc login -u developer --password casual https://192.168.42.154:8443
 Login successful.
 
 > oc new-project s2i-test
