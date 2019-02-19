@@ -1,20 +1,24 @@
 # Exercise 005 - Exposing your application
 
 1) As developer, deploy again your mysql application into the project
-   "new-mysql", this time without removing the Service part;
+   "expose-test", this time without removing the Service part and in addition
+   to that deploy the tomcat application;
 
-2) Verify if the DeploymentConfig, Pods and Service are up&running
+2) Verify if the DeploymentConfig, Pods and Service are up and running;
 
-3) Check if mysql is reachable (either with just a netcat) from inside and
+3) Expose both application and verify that just tomcat is reachable, then
+   remove the route related to mysql;
+
+4) Check if mysql is reachable (either with just a netcat) from inside and
    outside the OpenShift Cluster;
 
-4) Delete the service;
+5) Delete the mysql service;
 
-5) Create a new NodePort service, mapping port 30000;
+6) Create a new NodePort service for mysql, mapping port 30000;
 
-6) Verify the status and the service object;
+7) Verify the status and the service object;
 
-7) Verify the Service yaml;
+8) Verify the Service yaml;
 
-8) Check if mysql is reachable (either with just a netcat) from inside and
+9) Check if mysql is reachable (either with just a netcat) from inside and
    outside the OpenShift Cluster;

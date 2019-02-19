@@ -1,10 +1,14 @@
 # Exercise 005 - Exposing your application - Solutions
 
-1) oc new-project new-mysql
-Now using project "new-mysql" on server "https://192.168.42.154:8443".
+1) oc new-project expose-test
+Now using project "expose-test" on server "https://192.168.42.154:8443".
 
 > oc new-app mysql MYSQL_USER=user MYSQL_PASSWORD=pass MYSQL_DATABASE=testdb -l db=mysql
 --> Found image 526bdb4 (3 weeks old) in image stream "openshift/mysql" under tag "5.7" for "mysql"
+...
+
+> oc new-app tomcat
+--> Found Docker image 1685883 (10 days old) from Docker Hub for "tomcat"
 ...
 
 2) oc status
@@ -20,16 +24,57 @@ svc/mysql - 172.30.185.113:3306
 > oc get dc
 NAME      REVISION   DESIRED   CURRENT   TRIGGERED BY
 mysql     1          1         1         config,image(mysql:5.7)
+tomcat    1          1         1         config,image(tomcat:latest)
 
 > oc get pods
 NAME            READY     STATUS    RESTARTS   AGE
 mysql-1-wfl5k   1/1       Running   0          33s
+tomcat-1-p2f54   1/1       Running   0          1m
 
 > oc get svc
 NAME      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
 mysql     ClusterIP   172.30.185.113   <none>        3306/TCP   38s
+tomcat    ClusterIP   172.30.221.81   <none>        8080/TCP   1m
 
-3) Inside the Minishift machine (minishift ssh) run:
+3) oc expose svc/tomcat
+route.route.openshift.io/tomcat exposed
+
+> oc expose svc/mysql
+route.route.openshift.io/mysql exposed
+
+> oc status 
+...
+http://mysql-expose-test.192.168.42.154.nip.io to pod port 3306-tcp (svc/mysql)
+  dc/mysql deploys openshift/mysql:5.7 
+    deployment #1 deployed 2 minutes ago - 1 pod
+
+http://tomcat-expose-test.192.168.42.154.nip.io to pod port 8080-tcp (svc/tomcat)
+  dc/tomcat deploys istag/tomcat:latest 
+    deployment #1 deployed 3 minutes ago - 1 pod
+...
+
+> curl http://tomcat-expose-test.192.168.42.154.nip.io
+...
+<title>Apache Tomcat/8.5.38</title>
+...
+
+> curl http://mysql-expose-test.192.168.42.154.nip.io
+<html><body><h1>502 Bad Gateway</h1>
+The server returned an invalid or incomplete response.
+</body></html>
+
+> > oc delete route mysql
+route.route.openshift.io "mysql" deleted
+
+4) Inside the Minishift machine (minishift ssh) run:
+
+> yum -y install nmap
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Installing additional packages on the root filesystem might exceed the allocated overlay size and lock the Minishift VM. Proceed with the installation at your own risk.
+For more information, see https://docs.openshift.org/latest/minishift/troubleshooting/troubleshooting-misc.html#root-filesystem-exceeds-overlay-size
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Are you sure you want to continue? [y/N]y
+...
 
 > nc -v 172.30.185.113 3306
 Ncat: Version 7.50 ( https://nmap.org/ncat )
