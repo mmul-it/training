@@ -1,0 +1,24 @@
+# Exercise 004 - Map a volume for a database
+
+1) Create an empty volume named "test-volume"
+
+2) Check the contents of the newly created volume on the filesystem. Where it
+   will be placed?
+
+3) Run a mysql container image named "volume-mapping-test", exposing on
+   localhost the 3306 port mapping also the newly created volume into the
+   container directory /var/lib/mysql.
+
+4) Check again the status of the volume on the host, what is changed?
+
+5) Using the mysql client from the container, create a new database and a
+   new table;
+
+6) Stop the container;
+
+7) Check again the status of the volume on the host;
+
+8) Start a new container with the name "volume-mapping-test-relaunch" and the
+   mapping of the previous volume and check that the database adn the table
+   are still available despite from the fact that the container was created again
+   from scratch;

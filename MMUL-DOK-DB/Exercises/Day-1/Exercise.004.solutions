@@ -1,0 +1,82 @@
+# Exercise 004 - Map a volume for a database - Solutions
+
+1) docker volume create test-volume
+
+2) sudo find /var/lib/docker/volumes/test-volume -ls
+   934978      4 drwxr-xr-x   3 root     root         4096 Jan 15 15:14 /var/lib/docker/volumes/test-volume
+   934979      4 drwxr-xr-x   2 root     root         4096 Jan 15 15:14 /var/lib/docker/volumes/test-volume/_data
+
+3) docker run -d --name volume-mapping-test --rm --publish 3306:3306 --volume test-volume:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=testr00t mysql
+
+4) sudo find /var/lib/docker/volumes/test-volume -ls
+   792777    4 drwxr-xr-x   3 root     root         4096 mar 22 15:40 /var/lib/docker/volumes/test-volume
+   792778    4 drwxr-xr-x   6 polkitd  input        4096 mar 22 15:41 /var/lib/docker/volumes/test-volume/_data
+   792954 49152 -rw-r-----   1 polkitd  input    50331648 mar 22 15:41 /var/lib/docker/volumes/test-volume/_data/ib_logfile1
+   792966    4 -rw-------   1 polkitd  input        1672 mar 22 15:41 /var/lib/docker/volumes/test-volume/_data/ca-key.pem
+   793388    4 -rw-------   1 polkitd  input        1680 mar 22 15:41 /var/lib/docker/volumes/test-volume/_data/private_key.pem
+   792963    4 -rw-r-----   1 polkitd  input          56 mar 22 15:41 /var/lib/docker/volumes/test-volume/_data/auto.cnf
+   ...
+
+5) docker exec -it volume-mapping-test /bin/bash
+   root@a5eb5625c8eb:/# mysql -uroot -p
+   Enter password: 
+   ...
+   mysql> create database test;
+   Query OK, 1 row affected (0.01 sec)
+   
+   mysql> use test;
+   Database changed
+   mysql> create table prova (
+       ->   c1 INT,
+       ->   c2 VARCHAR(10)
+       -> );
+   Query OK, 0 rows affected (0.05 sec)
+   mysql> exit
+   Bye
+
+6) docker stop volume-mapping-test
+volume-mapping-test
+
+7) sudo find /var/lib/docker/volumes/test-volume -ls
+   792777    4 drwxr-xr-x   3 root     root         4096 mar 22 15:40 /var/lib/docker/volumes/test-volume
+   792778    4 drwxr-xr-x   7 polkitd  input        4096 mar 22 15:46 /var/lib/docker/volumes/test-volume/_data
+   792954 49152 -rw-r-----   1 polkitd  input    50331648 mar 22 15:41 /var/lib/docker/volumes/test-volume/_data/ib_logfile1
+   792966    4 -rw-------   1 polkitd  input        1672 mar 22 15:41 /var/lib/docker/volumes/test-volume/_data/ca-key.pem
+   793388    4 -rw-------   1 polkitd  input        1680 mar 22 15:41 /var/lib/docker/volumes/test-volume/_data/private_key.pem
+   792963    4 -rw-r-----   1 polkitd  input          56 mar 22 15:41 /var/lib/docker/volumes/test-volume/_data/auto.cnf
+   ...
+
+8) docker run -d --name volume-mapping-test-relaunch --rm --publish 3306:3306 --volume test-volume:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=testr00t mysql
+
+   docker exec -it volume-mapping-test-relaunch /bin/bash
+   root@e49d20bd3191:/# mysql -uroot -p
+   Enter password: 
+   ...
+   mysql> show databases;
+   +--------------------+
+   | Database           |
+   +--------------------+
+   | information_schema |
+   | mysql              |
+   | performance_schema |
+   | sys                |
+   | test               |
+   +--------------------+
+   5 rows in set (0.01 sec)
+   
+   mysql> use test;
+   Reading table information for completion of table and column names
+   You can turn off this feature to get a quicker startup with -A
+   
+   Database changed
+   mysql> show tables;
+   +----------------+
+   | Tables_in_test |
+   +----------------+
+   | prova          |
+   +----------------+
+   1 row in set (0.00 sec)
+   
+   mysql> exit
+   Bye
+
