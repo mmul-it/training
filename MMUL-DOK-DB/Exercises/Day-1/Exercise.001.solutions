@@ -1,0 +1,24 @@
+# Exercise 001 - Test run modes on containers - Solutions
+
+1) docker pull hello-world
+
+2) docker pull nginx
+
+3) docker run --rm hello-world
+
+4) docker run --rm nginx
+
+5) To exit from the nginx one you need to Ctrl+C or stop the container from 
+   another terminal
+
+6) docker run --rm --detach hello-world
+
+7) docker run --rm --detach nginx
+
+8) Running docker ps will show *just* the nginx container, because the first
+   one even if it was launched with --detach is meant just for a one time
+   execution (showing the message you see while running ine foreground):
+
+> docker ps
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                    NAMES
+536ced43d477        nginx                       "nginx -g 'daemon of…"   4 seconds ago       Up 3 seconds        80/tcp                   priceless_sinoussi
