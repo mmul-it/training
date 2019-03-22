@@ -1,0 +1,18 @@
+# Exercise 002 - Run a database container with environment variables
+
+1) Pull and run the "mysql" container image with the name "environment-var-test"
+   passing the environment variable MYSQL_ROOT_PASSWORD with the value of
+   "testr00t";
+
+2) Log into the container and check that the content of the MYSQL_ROOT_PASSWORD
+   variable is what you set during the launch; log into the database using
+   the mysql client inside the container;
+
+3) Exit the shell and enter again the shell, this time overriding the MYSQL_ROOT_PASSWORD
+   variable with a new value, say "mmul"; check the content of the variable
+   and try to log into the database;
+
+4) Exit again the shell and log once again without overriding the variable,
+   checking the content of the variable:
+
+5) Was the value changed? What does this mean?

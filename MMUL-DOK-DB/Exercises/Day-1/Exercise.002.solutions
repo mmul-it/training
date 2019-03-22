@@ -1,0 +1,28 @@
+# Exercise 002 - Run a database container with environment variables - Solutions
+
+1) docker run -d -e MYSQL_ROOT_PASSWORD="testr00t" --name environment-var-test mysql
+
+2) docker exec -it  environment-var-test /bin/bash
+root@b541dabcb4b1:/# echo $MYSQL_ROOT_PASSWORD
+testr00t
+root@b541dabcb4b1:/# mysql -uroot -p
+Enter password:
+...
+mysql>
+
+3) docker exec -it -e MYSQL_ROOT_PASSWORD="mmul" environment-var-test /bin/bash
+root@b541dabcb4b1:/# echo $MYSQL_ROOT_PASSWORD
+mmul
+root@b541dabcb4b1:/# mysql -uroot -p
+Enter password:
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+
+4) docker exec -it environment-var-test /bin/bash
+root@b541dabcb4b1:/# echo $MYSQL_ROOT_PASSWORD
+testr00t
+
+5) No, the value is still the original. This means that the override produced by
+the exec counts just from there on, it is not retroactive. Which means that the
+only way to reset the environment variable is to stop and start the container
+once again with a new -e option specified.
+
