@@ -1,0 +1,39 @@
+# Exercise 002 - Create an image from a running container - Solutions
+
+1) docker run --detach --name mysql --rm --env MYSQL_ROOT_PASSWORD=testr00t mysql:latest
+
+2) docker exec -it mysql /bin/bash
+root@52a682b0340c:/#
+
+3) root@52a682b0340c:/# cat > /etc/mysql/my.cnf <<EOF
+> [mysqld]
+> pid-file        = /var/run/mysqld/mysqld.pid
+> socket          = /var/run/mysqld/mysqld.sock
+> datadir         = /var/lib/mysql
+> secure-file-priv= NULL
+> # Disabling symbolic-links is recommended to prevent assorted security risks
+> symbolic-links=0
+> port            = 1234
+> 
+> [client]
+> port=1234
+> socket=/var/run/mysqld/mysqld.sock
+> 
+> # Custom config should go here
+> !includedir /etc/mysql/conf.d/
+> EOF
+root@52a682b0340c:/# exit
+exit
+
+4) docker commit mysql my-new-shiny-mysql
+sha256:e3eb71027634591cbb31067b61079dc616dee943e5189cc0123abe63f3af6deb
+
+5) docker stop mysql
+mysql
+
+6) docker run --detach --name mysql --rm --env MYSQL_ROOT_PASSWORD=testr00t my-new-shiny-mysql
+d4bb9b551396166037b9a799054f6867e4ff081a092b1f5dbc52e49bddc31601
+
+> docker logs mysql | grep -i port.*Server
+2019-03-27T17:29:26.380282Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.15'  socket: '/var/run/mysqld/mysqld.sock'  port: 0  MySQL Community Server - GPL.
+2019-03-27T17:29:31.977658Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.15'  socket: '/var/run/mysqld/mysqld.sock'  port: 1234  MySQL Community Server - GPL.

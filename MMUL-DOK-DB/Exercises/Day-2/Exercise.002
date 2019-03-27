@@ -1,0 +1,16 @@
+# Exercise 002 - Create an image from a running container
+
+1) Run a container named "mysql" using the "mysql:latest" image;
+
+2) Log into the container;
+
+3) Change the contents of the my.cnf file to expose mysql on port 1234
+   (editor isn't available, you must use the cat > my.cnf <<EOF method);
+
+4) Exit the container console and generate an image starting from this running
+   instance, called "my-new-shiny-mysql";
+
+5) Stop the original container;
+
+6) Create a new container starting from the newly created image, and check that
+   the modifications made are available;
