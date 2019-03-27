@@ -1,0 +1,28 @@
+# Exercise 000 - Using registry.py to interact with repos
+
+1) Download from the GitHub repo [1] the python script registry.py and make it
+   executable;
+
+wget https://raw.githubusercontent.com/andrey-pohilko/registry-cli/master/registry.py
+chmod +x ./registry
+
+2) Satisfy python dependencies (if any);
+
+> pip install www_authenticate
+Collecting www_authenticate
+  Downloading https://files.pythonhosted.org/packages/a7/2d/5567291a8274ef5d9b6495a1ec341394ab68933e2396936755b157f87b43/www-authenticate-0.9.2.tar.gz
+Building wheels for collected packages: www-authenticate
+  Running setup.py bdist_wheel for www-authenticate ... done
+  Stored in directory: /home/rasca/.cache/pip/wheels/dd/64/7f/62727305e6bba21e34bbdb8017d4770b6109d8028463454a35
+Successfully built www-authenticate
+Installing collected packages: www-authenticate
+Successfully installed www-authenticate-0.9.2
+
+3) Query a public repo for the nginx images;
+
+> ./registry.py -r https://www.mmul.it:5000 -l dockertraining:l3tstr41n
+---------------------------------
+Image: nginx
+  tag: latest
+
+[1] https://github.com/andrey-pohilko/registry-cli/
