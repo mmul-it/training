@@ -1,0 +1,52 @@
+# Exercise 000 - Create a project and switch between projects - Sloutions
+
+1) oc login -u admin --password casual https://192.168.42.154:8443
+Login successful.
+...
+
+> oc get project
+NAME                            DISPLAY NAME   STATUS
+default                                        Active
+kube-dns                                       Active
+kube-proxy                                     Active
+kube-public                                    Active
+kube-system                                    Active
+openshift                                      Active
+openshift-apiserver                            Active
+openshift-controller-manager                   Active
+openshift-core-operators                       Active
+openshift-infra                                Active
+openshift-node                                 Active
+openshift-service-cert-signer                  Active
+openshift-web-console                          Active
+secure-route                                   Active
+
+2) oc new-project test --description "Test Project for course" --display-name "Test Project"
+Now using project "test" on server "https://192.168.42.154:8443".
+...
+
+3) oc get project
+NAME                            DISPLAY NAME   STATUS
+...
+test                            Test Project   Active
+
+Browse the OpenShift web interface;
+
+4) oc new-project new-test --description "NEW Test Project for course" --display-name "NEW Test Project"
+Now using project "new-test" on server "https://192.168.42.154:8443".
+...
+
+> oc projects
+You have access to the following projects and can switch between them with 'oc project <projectname>':
+
+...
+  * new-test - NEW Test Project
+...
+    test - Test Project
+
+5) oc login -u developer --password casual https://192.168.42.154:8443
+Login successful.
+
+> oc get project
+NAME        DISPLAY NAME   STATUS
+myproject   My Project     Active
