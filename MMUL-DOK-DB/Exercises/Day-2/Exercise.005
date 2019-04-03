@@ -1,4 +1,4 @@
-# Exercise 005 - Customize a DeploymentConfig on OpenShift
+# Exercise 005 - Customize a database DeploymentConfig on OpenShift
 
 1) Create a yaml or json file containing DeploymentConfig specifications. You
    can obtain a prepared yaml to explore use oc-new app with yaml output:

@@ -1,4 +1,4 @@
-# Exercise 004 - First OpenShift deployment
+# Exercise 004 - First OpenShift database deployment
 
 1) oc login -u developer
 Logged into "https://192.168.42.154:8443" as "developer" using existing credentials.

@@ -1,4 +1,4 @@
-# Exercise 005 - Customize a DeploymentConfig on OpenShift - Solutions
+# Exercise 005 - Customize a database DeploymentConfig on OpenShift
 
 1) oc new-app mysql MYSQL_USER=user MYSQL_PASSWORD=pass MYSQL_DATABASE=testdb -l db=mysql -o yaml > dc-mysql.yaml
 
