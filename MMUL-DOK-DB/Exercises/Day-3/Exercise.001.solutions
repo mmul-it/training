@@ -1,0 +1,149 @@
+# Exercise 001 - Exposing your application - Solutions
+
+1) oc new-project expose-test
+Now using project "expose-test" on server "https://192.168.42.154:8443".
+
+> oc new-app mysql MYSQL_USER=user MYSQL_PASSWORD=pass MYSQL_DATABASE=testdb -l db=mysql
+--> Found image 526bdb4 (3 weeks old) in image stream "openshift/mysql" under tag "5.7" for "mysql"
+...
+
+> oc new-app tomcat
+--> Found Docker image 1685883 (10 days old) from Docker Hub for "tomcat"
+...
+
+2) oc status
+In project new-mysql on server https://192.168.42.154:8443
+
+svc/mysql - 172.30.185.113:3306
+  dc/mysql deploys openshift/mysql:5.7 
+    deployment #1 deployed 16 seconds ago - 1 pod
+
+
+2 infos identified, use 'oc status --suggest' to see details.
+
+> oc get dc
+NAME      REVISION   DESIRED   CURRENT   TRIGGERED BY
+mysql     1          1         1         config,image(mysql:5.7)
+tomcat    1          1         1         config,image(tomcat:latest)
+
+> oc get pods
+NAME            READY     STATUS    RESTARTS   AGE
+mysql-1-wfl5k   1/1       Running   0          33s
+tomcat-1-p2f54   1/1       Running   0          1m
+
+> oc get svc
+NAME      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+mysql     ClusterIP   172.30.185.113   <none>        3306/TCP   38s
+tomcat    ClusterIP   172.30.221.81   <none>        8080/TCP   1m
+
+3) oc expose svc/tomcat
+route.route.openshift.io/tomcat exposed
+
+> oc expose svc/mysql
+route.route.openshift.io/mysql exposed
+
+> oc status 
+...
+http://mysql-expose-test.192.168.42.154.nip.io to pod port 3306-tcp (svc/mysql)
+  dc/mysql deploys openshift/mysql:5.7 
+    deployment #1 deployed 2 minutes ago - 1 pod
+
+http://tomcat-expose-test.192.168.42.154.nip.io to pod port 8080-tcp (svc/tomcat)
+  dc/tomcat deploys istag/tomcat:latest 
+    deployment #1 deployed 3 minutes ago - 1 pod
+...
+
+> curl http://tomcat-expose-test.192.168.42.154.nip.io
+...
+<title>Apache Tomcat/8.5.38</title>
+...
+
+> curl http://mysql-expose-test.192.168.42.154.nip.io
+<html><body><h1>502 Bad Gateway</h1>
+The server returned an invalid or incomplete response.
+</body></html>
+
+> > oc delete route mysql
+route.route.openshift.io "mysql" deleted
+
+4) Inside the Minishift machine (minishift ssh) run:
+
+> sudo yum -y install nmap
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Installing additional packages on the root filesystem might exceed the allocated overlay size and lock the Minishift VM. Proceed with the installation at your own risk.
+For more information, see https://docs.openshift.org/latest/minishift/troubleshooting/troubleshooting-misc.html#root-filesystem-exceeds-overlay-size
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Are you sure you want to continue? [y/N]y
+...
+
+> nc -v 172.30.185.113 3306
+Ncat: Version 7.50 ( https://nmap.org/ncat )
+Ncat: Connected to 172.30.185.113:3306.
+J
+5.7.2150_I... ... ...
+
+Outside the Minishift machine:
+
+> nc -v 172.30.185.113 3306
+Ncat: Version 7.50 ( https://nmap.org/ncat )
+Ncat: Connection timed out.
+
+4) oc delete svc mysql
+
+5) oc create service nodeport mysql --tcp=30000:3306
+
+6) oc status
+In project new-mysql on server https://192.168.42.154:8443
+
+svc/mysql (all nodes):31996 -> 3306
+  dc/mysql deploys openshift/mysql:5.7 
+    deployment #1 deployed 11 minutes ago - 1 pod
+
+
+2 infos identified, use 'oc status --suggest' to see details.
+
+> oc get svc
+NAME      TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)           AGE
+mysql     NodePort   172.30.30.219   <none>        30000:31996/TCP   2m
+
+7) oc get svc mysql -o yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: 2019-02-08T17:25:38Z
+  labels:
+    app: mysql
+  name: mysql
+  namespace: new-mysql
+  resourceVersion: "791320"
+  selfLink: /api/v1/namespaces/new-mysql/services/mysql
+  uid: 8d18c7ae-2bc6-11e9-9593-5254005b72d1
+spec:
+  clusterIP: 172.30.30.219
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: 30000-3306
+    nodePort: 31996
+    port: 30000
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    app: mysql
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}
+
+8) Inside the Minishift machine (minishift ssh) run:
+
+> nc -v 172.30.30.219 30000
+Ncat: Version 7.50 ( https://nmap.org/ncat )
+Ncat: Connected to 172.30.185.113:31272.
+J
+5.7.2150_I... ... ...
+
+Outside the Minishift machine:
+
+> nc -v 172.30.30.219 30000
+Ncat: Version 7.50 ( https://nmap.org/ncat )
+Ncat: Connection timed out.
