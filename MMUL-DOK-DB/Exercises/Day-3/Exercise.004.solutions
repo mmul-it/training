@@ -1,0 +1,128 @@
+# Exercise 004 - Attach a PV to a database application
+
+---
+Before the exercise, connect to the minishift VM
+
+> minishift ssh
+
+Create a path for the PV and give that permissive permissions
+
+> sudo mkdir /mysqlpv
+> sudo chmod 777 /mysqlpv
+> sudo chcon -R -t svirt_sandbox_file_t /mysqlpv
+
+---
+
+1) oc login -u admin --password casual https://192.168.42.154:8443
+Login successful.
+
+> cat mysqlpv.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysqlpv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/vda1/mysqlpv
+
+> oc create -f mysqlpv.yaml
+persistentvolume/mysqlpv created
+
+oc get pv mysqlpv
+NAME      CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM     STORAGECLASS   REASON    AGE
+mysqlpv   1Gi        RWO,ROX        Retain           Available             slow                     9s
+
+2) oc login -u developer --password casual https://192.168.42.154:8443
+Login successful.
+
+> oc new-project pvc-test
+Now using project "pvc-test" on server "https://192.168.64.6:8443".
+...
+
+> oc new-app -e MYSQL_ROOT_PASSWORD=password mysql:5.7
+--> Found Docker image 1685883 (2 days old) from Docker Hub for "mysql:5.7"
+...
+
+> oc status
+...
+svc/mysql - 172.30.3.224:3306
+  dc/mysql deploys openshift/mysql:5.7
+    deployment #1 deployed 13 seconds ago - 1 pod
+...
+
+3) cat mysqlpvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-volume
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: mysqlpv
+
+> oc create -f mysqlpvc.yaml
+persistentvolumeclaim/mysql-volume created
+
+> oc get pvc
+NAME           STATUS    VOLUME    CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+mysql-volume   Pending   mysqlpv   0                                        44s
+
+> oc get pvc
+NAME           STATUS    VOLUME    CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+mysql-volume   Bound     mysqlpv   1Gi        RWO                           49s
+
+4) oc edit dc/mysql
+
+Inside "spec:template:spec:containers:" add
+
+volumeMounts:
+- name: mysql-data
+  mountPath: /var/lib/mysql
+
+Then inside "spec:template:spec:" add
+
+volumes:
+- name: mysql-data
+  persistentVolumeClaim:
+    claimName: mysql-volume
+
+Save and exit:
+
+deploymentconfig.apps.openshift.io/mysql edited
+
+5) oc logs -f dc/mysql
+--> Scaling up mysql-2 from 0 to 1, scaling down mysql-1 from 1 to 0 (keep 1 pods available, don't exceed 2 pods)
+    Scaling mysql-2 up to 1
+    Scaling mysql-1 down to 0
+--> Success
+
+> oc get pods
+NAME            READY     STATUS    RESTARTS   AGE
+mysql-2-dmpsc   1/1       Running   0          49s 
+
+6) oc describe pod/mysql-2-dmpsc
+Name:               mysql-2-dmpsc
+Namespace:          pvc-test
+...
+    Mounts:
+      /var/lib/mysql/data from mysql-storage (rw)
+...
+Volumes:
+  mysql-storage:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  mysql-volume
+    ReadOnly:   false
+...
+
+7) minishift ssh
+
+> ls /mysqlpv/
+auto.cnf    ca.pem           client-key.pem  ib_logfile0  ibdata1  mysql              mysql_upgrade_info  private_key.pem  server-cert.pem  sys
+ca-key.pem  client-cert.pem  ib_buffer_pool  ib_logfile1  ibtmp1   mysql-2-dmpsc.pid  performance_schema  public_key.pem   server-key.pem
