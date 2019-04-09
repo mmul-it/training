@@ -1,0 +1,34 @@
+# Exercise 005 - Scale-up a database
+
+1) Create a new project named 'scale-test'
+
+2) Deploy a new mysql application named mysql-novolume-test
+
+3) Check if everything was ok, then delete the created
+   service
+
+4) Create a new NodePort service using the type=LoadBalancer
+   parameter on oc expose command and obtain the exposed
+   port
+
+5) Connect to the mysql instance from outside the minishift
+   host and create a new database on it
+
+6) Try to scale up the application to two replicas
+
+7) Connect again outside the minishift VM and show available
+   databases;
+
+8) What's happened?
+
+9) Delete the application
+
+10) Deploy a new mysql application named mysql-with-volume
+
+11) Repeat steps from Exercise 004 in order to define a new
+    pvc and making the mysql datadir persisten.
+
+12) Try to scale up the application to two replicas. And check
+    if everything was ok
+
+13) What's happened? What is the error?

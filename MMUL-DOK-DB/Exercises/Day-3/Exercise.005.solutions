@@ -1,0 +1,172 @@
+# Exercise 005 - Scale-up a database - Solutions
+
+1) oc new-project scale-test
+Now using project "scale-test" on server "https://192.168.64.6:8443".
+...
+
+2) oc new-app --name=mysql-novolume-test -e MYSQL_ROOT_PASSWORD=password mysql:5.7
+--> Found image ee80146 (7 weeks old) in image stream "openshift/mysql" under tag "5.7" for "mysql:5.7"
+...
+
+3) oc status
+...
+svc/mysql-novolume-test - 172.30.149.1:3306
+  dc/mysql-novolume-test deploys openshift/mysql:5.7
+    deployment #1 deployed 5 seconds ago - 1 pod
+...
+
+> oc delete svc mysql-novolume-test
+service "mysql-novolume-test" deleted
+
+4) oc expose dc mysql-novolume-test --type=LoadBalancer --name=mysql-novolume-test
+service/mysql-novolume-test exposed
+
+> oc get svc mysql-novolume-test
+NAME                  TYPE           CLUSTER-IP       EXTERNAL-IP                 PORT(S)          AGE
+mysql-novolume-test   LoadBalancer   172.30.174.122   172.29.87.75,172.29.87.75   3306:31903/TCP   26s
+
+5) mysql -u root --password=password --host=$(minishift ip) --port=31903
+...
+mysql> create database testdb;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| testdb             |
++--------------------+
+5 rows in set (0.00 sec)
+
+6) oc scale --replicas=2 dc mysql-novolume-test
+deploymentconfig.apps.openshift.io/mysql-novolume-test scaled
+
+> oc status
+...
+svc/mysql-novolume-test - 172.30.174.122:3306
+  dc/mysql-novolume-test deploys openshift/mysql:5.7
+    deployment #1 deployed 7 minutes ago - 2 pods
+...
+
+7) mysql -u root --password=password --host=$(minishift ip) --port=31903
+...
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.00 sec)
+
+8) Previously created database isn't available; this mean the different
+   pods have differents datadir, so you have just create a brand-new
+   instance of mysql (instead of scaling up the previous one)
+
+9) oc delete all -l app=mysql-novolume-test
+pod "mysql-novolume-test-1-jn9nc" deleted
+pod "mysql-novolume-test-1-wn269" deleted
+replicationcontroller "mysql-novolume-test-1" deleted
+service "mysql-novolume-test" deleted
+deploymentconfig.apps.openshift.io "mysql-novolume-test" deleted
+
+10) oc new-app --name=mysql-with-volume -e MYSQL_ROOT_PASSWORD=password mysql:5.7
+--> Found image ee80146 (7 weeks old) in image stream "openshift/mysql" under tag "5.7" for "mysql:5.7"
+...
+
+> oc status
+...
+svc/mysql-with-volume - 172.30.71.55:3306
+  dc/mysql-with-volume deploys openshift/mysql:5.7
+    deployment #1 deployed 20 seconds ago - 1 pod
+...
+
+11) minishift ssh -- sudo mkdir /mysqlpv
+
+> minishift ssh -- sudo chmod 777 /mysqlpv
+
+> minishift ssh -- sudo chcon -R -t svirt_sandbox_file_t /mysqlpv
+
+> cat mysqlpvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-volume
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: mysqlpv
+
+> oc create -f mysqlpvc.yaml
+persistentvolumeclaim/mysql-volume created
+
+> oc get pvc
+NAME           STATUS    VOLUME    CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+mysql-volume   Bound     mysqlpv   1Gi        RWO                           8s
+
+> oc edit dc mysql-with-volume
+
+Inside "spec:template:spec:containers:" add
+
+volumeMounts:
+- name: mysql-data
+  mountPath: /var/lib/mysql/data
+
+Then inside "spec:template:spec:" add
+
+volumes:
+- name: mysql-data
+  persistentVolumeClaim:
+    claimName: mysql-volume
+
+Save and exit.
+
+deploymentconfig.apps.openshift.io/mysql-with-volume edited
+
+> oc status
+...
+svc/mysql-with-volume - 172.30.71.55:3306
+  dc/mysql-with-volume deploys openshift/mysql:5.7
+    deployment #2 running for 5 seconds - 1 pod
+    deployment #1 deployed 16 minutes ago
+...
+
+12) oc scale --replicas=2 dc mysql-with-volume
+deploymentconfig.apps.openshift.io/mysql-with-volume scaled
+
+> oc status
+...
+svc/mysql-with-volume - 172.30.71.55:3306
+  dc/mysql-with-volume deploys openshift/mysql:5.7
+    deployment #2 deployed about a minute ago - 2 pods (warning: 1 restarts)
+    deployment #1 deployed 17 minutes ago
+...
+
+13) Application doesn't scale well.
+
+> oc get pods -l app=mysql-with-volume
+NAME                        READY     STATUS    RESTARTS   AGE
+mysql-with-volume-2-dmpsc   1/1       Running   0          2h
+mysql-with-volume-2-xtwv9   1/1       Running   1          3m
+
+> oc logs mysql-with-volume-2-dmpsc
+...
+2019-04-09T13:02:09.247099Z 0 [Note] /opt/rh/rh-mysql57/root/usr/libexec/mysqld: ready for connections.
+Version: '5.7.24'  socket: '/var/lib/mysql/mysql.sock'  port: 3306  MySQL Community Server (GPL)
+
+> oc logs mysql-with-volume-2-xtwv9
+...
+2019-04-09T15:37:47.337457Z 0 [ERROR] InnoDB: Unable to lock ./ibdata1 error: 11
+2019-04-09T15:37:47.337569Z 0 [Note] InnoDB: Check that you do not already have another mysqld process using the same InnoDB data or log files.
+
+The first pod will start correctly but the others cannot gain
+the lock on the datadir. You can't easly scale a mysql application.
