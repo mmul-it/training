@@ -1,0 +1,154 @@
+# Demonstration 001 - Create a template for a scalabe MySQL deployment
+
+1) Create a new project called mysql-template
+
+> oc new-project mysql-template
+Now using project "mysql-template" on server "https://192.168.64.6:8443".
+
+2) Copy the provided Demonstration.001.template.yaml file
+
+3) You can see different parts in the yaml file:
+
+- An ImageStreamTag: this will provides a basic container images based
+  on the mysql:5.7 OpenShift embedded image
+
+- Two DeploymentConfig
+  - the first named mysql-master-${INSTANCE_NAME} provides one replica
+    of a Pod based on mysql:5.7 image with the same name of the
+	DeploymentConfig. On this one some environment variables will be
+	passed and the command "run-mysqld-master" will be executed
+  - the second named mysql-slave-${INSTANCE_NAME} provides one replica
+    of a Pod based on the same image with the same name of the
+	DeploymentConfig. On this one the same environment variables will
+	be passed and the command "run-mysqld-slave" will be executed
+
+- A Service named mysql-master-${INSTANCE_NAME} which provied balancing
+  on pods deployed by the mysql-master-${INSTANCE_NAME} DeploymentConfig.
+  This service will not be exposed outside, but will be available to
+  every Pod into the cluster pointing to mysql-master-${INSTANCE_NAME}
+  on port 3306
+
+- A Service named mysql-master-lb-${INSTANCE_NAME}; this will provide
+  access from outside the cluster to every pods spawned by the
+  mysql-master-${INSTANCE_NAME}, and it's reachable on random port
+  (choosed by OpenShift during service object creation) from every IP
+  of the cluster nodes
+
+- A Service named mysql-slave-lb-${INSTANCE_NAME}; this will provide
+  access from outside the cluster to every pods spawned by the
+  mysql-slave-${INSTANCE_NAME}, and it's reachable on random port
+  (choosed by OpenShift during service object creation) from every IP
+  of the cluster nodes
+
+- Some parameters; the only two required are INSTANCE_NAME and
+  MYSQL_ROOT_PASSWORD
+
+4) Create the new template object by executing:
+
+> oc create -f Demonstration.001.template.yaml
+template.template.openshift.io/mysql-master-slave created
+
+And explore the details
+
+> oc get templates
+NAME                 DESCRIPTION                       PARAMETERS    OBJECTS
+mysql-master-slave   A MySQL Master/Slave deployment   7 (2 blank)   6
+
+> oc describe template mysql-master-slave
+Name:           mysql-master-slave
+Namespace:      mysql-template
+Created:        57 seconds ago
+Labels:         <none>
+Description:    A MySQL Master/Slave deployment
+Annotations:    <none>
+
+Parameters:
+    Name:               INSTANCE_NAME
+    Description:        The MySQL Master/Slave instance name
+    Required:           true
+    Value:              <none>
+
+    Name:               MYSQL_ROOT_PASSWORD
+    Description:        The MySQL root password
+    Required:           true
+    Value:              <none>
+
+    Name:               MYSQL_DATABASE
+    Description:        The MySQL database available from each instance
+    Required:           false
+    Value:              mysqlmaster
+
+    Name:               MYSQL_MASTER_PASSWORD
+    Description:        The MySQL master user password
+    Required:           false
+    Value:              password
+
+    Name:               MYSQL_MASTER_USER
+    Description:        The MySQL master user name
+    Required:           false
+    Value:              master
+
+    Name:               MYSQL_PASSWORD
+    Description:        The MySQL user password
+    Required:           false
+    Value:              password
+
+    Name:               MYSQL_USER
+    Description:        The MySQL user name
+    Required:           false
+    Value:              user
+
+
+Object Labels:  <none>
+
+Message:        <none>
+
+Objects:
+    ImageStreamTag.image.openshift.io   mysql-${INSTANCE_NAME}:5.7
+    DeploymentConfig.apps.openshift.io  mysql-master-${INSTANCE_NAME}
+    DeploymentConfig.apps.openshift.io  mysql-slave-${INSTANCE_NAME}
+    Service                             mysql-master-${INSTANCE_NAME}
+    Service                             mysql-master-lb-${INSTANCE_NAME}
+    Service                             mysql-slave-lb-${INSTANCE_NAME}
+
+5) Deploy a new app called mynewdb. Remeber, you've to pass the
+   INSTANCE_NAME and MYSQL_ROOT_PASSWORD parameters:
+
+> oc new-app -p INSTANCE_NAME=mynewdb -p MYSQL_ROOT_PASSWORD=password mysql-master-slave
+--> Deploying template "mysql-template/mysql-master-slave" to project mysql-template
+...
+
+> oc status
+...
+svc/mysql-master-mynewdb - 172.30.30.173:3306
+svc/mysql-master-lb-mynewdb - 172.30.139.51:3306
+  dc/mysql-master-mynewdb deploys openshift/mysql:5.7
+    deployment #1 deployed 12 seconds ago - 1 pod
+
+svc/mysql-slave-lb-mynewdb - 172.30.131.154:3306
+  dc/mysql-slave-mynewdb deploys openshift/mysql:5.7
+    deployment #1 deployed 12 seconds ago - 1 pod
+...
+
+6) Check which ports are available for connection outside the cluster:
+
+> oc get svc | grep LoadBalancer
+mysql-master-lb-mynewdb   LoadBalancer   172.30.139.51    172.29.202.215,172.29.202.215   3306:31382/TCP   57s
+mysql-slave-lb-mynewdb    LoadBalancer   172.30.131.154   172.29.166.19,172.29.166.19     3306:31001/TCP   57s
+
+7) You can now reach your database for writing pointing at $(minishift ip):31382 port
+   and for reading pointing to $(minishift ip):31001 port. If you need you can already
+   scale your mysql-slave-mynewdb DeploymentConfig as desidered
+
+> oc scale --replicas=3 dc mysql-slave-mynewdb
+deploymentconfig.apps.openshift.io/mysql-slave-mynewdb scaled
+
+> oc status
+...
+svc/mysql-slave-lb-mynewdb - 172.30.131.154:3306
+  dc/mysql-slave-mynewdb deploys openshift/mysql:5.7
+    deployment #1 deployed 3 minutes ago - 3 pods
+...
+
+8) You have a quickly replicable MySQL master/slave configuration inside OpenShift
+
