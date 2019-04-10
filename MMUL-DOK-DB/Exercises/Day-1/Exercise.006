@@ -1,6 +1,7 @@
 # Exercise 006 - Local directory volume mapping
 
-1) Create a directory in your homedir named "test-directory"
+1) Create a directory in your homedir named "test-directory" and enable (if
+   you're on Red Hat or CentOS) the correct SELinux context on it.
 
 2) Run a mysql container image named "directory-mapping-test", exposing on
    localhost the 3306 port mapping also the newly created volume into the

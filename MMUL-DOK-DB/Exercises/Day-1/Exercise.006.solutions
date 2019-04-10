@@ -2,6 +2,8 @@
 
 1) mkdir ~/test-directory
 
+$ chcon -R unconfined_u:object_r:svirt_sandbox_file_t:s0 ~/test-directory
+
 2) docker run -d --name directory-mapping-test --rm --publish 3306:3306 --volume ~/test-directory:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=testr00t mysql
 
 3) ls ~/test-directory/
