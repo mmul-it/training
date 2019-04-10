@@ -84,7 +84,7 @@ Inside "spec:template:spec:containers:" add
 
 volumeMounts:
 - name: mysql-data
-  mountPath: /var/lib/mysql
+  mountPath: /var/lib/mysql/data
 
 Then inside "spec:template:spec:" add
 
