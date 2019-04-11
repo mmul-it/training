@@ -65,9 +65,9 @@ mysql> show databases;
 +--------------------+
 4 rows in set (0.00 sec)
 
-8) Previously created database isn't available; this mean the different
-   pods have differents datadir, so you have just create a brand-new
-   instance of mysql (instead of scaling up the previous one)
+8) Previously created database isn't available; this means the different
+   pods have different datadirs, so you have just created a brand-new
+   instance of mysql (instead of scaling up the previous one);
 
 9) oc delete all -l app=mysql-novolume-test
 pod "mysql-novolume-test-1-jn9nc" deleted
@@ -89,11 +89,34 @@ svc/mysql-with-volume - 172.30.71.55:3306
 
 11) minishift ssh -- sudo mkdir /mysqlpv
 
-> minishift ssh -- sudo chmod 777 /mysqlpv
-
 > minishift ssh -- sudo chcon -R -t svirt_sandbox_file_t /mysqlpv
 
-> cat mysqlpvc.yaml
+> minishift ssh -- sudo chmod 777 /mysqlpv
+
+> cat mysql-pv.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    storage-tier: mysql
+  name: mysqlpv
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 5Gi
+  hostPath:
+    path: /mysqlpv
+  persistentVolumeReclaimPolicy: Recycle
+
+> oc login -u system:admin
+...
+  * scale-test
+
+> oc create -f mysql-pv.yaml 
+persistentvolume/mysqlpv created
+
+> cat mysql-pvc.yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -106,7 +129,14 @@ spec:
       storage: 1Gi
   volumeName: mysqlpv
 
-> oc create -f mysqlpvc.yaml
+> oc login -u developer
+Logged into "https://192.168.42.218:8443" as "developer" using existing credentials.
+...
+  * scale-test
+
+Using project "scale-test"
+
+> oc create -f mysql-pvc.yaml
 persistentvolumeclaim/mysql-volume created
 
 > oc get pvc
@@ -151,7 +181,7 @@ svc/mysql-with-volume - 172.30.71.55:3306
     deployment #1 deployed 17 minutes ago
 ...
 
-13) Application doesn't scale well.
+13) Application doesn't scale well:
 
 > oc get pods -l app=mysql-with-volume
 NAME                        READY     STATUS    RESTARTS   AGE
