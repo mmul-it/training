@@ -21,4 +21,6 @@ before the exercise you must create a path with 777 permission on minishift VM
 
 6) Get the new pod attributes;
 
-7) Check what's inside the PV on the minishift VM
+7) Check what's inside the PV on the minishift VM;
+
+8) Cleanup everything;
