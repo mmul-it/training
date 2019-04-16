@@ -1,8 +1,7 @@
 # Exercise 004 - Attach a PV to a database application
 
----
-before the exercise you must create a path with 777 permission on minishift VM
----
+0) Create a path with 770 permission and svirt_sandbox_file_t SELinux context
+   on the minishift VM;
 
 1) Create a new PV with the accessModes: ReadWriteOnce and ReadOnlyMany named
    mysqlpv;

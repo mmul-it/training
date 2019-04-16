@@ -1,5 +1,12 @@
 # Exercise 005 - Scale-up a database - Solutions
 
+0) minishift ssh
+sudo rm -rf /mysql-pv
+sudo mkdir /mysql-pv
+sudo chmod 770 /mysql-pv
+sudo chcon -R -t svirt_sandbox_file_t /mysql-pv
+exit
+
 1) oc new-project scale-test
 Now using project "scale-test" on server "https://192.168.64.6:8443".
 ...
@@ -52,9 +59,9 @@ svc/mysql-novolume-test - 172.30.174.122:3306
     deployment #1 deployed 7 minutes ago - 2 pods
 ...
 
-7) mysql -u root --password=password --host=$(minishift ip) --port=31903
-...
-mysql> show databases;
+7) Try multiple times this command:
+
+> mysql -u root --password=password --host=$(minishift ip) --port=31903 -e "show databases"
 +--------------------+
 | Database           |
 +--------------------+
@@ -65,9 +72,11 @@ mysql> show databases;
 +--------------------+
 4 rows in set (0.00 sec)
 
-8) Previously created database isn't available; this means the different
-   pods have different datadirs, so you have just created a brand-new
-   instance of mysql (instead of scaling up the previous one);
+Until the output will not show the testdb database;
+
+8) Previously created database isn't available. This means the different pods
+   have different datadirs, so you have just created a brand-new instance of
+   mysql (instead of scaling up the previous one);
 
 9) oc delete all -l app=mysql-novolume-test
 pod "mysql-novolume-test-1-jn9nc" deleted
@@ -87,47 +96,26 @@ svc/mysql-with-volume - 172.30.71.55:3306
     deployment #1 deployed 20 seconds ago - 1 pod
 ...
 
-11) minishift ssh -- sudo mkdir /mysqlpv
-
-> minishift ssh -- sudo chcon -R -t svirt_sandbox_file_t /mysqlpv
-
-> minishift ssh -- sudo chmod 777 /mysqlpv
-
-> cat mysql-pv.yaml
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  labels:
-    storage-tier: mysql
-  name: mysqlpv
-spec:
-  accessModes:
-  - ReadWriteOnce
-  capacity:
-    storage: 5Gi
-  hostPath:
-    path: /mysqlpv
-  persistentVolumeReclaimPolicy: Recycle
-
 > oc login -u system:admin
 ...
   * scale-test
 
-> oc create -f mysql-pv.yaml 
-persistentvolume/mysqlpv created
-
-> cat mysql-pvc.yaml
+> cat Exercise.005.mysql-pv.yaml
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: PersistentVolume
 metadata:
-  name: mysql-volume
+  name: mysql-pv
 spec:
+  capacity:
+    storage: 1Gi
   accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  volumeName: mysqlpv
+    - ReadWriteOnce
+  hostPath:
+    path: /mysql-pv
+  persistentVolumeReclaimPolicy: Recycle
+
+> oc create -f Exercise.005.mysql-pv.yaml
+persistentvolume/mysql-pv created
 
 > oc login -u developer
 Logged into "https://192.168.42.218:8443" as "developer" using existing credentials.
@@ -136,12 +124,25 @@ Logged into "https://192.168.42.218:8443" as "developer" using existing credenti
 
 Using project "scale-test"
 
-> oc create -f mysql-pvc.yaml
-persistentvolumeclaim/mysql-volume created
+> cat Exercise.005.mysql-pvc.yaml 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: mysql-pv
+
+> oc create -f Exercise.005.mysql-pvc.yaml
+persistentvolumeclaim/mysql-pvc created
 
 > oc get pvc
 NAME           STATUS    VOLUME    CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-mysql-volume   Bound     mysqlpv   1Gi        RWO                           8s
+mysql-pvc      Bound     mysql-pv  1Gi        RWO                           8s
 
 > oc edit dc mysql-with-volume
 
@@ -156,7 +157,7 @@ Then inside "spec:template:spec:" add
 volumes:
 - name: mysql-data
   persistentVolumeClaim:
-    claimName: mysql-volume
+    claimName: mysql-pvc
 
 Save and exit.
 
@@ -200,3 +201,13 @@ Version: '5.7.24'  socket: '/var/lib/mysql/mysql.sock'  port: 3306  MySQL Commun
 
 The first pod will start correctly but the others cannot gain
 the lock on the datadir. You can't easly scale a mysql application.
+
+8) oc delete all -l app=mysql-with-volume
+
+> oc delete pvc mysql-pvc
+
+> oc login -u system:admin
+
+> oc delete pv mysql-pv
+
+> oc delete project scale-test

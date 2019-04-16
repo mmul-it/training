@@ -1,16 +1,11 @@
 # Exercise 004 - Attach a PV to a database application
 
----
-Before the exercise, connect to the minishift VM
-
-> minishift ssh
-
-Create a path for the PV and give that permissive permissions
-
-> sudo mkdir /mysql-pv
-> sudo chcon -R -t svirt_sandbox_file_t /mysqlpv
-
----
+0) minishift ssh
+sudo rm -rf /mysql-pv
+sudo mkdir /mysql-pv
+sudo chmod 770 /mysql-pv
+sudo chcon -R -t svirt_sandbox_file_t /mysql-pv
+exit
 
 1) oc login -u admin --password casual
 Login successful.
@@ -153,3 +148,5 @@ drwxr-x---. 1000160000 root system_u:object_r:container_file_t:s0 sys
 > oc login -u system:admin
 
 > oc delete pv mysql-pv
+
+> oc delete project pvc-test
