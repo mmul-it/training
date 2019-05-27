@@ -1,0 +1,21 @@
+# Exercise 002 - Environment variables - Solutions
+
+1) docker run -d -e MESSAGE="Test content" --name environment-var-test nginx
+
+2) docker exec -it  environment-var-test /bin/bash
+root@d1a23db58736:/# echo $MESSAGE 
+Test content
+
+3) docker exec -it -e MESSAGE="Modified test content" environment-var-test /bin/bash
+root@d1a23db58736:/# echo $MESSAGE 
+Modified test content
+
+4) docker exec -it environment-var-test /bin/bash
+root@d1a23db58736:/# echo $MESSAGE 
+Test content
+
+5) No, the value is still the original. This means that the override produced by
+the exec counts just from there on, it is not retroactive. Which means that the
+only way to reset the environment variable is to stop and start the container
+once again with a new -e option specified.
+
