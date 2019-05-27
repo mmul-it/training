@@ -1,0 +1,10 @@
+# Exercise 000 - Installing Docker
+
+1) Install docker package on your environment;
+
+2) Be sure to include your working user in the docker group, so to be able to
+   use docker commands without being root;
+
+3) Verify you are able to launch basic docker commands;
+
+4) Enable bash completion for docker commands;

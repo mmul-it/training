@@ -1,0 +1,14 @@
+# Exercise 000 - Installing Docker - Solutions
+
+1) apt-get -y install docker-ce # Debian/Ubuntu
+
+OR
+
+yum -y install docker # Red Hat / CentOS 
+
+2) adduser <youruser> docker
+
+3) docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+
+4) Be sure "source /etc/profile.d/bash_completion.sh" is somewhere in your local .bashrc file
