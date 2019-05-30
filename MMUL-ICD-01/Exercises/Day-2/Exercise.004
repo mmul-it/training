@@ -1,0 +1,21 @@
+# Exercise 004 - Import an image from a tar file
+
+1) Download and uncompress the tar image named
+   Exercise.004.nginx-saved-container.tar.xz that is available on [1];
+
+2) Import the saved image into the docker registry;
+
+3) Run a container starting from this image, exposing port 8080 and note what
+   is different from a usual nginx;
+
+4) Download and uncompress now the tar named 
+   Exercise.004.nginx-exported-container.tar.xz that is also available on [1];
+
+5) Try to load the image, what happens?
+
+6) Now try to import the image instead, what happens?
+
+7) Finally try to run a container based on this image, is this possible? Can
+   you tell why?
+
+[1] https://github.com/mmul-it/training/tree/master/MMUL-ICD-01/Exercises/Day-2

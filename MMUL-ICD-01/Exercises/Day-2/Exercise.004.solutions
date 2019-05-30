@@ -1,0 +1,39 @@
+# Exercise 004 - Import an image from a tar file - Solutions
+
+1) The file should be present inside the cloned repo [1];
+
+xz -d Exercise.004.nginx-saved-container.tar.xz
+
+2) docker load -i Exercise.004.nginx-saved-container.tar
+
+3) docker run --detach --name imported-nginx --rm --publish 8080:80 nginx-for-export
+
+> nc -v localhost 8080
+Connection to localhost 8080 port [tcp/http-alt] succeeded!
+GET /
+This container image was saved from a running nginx container
+
+4) The file should be present inside the cloned repo [1];
+
+xz -d Exercise.004.nginx-exported-container.tar.xz
+
+5) It gives an error:
+
+> docker load -i Git/mmul-it/training/Containers/Exercises/Day-2/Exercise.004.nginx-exported-container.tar
+open /var/lib/docker/tmp/docker-import-876757938/bin/json: no such file or directory
+
+6) It works:
+
+> docker import Git/mmul-it/training/Containers/Exercises/Day-2/Exercise.004.nginx-exported-container.tar nginx-exported-container
+sha256:14d03acca58c313b665d9cc9f283147239b1b8b7bb25fc731b674dffa01d07d8
+
+7) It doesn't work:
+
+> docker run --detach --name nginx-exported-container --rm --publish 8080:80 nginx-exported-container
+docker: Error response from daemon: No command specified.
+See 'docker run --help'.
+
+The export that was originally made on this image do not contain any metadata
+useful to docker to run the base container;
+
+[1] https://github.com/mmul-it/training/tree/master/Containers/Exercises/Day-2
