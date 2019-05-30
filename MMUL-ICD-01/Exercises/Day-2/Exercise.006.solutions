@@ -1,0 +1,25 @@
+# Exercise 006 - Create an image from a running container - Solutions
+
+1) docker run --detach --name nginx --rm nginx:latest
+
+2) docker exec -it nginx /bin/bash
+root@e97386c9e3b2:/# 
+
+3) root@e97386c9e3b2:/# grep root /etc/nginx/conf.d/default.conf 
+        root   /usr/share/nginx/html;
+        root   /usr/share/nginx/html;
+    #    root           html;
+    # deny access to .htaccess files, if Apache's document root
+
+4) docker commit nginx my-new-shiny-nginx
+sha256:657bed3e775b2c62e1801c72fdb818144a2b231242a78ff9311288e0bad5765
+
+5) docker stop nginx
+nginx
+
+6) docker run --detach --name nginx --rm --publish 8080:80 my-new-shiny-nginx
+
+> nc -v localhost 8080
+Connection to localhost 8080 port [tcp/http-alt] succeeded!
+GET /
+My new shiny Nginx container image
