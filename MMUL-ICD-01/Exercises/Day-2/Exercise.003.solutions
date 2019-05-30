@@ -1,0 +1,23 @@
+# Exercise 003 - Logging into a registry - Solutions
+
+0) docker image pull www.mmul.it:5000/nginx:latest
+Error response from daemon: Get https://www.mmul.it:5000/v2/nginx/manifests/latest: no basic auth credentials
+
+1) docker login -u dockertraining www.mmul.it:5000
+Password: 
+WARNING! Your password will be stored unencrypted in /home/rasca/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+
+2) docker image pull www.mmul.it:5000/nginx:latest
+latest: Pulling from nginx
+Digest: sha256:e2847e35d4e0e2d459a7696538cbfea42ea2d3b8a1ee8329ba7e68694950afd3
+Status: Downloaded newer image for www.mmul.it:5000/nginx:latest
+
+3) docker image list
+REPOSITORY                  TAG                 IMAGE ID            CREATED             SIZE
+...
+www.mmul.it:5000/nginx      latest              7042885a156a        2 weeks ago         109MB
+...
