@@ -1,0 +1,52 @@
+# Exercise 002 - Checking image filesystems - Solutions
+
+0) apt-get -y install jq # Debian/Ubuntu
+
+OR
+
+yum -y install jq # Red Hat/CentOS
+
+1) docker pull nginx:latest
+
+2) docker pull nginx:alpine
+
+3) docker pull stretch-slim
+
+4) docker pull alpine
+
+5) docker image inspect alpine | jq '.[].RootFS'
+{
+  "Type": "layers",
+  "Layers": [
+    "sha256:7bff100f35cb359a368537bb07829b055fe8e0b1cb01085a3a628ae9c187c7b8"
+  ]
+}
+
+> docker image inspect nginx:alpine | jq '.[].RootFS'
+{
+  "Type": "layers",
+  "Layers": [
+    "sha256:7bff100f35cb359a368537bb07829b055fe8e0b1cb01085a3a628ae9c187c7b8",
+    "sha256:9108db4b6ca34235ada64b6ca77b21a5a0446ffda859bf0fa1f61b6967ab7afe",
+    "sha256:974e2a9f749c92db82a2a1cf69f8b5ff1ef87e0324c53035e8dc7cef4ce5aa23",
+    "sha256:a14c6c26f6ba4917dc0ea5763f4ed38ebc07823b2ddc5cf14bf424bfde192f95"
+  ]
+}
+
+> docker image inspect debian:stretch-slim | jq '.[].RootFS'
+{
+  "Type": "layers",
+  "Layers": [
+    "sha256:7b4e562e58dcb7fbe1e27bb274f0ff8bfeb2fd965203380436e159df9f218900"
+  ]
+}
+
+> docker image inspect nginx | jq '.[].RootFS'
+{
+  "Type": "layers",
+  "Layers": [
+    "sha256:7b4e562e58dcb7fbe1e27bb274f0ff8bfeb2fd965203380436e159df9f218900",
+    "sha256:c9c2a36960802924221f5b8fab90ed09b5900b346129979da9488810d8669e06",
+    "sha256:b7efe781401dfe8d05a9e4c920dd3cd430593a483c442831a14413e2738cd968"
+  ]
+}
