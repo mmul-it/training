@@ -1,0 +1,72 @@
+# Exercise 007 - Check why a container failed via journald - Solutions
+
+1) docker login -u dockertraining www.mmul.it:5000
+
+> docker image pull www.mmul.it:5000/broken-nginx:latest
+
+> docker tag www.mmul.it:5000/broken-nginx:latest broken-nginx
+
+2) docker run --detach --name broken-nginx --publish 8080:80 broken-nginx
+
+3) docker ps -a
+CONTAINER ID        IMAGE                             COMMAND                  CREATED             STATUS                    PORTS                    NAMES
+7e0a9ba1530a        broken-nginx                      "nginx -g 'daemon of…"   2 seconds ago       Exited (1) 1 second ago                            broken-nginx
+
+4) docker logs 7e0a9ba1530a
+2019/01/18 16:44:59 [emerg] 1#1: open() "/etc/nginx/nginx.conf" failed (2: No such file or directory)
+nginx: [emerg] open() "/etc/nginx/nginx.conf" failed (2: No such file or directory)
+
+OR
+
+> docker run --detach --name broken-nginx --log-driver journald --publish 8080:80 broken-nginx
+bb1a8905c97b912b907e9a2bebd0ec9a15e9a715e48d29da9e9a746c649baa07
+
+> journalctl CONTAINER_NAME=broken-nginx
+-- Logs begin at Sun 2018-12-09 15:48:13 CET, end at Fri 2019-01-18 17:46:47 CET. --
+Jan 18 17:13:57 anomalia 73ea3a68702d[1526]: 2019/01/18 16:13:57 [emerg] 1#1: open() "/etc/nginx/nginx.conf" failed (2: No such file or directory)
+Jan 18 17:13:57 anomalia 73ea3a68702d[1526]: nginx: [emerg] open() "/etc/nginx/nginx.conf" failed (2: No such file or directory)
+
+5) docker rm broken-nginx
+broken-nginx
+
+> docker run -it --name broken-nginx --log-driver journald --publish 8080:80 broken-nginx /bin/bash
+root@033c21cb3c9e:/# mv /etc/nginx/nginx.conf.BROKEN /etc/nginx/nginx.conf
+
+# From another shell:
+docker commit --change='CMD ["nginx", "-g", "daemon off;"]' broken-nginx broken-nginx
+# NOTE: the CMD override, THIS IS NEEDED because we launched the image with
+# /bin/bash as CMD
+# The correct CMD was readable from https://github.com/nginxinc/docker-nginx/blob/baa050df601b5e798431a9db458e16f53b1031f6/mainline/stretch/Dockerfile
+
+# Back to the open container
+root@033c21cb3c9e:/# exit
+exit
+
+> docker rm broken-nginx
+broken-nginx
+
+> docker run --detach --name broken-nginx --log-driver journald --publish 8080:80 broken-nginx
+d72b13a9118355b95e0e061c9e98b31458df22fb49a335d8376dfa50b25d79a9
+
+BONUS) docker stop broken-nginx
+broken-nginx
+
+> docker rm broken-nginx
+broken-nginx
+ 
+
+> docker run -it --name broken-nginx --log-driver journald --publish 8080:80 broken-nginx /bin/bash
+root@d3678cdbf971:/# mkdir -p /usr/share/nginx/html
+root@d3678cdbf971:/# echo "My fixed Nginx container" > /usr/share/nginx/html/index.html
+
+# Fron another console
+> docker commit --change='CMD ["nginx", "-g", "daemon off;"]' broken-nginx broken-nginx
+sha256:8a618fe371203873390ce72acc20abe4cad135321e36345836e576b8932ed45f
+
+# Back to the open container
+root@d3678cdbf971:/# exit
+exit
+
+> docker run --detach --name broken-nginx --log-driver journald --publish 8080:80 broken-nginx
+333540d5f5d42461d307e9db9cb2023a6394809ed602b98d79eb02ca8305ef44
+
