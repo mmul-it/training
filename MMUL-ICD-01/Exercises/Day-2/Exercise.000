@@ -1,0 +1,12 @@
+# Exercise 000 - Using registry.py to interact with repos
+
+1) Download from the GitHub repo [1] the python script registry.py and make it
+   executable;
+
+2) Satisfy python dependencies with pip (if any, i.e. www_authenticate);
+
+3) Query a public repo for the nginx images (i.e. MMUL repository is accessbile
+   pointing to www.mmul.it via https on port 5000 with user 'dockertraining' and
+   password 'l3tstr41n');
+
+[1] https://github.com/andrey-pohilko/registry-cli/
