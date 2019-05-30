@@ -1,0 +1,33 @@
+# Exercise 003 - Using host networking to expose ports - Solutions
+
+1) docker run -d --name network-host-test --rm --network host nginx
+
+2) nc -v localhost 80
+
+3) docker stop network-host-test
+
+4) docker run -d --name nginx-test --rm -p 8080:80 --network host nginx
+
+5) Container started normally
+
+6) nc -v localhost 8080
+Ncat: Version 7.50 ( https://nmap.org/ncat )
+Ncat: Connection to ::1 failed: Connection refused.
+Ncat: Trying next address...
+Ncat: Connection refused.
+
+So the port mapping on the host mode is impossible
+
+> nc -v localhost 80
+Ncat: Version 7.50 ( https://nmap.org/ncat )
+Ncat: Connection to ::1 failed: Connection refused.
+Ncat: Trying next address...
+Ncat: Connected to 127.0.0.1:80.
+GET /
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+...
+
+Basically, port mapping will be ignored with host network
