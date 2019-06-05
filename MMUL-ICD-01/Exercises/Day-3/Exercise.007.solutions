@@ -1,0 +1,30 @@
+# Exercise 006 - Make your own logo appear on AWX - Solutions
+
+1) cd /tmp/awxcompose
+
+> curl https://raw.githubusercontent.com/mmul-it/training/master/MMUL-ICD-01/Exercises/Day-3/Exercise.006.logo-header.svg > logo-header.svg
+
+2) cat docker-compose.yml
+version: '2'
+services:
+
+  web:
+    image: ansible/awx_web:4.0.0
+    container_name: awx_web
+    depends_on:
+      - rabbitmq
+      - memcached
+      - postgres
+    ports:
+      - "80:8052"
+    hostname: awxweb
+    user: root
+    restart: unless-stopped
+    volumes:
+      - "/tmp/awxcompose/logo-header.svg:/var/lib/awx/venv/awx/lib/python3.6/site-packages/awx/ui/static/assets/logo-header.svg"
+...
+...
+
+3) docker-compose up -d web
+
+4) Login into the web interface with admin/password

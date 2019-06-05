@@ -1,0 +1,18 @@
+# Exercise 007 - Customize NGinx configuration to expose service via SSL
+
+1) Create the "etc/nginx" and "ssl" directories inside "/tmp/awxcompose";
+
+2) Change the "server" contents of the etc/nginx/nginx.conf to be include the 
+   ssl certs;
+
+3) Create the certs associated to the name "awx" that you will use inside
+   NGinx;
+
+4) Inside the compose file map the host port 443 to the service port 8052, the
+   "/tmp/awxcompose/ssl" host directory to the "/ssl" service directory and the
+   "/tmp/awxcompose/etc/nginx/nginx.conf" host file to the
+   "/etc/nginx/nginx.conf" service file;
+
+5) Restart the service;
+
+6) Check that now the service is available at the https/443 port;
