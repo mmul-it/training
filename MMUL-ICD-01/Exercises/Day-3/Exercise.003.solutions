@@ -1,0 +1,102 @@
+# Exercise.003.solutions - Running an existing compose stack
+
+1) > which docker-compose
+/usr/bin/which: no docker-compose in (/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin)
+
+> curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+...
+> chmod a+x /usr/local/bin/docker-compose 
+> docker-compose --version
+docker-compose version 1.24.0, build 0aa59064
+
+2) > mkdir ex003
+> cd ex003
+
+3) > cat docker-compose.yml
+version: '3.1'
+services:
+  wordpress:
+    image: wordpress
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: exampleuser
+      WORDPRESS_DB_PASSWORD: examplepass
+      WORDPRESS_DB_NAME: exampledb
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: exampledb
+      MYSQL_USER: exampleuser
+      MYSQL_PASSWORD: examplepass
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+
+4) Two containers will be executed. One named wordpress will be run from the
+   wordpress:latest image with the --restart=always policy, the host 8080 port
+   will be mappent to the port 80 in the container and some environment
+   variables will be setted. The other will be named db and run from the
+   mysql:5.7 image with the same restart policy; no ports will be exposed and
+   some other environment variables will be defined.
+
+5) > docker-compose up
+Creating network "ex003_default" with the default driver
+Creating ex003_db_1        ... done
+Creating ex003_wordpress_1 ... done
+Attaching to ex003_db_1, ex003_wordpress_1
+wordpress_1  | WordPress not found in /var/www/html - copying now...
+db_1         | Initializing database
+...
+
+6) The Wordpress initialization procedure is available.
+
+7) > Ctrl+C
+Gracefully stopping... (press Ctrl+C again to force)
+Stopping ex003_wordpress_1 ... done
+Stopping ex003_db_1        ... done
+
+8) > docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                     PORTS               NAMES
+5add4f470c1d        wordpress           "docker-entrypoint..."   4 minutes ago       Exited (0) 6 seconds ago                       ex003_wordpress_1
+73fb40f868cd        mysql:5.7           "docker-entrypoint..."   4 minutes ago       Exited (0) 4 seconds ago                       ex003_db_1
+
+> docker rm 5add4f470c1d 73fb40f868cd
+5add4f470c1d
+73fb40f868cd
+
+> docker-compose up -d
+Creating network "ex003_default" with the default driver
+Creating ex003_wordpress_1 ... done
+Creating ex003_db_1        ... done
+
+9) The Wordpress initialization procedure will be presented again.
+   In the compose file there isn't any volume defined so, as usual,
+   data inside the container (expecially the MySQL one) doesn't
+   persist between multiple deployments
+
+10) > docker-compose stop
+Stopping ex003_db_1        ... done
+Stopping ex003_wordpress_1 ... done
+
+11) > docker ps -a | grep ex003
+b6cff4a4b28e        mysql:5.7           "docker-entrypoint..."   About a minute ago   Exited (0) 41 seconds ago                         ex003_db_1
+029dd64d9d40        wordpress           "docker-entrypoint..."   About a minute ago   Exited (137) 32 seconds ago                       ex003_wordpress_1
+> docker volume ls | grep ex003
+> docker network ls | grep ex003
+a0ed41bec3d5        ex003_default       bridge              local
+
+There is a new bridge network named "ex003_default"; also the containers
+are not named 'wordpress' and 'db' (like specified in the compose file) but
+contains a prefix (ex003_) and a suffix (_1).
+
+So Docker Compose will use the name of the directory as the 'application stack'
+name; probably you want to name the containing directory as the 'stack' name.
+The suffix was added to avoiding overlap between multiple docker-compose runs.
+You can run again docker-compose in the same directory and the suffix will be
+used in the containers, in the networks and (if present) in the volumes in order
+to run a different stack with the same containers available.
+
+[1] https://hub.docker.com/_/wordpress
