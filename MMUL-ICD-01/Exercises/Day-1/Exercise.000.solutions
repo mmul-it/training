@@ -11,4 +11,10 @@ yum -y install docker # Red Hat / CentOS
 3) docker ps
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
 
-4) Be sure "source /etc/profile.d/bash_completion.sh" is somewhere in your local .bashrc file
+4) Install "bash-completion" package:
+
+> yum -y install bash-completion
+
+And be sure to add somewhere in your local .bashrc file:
+
+> echo "source /etc/profile.d/bash_completion.sh" >> .bashrc
