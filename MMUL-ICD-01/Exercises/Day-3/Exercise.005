@@ -1,0 +1,20 @@
+# Exercise 005 - Download AWX and install it with docker compose method
+
+0) Disable SELinux, firewalld and restart docker service;
+
+1) Install epel-release package;
+
+2) Install ansible, git and python-pip packages to satisfy requirements;
+
+3) Install docker-compose via python pip;
+
+4) Clone the https://github.com/ansible/awx git repo locally;
+
+5) Start the ansible build by going into the awx/installer dir and launching:
+
+ansible-playbook -i inventory -e docker_registry_password=password install.yml
+
+6) Check the running containers;
+
+7) Go with a browser to the address of your server and login into the AWX
+   console with the admin/password credentials;
