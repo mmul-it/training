@@ -4,7 +4,7 @@
 
 2) Use the Exercise.0005.Dockerfile contained in this directory;
 
-3) docker build -it myfirstapp:1 .
+3) docker build -t myfirstapp:v1 .
 
 4) docker run --detach --name myfirstapp --publish 8888:8888 myfirstapp:v1
 
