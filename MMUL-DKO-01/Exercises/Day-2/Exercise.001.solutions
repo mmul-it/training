@@ -4,7 +4,11 @@
 
 2) mkdir /home/<youruser>/registry
 
-3) docker run --detach --publish 5000:5000 --name registry --restart=always --volume /home/rasca/registry:/var/lib/registry registry
+In case you're running CentOS with SELinux enabled:
+
+> chcon -R -t container_file_t /home/<youruser>/registry
+
+3) docker run --detach --publish 5000:5000 --name registry --restart=always --volume /home/<youruser>/registry:/var/lib/registry registry
 
 4) find /home/<youruser>/registry
 registry/

@@ -1,26 +1,35 @@
-# Exercise 001 - Create a custom image - Solutions
+# Exercise 001 - Creating a local registry - Solutions
 
-1) mkdir mycontainer && cd mycontainer
+1) docker pull registry
 
-2) Use the Exercise.001.Dockerfile contained in this directory;
+2) mkdir /home/<youruser>/registry
 
-3) docker build -t mycompanysql:v1 .
+In case you're running CentOS with SELinux enabled:
 
-4) docker run --detach --name myfirstdb mycompanysql:v1
+> chcon -R -t container_file_t /home/<youruser>/registry
 
-5) docker exec -it myfirstdb mysql -u root -p
-Enter password: [companyDefaultPassword]
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 9
-Server version: 8.0.15 MySQL Community Server - GPL
+3) docker run --detach --publish 5000:5000 --name registry --restart=always --volume /home/<youruser>/registry:/var/lib/registry registry
 
-Copyright (c) 2000, 2019, Oracle and/or its affiliates. All rights reserved.
+4) find /home/<youruser>/registry
+registry/
 
-Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
+Yes, it is empty.
 
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+5) docker pull nginx:latest
 
-mysql> exit
-Bye
+> docker tag nginx:latest localhost:5000/nginx:latest
+
+6) docker push localhost:5000/nginx:latest
+The push refers to repository [localhost:5000/nginx]
+b7efe781401d: Pushed 
+c9c2a3696080: Pushed 
+7b4e562e58dc: Pushed 
+latest: digest: sha256:e2847e35d4e0e2d459a7696538cbfea42ea2d3b8a1ee8329ba7e68694950afd3 size: 948
+
+> curl http://localhost:5000/v2/_catalog
+{"repositories":["nginx"]}
+
+> ./registry.py -r http://localhost:5000
+---------------------------------
+Image: nginx
+  tag: latest
