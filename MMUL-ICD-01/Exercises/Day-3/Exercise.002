@@ -12,7 +12,7 @@
 
 3) Grant all the permission to the user "frontend" on the database "frontend";
 
-4) Create a backend container named "backend" that will:
+4) Create a frontend container named "frontend" that will:
    - Rely on the "test" network;
    - Map "/var/www/html" data directory into the local one named "frontend";
    - Connect to the database using the previously created user "frontend"

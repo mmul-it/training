@@ -6,9 +6,13 @@
 
 https://hub.docker.com/_/mariadb/
 
-mkdir backend
+> mkdir backend
 
-docker run --rm --name backend --network=test -v $PWD/backend:/var/lib/mysql \
+If you're on Red Hat or CentOS remember to fix the SELinux context of the dir:
+
+> chcon -R -t container_file_t backend
+
+> docker run --rm --name backend --network=test -v $PWD/backend:/var/lib/mysql \
        -e MYSQL_ROOT_PASSWORD=mybackend \
        -e MYSQL_USER=frontend -e MYSQL_PASSWORD=myfrontend \
        --detach mariadb:latest
@@ -28,9 +32,13 @@ Query OK, 0 rows affected (0.000 sec)
 
 https://hub.docker.com/_/wordpress/
 
-mkdir frontend
+> mkdir frontend
 
-docker run --rm --name frontend --network=test \
+If you're on Red Hat or CentOS remember to fix the SELinux context of the dir:
+
+> chcon -R -t container_file_t frontend
+
+> docker run --rm --name frontend --network=test \
        -e WORDPRESS_DB_HOST=backend \
        -e WORDPRESS_DB_USER=frontend -e WORDPRESS_DB_PASSWORD=myfrontend \
        -e WORDPRESS_DB_NAME=frontend \

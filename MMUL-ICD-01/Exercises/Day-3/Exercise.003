@@ -1,30 +1,30 @@
 # Exercise.003 - Running an existing compose stack
 
-1) Check if docker-compose is installed (otherwise, install it).
+1) Check if docker-compose is installed (otherwise, install it);
 
-2) Create a directory named ex003 and enter it.
+2) Create a directory named ex003 and use it as base for the exercise;
 
 3) Get an existing Docker Compose file (i.e. see Exercise.003.compose.yml or
    look at the proposed compose in the Wordpress HUB page [1]) and name it
-   docker-compose.yml.
+   docker-compose.yml;
 
-4) Look at the compose file. What are you expecting from that?
+4) Look at the compose file. What does the content will produce?
 
 5) Run the docker-compose command to launch the application stack in foreground
-   mode.
+   mode;
 
-6) Try accessing the deployed Wordpress. What happen?
+6) Try accessing the deployed Wordpress. What happens?
 
 7) After the Wordpress initialization procedure, stop the application stack
-   hitting Ctrl+C in the terminal
+   hitting Ctrl+C in the terminal;
 
-8) Delete the containers then run again the application stack in daemon mode.
+8) Delete the containers then run again the application stack in daemon mode;
 
-9) Try accessing the deployed Wordpress. What happen?
+9) Try accessing the deployed Wordpress. What happens?
 
-10) Stop the running application stack.
+10) Stop the running application stack;
 
-11) Look at various Docker components (containers, networks, volumes).
-    There are something strange?
+11) Look at various Docker components (containers, networks, volumes); Is there
+    something strange?
 
 [1] https://hub.docker.com/_/wordpress
