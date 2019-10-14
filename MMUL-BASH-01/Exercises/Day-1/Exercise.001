@@ -1,0 +1,7 @@
+# Exercise 001 - Installing Linux
+
+1) Download the CentOS 7 image on you hard drive;
+
+2) Boot a new VM using your favorite VM Manager and follow the instructions;
+
+3) Connect to it via ssh;
