@@ -6,24 +6,25 @@
 
 2) You should print the contents of the SHELL environmental variable:
 
-echo $SHELL
+[mmul@machine ~]$ echo $SHELL
+/bin/bash
 
 3) Use the "pwd" command:
 
-mmul@machine [~]> pwd
+[mmul@machine ~]$ pwd
 /home/mmul
 
 4) Use the "mkdir" command:
 
-mmul@machine [~]> mkdir Test
+[mmul@machine ~]$ mkdir Test
 
 5) Use the "cd" command:
 
-mmul@machine [~]> cd Test
+[mmul@machine ~]$ cd Test
 
 And then the "ls -la" command:
 
-mmul@machine [~/Test]> ls -la
+[mmul@machine Test]$ ls -la
 total 8
 drwxrwxr-x  2 mmul mmul 4096 nov  4 16:35 .
 drwxr-xr-x 57 mmul mmul 4096 nov  4 16:35 ..
@@ -32,11 +33,11 @@ Directory is owned by the "mmul" user and the "mmul" group.
 
 6) Use the "touch" command:
 
-mmul@machine [~]> touch Testfile
+[mmul@machine ~]$ touch Testfile
 
 7) Use again the "ls -la" command:
 
-mmul@machine [~/Test]> ls -la
+[mmul@machine Test]$ ls -la
 total 8
 drwxrwxr-x  2 mmul mmul 4096 nov  4 16:36 .
 drwxr-xr-x 57 mmul mmul 4096 nov  4 16:35 ..
@@ -46,11 +47,11 @@ File is owned by th "mmul" user and the "mmul" group.
 
 8) Use the "cd" command:
 
-mmul@machine [~]> cd /etc
+[mmul@machine ~]$ cd /etc
 
 And then the "ls -la" command:
 
-mmul@machine [/etc]> ls -la
+[mmul@machine etc]$ ls -la
 total 1648
 drwxr-xr-x 184 root root    12288 nov  4 10:51 .
 drwxr-xr-x  26 root root     4096 nov  3 22:27 ..
@@ -61,7 +62,7 @@ Directory is owned by "root" user and "root" group.
 
 9) Use the "touch" command:
 
-mmul@machine [/etc]> touch Testfile
+[mmul@machine etc]$ touch Testfile
 touch: cannot touch 'Testfile': Permission denied
 
 10) No, because an unprivileged user can't write on directories he doesn't own.
