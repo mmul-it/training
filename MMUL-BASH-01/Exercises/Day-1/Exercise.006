@@ -1,0 +1,28 @@
+# Exercise 006 - Using awk
+
+1) Log into the machine with the credentials you own;
+
+2) Create a dummy directory named 'logs' in your home;
+
+3) Use this oneliner to generate 100 files in that, compressing some randomly:
+
+[mmul@machine ~]$ for I in $(seq 1 100); do \
+> FILENAME="application-$(printf '%03d' $I).log"; \
+> touch $FILENAME; \
+> [ ${RANDOM: -1} -eq ${I: -1} ] && gzip $FILENAME; \
+> done
+
+4) Look for all the files you created;
+
+5) Using awk, print permissions and file names of each compressed file;
+
+6) Using awk, print the commands to add read permission for other only on the
+   compressed files. The output must be ready to copy&paste it in order to
+   execute the commands;
+
+7) Using awk, print the commands to compress the uncompressed files numbered
+   between 010 and 059. The output must be ready to copy&paste it in order to
+   execute the commands;
+
+8) Using awk, print group names relative user list between bracket for each
+   group with at least one user (you can found groups in the /etc/group file);

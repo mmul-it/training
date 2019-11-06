@@ -1,0 +1,76 @@
+# Exercise 006 - Using awk - Solutions
+
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2) Check for path, then create the directory
+
+[mmul@machine ~]$ pwd
+/home/mmul
+[mmul@machine ~]$ mkdir logs
+
+3) Enter the directory then run the oneliner:
+
+[mmul@machine ~]$ cd logs
+[mmul@machine logs]$ for I in $(seq 1 100); do \                                   
+> FILENAME="application-$(printf '%03d' $I).log"; \                             
+> touch $FILENAME; \                                                            
+> [ ${RANDOM: -1} -eq ${I: -1} ] && gzip $FILENAME; \                           
+> done
+
+4) List all the files
+
+[mmul@machine logs]$ ls -l
+total 52
+-rw-r----- 1 mmul mmul	0 Nov  6 11:57 application-001.log
+-rw-r----- 1 mmul mmul	0 Nov  6 11:57 application-002.log
+-rw-r----- 1 mmul mmul	0 Nov  6 11:57 application-003.log.gz
+...
+
+5) Permission is the first column, the name is the last one. You can filter
+   for lines ending with 'gz':
+
+[mmul@machine logs]$ ls -l | awk '/gz$/ {print $1,$NF}'
+-rw-r----- application-003.log.gz
+-rw-r----- application-020.log.gz
+-rw-r----- application-021.log.gz
+
+6) Filtering with the same rules, you can add the 'chmod' command with the
+   correct permission before writing the last column:
+
+[mmul@machine logs]$ ls -l | awk '/gz$/ {print "chmod o+r",$NF}'
+chmod o+r application-003.log.gz
+chmod o+r application-020.log.gz
+chmod o+r application-021.log.gz
+...
+
+7) Excluding the compressed files, you can use regular expression to match the
+   numbers (watch out for other lines matching ;) ), then you can add the text
+   required to compress those:
+
+[mmul@machine logs]$ ls -l | awk '!/gz$/ && !/^total/ && /0[1-5][0-9]/ {print "gzip",$NF}'
+gzip application-010.log
+gzip application-011.log
+gzip application-012.log
+...
+
+8) If you look at the structure of the /etc/group file, you can see that groups
+   without members ends with the ':' character:
+
+[mmul@machine logs]$ cat /etc/group
+...
+cdrom:x:11:
+mail:x:12:postfix
+...
+
+So you can use that condition to filter out the groups without any member.
+Also, you must split columns with another character to select the correct
+fields:
+
+[mmul@machine logs]$ cat /etc/group | awk -F':' '!/\:$/ {print $1," ("$NF")"}'
+mail  (postfix)
+nagios  (nrpe)
+klusers  (kluser)
+ossec  (ossec,ossecr)
+
