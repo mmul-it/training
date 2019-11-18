@@ -1,4 +1,4 @@
-# Exercise 005 - substitutions with sed
+# Exercise 005 - Substitutions with sed
 # Using the file results.txt of Excercise 004
 
 1) Substitute first match of 'root' with 'love'
