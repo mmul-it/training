@@ -24,8 +24,8 @@ This is a simple output redirection.
 [mmul@machine ~]$ ls -l /usr/bin >> ~/output_data
 
 5) Execute the command to show file content and pipe it as standard input
-for the less command.
-Then press "q" to exit:
+   for the less command.
+   Then press "q" to exit:
 
 [mmul@machine ~]$ cat ~/output_data | less
 # Exercise 003 - Redirect STDOUT
@@ -37,8 +37,8 @@ total 782364
 * press "q" to exit the output *
 
 6) Execute the command to list /root content and redirect the STDOUT
-and STDERR as requested.
-Then check the content of ~/listing_log:
+   and STDERR as requested.
+   Then check the content of ~/listing_log:
 
 [mmul@machine ~]$ ls -l /root 2>~/listing_log
 [mmul@machine ~]$ cat ~/listing_log
