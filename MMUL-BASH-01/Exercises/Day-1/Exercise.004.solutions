@@ -4,16 +4,16 @@
 
 2) Using /etc/passwd file, print to standard output only the line referring to your user
 
-cat /etc/passwd | grep -i elena
+cat /etc/passwd | grep -i mmul
 
 3) Print to standard output only the first or last 5 lines of /etc/group file
 
-elena@solaria:~$ tail -5 /etc/group
-elena@solaria:~$ head -5 /etc/group
+[mmul@machine ~]$ tail -5 /etc/group
+[mmul@machine ~]$ head -5 /etc/group
 
 4) Count how many times the word "bash" occurs in /etc/passwd file
 
-elena@solaria:~$ grep -c bash /etc/passwd
+[mmul@machine ~]$ grep -c bash /etc/passwd
 3
 
 5) Sort, in reverse order, all the users using bash and redirect the output to a file called results.txt
@@ -26,7 +26,7 @@ grep \:9 /etc/group >> results.txt
 
 7) Sort the content of results.txt by name
 
-elena@solaria:~$ sort -f results.txt
+[mmul@machine ~]$ sort -f results.txt
 
 8) Use the less pager to view the content of /var/log/boot.log and invoke an editor to edit the file
 
