@@ -1,0 +1,17 @@
+# Exercise 007 - Extract specific logs in a time range
+
+1) Try to show the current boot logs;
+
+2) Obtain boot logs between now and 1 hour ago;
+
+3) Check if there is logs from previous boot;
+
+4) Obtain a list of systemd Service units and choose one of those;
+   (i.e. crond.service)
+
+5) View yesterday logs from the choosed Service;
+
+6) Find if there is some previous logs for this Service;
+
+7) Try to tailing the logs (a Unit log or the boot log) to see if something
+   happen in the meantime;

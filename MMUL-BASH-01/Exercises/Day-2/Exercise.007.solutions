@@ -1,0 +1,34 @@
+# Exercise 007 - Extract specific logs in a time range - Solutions
+
+1) sudo journalctl -b
+-- Logs begin at Tue 2019-11-05 15:50:07 CET, end at Mon 2019-12-02 12:25:05 CET
+Nov 05 15:50:07 localhost systemd-journal[100]: Runtime journal is usin
+Nov 05 15:50:07 localhost kernel: Initializing cgroup subsys cpuset
+Nov 05 15:50:07 localhost kernel: Initializing cgroup subsys cpu
+
+2) sudo journalctl -b --since "1 hour ago"
+-- Logs begin at Tue 2019-11-05 15:50:07 CET, end at Mon 2019-12-02 12:25:05 CET
+Dec 02 11:30:01 localhost systemd[1]: Started Session 9901 of user root
+Dec 02 11:30:01 localhost systemd[1]: Started Session 9902 of user root
+
+3) sudo journalctl --list-boots
+ 0 e5a466e7b53d4e2abd33a89bc0a364b8 Tue 2019-11-05 15:50:07 CET Mon 2
+
+4) systemctl list-units -t service
+...
+crond.service                loaded active running Command Scheduler
+...
+
+5) sudo journalctl -u crond.service --since "2 days ago" --until yesterday
+-- No entries --
+
+6) sudo journalctl -u crond.service
+-- Logs begin at Tue 2019-11-05 15:50:07 CET, end at Mon 2019-12-02 12:30:01 CET
+Nov 05 15:50:17 pam-linuxclient-m1 systemd[1]: Started Command Scheduler.
+Nov 05 15:50:17 pam-linuxclient-m1 crond[1205]: (CRON) INFO (RANDOM_DELAY will b
+Nov 05 15:50:17 pam-linuxclient-m1 crond[1205]: (CRON) INFO (running with inotif
+
+7) sudo journalctl -b -f
+Dec 02 12:31:01 localhost CROND[45889]: (root) CMD (/usr/bin/puppet-agent.sh)
+Dec 02 12:31:23 localhost systemd[1]: Configuration file /usr/lib/systemd/system/xagt.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+
