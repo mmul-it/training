@@ -1,0 +1,63 @@
+# Exercise 002 - Enabling a public key on a ssh host - Solutions
+
+1) Even if you're on Microsoft Windows you can use powershell to generate the
+   keypair:
+
+[mmul@mylocalmachine ~]$ ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/mmul/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/mmul/.ssh/id_rsa.
+Your public key has been saved in /home/mmul/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:0y716zpWQqzFXlqC5oyRR3ZZFnpj0F2e9Au56LoGYd0 mmul@mylocalmachine
+The key's randomart image is:
++---[RSA 2048]----+
+|          .++o o.|
+|        ...      |
+|        ...      |
+|        ...      |
+|        ...      |
++----[SHA256]-----+
+
+2) Display the contents of the newly generated public key:
+
+[mmul@mylocalmachine ~]$ cat .ssh/id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDeEjjp+sphNjmiFNBLIKpVZBhk6D6Y5ZjDULsUJHWf1KrgGD1cV/WD3D6E/gHfnO6Jcr1LI2Xaqb1Qnj1RAuvCg5fhWjEQlBrw7GstKxmOozFwUlrCCz4MelrNxbYQrOg2DJupw87jVDhEeXfezRB4KeWpMdjnN4s6TKsGNgZk7vUB9HU4QvQSlDESgoHZFvSIoKhk+shVUnZqwhz148P3Lcn2MLn1X6czFrdwEzCPdu9iHEPu/w2S8jloJFfUngZpPneL+GUCBzLndLFJyuKQAwXRtoICBh92l2CNwoCzzTvD5DpVNemDup2guEmkkCmzAA+LMcUK85OHUqwgUO7/ mmul@mylocalmachine
+
+3) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+4) To check for the .ssh directory exists:
+
+[mmul@localhost ~]$ cd .ssh/
+[mmul@localhost .ssh]$ ls .ssh/
+authorized_keys  id_rsa  id_rsa.pub  known_hosts
+
+5) While inside the .ssh directory:
+
+[mmul@localhost .ssh]$ vim authorized_keys
+
+Paste the contents of the public key (type i to enter insert mode), then save
+the file and exit (type :wq to save and quit)
+
+6) Type:
+
+[mmul@localhost .ssh]$ exit
+
+7) You should login with this command not requesting any password:
+
+> ssh mmul@machine
+
+8) After logging out try to launch this command:
+
+> ssh -v mmul@machine
+
+And look for this output (or something similar):
+
+debug1: Next authentication method: publickey
+debug1: Offering public key: RSA SHA256:cDega6xMeBdWRrpiL0mBLMK+3Xh5KZ7EOLx7BnKxQ1g /home/mmul/.ssh/id_rsa
+debug1: Server accepts key: pkalg rsa-sha2-512 blen 279
+debug1: Authentication succeeded (publickey).
