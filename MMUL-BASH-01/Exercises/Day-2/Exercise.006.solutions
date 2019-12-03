@@ -33,6 +33,8 @@ sudo systemctl start mmul_exercise.service
 8) Status is "Active" and the "output" of the log
    written by our echo command:
 
+sudo systemctl status mmul_exercise.service
+
 "● mmul_exercise.service - Example
    Loaded: loaded (/etc/systemd/system/mmul_exercise.service; disabled; vendor preset: disabled)
    Active: active (running) since Tue 2019-12-03 11:07:20 CET; 4s ago
