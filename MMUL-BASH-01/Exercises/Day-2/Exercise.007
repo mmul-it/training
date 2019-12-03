@@ -1,0 +1,10 @@
+# Exercise 007 - Enable and disable services at boot time
+
+1) Log into the machine with the credentials you own;
+
+2) Using the tool to manage systemd service, check if the service created in 
+    the previous exercise is enabled;
+
+3) Using the tool to manage systemd service, enable the service;
+
+4) Query the status of the service and make sure that the service is enabled;
