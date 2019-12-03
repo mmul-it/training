@@ -1,4 +1,4 @@
-# Exercise 007 - Extract specific logs in a time range - Solutions
+# Exercise 008 - Extract specific logs in a time range - Solutions
 
 1) sudo journalctl -b
 -- Logs begin at Tue 2019-11-05 15:50:07 CET, end at Mon 2019-12-02 12:25:05 CET
