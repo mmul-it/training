@@ -5,32 +5,33 @@
 2) Create a file in your homedir called service_action;
 
 3) Edit the file as follow:
-    ```
-    AUTHOR="**INSERT YOUR USERNAME HERE**"
-    
-    while true
-    do
-    echo "Example service from author: ${AUTHOR}"
-    sleep 5;
-    done
-    ```
+   ```
+   AUTHOR="**INSERT YOUR USERNAME HERE**"
+   
+   while true
+   do
+   echo "Example service from author: ${AUTHOR}"
+   sleep 5;
+   done
+   ```
 
 4) Create a service unit named $USER_exercise.service with this content:
-    ```
-    [Unit]
-    Description=Example
+   ```
+   [Unit]
+   Description=*INSERT YOUR USERNAME HERE*
 
-    [Service]
-    Type=simple
-    ExecStart=/bin/bash /home/testuser/service_action
+   [Service]
+   Type=simple
+   ExecStart=/bin/bash /home/*INSERT YOUR USERNAME HERE*/service_action
 
-    [Install]
-    WantedBy=multi-user.target
-    ```
+   [Install]
+   WantedBy=multi-user.target
+   ```
+
 5) Change the mode of the newly created service so that the file can be
-    written and read by owner, read by group, read by other;
+   written and read by owner, read by group, read by other;
 
-6) Move the newly created service in /etc/systemd/system/
+6) Copy the newly created service in /etc/systemd/system/
 
 7) With your user, start the newly created service and query its status;
 

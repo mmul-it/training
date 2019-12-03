@@ -23,7 +23,7 @@ The service is "disabled".
 
 sudo systemctl enable mmul_exercise.service
 
-"Created symlink from /etc/systemd/system/multi-user.target.wants/testuser_exercise.service to /etc/systemd/system/testuser_exercise.service."
+"Created symlink from /etc/systemd/system/multi-user.target.wants/mmul_exercise.service to /etc/systemd/system/mmul_exercise.service."
 
 4) Query the status again. Notiche the "enabled" bit:
 
