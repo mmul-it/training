@@ -1,41 +1,41 @@
-1) Supposing your user is "mmul" and your machine is "machine":
+# Exercise 007 - Extract specific logs in a time range - Solutions
 
-> ssh mmul@machine
+1) sudo journalctl -b
+-- Logs begin at Tue 2019-11-05 15:50:07 CET, end at Mon 2019-12-02 12:25:05 CET
+Nov 05 15:50:07 localhost systemd-journal[100]: Runtime journal is usin
+Nov 05 15:50:07 localhost kernel: Initializing cgroup subsys cpuset
+Nov 05 15:50:07 localhost kernel: Initializing cgroup subsys cpu
 
-2) Query the status of the service:
+2) sudo journalctl -b --since "1 hour ago"
+-- Logs begin at Tue 2019-11-05 15:50:07 CET, end at Mon 2019-12-02 12:25:05 CET
+Dec 02 11:30:01 localhost systemd[1]: Started Session 9901 of user root
+Dec 02 11:30:01 localhost systemd[1]: Started Session 9902 of user root
 
-sudo systemctl status $(whoami)_exercise.service
+3) sudo journalctl --list-boots
+ 0 e5a466e7b53d4e2abd33a89bc0a364b8 Tue 2019-11-05 15:50:07 CET Mon 2
 
-"● mmul_exercise.service - Example
-   Loaded: loaded (/etc/systemd/system/mmul_exercise.service; disabled; vendor preset: disabled)
-   Active: active (running) since Tue 2019-12-03 11:07:20 CET; 4s ago
- Main PID: 2415 (bash)
-   CGroup: /system.slice/mmul_exercise.service
-           ├─2415 /bin/bash /home/mmul/service_action
-           └─2417 sleep 5
+4) sudo systemctl list-units -t service
+...
+crond.service                loaded active running Command Scheduler
+...
 
-Dec 03 11:07:20 machine systemd[1]: Started Example.
-Dec 03 11:07:20 machine bash[2415]: Example service from author: mmul"
+5) sudo journalctl -u crond.service --since "2 days ago" --until yesterday
+-- Logs begin at Mon 2019-12-02 15:31:18 CET, end at Tue 2019-12-03 18:52:10 CET. --
 
-The service is "disabled".
+6) sudo journalctl -u crond.service
+-- Logs begin at Tue 2019-11-05 15:50:07 CET, end at Mon 2019-12-02 12:30:01 CET
+Nov 05 15:50:17 pam-linuxclient-m1 systemd[1]: Started Command Scheduler.
+Nov 05 15:50:17 pam-linuxclient-m1 crond[1205]: (CRON) INFO (RANDOM_DELAY will b
+Nov 05 15:50:17 pam-linuxclient-m1 crond[1205]: (CRON) INFO (running with inotif
 
-3) Enable the service with systemctl:
+7) sudo journalctl -b -f
+Dec 02 12:31:01 localhost CROND[45889]: (root) CMD (/usr/bin/puppet-agent.sh)
+Dec 02 12:31:23 localhost systemd[1]: Configuration file /usr/lib/systemd/system/xagt.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
 
-sudo systemctl enable $(whoami)_exercise.service
+8) Immediately after a "systemctl status crond" command this will be presented
+   in the window running the journalctl follow command:
 
-"Created symlink from /etc/systemd/system/multi-user.target.wants/mmul_exercise.service to /etc/systemd/system/mmul_exercise.service."
+Dec 03 18:53:32 mmul-bash-course systemd[1]: Started Session 297 of user root.
+Dec 03 18:53:32 mmul-bash-course systemd-logind[714]: New session 297 of user root.
+Dec 03 18:53:35 mmul-bash-course systemd-logind[714]: Removed session 297.
 
-4) Query the status again. Notiche the "enabled" bit:
-
-sudo systemctl status $(whoami)_exercise.service
-
-"● mmul_exercise.service - Example
-   Loaded: loaded (/etc/systemd/system/mmul_exercise.service; enabled; vendor preset: disabled)
-   Active: active (running) since Tue 2019-12-03 11:07:20 CET; 4s ago
- Main PID: 2415 (bash)
-   CGroup: /system.slice/mmul_exercise.service
-           ├─2415 /bin/bash /home/mmul/service_action
-           └─2417 sleep 5
-
-Dec 03 11:07:20 machine systemd[1]: Started Example.
-Dec 03 11:07:20 machine bash[2415]: Example service from author: mmul"

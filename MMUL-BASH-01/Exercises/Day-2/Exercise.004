@@ -1,6 +1,6 @@
 # Exercise 004 - Playing with file permissions
 
-1) Create a directory called scratch that contains a file
+1) Create a directory called as your user that contains a file
    called testfile1 in /tmp
 
 2) Check file permissions and, using the numeric annotation, remove 

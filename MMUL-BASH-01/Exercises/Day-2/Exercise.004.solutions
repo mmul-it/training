@@ -1,44 +1,50 @@
 # Exercise 004 - Playing with file permissions - Solutions
 
-1) Create a file called testfile1 in your home dir
+1) Create a directory called as your user that contains a file                  
+   called testfile1 in /tmp
 
-[mmul@localhost ~]$ mkdir /tmp/scratch
-[mmul@localhost ~]$ cd /tmp/scratch/
-[mmul@localhost scratch]$ touch testfile1
+[mmul@localhost ~]$ mkdir /tmp/mmul
+[mmul@localhost ~]$ cd /tmp/mmul/
+[mmul@localhost mmul]$ touch testfile1
 
 2) Check permissions, remove all permission on the file except for owner
 
-[mmul@localhost scratch]$ ls -l
--rw-rw-r-- 1 mmul mmul 0 Dec  2 16:33 testfile1
+[mmul@localhost mmul]$ ls -l
+-rw-r----- 1 mmul mmul 0 Dec  2 16:33 testfile1
 
-[mmul@localhost scratch]$ chmod 0600 testfile1
+[mmul@localhost mmul]$ chmod 0600 testfile1
 
-[mmul@localhost ~]$ ls -l
+[mmul@localhost mmul]$ ls -l
 -rw------- 2 mmul mmul 60 Dec  2 16:33 testfile1
 
 3) Switching account and trying to remove file testfile1
 
-[mmul@localhost scratch]$ su - mmul2
+[mmul@localhost mmul]$ su - mmul2
 
-[mmul@localhost scratch]$ cd /tmp/scratch
+[mmul2@localhost ~]$ cd /tmp/mmul
 
-[mmul2@localhost scratch]$ rm testfile1
+[mmul2@localhost mmul]$ rm testfile1
 rm: remove write-protected regular empty file 'testfile1'? y
 rm: cannot remove 'testfile1': Permission denied
 
 4) Re-assign permissions
 
-[mmul@localhost scratch]$ chmod 0777 testfile1
+[mmul2@localhost mmul]$ exit
+[mmul@localhost mmul]$ chmod 0777 testfile1
 
 [mmul@localhost scratch]$ ls -l
 -rwxrwxrwx 1 mmul mmul 0 Dec  2 16:41 testfile1
 
 5) Trying to remove again
 
-[mmul2@localhost scratch]$ ls -l
+[mmul@localhost mmul]$ su - mmul2
+
+[mmul2@localhost ~]$ cd /tmp/mmul
+
+[mmul2@localhost mmul]$ ls -l
 -rwxrwxrwx 1 mmul mmul 0 Dec  2 16:41 testfile1
 
-[mmul2@localhost scratch]$ rm testfile1
+[mmul2@localhost mmul]$ rm testfile1
 rm: cannot remove 'testfile1': Permission denied
 
 6) Check /tmp permissions

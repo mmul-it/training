@@ -1,38 +1,10 @@
-# Exercise 006 - Create a systemd custom service
+# Exercise 006 - Enable and disable services at boot time
 
 1) Log into the machine with the credentials you own;
 
-2) Create a file in your homedir called service_action;
+2) Using the tool to manage systemd service, check if the service created in 
+   the previous exercise is enabled;
 
-3) Edit the file as follow:
-   ```
-   AUTHOR="**INSERT YOUR USERNAME HERE**"
-   
-   while true
-   do
-   echo "Example service from author: ${AUTHOR}"
-   sleep 5;
-   done
-   ```
+3) Using the tool to manage systemd service, enable the service;
 
-4) Create a service unit named $USER_exercise.service with this content:
-   ```
-   [Unit]
-   Description=*INSERT YOUR USERNAME HERE*
-
-   [Service]
-   Type=simple
-   ExecStart=/bin/bash *INSERT YOUR $HOME HERE*/service_action
-
-   [Install]
-   WantedBy=multi-user.target
-   ```
-
-5) Change the mode of the newly created service so that the file can be
-   written and read by owner, read by group, read by other;
-
-6) Copy the newly created service in /etc/systemd/system/
-
-7) Start the newly created service and query its status;
-
-8) Notice service status and the log in the "output";
+4) Query the status of the service and make sure that the service is enabled;
