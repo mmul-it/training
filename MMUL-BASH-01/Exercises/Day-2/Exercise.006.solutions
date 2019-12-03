@@ -6,7 +6,8 @@
 
 touch ~/service_action
 
-3) Using our favourite editor, edit the file properly (rember to save your work!)
+3) Using our favourite editor, edit the file properly
+   (rember to save your work!)
 
 vim ~/service_action
 
@@ -19,16 +20,18 @@ vim mmul_exercise.service
 
 chmod 644 mmul_exercise.service
 
-6) Move the file to the default service path
+6) Copy the file to the default service path
 
-sudo mv mmul_exercise.service /etc/systemd/system/
+sudo cp mmul_exercise.service /etc/systemd/system/
 
-7) Use the systemctl utility:
+7) Use the systemctl utility to make your unit available and
+   interact with it:
 
+sudo systemctl daemon-reload
 sudo systemctl start mmul_exercise.service
 
 8) Status is "Active" and the "output" of the log
-    written by our echo command:
+   written by our echo command:
 
 "● mmul_exercise.service - Example
    Loaded: loaded (/etc/systemd/system/mmul_exercise.service; disabled; vendor preset: disabled)

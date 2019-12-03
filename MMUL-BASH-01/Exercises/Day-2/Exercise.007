@@ -3,7 +3,7 @@
 1) Log into the machine with the credentials you own;
 
 2) Using the tool to manage systemd service, check if the service created in 
-    the previous exercise is enabled;
+   the previous exercise is enabled;
 
 3) Using the tool to manage systemd service, enable the service;
 
