@@ -33,6 +33,6 @@
 
 6) Copy the newly created service in /etc/systemd/system/
 
-7) With your user, start the newly created service and query its status;
+7) Start the newly created service and query its status;
 
 8) Notice service status and the log in the "output";
