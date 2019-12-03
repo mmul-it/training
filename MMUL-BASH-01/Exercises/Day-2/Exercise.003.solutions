@@ -20,11 +20,11 @@ securityfs on /sys/kernel/security type securityfs (rw,nosuid,nodev,noexec,relat
 
 2) Create a mountpoint called "ram_disk", and mount (as root) a new filesystem:
   - type tmpfs
-  - options size=512M
+  - options size=512k
   - device tmpfs
 
 [mmul@mylocalmachine ~]$ mkdir ram_disk
-[mmul@mylocalmachine ~]$ sudo mount -t tmpfs -o size=512M tmpfs ram_disk
+[mmul@mylocalmachine ~]$ sudo mount -t tmpfs -o size=512k tmpfs ram_disk
 
 3) Verify mount of ram_disk
 
