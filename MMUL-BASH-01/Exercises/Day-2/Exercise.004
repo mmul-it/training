@@ -1,10 +1,10 @@
 # Exercise 004 - Playing with file permissions
 
 1) Create a directory called scratch that contains a file
-called testfile1 in /tmp
+   called testfile1 in /tmp
 
 2) Check file permissions and, using the numeric annotation, remove 
-all permission bits, except for the owner
+   all permission bits, except for the owner
 
 3) With another user, remove testfile1
 
@@ -13,4 +13,4 @@ all permission bits, except for the owner
 5) Switch user and re-try step 3
 
 6) Something's not quite right. We set 777, it should work!
-Let's check the /tmp directory permissions. What do you notice?
+   Let's check the /tmp directory permissions. What do you notice?
