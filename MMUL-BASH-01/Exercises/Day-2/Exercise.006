@@ -22,7 +22,7 @@
 
    [Service]
    Type=simple
-   ExecStart=/bin/bash /home/*INSERT YOUR USERNAME HERE*/service_action
+   ExecStart=/bin/bash *INSERT YOUR $HOME HERE*/service_action
 
    [Install]
    WantedBy=multi-user.target

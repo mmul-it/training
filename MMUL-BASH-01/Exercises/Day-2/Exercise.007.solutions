@@ -4,7 +4,7 @@
 
 2) Query the status of the service:
 
-sudo systemctl status mmul_exercise.service
+sudo systemctl status $(whoami)_exercise.service
 
 "● mmul_exercise.service - Example
    Loaded: loaded (/etc/systemd/system/mmul_exercise.service; disabled; vendor preset: disabled)
@@ -21,13 +21,13 @@ The service is "disabled".
 
 3) Enable the service with systemctl:
 
-sudo systemctl enable mmul_exercise.service
+sudo systemctl enable $(whoami)_exercise.service
 
 "Created symlink from /etc/systemd/system/multi-user.target.wants/mmul_exercise.service to /etc/systemd/system/mmul_exercise.service."
 
 4) Query the status again. Notiche the "enabled" bit:
 
-sudo systemctl status mmul_exercise.service
+sudo systemctl status $(whoami)_exercise.service
 
 "● mmul_exercise.service - Example
    Loaded: loaded (/etc/systemd/system/mmul_exercise.service; enabled; vendor preset: disabled)
