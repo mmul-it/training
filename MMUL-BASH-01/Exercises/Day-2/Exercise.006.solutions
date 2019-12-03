@@ -14,26 +14,26 @@ vim ~/service_action
 4) Touch the file and then edit the content as requested
 
 touch $(whoami)_exercise.service
-vim mmul_exercise.service
+vim $(whoami)_exercise.service
 
 5) Using the command that you already know, 'chmod'
 
-chmod 644 mmul_exercise.service
+chmod 644 $(whoami)_exercise.service
 
 6) Copy the file to the default service path
 
-sudo cp mmul_exercise.service /etc/systemd/system/
+sudo cp $(whoami)_exercise.service /etc/systemd/system/
 
 7) Use the systemctl utility to make your unit available and
    interact with it:
 
 sudo systemctl daemon-reload
-sudo systemctl start mmul_exercise.service
+sudo systemctl start $(whoami)_exercise.service
 
 8) Status is "Active" and the "output" of the log
    written by our echo command:
 
-sudo systemctl status mmul_exercise.service
+sudo systemctl status $(whoami)_exercise.service
 
 "● mmul_exercise.service - Example
    Loaded: loaded (/etc/systemd/system/mmul_exercise.service; disabled; vendor preset: disabled)
