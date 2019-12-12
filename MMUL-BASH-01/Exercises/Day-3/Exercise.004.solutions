@@ -1,0 +1,28 @@
+# Exercise 004 - Using string variables - Solutions
+
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2) Touch the file, append text and change the mode as requested:
+
+[mmul@machine ~]$ touch user_info.sh
+[mmul@machine ~]$ echo "#!/bin/bash" > user_info.sh
+[mmul@machine ~]$ chmod +x user_info.sh
+[mmul@machine ~]$ ls -l user_info.sh
+-rwxrwxr-x. 1 mmul mmul 12 Dec 11 12:00 user_info.sh
+
+3) The script can be written like that:
+
+#!/bin/bash
+
+echo "My username is '$USER'"
+echo "My User ID is '$UID'"
+echo "Report done at $(date)"
+
+4) Execute the script in the shell (output of 'date' will differ):
+
+[mmul@machine ~]$ ./user_info.sh
+My username is 'mmul'
+My User ID is '1000'
+Report done at Wed Dec 11 12:05:00 CET 2019

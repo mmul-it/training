@@ -1,0 +1,26 @@
+# Exercise 005 - Modular scripts with subshells - Solutions
+
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2) Copy the script with the new name. Make sure the script can be executed
+
+cp user_info.sh user_info_subshell.sh
+
+3) Your favorite editor is vim. The script can be modified like that:
+
+vim user_info_subshell.sh
+
+#!/bin/bash
+
+echo "My username is '$(cat /etc/passwd | grep $USER | awk -F: '{print $1}')'"
+echo "My User ID is '$(cat /etc/passwd | grep $USER | awk -F: '{print $3}')'"
+echo "Report done at $(date +"%H:%M - %d/%m/%y")"
+
+4) Execute the script in the shell:
+
+[mmul@machine ~]$ ./user_info_subshell.sh
+My username is 'mmul'
+My User ID is '1000'
+Report done at 12:10 - 11/12/2019
