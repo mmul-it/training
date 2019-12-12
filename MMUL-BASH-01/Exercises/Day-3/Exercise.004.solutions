@@ -12,7 +12,7 @@
 [mmul@machine ~]$ ls -l user_info.sh
 -rwxrwxr-x. 1 mmul mmul 12 Dec 11 12:00 user_info.sh
 
-3) The script can be written like that:
+3) The script can be written like this:
 
 #!/bin/bash
 

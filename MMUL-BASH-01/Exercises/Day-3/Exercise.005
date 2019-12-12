@@ -2,7 +2,7 @@
 
 1) Log into the machine with the credentials you own;
 
-2) Duplicate the script from previous exercise, rename in "user_info_subshell.sh"
+2) Duplicate the script from previous exercise, rename it in "user_info_subshell.sh"
 
 3) In your favorite editor, modify the script from previous exercise. Modify the
    code used for user and userid with command substitution, alter date in order
