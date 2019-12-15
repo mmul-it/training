@@ -1,0 +1,53 @@
+# Exercise 008 - Understanding boolean in Bash - Solutions
+
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2) If your favorite editori is vim, run
+
+vim check_bool.sh
+
+3) You can use something like this:
+
+#!/bin/bash
+
+BOOL_TRUE=1
+#BOOL_FALSE
+
+echo -n "Check for BOOL_TRUE: "
+[ $BOOL_TRUE ] && echo "is true"
+echo
+
+echo -n "Check for BOOL_FALSE: "
+[ $BOOL_FALSE ] && echo "is true"
+echo
+
+BOOL_TRUE="false value"
+echo -n "Check for BOOL_TRUE: "
+[ $BOOL_TRUE ] && echo "is true"
+echo
+
+BOOL_FALSE=
+echo -n "Check for BOOL_FALSE: "
+[ $BOOL_FALSE ] && echo "is true"
+echo
+
+unset BOOL_TRUE
+echo -n "Check for BOOL_TRUE: "
+[ $BOOL_TRUE ] && echo "is true"
+echo
+
+
+4) Execute the script in the shell:
+
+[mmul@machine ~]$ chmod a+x check_bool.sh
+[mmul@machine ~]$ ./check_bool.sh
+Check for BOOL_TRUE: is true
+
+Check for BOOL_FALSE:
+Check for BOOL_TRUE: is true
+
+Check for BOOL_FALSE:
+Check for BOOL_TRUE:
+
