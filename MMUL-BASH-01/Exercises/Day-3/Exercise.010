@@ -1,0 +1,11 @@
+# Exercise 010 - Using case with different types
+
+1) Create a script which ask for a parameter (and print an error if there
+   are not one)
+
+2) The script must print some sort of help if launched without parameters
+
+3) The script must save the parameter in a PARAM variable and check
+   - If it's a specific number (10 or 20, with different behaviour)
+   - If it's a string (student or worker, with the same name)
+   - Otherwise print the variable
