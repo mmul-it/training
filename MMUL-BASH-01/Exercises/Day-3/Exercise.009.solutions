@@ -1,0 +1,63 @@
+# Exercise 009 - If conditionals - Solutions
+
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+	# 2) The script must print some sort of help if launched without parameters
+	echo "usage: $0 <param1> <param2>"
+elif [ $# -lt 2 ]; then
+	# 1) print an error if there are more or less than two
+	echo "too few parameters"
+elif [ $# -gt 2 ]; then
+	# 1) print an error if there are more or less than two
+	echo "too much parameters"
+else
+	PARAM1=$1
+	PARAM2=$2
+
+	# 4) tell some information to the user about the passed parameters
+	if [ -f $PARAM1 ]; then
+		echo "$PARAM1 is a file"
+		if [ -r $PARAM1 ]; then
+			echo "- readable"
+		fi
+		if [ -w $PARAM1 ]; then
+			echo "- writable"
+		fi
+		if [ -x $PARAM1 ]; then
+			echo "- executable"
+		fi
+	else
+		echo "$PARAM1 isn't a file"
+		if [ $PARAM1 -gt 0 ]; then
+			echo "It's a number greater than zero"
+		elif [ $PARAM1 -le 0 ]; then
+			echo "It's a number lower or equal than zero"
+		else
+			echo "It's a string: $PARAM1"
+		fi
+	fi
+	
+	if [ -f $PARAM2 ]; then
+		echo "$PARAM2 is a file"
+		if [ -r $PARAM2 ]; then
+			echo "- readable"
+		fi
+		if [ -w $PARAM2 ]; then
+			echo "- writable"
+		fi
+		if [ -x $PARAM2 ]; then
+			echo "- executable"
+		fi
+	else
+		echo "$PARAM2 isn't a file"
+		if [ $PARAM2 -gt 0 ]; then
+			echo "It's a number greater than zero"
+		elif [ $PARAM2 -le 0 ]; then
+			echo "It's a number lower or equal than zero"
+		else
+			echo "It's a string: $PARAM2"
+		fi
+	fi
+fi
+
