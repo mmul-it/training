@@ -3,7 +3,7 @@
 1) Log into the machine with the credentials you own;
 
 2) Touch a file called 'user_info.sh', append interpreter (shebang) at the
-   beginninga and make it executable. Make sure the executable bit is added;
+   beginning and make it executable. Make sure the executable bit is added;
 
 3) Open 'user_info.sh' in your favorite editor and write a script, using BASH
    BUILTIN VARIABLES for user info and COMMAND SUBSTITUTION for the date, that
