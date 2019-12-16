@@ -5,4 +5,4 @@
 3) Check if port 22 is reachable on DNS server
 
 4) On your machine, check if there's any TCP port in LISTEN state.
-   Looking at the results, can you tell your the machine is reachable via SSH?
+   Looking at the results, can you tell if your the machine is reachable via SSH?
