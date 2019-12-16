@@ -1,12 +1,14 @@
-1. Write 'parameters.sh' to print
+# Exercise.007 - Reusable scripts with positional parameters
+
+1) Write 'parameters.sh' to print
   - number of parameters
   - all the parameters as a string
 
-2. Write 'second.sh' to print just the second parameter three times
+2) Write 'second.sh' to print just the second parameter three times
 
-3. Write 'between.sh' to use first two arguments as min and max for random number generation
+3) Write 'between.sh' to use first two arguments as min and max for random number generation
   (as excersise 6: 'random.sh')
 
-4. Write 'grep_passwd.sh', that search argument 1 into /etc/passwd and print only exit code.
+4) Write 'grep_passwd.sh', that search argument 1 into /etc/passwd and print only exit code.
    ( In the script, redirect the standard output of grep to /dev/null )
    A 0 means found, a 1 means not found.
