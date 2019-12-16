@@ -1,0 +1,36 @@
+1) Use the ifconfig [interface] command:
+
+   [mmul@localhost ~]$ ip addr show dev eth0
+   
+2) grep into the file:
+   
+   [mmul@localhost ~]$  sudo grep -i dns /etc/sysconfig/network-scripts/ifcfg-eth0
+   DNS1=192.168.100.3
+   DNS2=192.168.100.7
+   
+3) Use nc
+
+   [mmul@localhost ~]$ nc -v 192.168.100.7 22
+   Ncat: Version 7.50 ( https://nmap.org/ncat )
+   Ncat: Connection refused.
+   
+   Not reachable (22 is the SSH port - In this case, it's unreachable because
+   the destination host is a Windows host, SSH is not configured)
+
+4) With netstat
+   
+   [mmul@localhost ~]$ netstat -nlt
+   Active Internet connections (only servers)
+   Proto Recv-Q Send-Q Local Address           Foreign Address         State
+   tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN
+   tcp        0      0 0.0.0.0:5666            0.0.0.0:*               LISTEN
+   tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN
+   tcp6       0      0 ::1:25                  :::*                    LISTEN
+   tcp6       0      0 :::5666                 :::*                    LISTEN
+   tcp6       0      0 :::22                   :::*                    LISTEN
+   
+   -n will show IPs instead of hostnames - useful if you're having issues with DNS
+   -l will show only the listening ports
+   -t will show only tcp connections
+   
+   As you can see, port 22 is in LISTEN state so your machine is reachable via SSH.
