@@ -1,13 +1,15 @@
-1. Print sum of 9 and 4
+# Exercise.006 - Doing some math
 
-2. Wrtire 'sum.sh' that prints the sum of variables 'a' e 'b'
+1) Print sum of 9 and 4
 
-3. Write the script 'operations.sh' that, using 'a' and 'b' variables, prints:
+2) Write 'sum.sh' that prints the sum of variables 'a' e 'b'
+
+3) Write the script 'operations.sh' that, using 'a' and 'b' variables, prints:
   - difference
   - product
   - quotient
   - reminder
   - power
 
-4. The built-in $RANDOM variable print a random value between 0 and 32767.
+4) The built-in $RANDOM variable print a random value between 0 and 32767.
    Write the script 'random.sh' to print a number between the variables 'min' and 'max' (suggestion: between 1 and 10)
