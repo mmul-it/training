@@ -1,0 +1,50 @@
+1. Write 'parameters.sh' to print
+  - number of parameters passed by shell
+  - all the parameters passed by shell as a string
+
+#!/bin/bash
+echo "$#"
+echo "$*"
+
+[mmul@localhost ~]$ ./parameters.sh Hello, World!
+2
+Hello, World!
+
+2. Write 'second.sh' to print just the second parameter three times
+
+echo "$2"
+echo "$2"
+echo "$2"
+
+[mmul@localhost ~]$ ./second.sh Hello, World!
+World!
+World!
+World!
+
+3. Write 'between.sh' to use first two arguments as min and max for random number generation
+  (as excersise 6: 'random.sh')
+
+#!/bin/bash
+min=$1
+max=$2
+(than is random.sh)
+
+[mmul@localhost ~]$ ./between.sh 1 10
+2
+[mmul@localhost ~]$ ./between.sh 20 30
+29
+[mmul@localhost ~]$ ./between.sh 500 503
+502
+
+4. Write 'grep_passwd.sh', that search argument 1 into /etc/passwd and print only exit code.
+   ( In the script, redirect the standard output of grep to /dev/null )
+   A 0 means found, a 1 means not found.
+
+#!/bin/bash
+grep -i "${1}" /etc/passwd >/dev/null
+echo "$?"
+
+[mmul@localhost ~]$ ./grep_passwd.sh mmul
+0
+[mmul@localhost ~]$ ./grep_passwd.sh notpresent
+1
