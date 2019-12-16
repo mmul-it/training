@@ -2,7 +2,7 @@ Exercise 011 - solutions
 
 1) sleep 100
 
-   and then CTLZ+Z
+   and then CTLR+Z
    
    [mmul@mmul-bash-course ~] $ sleep 100
    ^Z
