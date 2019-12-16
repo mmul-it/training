@@ -1,0 +1,8 @@
+1) Check if your machine is properly configured to access the network
+
+2) Look for the DNS server's IP in /etc/sysconfig/network-scripts/ifcfg-eth0 file
+
+3) Check if port 22 is reachable on DNS server
+
+4) On your machine, check if there's any TCP port in LISTEN state.
+   Looking at the results, can you tell if the machine is reachable via SSH?
