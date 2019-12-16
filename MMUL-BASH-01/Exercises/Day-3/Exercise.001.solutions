@@ -1,10 +1,10 @@
-1) Use the ifconfig [interface] command:
+1) Use the ip command:
 
    [mmul@localhost ~]$ ip addr show dev eth0
    
 2) grep into the file:
    
-   [mmul@localhost ~]$  sudo grep -i dns /etc/sysconfig/network-scripts/ifcfg-eth0
+   [mmul@localhost ~]$ sudo grep -i dns /etc/sysconfig/network-scripts/ifcfg-eth0
    DNS1=192.168.100.3
    DNS2=192.168.100.7
    
