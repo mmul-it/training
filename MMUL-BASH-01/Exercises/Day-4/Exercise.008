@@ -1,0 +1,8 @@
+# Exercise 008 - Print the name of your script without extension
+
+1) Login into the machine with the credentials you own;
+
+2) Edit the script form Exercise.007 and, using substring removal, print the name
+   of the script you are running;
+
+3) Execute the script;

@@ -1,0 +1,20 @@
+# Exercise 007 - Print an asterisk only for the variables set
+
+1) Login into the machine with the credentials you own;
+
+2) Touch a file called "variable_checklist.sh", change the mode in order to make
+   it executable and add a bash interpreter line;
+
+3) Add two variables in the script and name them VAR1 and VAR2, give them a
+   value;
+
+4) Add three lines that will print, as an alternate value for the first two
+   lines if the var is set:
+
+   1. VAR1: [*]
+   2. VAR2: [*]
+
+   And for the third line a custom error message stating: "VAR3 MUST BE SET!"
+
+5) Execute the script and be sure not to remove it, it will be used in next
+   exercise;

@@ -1,0 +1,34 @@
+# Exercise 007 - Print an asterisk only for the variables set - Solutions
+
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2) Touch the file, change the mode accordingly, add the bash interpreter:
+
+touch variable_checklist.sh
+chmod +x variable_checklist.sh
+echo "#!/bin/bash" > variable_checklist.sh
+
+3) Open "variable_checklist.sh" in your editor, add variables as requested:
+
+#!/bin/bash
+
+VAR1=VALUE
+VAR2=ANOTHER_VALUE
+
+4) Add these lines to the script:
+
+echo "1." ${VAR1+"[*]"}
+echo "2." ${VAR2+"[*]"}
+echo "3." ${VAR3?"VAR3 MUST EXIST!"}
+
+5) Execute the script
+
+./variable_checklist.sh
+
+Output should look like this:
+
+1. [*]
+2. [*]
+./variable_checklist.sh: line 8: VAR3: VAR3 MUST EXIST!

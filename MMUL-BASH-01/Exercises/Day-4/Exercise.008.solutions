@@ -1,0 +1,21 @@
+# Exercise 008 - Print the name of your script without extension - Solutions
+
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2) Open the script "variable_checklist.sh" in your editor and add at the top,
+   after the interpreter
+
+echo "Name of the script is ${0%%.sh}"
+
+3) Execute the script
+
+./variable_checklist.sh
+
+Output should look like this:
+
+Name of the script is ./variable_checklist
+1. [*]
+2. [*]
+./variable_checklist.sh: line 10: VAR3: VAR3 MUST EXIST!
