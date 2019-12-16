@@ -1,0 +1,63 @@
+1. Print sum of 9 and 4
+
+[mmul@machine ~]$ echo $(( 9 + 4 ))
+13
+
+or
+
+[mmul@machine ~]$ let 9+4
+13
+
+or
+
+[mmul@machine ~]$ let '9 + 4'
+13
+
+2. Wrtire 'sum.sh' that prints the sum of variables 'a' e 'b'
+#!/bin/bash
+a=9
+b=4
+# Option 1: print sum directly
+# echo $(( a + b ))
+# Option 2: use a variable 'sum', directly in expression
+(( sum = a + b ))
+echo $sum
+
+[mmul@machine ~]$ ./sum.sh
+13
+
+3. Write the script 'operations.sh' that, using 'a' and 'b' variables, prints:
+ - difference
+ - product
+ - quotient
+ - reminder
+
+# Two options as before; using number 1 this time
+echo $(( a -  b ))
+echo $(( a *  b ))
+echo $(( a /  b ))
+echo $(( a %  b ))
+
+[mmul@machine ~]$ ./operations.sh 
+5
+36
+2
+1
+ 
+4. The built-in $RANDOM variable print a random value between 0 and 32767.
+   Write the script 'random.sh' to print a number between the variables 'min' and 'max' (suggestion: between 1 and 10)
+
+#!/bin/bash
+min=1
+max=10
+# First: calculate range of random number
+(( range = (max - min) + 1 ))
+# Second: calculate random number as reminder of range
+# (that is between 0 and range-1)
+# plus minimum
+echo $(( ( RANDOM % range ) + min ))
+
+[mmul@machine ~]$ ./random.sh 
+3
+[mmul@machine ~]$ ./random.sh 
+6
