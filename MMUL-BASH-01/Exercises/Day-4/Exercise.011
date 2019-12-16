@@ -1,0 +1,13 @@
+Exercise 011 - Kill a process
+
+1) Run this command:
+   
+   sleep 100
+   
+   then pause it.
+   
+2) Find out the paused process' PID
+
+3) Kill the sleep process. Did it work?
+
+4) Kill sleep the hard way, specifying the signal or the code
