@@ -1,11 +1,11 @@
-# Exercise 003 - Guess the passphrase!
+# Exercise 003 - Guess the passphrase! - Solutions
 
 1) The 'read' command can be used to read the user input and save in a variable.
-  The command
-  [mmul@machine ~]$ read input
-  reads a line from the standard input (console), putting the first word into "$input" variable.
-
-  Using 'read' and an endless loop, write a script that exit only if the typed input matches the (pass)word 'Linux!'.
+   The command
+   [mmul@machine ~]$ read input
+   reads a line from the standard input (console), putting the first word into "$input" variable.
+   
+   Using 'read' and an endless loop, write a script that exits only if the typed input matches the word 'Linux!'.
 
 
 #!/bin/bash
