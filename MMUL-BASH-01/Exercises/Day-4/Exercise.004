@@ -1,5 +1,5 @@
 # Exercise 004 - Cycle through all files in a dir and print details
 
-1) Cycle through files beginning with 'h' in the dir '/etc' and print, for each file,
-   - the name
+1) Write a script that cycles through files beginning with 'h' in the dir '/etc' and prints, of each file,
+   - the name;
    - details (using 'ls -l' command).
