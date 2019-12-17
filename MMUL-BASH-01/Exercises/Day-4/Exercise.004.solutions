@@ -1,0 +1,23 @@
+# Exercise 004 - Cycle through all files in a dir and print details
+
+1) Cycle through files beginning with 'h' in the dir '/etc' and print, for each file,
+   - the name
+   - details (using 'ls -l' command).
+
+[mmul@localhost ~]$ for f in /etc/h*
+> do
+>     echo "$f"
+>     ls -l "$f"
+> done
+/etc/hiera.yaml
+-rw-r--r--. 1 root root 314 Jun  6  2014 /etc/hiera.yaml
+/etc/host.conf
+-rw-r--r-- 1 root root 9 Jun  7  2013 /etc/host.conf
+/etc/hostname
+-rw-r--r-- 1 root root 23 May 17  2017 /etc/hostname
+/etc/hosts
+-rw-r--r-- 1 root root 910 May 28  2019 /etc/hosts
+/etc/hosts.allow
+-rw-r--r-- 1 root root 370 Jun  7  2013 /etc/hosts.allow
+/etc/hosts.deny
+-rw-r--r-- 1 root root 460 Jun  7  2013 /etc/hosts.deny
