@@ -1,0 +1,40 @@
+# Exercise 006 - Print every element of the array
+
+This is the previous script:
+   
+#/bin/bash
+declare -a tarantino
+tarantino=(
+    'Reservoir Dogs'
+    'Pulp Fiction'
+    'Kill Bill'
+    'Inglourious Basterds'
+    'Django Unchained'
+)
+echo "${tarantino[@]}"
+
+# Now we go on
+# 1) One element per line
+for title in "${tarantino[@]}"
+do
+    echo "$title"
+done 
+# 2) The same with sort
+for title in "${tarantino[@]}"
+do
+    echo "$title"
+done | sort
+# 3) Delete an element...
+unset tarantino[3]
+# 4) ...and print the indexes
+for index in "${!tarantino[@]}"
+do
+    echo "$index"
+done
+# 5) Pretty print of the array contents
+for index in "${!tarantino[@]}"
+do
+    echo "$index) ${tarantino[$index]}"
+done
+
+Note the quoted list in "${tarantino[@]}": this will preserve the spaces for the strings in the array.
