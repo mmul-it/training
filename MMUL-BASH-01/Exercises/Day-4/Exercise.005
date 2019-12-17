@@ -1,6 +1,7 @@
 # Exercise 005 - Declare and initialize an array
 
-1) Declare the array $tarantino
+Write a script that:
+1) Declare the array $tarantino;
 
 2) Initialize $tarantino with the following values:
    - Reservoir Dogs
@@ -11,4 +12,4 @@
    
    Remember to quote strings to preserve spaces!
 
-3) Print all the values of $tarantino
+3) Print all the values of $tarantino.

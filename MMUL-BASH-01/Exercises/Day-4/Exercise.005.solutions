@@ -1,36 +1,21 @@
-# Exercise 005 - Declare and initialize an array
+# Exercise 005 - Declare and initialize an array - Solutions
 
-1) Declare the array $tarantino
+The script should be something like this:
 
-[mmul@machine ~]$ declare -a tarantino
-
-
-2) Declare the array $tarantino and initialize it with the following values:
-   - Reservoir Dogs
-   - Pulp Fiction
-   - Kill Bill
-   - Inglourious Basterds
-   - Django Unchained
-   
-   Remember to quote strings to preserve spaces!
-
-[mmul@machine ~]$ tarantino=(
-'Reservoir Dogs'
-'Pulp Fiction'
-'Kill Bill'
-'Inglourious Basterds'
-'Django Unchained'
+#/bin/bash
+declare -a tarantino
+tarantino=(
+    'Reservoir Dogs'
+    'Pulp Fiction'
+    'Kill Bill'
+    'Inglourious Basterds'
+    'Django Unchained'
 )
+echo "${tarantino[@]}"
 
-or on one line
-[mmul@machine ~]$ tarantino=( 'Reservoir Dogs' 'Pulp Fiction' 'Kill Bill' 'Inglourious Basterds' 'Django Unchained' )
+Declaration (with 'declare -a') are made in two different points, that in a (much) more complicated script could be very far.
+The initialization could be on a line
 
-3) Print all the values of $tarantino
+tarantino=( 'Reservoir Dogs' 'Pulp Fiction' 'Kill Bill' 'Inglourious Basterds' 'Django Unchained' )
 
-[mmul@machine ~]$ echo "${tarantino[*]}"
-Reservoir Dogs Pulp Fiction Kill Bill Inglourious Basterds Django Unchained
-
-or
-
-[mmul@machine ~]$ echo "${tarantino[@]}"
-Reservoir Dogs Pulp Fiction Kill Bill Inglourious Basterds Django Unchained
+but one line per item is often more readeable.
