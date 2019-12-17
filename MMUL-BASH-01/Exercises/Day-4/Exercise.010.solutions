@@ -1,0 +1,38 @@
+# Exercise 010 - Making your own library - Solutions
+
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2) File should look like this:
+
+[mmul@machine ~]$ cat myfunctions1
+function myfunction1 () {
+ echo "This is my first function"
+}
+
+3) File should look like this:
+
+[mmul@machine ~]$ cat myfunctions2
+function myfunction2 () {
+ echo "This is my second function"
+}
+
+4) File should look like this:
+
+[mmul@machine ~]$ cat myfunctions.sh
+#!/bin/bash
+source myfunctions1
+source myfunctions2
+myfunction1
+myfunction2
+
+Remember to make it executable with:
+
+[mmul@machine ~]$ chmod +x myfunctions.sh
+
+And then you can launch it:
+
+[mmul@machine ~]$ ./myfunctions.sh
+This is my first function
+This is my second function
