@@ -1,0 +1,36 @@
+# Exercise 005 - Declare and initialize an array
+
+1) Declare the array $tarantino
+
+[mmul@machine ~]$ declare -a tarantino
+
+
+2) Declare the array $tarantino and initialize it with the following values:
+   - Reservoir Dogs
+   - Pulp Fiction
+   - Kill Bill
+   - Inglourious Basterds
+   - Django Unchained
+   
+   Remember to quote strings to preserve spaces!
+
+[mmul@machine ~]$ tarantino=(
+'Reservoir Dogs'
+'Pulp Fiction'
+'Kill Bill'
+'Inglourious Basterds'
+'Django Unchained'
+)
+
+or on one line
+[mmul@machine ~]$ tarantino=( 'Reservoir Dogs' 'Pulp Fiction' 'Kill Bill' 'Inglourious Basterds' 'Django Unchained' )
+
+3) Print all the values of $tarantino
+
+[mmul@machine ~]$ echo "${tarantino[*]}"
+Reservoir Dogs Pulp Fiction Kill Bill Inglourious Basterds Django Unchained
+
+or
+
+[mmul@machine ~]$ echo "${tarantino[@]}"
+Reservoir Dogs Pulp Fiction Kill Bill Inglourious Basterds Django Unchained
