@@ -1,0 +1,18 @@
+# Exercise 007 - Print an asterisk only for the variables set
+
+1) Login into the machine with the credentials you own;
+
+2) Touch a file called "default_answer.sh", change the mode in order to make
+   it executable and add a bash interpreter line;
+
+3) Add a variable in the script and name it "ANSWER". Give it the value of the
+   first positional parameter ($1);
+
+4) In the script, add a new line that must be print as its output as following:
+   "The answer to life, the universe and everything is 42"
+   The value "42" must be written as a default value if no positional parameter
+   are passed during script execution;
+
+5) Execute the script and pass a parameter, check the output. Execute the script
+   again without passing a parameter, check the difference in the output. Do not
+   delete the script, as it will be used for the next exercise.
