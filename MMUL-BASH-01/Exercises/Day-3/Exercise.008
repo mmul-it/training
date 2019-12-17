@@ -5,6 +5,6 @@
 2) Create a new script named check_bool.sh which use a pair of variable named
    BOOL_TRUE and BOOL_FALSE to demonstrate the boolean behaviour;
 
-3) Check different variable status and print output based on booleans
+3) Check different variable status and print output based on booleans;
 
-4) Execute the script and check the result
+4) Execute the script and check the result;

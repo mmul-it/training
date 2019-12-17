@@ -1,21 +1,27 @@
 # Exercise 009 - If conditionals - Solutions
 
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2-5) Script will look like this:
+
 #!/bin/bash
 
 if [ $# -eq 0 ]; then
-	# 2) The script must print some sort of help if launched without parameters
+	# 3) The script must print some sort of help if launched without parameters
 	echo "usage: $0 <param1> <param2>"
 elif [ $# -lt 2 ]; then
-	# 1) print an error if there are more or less than two
+	# 2) print an error if there are more or less than two
 	echo "too few parameters"
 elif [ $# -gt 2 ]; then
-	# 1) print an error if there are more or less than two
+	# 2) print an error if there are more or less than two
 	echo "too much parameters"
 else
 	PARAM1=$1
 	PARAM2=$2
 
-	# 4) tell some information to the user about the passed parameters
+	# 5) tell some information to the user about the passed parameters
 	if [ -f $PARAM1 ]; then
 		echo "$PARAM1 is a file"
 		if [ -r $PARAM1 ]; then

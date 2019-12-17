@@ -1,5 +1,11 @@
 # Exercise 011 - Writing your first init script - Solutions
 
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2-7) Script will look like this:
+
 #!/bin/bash
 
 if [ $# -ne 1 ]; then

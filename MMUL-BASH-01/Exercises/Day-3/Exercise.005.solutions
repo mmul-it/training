@@ -4,7 +4,7 @@
 
 > ssh mmul@machine
 
-2) Copy the script with the new name. Make sure the script can be executed
+2) Copy the script with the new name. Make sure the script can be executed:
 
 cp user_info.sh user_info_subshell.sh
 

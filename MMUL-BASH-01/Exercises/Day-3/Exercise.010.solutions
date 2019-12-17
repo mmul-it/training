@@ -1,15 +1,21 @@
 # Exercise 010 - Using case with different types - Solutions
 
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2) Script will look like this:
+
 #!/bin/bash
 
 if [ $# -eq 0 ]; then
-	# 2) The script must print some sort of help if launched without parameters
+	# 3) The script must print some sort of help if launched without parameters
 	echo "usage: $0 <param>"
 elif [ $# -ne 1 ]; then
-	# 1) Create a script which ask for a parameter
+	# 2) Create a script which ask for a parameter
 	echo "wrong parameter number"
 else
-	# 3) The script must save the parameter in a PARAM variable and check
+	# 4) The script must save the parameter in a PARAM variable and check
 	PARAM=$1
 
 	case $PARAM in

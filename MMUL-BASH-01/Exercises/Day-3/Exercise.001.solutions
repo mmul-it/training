@@ -1,36 +1,42 @@
-1) Use the ip command:
+# Exercise 001 - Use all the tools to solve problems - Solutions
 
-   [mmul@localhost ~]$ ip addr show dev eth0
-   
-2) grep into the file:
-   
-   [mmul@localhost ~]$ sudo grep -i dns /etc/sysconfig/network-scripts/ifcfg-eth0
-   DNS1=192.168.100.3
-   DNS2=192.168.100.7
-   
-3) Use nc
+1) Supposing your user is "mmul" and your machine is "machine":
 
-   [mmul@localhost ~]$ nc -v 192.168.100.7 22
-   Ncat: Version 7.50 ( https://nmap.org/ncat )
-   Ncat: Connection refused.
-   
-   Not reachable (22 is the SSH port - In this case, it's unreachable because
-   the destination host is a Windows host, SSH is not configured)
+> ssh mmul@machine
 
-4) With netstat
+2) Use the ip command:
+
+[mmul@localhost ~]$ ip addr show dev eth0
    
-   [mmul@localhost ~]$ netstat -nlt
-   Active Internet connections (only servers)
-   Proto Recv-Q Send-Q Local Address           Foreign Address         State
-   tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN
-   tcp        0      0 0.0.0.0:5666            0.0.0.0:*               LISTEN
-   tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN
-   tcp6       0      0 ::1:25                  :::*                    LISTEN
-   tcp6       0      0 :::5666                 :::*                    LISTEN
-   tcp6       0      0 :::22                   :::*                    LISTEN
+3) Use the grep command to check the file:
    
-   -n will show IPs instead of hostnames - useful if you're having issues with DNS
-   -l will show only the listening ports
-   -t will show only tcp connections
+[mmul@localhost ~]$ sudo grep -i dns /etc/sysconfig/network-scripts/ifcfg-eth0
+DNS1=192.168.100.3
+DNS2=192.168.100.7
    
-   As you can see, port 22 is in LISTEN state so your machine is reachable via SSH.
+4) Use nc:
+
+[mmul@localhost ~]$ nc -v 192.168.100.7 22
+Ncat: Version 7.50 ( https://nmap.org/ncat )
+Ncat: Connection refused.
+
+Not reachable (22 is the SSH port - In this case, it's unreachable because
+the destination host is a Windows host, SSH is not configured)
+
+5) With netstat:
+   
+[mmul@localhost ~]$ netstat -nlt
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State
+tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:5666            0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN
+tcp6       0      0 ::1:25                  :::*                    LISTEN
+tcp6       0      0 :::5666                 :::*                    LISTEN
+tcp6       0      0 :::22                   :::*                    LISTEN
+
+-n will show IPs instead of hostnames - useful if you're having issues with DNS
+-l will show only the listening ports
+-t will show only tcp connections
+
+As you can see, port 22 is in LISTEN state so your machine is reachable via SSH.

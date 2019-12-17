@@ -1,16 +1,18 @@
 # Exercise 009 - If conditionals
 
-1) Create a script which ask for two parameters (and print an error if there
-   are more or less than two)
+1) Log into the machine with the credentials you own;
 
-2) The script must print some sort of help if launched without parameters
+2) Create a script which ask for two parameters (and print an error if there
+   are more or less than two);
 
-3) Then, the two parameters must be saved in two variables.
+3) The script must print some sort of help if launched without parameters;
 
-4) With some if statements tell some information to the user about the
-   passed parameters.
-   - It's a file?
-   - If yes, it's readable? it's writable? it's executable?
-   - Otherwise, it's a number?
-   - If yes, it's greater than zero? it's lower or equal to zero?
-   - Otherwise, its a string. Tell the user and print it
+4) Then, the two parameters must be saved in two variables;
+
+5) With some if statements tell some information to the user about the
+   passed parameters:
+   - Is it a file?
+   - If yes, is it readable? Writable? Executable?
+   - Otherwise, is it a number?
+   - If yes, is it greater than zero? Is it lower or equal to zero?
+   - Otherwise, it's a string. Tell the user and print it;

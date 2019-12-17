@@ -1,8 +1,10 @@
 # Exercise.007 - Reusable scripts with positional parameters - Solutions
 
-1) Write 'parameters.sh' to print
-  - number of parameters passed by shell
-  - all the parameters passed by shell as a string
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+1) The script will look like this:
 
 #!/bin/bash
 echo "$#"
@@ -12,7 +14,7 @@ echo "$*"
 2
 Hello, World!
 
-2) Write 'second.sh' to print just the second parameter three times
+2) The 'second.sh' will print the second parameter three times:
 
 echo "$2"
 echo "$2"
@@ -23,8 +25,7 @@ World!
 World!
 World!
 
-3) Write 'between.sh' to use first two arguments as min and max for random number generation
-  (as excersise 6: 'random.sh')
+3) The 'between.sh' script will look like this:
 
 #!/bin/bash
 min=$1
@@ -36,6 +37,8 @@ max=$2
 # plus minimum
 echo $(( ( RANDOM % range ) + min ))
 
+Once launched these will be the results:
+
 [mmul@localhost ~]$ ./between.sh 1 10
 2
 [mmul@localhost ~]$ ./between.sh 20 30
@@ -43,13 +46,13 @@ echo $(( ( RANDOM % range ) + min ))
 [mmul@localhost ~]$ ./between.sh 500 503
 502
 
-4) Write 'grep_passwd.sh', that search argument 1 into /etc/passwd and print only exit code.
-   ( In the script, redirect the standard output of grep to /dev/null )
-   A 0 means found, a 1 means not found.
+4) The script 'grep_passwd.sh' will look like this:
 
 #!/bin/bash
 grep -i "${1}" /etc/passwd >/dev/null
 echo "$?"
+
+Once launched these will be the results:
 
 [mmul@localhost ~]$ ./grep_passwd.sh mmul
 0
