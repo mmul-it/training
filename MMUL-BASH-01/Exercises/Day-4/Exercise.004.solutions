@@ -1,6 +1,10 @@
 # Exercise 004 - Cycle through all files in a dir and print details - Solutions
 
-1) The script should be something like this:
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2) The script should be something like this:
 
 #/bin/bash
 for f in /etc/h*

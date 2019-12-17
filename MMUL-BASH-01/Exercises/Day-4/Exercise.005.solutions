@@ -1,6 +1,10 @@
 # Exercise 005 - Declare and initialize an array - Solutions
 
-The script should be something like this:
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2-4) The script should be something like this:
 
 #/bin/bash
 declare -a tarantino
@@ -13,8 +17,9 @@ tarantino=(
 )
 echo "${tarantino[@]}"
 
-Declaration (with 'declare -a') are made in two different points, that in a (much) more complicated script could be very far.
-The initialization could be on a line
+Declaration (with 'declare -a') are made in two different points, that in a
+(much) more complicated script could be very far.
+The initialization could be on a single line:
 
 tarantino=( 'Reservoir Dogs' 'Pulp Fiction' 'Kill Bill' 'Inglourious Basterds' 'Django Unchained' )
 

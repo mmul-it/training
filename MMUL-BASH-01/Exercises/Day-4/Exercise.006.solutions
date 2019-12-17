@@ -1,6 +1,10 @@
-# Exercise 006 - Print every element of the array
+# Exercise 006 - Print every element of the array - Solutions
 
-This is the previous script:
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2-5) This is the previous script:
    
 #/bin/bash
 declare -a tarantino
@@ -14,19 +18,19 @@ tarantino=(
 echo "${tarantino[@]}"
 
 # Now we go on
-# 1) One element per line
+# 2) One element per line
 for title in "${tarantino[@]}"
 do
     echo "$title"
 done 
-# 2) The same with sort
+# 3) The same with sort
 for title in "${tarantino[@]}"
 do
     echo "$title"
 done | sort
-# 3) Delete an element...
+# 4) Delete an element...
 unset tarantino[3]
-# 4) ...and print the indexes
+# ...and print the indexes
 for index in "${!tarantino[@]}"
 do
     echo "$index"
@@ -37,4 +41,5 @@ do
     echo "$index) ${tarantino[$index]}"
 done
 
-Note the quoted list in "${tarantino[@]}": this will preserve the spaces for the strings in the array.
+Note the quoted list in "${tarantino[@]}": this will preserve the spaces for
+the strings in the array.
