@@ -1,6 +1,8 @@
-Exercise 012
+Exercise 012 - Print what you get before exit
 
-1) Create a new script named trap.sh and paste this content:
+1) Log into the machine with the credentials you own;
+
+2) Create a new script named trap.sh and paste this content:
 
    ### CONTENT ###
    #!/bin/bash

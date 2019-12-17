@@ -1,13 +1,15 @@
-Exercise 011 - Kill a process
+# Exercise 011 - Kill a process
 
-1) Run this command:
+1) Log into the machine with the credentials you own;
+
+2) Run this command:
    
    sleep 100
    
-   then pause it.
+   then pause it;
    
-2) Find out the paused process' PID
+3) Find out the paused process' PID;
 
-3) Kill the sleep process. Did it work?
+4) Kill the sleep process. Did it work?
 
-4) Kill sleep the hard way, specifying the signal or the code
+5) Kill sleep the hard way, specifying the signal or the code;

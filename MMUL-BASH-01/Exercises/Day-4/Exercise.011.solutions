@@ -1,6 +1,10 @@
-Exercise 011 - solutions
+# Exercise 011 - Kill a process - Solutions
 
-1) sleep 100
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2) sleep 100
 
    and then CTLR+Z
    
@@ -8,7 +12,7 @@ Exercise 011 - solutions
    ^Z
    [1]+  Stopped                 sleep 100
    
-2) Use ps -l
+3) Use ps -l
 
    [mmul@mmul-bash-course ~]$ ps -l
    F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
@@ -16,7 +20,7 @@ Exercise 011 - solutions
    0 T 31700 59224 59195  0  80   0 - 26989 do_sig pts/0    00:00:00 sleep
    0 R 31700 59231 59195  0  80   0 - 38312 -      pts/0    00:00:00 ps
 
-3) [mmul@mmul-bash-course ~]$  kill 59224
+4) [mmul@mmul-bash-course ~]$  kill 59224
    [mmul@mmul-bash-course ~]$ ps -l
    F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
    0 S 31700 59195 59194  0  80   0 - 29387 do_wai pts/0    00:00:00 bash
@@ -27,7 +31,7 @@ Exercise 011 - solutions
    This is because the kill command, by default, will send a SIGTERM signal.
    Some processes catch the TERM signal and ignore the command.
    
-4) Using the signal name:
+5) Using the signal name:
 
    [mmul@mmul-bash-course ~]$ kill -s SIGKILL 59224
    [mmul@mmul-bash-course ~]$ ps -l
@@ -43,6 +47,4 @@ Exercise 011 - solutions
    F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
    0 S 31700 59195 59194  0  80   0 - 29387 do_wai pts/0    00:00:00 bash
    0 R 31700 59652 59195  0  80   0 - 38312 -      pts/0    00:00:00 ps
-   [1]+  Killed                  sleep 100
-   
-   
+   [1]+  Killed                  sleep 100  

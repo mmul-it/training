@@ -1,8 +1,14 @@
-# Exercise 002 - Examine behaviour with faulty command in script
+# Exercise 002 - Examine behaviour with faulty command in script - Solutions
 
-1) With your favourite editor, open a script named copier.sh
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2-6) With your favourite editor, open a script named copier.sh:
 
 [mmul@machine ~]$ vim copier.sh
+
+Here the content of the script that can be copied and and pasted:
 
 #!/bin/bash
 
@@ -13,13 +19,15 @@ fi
 
 THEFILE=$1
 
-# 2) if it's not exists (or isn't a file), exit
+# 3) if it does not exists (or isn't a file), exit:
+
 if ! [ -f $THEFILE ]; then
 	echo "$THEFILE not found"
 	exit 2
 fi
 
-# 3) Try copying files in different positions (saving the status)
+# 4) Try copying files in different positions (saving the status):
+
 cp $THEFILE /var/run &>/dev/null
 VAR_RUN_COPY=$?
 
@@ -32,7 +40,7 @@ TMP_COPY=$?
 cp $THEFILE / &>/dev/null
 ROOT_COPY=$?
 
-# 4) Check for the different exit statuses
+# 5) Check for the different exit statuses:
 
 if [ $VAR_RUN_COPY -ne 0 ]; then
 	echo "Cannot copy $FILE in /var/run"
@@ -47,7 +55,7 @@ if [ $ROOT_COPY -ne 0 ]; then
 	echo "Cannot copy $FILE in /"
 fi
 
-# 5) Exit 0 if at least one of the exit statuses are 0
+# 6) Exit 0 if at least one of the exit statuses are 0:
 
 if [ $VAR_RUN_COPY -eq 0 ] || [ $HOME_COPY -eq 0 ] ||
    [ $TMP_COPY -eq 0 ] || [ $ROOT_COPY -eq 0 ]; then

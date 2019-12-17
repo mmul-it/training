@@ -1,6 +1,12 @@
 # Exercise 009 - Writing your first function - Solutions
 
-1) [mmul@machine ~]$ vim multi_renamer.sh
+1) Supposing your user is "mmul" and your machine is "machine":
+
+> ssh mmul@machine
+
+2-7) [mmul@machine ~]$ vim multi_renamer.sh
+
+Here the content of the script that can be copied and and pasted:
 
 #!/bin/bash
 
