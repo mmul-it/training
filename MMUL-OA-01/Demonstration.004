@@ -1,0 +1,248 @@
+# Demonstration 004 - OpenShift on Sourcesense Infrastructure overview
+
+Checkout all the components for each machine.
+
+********************
+* The main host    *
+********************
+
+[root@CentOS-83-64-minimal vms]# virsh list
+ Id   Name                                   State
+------------------------------------------------------
+ 83   ocp-lab-3.test.sourcesense.local       running
+ 84   ocp-lab-1.test.sourcesense.local       running
+ 87   ocp-lab-2.test.sourcesense.local       running
+ 88   ocp-haproxy.test.sourcesense.local     running
+ 89   ocp-bastion.test.sourcesense.local     running
+ 90   ocp-bootstrap.test.sourcesense.local   running
+
+********************
+* The bastion vm   *
+********************
+
+[root@ocp-bastion ~]# ss -ntlp
+State  Recv-Q  Send-Q    Local Address:Port   Peer Address:Port                                                                                                              
+LISTEN 0       128             0.0.0.0:22          0.0.0.0:*     users:(("sshd",pid=815,fd=5))                                                                               
+LISTEN 0       128                   *:80                *:*     users:(("httpd",pid=10356,fd=4),("httpd",pid=10355,fd=4),("httpd",pid=10354,fd=4),("httpd",pid=10352,fd=4)) 
+LISTEN 0       128                [::]:22             [::]:*     users:(("sshd",pid=815,fd=7)) 
+
+[root@ocp-bastion ~]# firewall-cmd --list-services
+cockpit dhcpv6-client ssh
+
+[root@ocp-bastion ~]# firewall-cmd --list-ports
+80/tcp
+
+[root@ocp-bastion ~]# ls -1 /var/www/html/openshift-install-dir
+auth
+bootstrap.ign
+master.ign
+metadata.json
+worker.ign
+
+********************
+* The haproxy vm   *
+********************
+
+[root@ocp-haproxy ~]# ss -ntlp
+State           Recv-Q           Send-Q                      Local Address:Port                      Peer Address:Port                                                      
+LISTEN          0                128                               0.0.0.0:80                             0.0.0.0:*              users:(("haproxy",pid=2406,fd=10))         
+LISTEN          0                128                               0.0.0.0:8404                           0.0.0.0:*              users:(("haproxy",pid=2406,fd=12))         
+LISTEN          0                10                          192.168.122.8:53                             0.0.0.0:*              users:(("named",pid=1693,fd=23))           
+LISTEN          0                10                              127.0.0.1:53                             0.0.0.0:*              users:(("named",pid=1693,fd=22))           
+LISTEN          0                128                               0.0.0.0:22                             0.0.0.0:*              users:(("sshd",pid=810,fd=5))              
+LISTEN          0                128                             127.0.0.1:953                            0.0.0.0:*              users:(("named",pid=1693,fd=24))           
+LISTEN          0                128                               0.0.0.0:443                            0.0.0.0:*              users:(("haproxy",pid=2406,fd=11))         
+LISTEN          0                128                               0.0.0.0:22623                          0.0.0.0:*              users:(("haproxy",pid=2406,fd=9))          
+LISTEN          0                128                               0.0.0.0:6443                           0.0.0.0:*              users:(("haproxy",pid=2406,fd=7))          
+LISTEN          0                10                                   [::]:53                                [::]:*              users:(("named",pid=1693,fd=21))           
+LISTEN          0                128                                  [::]:22                                [::]:*              users:(("sshd",pid=810,fd=7))              
+LISTEN          0                128                                 [::1]:953                               [::]:*              users:(("named",pid=1693,fd=25))
+
+[root@ocp-haproxy ~]# firewall-cmd --list-services
+cockpit dhcpv6-client dns ssh
+
+[root@ocp-haproxy ~]# firewall-cmd --list-ports
+80/tcp 443/tcp 6443/tcp 22623/tcp
+
+[root@ocp-haproxy ~]# cat /etc/haproxy/haproxy.cfg
+global
+    # to have these messages end up in /var/log/haproxy.log you will
+    # need to:
+    #
+    # 1) configure syslog to accept network log events.  This is done
+    #    by adding the '-r' option to the SYSLOGD_OPTIONS in
+    #    /etc/sysconfig/syslog
+    #
+    # 2) configure local2 events to go to the /var/log/haproxy.log
+    #   file. A line like the following can be added to
+    #   /etc/sysconfig/syslog
+    #
+    #    local2.*                       /var/log/haproxy.log
+    #
+    log         127.0.0.1 local2
+
+    chroot      /var/lib/haproxy
+    pidfile     /var/run/haproxy.pid
+    maxconn     4000
+    user        haproxy
+    group       haproxy
+    daemon
+
+    # turn on stats unix socket
+    stats socket /var/lib/haproxy/stats
+
+#---------------------------------------------------------------------
+# common defaults that all the 'listen' and 'backend' sections will
+# use if not designated in their block
+#---------------------------------------------------------------------
+defaults
+    mode                    tcp
+    log                     global
+    option                  dontlognull
+    option                  redispatch
+    retries                 3
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          1m
+    timeout server          1m
+    timeout check           10s
+    maxconn                 3000
+
+frontend ocp_api 
+    bind *:6443
+    default_backend ocp_api
+
+frontend ocp_bootstrap 
+    bind *:22623
+    default_backend ocp_bootstrap
+
+frontend ocp_http 
+    bind *:80
+    default_backend ocp_http
+
+frontend ocp_https 
+     bind *:443
+    default_backend ocp_https
+
+backend ocp_bootstrap
+    balance roundrobin
+    server bootstrap1 192.168.122.10:22623 check
+    server master1 192.168.122.11:22623 check
+    server master2 192.168.122.12:22623 check
+    server master3 192.168.122.13:22623 check
+
+backend ocp_http
+    balance roundrobin
+    server master-woker1 192.168.122.11:80 check
+    server master-woker2 192.168.122.12:80 check
+    server master-woker3 192.168.122.13:80 check
+
+backend ocp_https
+    balance roundrobin
+    server master-woker1 192.168.122.11:443 check
+    server master-woker2 192.168.122.12:443 check
+    server master-woker3 192.168.122.13:443 check
+
+frontend stats
+    bind *:8404
+    stats enable
+    stats uri /stats
+    stats refresh 10s
+
+[root@ocp-haproxy ~]# cat /etc/named/test.sourcesense.local.zone 
+$TTL 1W
+@	IN	SOA	ns1.test.sourcesense.local.	root (
+			2021061000	; serial
+			3H		; refresh (3 hours)
+			30M		; retry (30 minutes)
+			2W		; expiry (2 weeks)
+			1W )		; minimum (1 week)
+	IN	NS	ns1.test.sourcesense.local.
+	IN	MX 10	smtp.test.sourcesense.local.
+;
+;
+ns1		IN	A	192.168.122.8
+smtp		IN	A	192.168.122.8
+; The api identifies the IP of your load balancer.
+api		IN	A	192.168.122.8
+api-int		IN	A	192.168.122.8
+ocp-haproxy	IN	A	192.168.122.8
+;
+; The wildcard also identifies the load balancer.
+*.apps		IN	A	192.168.122.8
+;
+; Bastion host.
+ocp-bastion	IN	A	192.168.122.9
+;
+; Create an entry for the bootstrap host.
+bootstrap	IN	A	192.168.122.10
+;
+; Create entries for the master hosts.
+ocp-lab-1	IN	A	192.168.122.11
+ocp-lab-2	IN	A	192.168.122.12
+ocp-lab-3	IN	A	192.168.122.13
+;
+;EOF
+
+********************
+* The bootstrap vm *
+********************
+
+[root@CentOS-83-64-minimal vms]# ssh core@bootstrap
+Red Hat Enterprise Linux CoreOS 47.83.202103251640-0
+  Part of OpenShift 4.7, RHCOS is a Kubernetes native operating system
+  managed by the Machine Config Operator (`clusteroperator/machine-config`).
+
+WARNING: Direct SSH access to machines is not recommended; instead,
+make configuration changes via `machineconfig` objects:
+  https://docs.openshift.com/container-platform/4.7/architecture/architecture-rhcos.html
+
+---
+This is the bootstrap node; it will be destroyed when the master is fully up.
+
+The primary services are release-image.service followed by bootkube.service. To watch their status, run e.g.
+
+  journalctl -b -f -u release-image.service -u bootkube.service
+
+********************
+* The ocp vms      *
+********************
+
+[root@CentOS-83-64-minimal vms]# ssh core@ocp-lab-1
+Red Hat Enterprise Linux CoreOS 47.83.202105220305-0
+  Part of OpenShift 4.7, RHCOS is a Kubernetes native operating system
+  managed by the Machine Config Operator (`clusteroperator/machine-config`).
+
+WARNING: Direct SSH access to machines is not recommended; instead,
+make configuration changes via `machineconfig` objects:
+  https://docs.openshift.com/container-platform/4.7/architecture/architecture-rhcos.html
+
+[core@ocp-lab-1 ~]$ lscpu 
+Architecture:        x86_64
+CPU op-mode(s):      32-bit, 64-bit
+Byte Order:          Little Endian
+CPU(s):              4
+On-line CPU(s) list: 0-3
+Thread(s) per core:  1
+Core(s) per socket:  1
+Socket(s):           4
+NUMA node(s):        1
+Vendor ID:           AuthenticAMD
+CPU family:          23
+Model:               49
+Model name:          AMD EPYC-Rome Processor
+Stepping:            0
+CPU MHz:             3593.248
+BogoMIPS:            7186.49
+Hypervisor vendor:   KVM
+Virtualization type: full
+L1d cache:           32K
+L1i cache:           32K
+L2 cache:            512K
+L3 cache:            16384K
+NUMA node0 CPU(s):   0-3
+Flags:               fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm rep_good nopl cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibpb stibp vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves clzero xsaveerptr wbnoinvd arat umip rdpid arch_capabilities
+
+[core@ocp-lab-1 ~]$ free -m
+              total        used        free      shared  buff/cache   available
+Mem:          16034        7006         334          64        8693        9467
