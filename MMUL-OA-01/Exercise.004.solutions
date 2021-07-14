@@ -5,9 +5,9 @@
 > oc login -u developer
 Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
 
-You have one project on this server: "test-project"
+You don't have any projects. You can try to create a new project, by running
 
-Using project "test-project".
+    oc new-project <projectname>
 
 > oc new-project my-first-project
 Now using project "my-first-project" on server "https://api.crc.testing:6443".

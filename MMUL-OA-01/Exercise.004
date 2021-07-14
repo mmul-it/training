@@ -2,8 +2,8 @@
 
 1) As user developer create a project named my-first-project;
 
-2) Create a new application named my-first-application that will deploy the
-   mysql container with these environment variable passed on the command line:
+2) Create a new application named that will deploy mariadb with these
+   environment variable passed on the command line:
    - MYSQL_USER=user
    - MYSQL_PASSWORD=pass
    - MYSQL_DATABASE=testdb
@@ -16,6 +16,3 @@
 5) Check that the service is accessible;
 
 6) Delete my-first-project;
-
-BONUS) Check that the mysql container image is now part of the OpenShift
-       registry;
