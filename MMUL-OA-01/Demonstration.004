@@ -21,10 +21,10 @@ Checkout all the components for each machine.
 ********************
 
 [root@ocp-bastion ~]# ss -ntlp
-State  Recv-Q  Send-Q    Local Address:Port   Peer Address:Port                                                                                                              
-LISTEN 0       128             0.0.0.0:22          0.0.0.0:*     users:(("sshd",pid=815,fd=5))                                                                               
-LISTEN 0       128                   *:80                *:*     users:(("httpd",pid=10356,fd=4),("httpd",pid=10355,fd=4),("httpd",pid=10354,fd=4),("httpd",pid=10352,fd=4)) 
-LISTEN 0       128                [::]:22             [::]:*     users:(("sshd",pid=815,fd=7)) 
+State  Recv-Q  Send-Q    Local Address:Port   Peer Address:Port
+LISTEN 0       128             0.0.0.0:22          0.0.0.0:*     users:(("sshd",pid=815,fd=5))
+LISTEN 0       128                   *:80                *:*     users:(("httpd",pid=10356,fd=4),("httpd",pid=10355,fd=4),("httpd",pid=10354,fd=4),("httpd",pid=10352,fd=4))
+LISTEN 0       128                [::]:22             [::]:*     users:(("sshd",pid=815,fd=7))
 
 [root@ocp-bastion ~]# firewall-cmd --list-services
 cockpit dhcpv6-client ssh
@@ -39,23 +39,64 @@ master.ign
 metadata.json
 worker.ign
 
+[root@ocp-bastion ~]# kubectl config get-contexts
+CURRENT   NAME    CLUSTER   AUTHINFO   NAMESPACE
+*         admin   test      admin
+
+[root@ocp-bastion ~]# oc config get-contexts
+CURRENT   NAME    CLUSTER   AUTHINFO   NAMESPACE
+*         admin   test      admin
+
+[root@ocp-bastion ~]# oc get nodes
+NAME                               STATUS   ROLES           AGE   VERSION
+ocp-lab-1.test.sourcesense.local   Ready    master,worker   34d   v1.20.0+df9c838
+ocp-lab-2.test.sourcesense.local   Ready    master,worker   33d   v1.20.0+df9c838
+ocp-lab-3.test.sourcesense.local   Ready    master,worker   34d   v1.20.0+df9c838
+
+[root@ocp-bastion ~]# oc projects
+You have access to the following projects and can switch between them with ' project <projectname>':
+
+  * default
+    kube-node-lease
+    kube-public
+    kube-system
+    openshift
+    openshift-apiserver
+    openshift-apiserver-operator
+...
+...
+
+[root@ocp-bastion ~]# oc project openshift-etcd
+Now using project "openshift-etcd" on server "https://api.test.sourcesense.local:6443".
+[root@ocp-bastion ~]# oc get pods
+NAME                                                 READY   STATUS      RESTARTS   AGE
+etcd-ocp-lab-1.test.sourcesense.local                3/3     Running     0          33d
+etcd-ocp-lab-2.test.sourcesense.local                3/3     Running     11         33d
+etcd-ocp-lab-3.test.sourcesense.local                3/3     Running     0          33d
+etcd-quorum-guard-6cc7f5954d-2kb95                   1/1     Running     0          33d
+etcd-quorum-guard-6cc7f5954d-6dbzf                   1/1     Running     0          33d
+etcd-quorum-guard-6cc7f5954d-tx988                   1/1     Running     0          34d
+installer-2-ocp-lab-1.test.sourcesense.local         0/1     Completed   0          34d
+...
+...
+
 ********************
 * The haproxy vm   *
 ********************
 
 [root@ocp-haproxy ~]# ss -ntlp
-State           Recv-Q           Send-Q                      Local Address:Port                      Peer Address:Port                                                      
-LISTEN          0                128                               0.0.0.0:80                             0.0.0.0:*              users:(("haproxy",pid=2406,fd=10))         
-LISTEN          0                128                               0.0.0.0:8404                           0.0.0.0:*              users:(("haproxy",pid=2406,fd=12))         
-LISTEN          0                10                          192.168.122.8:53                             0.0.0.0:*              users:(("named",pid=1693,fd=23))           
-LISTEN          0                10                              127.0.0.1:53                             0.0.0.0:*              users:(("named",pid=1693,fd=22))           
-LISTEN          0                128                               0.0.0.0:22                             0.0.0.0:*              users:(("sshd",pid=810,fd=5))              
-LISTEN          0                128                             127.0.0.1:953                            0.0.0.0:*              users:(("named",pid=1693,fd=24))           
-LISTEN          0                128                               0.0.0.0:443                            0.0.0.0:*              users:(("haproxy",pid=2406,fd=11))         
-LISTEN          0                128                               0.0.0.0:22623                          0.0.0.0:*              users:(("haproxy",pid=2406,fd=9))          
-LISTEN          0                128                               0.0.0.0:6443                           0.0.0.0:*              users:(("haproxy",pid=2406,fd=7))          
-LISTEN          0                10                                   [::]:53                                [::]:*              users:(("named",pid=1693,fd=21))           
-LISTEN          0                128                                  [::]:22                                [::]:*              users:(("sshd",pid=810,fd=7))              
+State           Recv-Q           Send-Q                      Local Address:Port                      Peer Address:Port
+LISTEN          0                128                               0.0.0.0:80                             0.0.0.0:*              users:(("haproxy",pid=2406,fd=10))
+LISTEN          0                128                               0.0.0.0:8404                           0.0.0.0:*              users:(("haproxy",pid=2406,fd=12))
+LISTEN          0                10                          192.168.122.8:53                             0.0.0.0:*              users:(("named",pid=1693,fd=23))
+LISTEN          0                10                              127.0.0.1:53                             0.0.0.0:*              users:(("named",pid=1693,fd=22))
+LISTEN          0                128                               0.0.0.0:22                             0.0.0.0:*              users:(("sshd",pid=810,fd=5))
+LISTEN          0                128                             127.0.0.1:953                            0.0.0.0:*              users:(("named",pid=1693,fd=24))
+LISTEN          0                128                               0.0.0.0:443                            0.0.0.0:*              users:(("haproxy",pid=2406,fd=11))
+LISTEN          0                128                               0.0.0.0:22623                          0.0.0.0:*              users:(("haproxy",pid=2406,fd=9))
+LISTEN          0                128                               0.0.0.0:6443                           0.0.0.0:*              users:(("haproxy",pid=2406,fd=7))
+LISTEN          0                10                                   [::]:53                                [::]:*              users:(("named",pid=1693,fd=21))
+LISTEN          0                128                                  [::]:22                                [::]:*              users:(("sshd",pid=810,fd=7))
 LISTEN          0                128                                 [::1]:953                               [::]:*              users:(("named",pid=1693,fd=25))
 
 [root@ocp-haproxy ~]# firewall-cmd --list-services
@@ -108,19 +149,19 @@ defaults
     timeout check           10s
     maxconn                 3000
 
-frontend ocp_api 
+frontend ocp_api
     bind *:6443
     default_backend ocp_api
 
-frontend ocp_bootstrap 
+frontend ocp_bootstrap
     bind *:22623
     default_backend ocp_bootstrap
 
-frontend ocp_http 
+frontend ocp_http
     bind *:80
     default_backend ocp_http
 
-frontend ocp_https 
+frontend ocp_https
      bind *:443
     default_backend ocp_https
 
@@ -149,7 +190,7 @@ frontend stats
     stats uri /stats
     stats refresh 10s
 
-[root@ocp-haproxy ~]# cat /etc/named/test.sourcesense.local.zone 
+[root@ocp-haproxy ~]# cat /etc/named/test.sourcesense.local.zone
 $TTL 1W
 @	IN	SOA	ns1.test.sourcesense.local.	root (
 			2021061000	; serial
@@ -217,7 +258,7 @@ WARNING: Direct SSH access to machines is not recommended; instead,
 make configuration changes via `machineconfig` objects:
   https://docs.openshift.com/container-platform/4.7/architecture/architecture-rhcos.html
 
-[core@ocp-lab-1 ~]$ lscpu 
+[core@ocp-lab-1 ~]$ lscpu
 Architecture:        x86_64
 CPU op-mode(s):      32-bit, 64-bit
 Byte Order:          Little Endian
