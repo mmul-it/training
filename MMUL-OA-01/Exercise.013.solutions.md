@@ -1,4 +1,4 @@
-# Exercise 013 - Create a PVC and see details of bounded PV
+# Exercise 013 - Create a PVC and see details of bounded PV - Solutions
 
 _1) As 'developer' create the yaml file for a PersitentVolumeClaim of 2Gb._
 

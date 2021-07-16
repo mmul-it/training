@@ -1,4 +1,4 @@
-# Exercise 011 - Create a secure route
+# Exercise 011 - Create a secure route - Solutions
 
 1) Become 'developer':
 

@@ -1,4 +1,4 @@
-# Exercise 012 - Find HAProxy stats page details
+# Exercise 012 - Find HAProxy stats page details - Solutions
 
 _1) As 'kubeadmin', obtain the name of the router pod in the openshift-ingress
    project._
