@@ -1,7 +1,10 @@
 # Demonstration 001 - Forcing the namespace PID of your container
 
-1) Spot the difference between:
+---
 
+Spot the difference between:
+
+``` console
 [core@crc-m89r2-master-0 ~]$ podman run --pid=host -it alpine ps -ef
 PID   USER     TIME  COMMAND
     1 nobody    0:18 /usr/lib/systemd/systemd --switched-root --system --deserialize 16
@@ -14,9 +17,11 @@ PID   USER     TIME  COMMAND
    10 nobody    0:00 [rcu_sched]
 ...
 ...
+```
 
-And
+And:
 
+``` console
 [core@crc-m89r2-master-0 ~]$ podman run -it alpine ps -ef
 PID   USER     TIME  COMMAND
     1 root      0:00 ps -ef
