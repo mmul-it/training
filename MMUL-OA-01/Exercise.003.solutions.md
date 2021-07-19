@@ -1,95 +1,119 @@
 # Exercise 003 - Explore the various OpenShift elements - Solutions
 
-1) eval $(crc oc-env)
+---
 
-2) Use oc login as developer:
+1. Load the oc environment via ```crc oc-env```:
 
-> oc login -u developer
-Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
+   ```console
+   eval $(crc oc-env)
+   ```
 
-You don't have any projects. You can try to create a new project, by running
+2. Use oc login as developer:
 
-    oc new-project <projectname>
+   ```console
+   > oc login -u developer
+   Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
 
-And check permissions:
+   You don't have any projects. You can try to create a new project, by running
 
-> oc projects
-You are not a member of any projects. You can request a project to be created with the 'new-project' command.
+       oc new-project <projectname>
+   ```
 
-Then do the same as kubeadmin:
+   And check permissions:
 
-> oc login -u kubeadmin
-Logged into "https://api.crc.testing:6443" as "kubeadmin" using existing credentials.
+   ```console
+   > oc projects
+   You are not a member of any projects. You can request a project to be created with the 'new-project' command.
+   ```
 
-You have access to 62 projects, the list has been suppressed. You can list all projects with 'oc projects'
+   Then do the same as kubeadmin:
 
-Using project "default".
+   ```console
+   > oc login -u kubeadmin
+   Logged into "https://api.crc.testing:6443" as "kubeadmin" using existing credentials.
 
-> oc status
-In project default on server https://api.crc.testing:6443
+   You have access to 62 projects, the list has been suppressed. You can list all projects with 'oc projects'
 
-svc/openshift - kubernetes.default.svc.cluster.local
-svc/kubernetes - 10.217.4.1:443 -> 6443
+   Using project "default".
 
-View details with 'oc describe <resource>/<name>' or list resources with 'oc get all'.
+   > oc status
+   In project default on server https://api.crc.testing:6443
 
-3) Use the oc command to list the available projects:
+   svc/openshift - kubernetes.default.svc.cluster.local
+   svc/kubernetes - 10.217.4.1:443 -> 6443
 
-> oc projects
-You have access to the following projects and can switch between them with ' project <projectname>':
+   View details with 'oc describe <resource>/<name>' or list resources with 'oc get all'.
+   ```
 
-  * default
-    kube-node-lease
-    kube-public
-    kube-system
-    openshift
-    openshift-apiserver
-...
-...
+3. Use the oc command to list the available projects:
 
-4) First you need to get into the openshift-dns project:
+   ```console
+   > oc projects
+   You have access to the following projects and can switch between them with ' project <projectname>':
 
-> oc project openshift-dns
-Now using project "openshift-dns" on server "https://api.crc.testing:6443".
+     * default
+       kube-node-lease
+       kube-public
+       kube-system
+       openshift
+       openshift-apiserver
+   ...
+   ...
+   ```
 
-Then you can use the 'oc get all' command to query for all the elements:
+4. First you need to get into the openshift-dns project:
 
-> oc get all
-NAME                    READY   STATUS    RESTARTS   AGE
-pod/dns-default-pc2tf   3/3     Running   0          13d
+   ```console
+   > oc project openshift-dns
+   Now using project "openshift-dns" on server "https://api.crc.testing:6443".
+   ```
 
-NAME                  TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)                  AGE
-service/dns-default   ClusterIP   10.217.4.10   <none>        53/UDP,53/TCP,9154/TCP   13d
+   Then you can use the 'oc get all' command to query for all the elements:
 
-NAME                         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
-daemonset.apps/dns-default   1         1         1       1            1           kubernetes.io/os=linux   13d
+   ```console
+   > oc get all
+   NAME                    READY   STATUS    RESTARTS   AGE
+   pod/dns-default-pc2tf   3/3     Running   0          13d
 
-5) Use login to become developer user again:
+   NAME                  TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)                  AGE
+   service/dns-default   ClusterIP   10.217.4.10   <none>        53/UDP,53/TCP,9154/TCP   13d
 
-> oc login -u developer
-Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
+   NAME                         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+   daemonset.apps/dns-default   1         1         1       1            1           kubernetes.io/os=linux   13d
+   ```
 
-You don't have any projects. You can try to create a new project, by running
+5. Use login to become developer user again:
 
-    oc new-project <projectname>
+   ```console
+   > oc login -u developer
+   Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
 
-> oc whoami
-developer
+   You don't have any projects. You can try to create a new project, by running
 
-Then following the suggestion, use 'oc new-project' to create a new project:
+       oc new-project <projectname>
 
-> oc new-project test-project
-Now using project "test-project" on server "https://api.crc.testing:6443".
+   > oc whoami
+   developer
+   ```
 
-You can add applications to this project with the 'new-app' command. For example, try:
+   Then following the suggestion, use 'oc new-project' to create a new project:
 
-    oc new-app rails-postgresql-example
+   ```console
+   > oc new-project test-project
+   Now using project "test-project" on server "https://api.crc.testing:6443".
 
-to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+   You can add applications to this project with the 'new-app' command. For example, try:
 
-    kubectl create deployment hello-node --image=k8s.gcr.io/serve_hostname
+       oc new-app rails-postgresql-example
 
-6) The new project is, of course, empty:
+   to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
 
-> oc get all
-No resources found in test-project namespace.
+       kubectl create deployment hello-node --image=k8s.gcr.io/serve_hostname
+   ```
+
+6. The new project is, of course, empty:
+
+   ```console
+   > oc get all
+   No resources found in test-project namespace.
+   ```
