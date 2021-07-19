@@ -1,13 +1,15 @@
 # Exercise 006 - Create a project and switch between projects
 
-1) Get current projects;
+---
 
-2) Create a new project named "test";
+1. Get current projects;
 
-3) See the new project either from cli and from web interface;
+2. Create a new project named "test";
 
-4) Create an additional project "new-test";
+3. See the new project either from cli and from web interface;
 
-5) See how different users (like developer) can see different projects;
+4. Create an additional project "new-test";
 
-6) Cleanup everything
+5. See how different users (like developer) can see different projects;
+
+6. Cleanup everything
