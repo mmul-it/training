@@ -13,7 +13,9 @@
 
    ```console
    > cat myclaim.yml
-   ---
+   ```
+   
+   ```yaml
    kind: PersistentVolumeClaim
    apiVersion: v1
    metadata:

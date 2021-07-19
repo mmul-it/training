@@ -26,7 +26,7 @@
    ```
 
 3) While editing the file:
-   - In the Deployment section, look for ```spec:``` and its replicas:
+   - In the Deployment section, look for ```spec:``` and its ```replicas:```
      definition.
      Change the value from 1 to 2;
    - In the Deployment section, add ```zone: dmz``` in

@@ -66,7 +66,7 @@
    Push successful
    ```
 
-4. You can now use the "oc expose" command to make the application available
+4. You can now use the ```oc expose``` command to make the application available
    outside the cluster:
 
    ```console
@@ -112,7 +112,7 @@
    ```
 
 6. Creating a new app from a Docker image it's easy as passing the image name
-   to the oc new-app command:
+   to the ```oc new-app``` command:
 
    ```console
    > oc new-app nginx

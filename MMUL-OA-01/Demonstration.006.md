@@ -19,14 +19,15 @@ data:
   kubeadmin: JDJhJDEwJC52bE03SU16VmNhWG4zREdFaUpQMi4zbi5tajZsbHV1QjFhMWN4R2h3eVYzbGtsMGZTMVg2
 kind: Secret
 metadata:
-…
-…
+...
+...
 ```
 
 The password is base64 formatted, so to decode it you can use the base64 command:
 
 ```
-[root@ocp-bastion ~]# echo JDJhJDEwJC52bE03SU16VmNhWG4zREdFaUpQMi4zbi5tajZsbHV1QjFhMWN4R2h3eVYzbGtsMGZTMVg2 | base64 --decode                                              $2a$10$.vlM7IMzVcaXn3DGEiJP2.3n.mj6lluuB1a1cxGhwyV3lkl0fS1X6
+[root@ocp-bastion ~]# echo JDJhJDEwJC52bE03SU16VmNhWG4zREdFaUpQMi4zbi5tajZsbHV1QjFhMWN4R2h3eVYzbGtsMGZTMVg2 | base64 --decode
+$2a$10$.vlM7IMzVcaXn3DGEiJP2.3n.mj6lluuB1a1cxGhwyV3lkl0fS1X6
 ```
 
 As you can see, this is an hash, so you can't get to know the password from
@@ -61,6 +62,7 @@ So there are two choices for logging into an existing cluster:
 
    [root@ocp-bastion ~]# oc logout
    Logged "kube:admin" out on "https://api.test.sourcesense.local:6443"
+   ```
 
 2. Via kubeconfig:
    ```console
@@ -81,8 +83,9 @@ So there are two choices for logging into an existing cluster:
 
    [root@ocp-bastion ~]# oc status
    error: you do not have rights to view project "default" specified in your config or the project doesn't exist
+   ```
 
-Using kubeconfig there’s no need to logout, because there’s no token.
+Using kubeconfig there's no need to logout, because there's no token.
 Authentication is made contextually via certificates.
 
 **IMPORTANT!** kubeadmin secret is vital to log into the cluster. If you remove

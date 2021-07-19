@@ -55,13 +55,14 @@
      $ oc login -u developer https://api.crc.testing:6443
    ```
 
-5) Eval the oc-env and podman-env to start using the oc command:
+5. Eval the oc-env and podman-env to start using the oc command:
 
    ```console
    > eval $(crc oc-env)
    > eval $(crc podman-env)
+   ```
 
-6) Put the different completion inside your local .bashrc file:
+6. Put the different completion inside your local .bashrc file:
 
    ```console
    > oc completion bash > ~/.oc-completion

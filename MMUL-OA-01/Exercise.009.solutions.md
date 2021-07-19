@@ -17,6 +17,7 @@
    NAME               PRIV      CAPS      SELINUX     RUNASUSER          FSGROUP     SUPGROUP    PRIORITY   READONLYROOTFS   VOLUMES
    anyuid             false     []        MustRunAs   RunAsAny           RunAsAny    RunAsAny    10         false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
    ...
+   ```
 
    And specifically on 'anyuid', 'privileged', 'restricted':
 
@@ -134,7 +135,7 @@
    ```
 
 5. Use 'oc adm policy add-scc-to-user' to associate 'useroot' service account
-to the 'anyuid' scc:
+   to the 'anyuid' scc:
 
    ```console
    > oc whoami

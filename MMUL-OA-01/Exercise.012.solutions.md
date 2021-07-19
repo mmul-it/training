@@ -35,7 +35,7 @@
    ```
 
 3. Check if the router-stats-default secret contains the two keys reported in the
-previous output:
+   previous output:
 
    ```console
    > oc describe secret router-stats-default
@@ -62,8 +62,8 @@ previous output:
    ```
 
 4. Using the private key for CodeReady VM in your home directory, you can login
-with the core user on that. SSH port may vary on different CodeReady
-installations:
+   with the core user on that. SSH port may vary on different CodeReady
+   installations:
 
    ```console
    > ssh -i ~/.crc/machines/crc/id_ecdsa core@127.0.0.1 -p2222
