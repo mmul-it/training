@@ -22,40 +22,40 @@
 
    ```console
    > oc describe scc/anyuid
-   Name:						anyuid
-   Priority:					10
-   Access:						
-     Users:					<none>
-     Groups:					system:cluster-admins
-   Settings:					
-     Allow Privileged:				false
-     Allow Privilege Escalation:			0xc4206917fc
-     Default Add Capabilities:			<none>
-     Required Drop Capabilities:			MKNOD
-     Allowed Capabilities:				<none>
-     Allowed Seccomp Profiles:			<none>
-     Allowed Volume Types:				configMap,downwardAPI,emptyDir,persistentVolumeClaim,projected,secret
-     Allowed Flexvolumes:				<all>
-     Allowed Unsafe Sysctls:			<none>
-     Forbidden Sysctls:				<none>
-     Allow Host Network:				false
-     Allow Host Ports:				false
-     Allow Host PID:				false
-     Allow Host IPC:				false
-     Read Only Root Filesystem:			false
-     Run As User Strategy: RunAsAny		
-       UID:					<none>
-       UID Range Min:				<none>
-       UID Range Max:				<none>
-     SELinux Context Strategy: MustRunAs		
-       User:					<none>
-       Role:					<none>
-       Type:					<none>
-       Level:					<none>
-     FSGroup Strategy: RunAsAny			
-       Ranges:					<none>
-     Supplemental Groups Strategy: RunAsAny	
-       Ranges:					<none>
+   Name:                        anyuid
+   Priority:                    10
+   Access:                        
+     Users:                    <none>
+     Groups:                    system:cluster-admins
+   Settings:                    
+     Allow Privileged:                false
+     Allow Privilege Escalation:            0xc4206917fc
+     Default Add Capabilities:            <none>
+     Required Drop Capabilities:            MKNOD
+     Allowed Capabilities:                <none>
+     Allowed Seccomp Profiles:            <none>
+     Allowed Volume Types:                configMap,downwardAPI,emptyDir,persistentVolumeClaim,projected,secret
+     Allowed Flexvolumes:                <all>
+     Allowed Unsafe Sysctls:            <none>
+     Forbidden Sysctls:                <none>
+     Allow Host Network:                false
+     Allow Host Ports:                false
+     Allow Host PID:                false
+     Allow Host IPC:                false
+     Read Only Root Filesystem:            false
+     Run As User Strategy: RunAsAny        
+       UID:                    <none>
+       UID Range Min:                <none>
+       UID Range Max:                <none>
+     SELinux Context Strategy: MustRunAs        
+       User:                    <none>
+       Role:                    <none>
+       Type:                    <none>
+       Level:                    <none>
+     FSGroup Strategy: RunAsAny            
+       Ranges:                    <none>
+     Supplemental Groups Strategy: RunAsAny    
+       Ranges:                    <none>
 
    > oc describe scc/privileged
    ...
@@ -168,12 +168,12 @@ to the 'anyuid' scc:
       ...
       spec:
         ...
-   	 template:
-   	   ...
-   	   spec:
-   	     ...
-   	     serviceAccountName: useroot
-   		 ...
+         template:
+          ...
+            spec:
+            ...
+            serviceAccountName: useroot
+            ...
    ```
 
    ```console
