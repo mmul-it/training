@@ -16,11 +16,11 @@
    ```console
    > oc new-project jenkins
    Now using project "jenkins" on server "https://api.crc.testing:6443"
-```
+   ```
 
 3. Login as 'kubeadmin':
 
-   ```
+   ```console
    > oc login -u kubeadmin
    Logged into "https://api.crc.testing:6443" as "kubeadmin" using existing credentials.
    You have access to 63 projects, the list has been suppressed. You can list all projects with 'oc projects'
