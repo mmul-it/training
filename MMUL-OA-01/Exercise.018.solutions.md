@@ -9,7 +9,7 @@
    Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
    ```
 
-then create a new project:
+   then create a new project:
 
    ```console
    > oc new-project testscale
