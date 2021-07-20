@@ -5,7 +5,7 @@
 1. Load the oc environment via ```crc oc-env```:
 
    ```console
-   eval $(crc oc-env)
+   > eval $(crc oc-env)
    ```
 
 2. Use oc login as developer:

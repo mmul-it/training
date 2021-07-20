@@ -28,7 +28,7 @@
    - In the parameters section, add a parameter named REPLICAS with proper
      descriptions and a default vault of 1:
 
-     ```console
+     ```yaml
      - description: How many replicas of nginx you need.
        displayName: Nginx Replicas
          value: "1"
@@ -38,7 +38,7 @@
    - Replace the static replicas value in the DeploymentConfig specs twith the
      parameter:
 
-     ```console
+     ```yaml
      replicas: ${{REPLICAS}}
      ```
 

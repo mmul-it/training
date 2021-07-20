@@ -35,7 +35,7 @@
    ```
 
 3. Check if the router-stats-default secret contains the two keys reported in the
-previous output:
+   previous output:
 
    ```console
    > oc describe secret router-stats-default

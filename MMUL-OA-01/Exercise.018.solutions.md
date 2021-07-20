@@ -11,12 +11,12 @@
 
    then create a new project:
 
-   ```
+   ```console
    > oc new-project testscale
    Now using project "testscale" on server "https://api.crc.testing:6443".
    ```
 
-2. You can do that by using the new-app command:
+2. You can do that by using the "oc new-app" command:
 
    ```console
    > oc new-app --name=scale-docker-app https://github.com/mmul-it/docker --context-dir=s2i-php-helloworld
@@ -32,7 +32,6 @@
    Successfully pushed image-registry.openshift-image-registry.svc:5000/testscale/scale-docker-app@sha256:dce19687cf5d926b1178e6ed3ddd8d312a13c995d5590761ed77dd7e13ea871b
    Push successful
    ```
-
    You can see there is a pod running the app now:
 
    ```console
@@ -59,7 +58,6 @@
    Pods Status:    1 Running / 0 Waiting / 0 Succeeded / 0 Failed
    ...
    ```
-
    Requisites are met.
 
 4. Change the replicas with ```oc scale```:
@@ -68,9 +66,9 @@
    > oc scale --replicas=3 deployment scale-docker-app
    deployment.apps/scale-docker-app scaled
    ```
-
+   
    If you quickly check again the ReplicaSet you can see the current status:
-
+   
    ```console
    > oc describe rs scale-docker-app-5b7ccb8dd5
    ...
@@ -88,9 +86,8 @@
    Pods Status:    3 Running / 0 Waiting / 0 Succeeded / 0 Failed
    ...
    ```
-
    There are more pods now:
-
+   
    ```console
    oc get pods
    NAME                                READY   STATUS      RESTARTS   AGE
@@ -108,7 +105,7 @@
    ```
 
    Quickly, the replicas scale down to 1:
-
+   
    ```console
    > oc get rs
    NAME                          DESIRED   CURRENT   READY   AGE
@@ -120,7 +117,7 @@
    scale-docker-app-5b7ccb8dd5-qdz5c   1/1     Running     0          8m25s
    ```
 
-6. Also autoscaling can be done with a single command:
+6. Autoscaling can also be done with a single command:
 
    ```console
    > oc autoscale deployment scale-docker-app --min 1 --max 3 --cpu-percent=50
@@ -135,9 +132,9 @@
    NAME                          DESIRED   CURRENT   READY   AGE
    scale-docker-app-5b7ccb8dd5   1         1         1       11m
    ```
-
+   
    But a new HorizontalPodAutoscaling resource was created:
-
+   
    ```console
    > oc get hpa
    NAME               REFERENCE                     TARGETS         MINPODS   MAXPODS   REPLICAS   AGE

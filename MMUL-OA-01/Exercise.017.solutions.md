@@ -2,7 +2,8 @@
 
 ---
 
-1. Install Helm (chose the preferred installation method looking at https://helm.sh/docs/intro/install/)
+1. Install Helm (chose the preferred installation method looking at the
+   [installation page](https://helm.sh/docs/intro/install/)):
 
    ```console
    > curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
@@ -33,7 +34,7 @@
    clusterrole.rbac.authorization.k8s.io/system:openshift:scc:anyuid added: "default"
    ```
 
-5. Add Bitnami Helm Repo (check on https://github.com/bitnami/charts/tree/master/bitnami/jenkins
+5. Add Bitnami Helm Repo (check on [Bitname GitHub page](https://github.com/bitnami/charts/tree/master/bitnami/jenkins))
    in case of an unexpected change of repo url:
 
    ```console

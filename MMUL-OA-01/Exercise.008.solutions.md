@@ -71,7 +71,7 @@
    ```
 
 4. To locally manipulate the htpasswd file you'll need the htpasswd command
-which is availabe in the httpd-tools package:
+   which is availabe in the httpd-tools package:
 
    ```console
    > yum -y install httpd-tools

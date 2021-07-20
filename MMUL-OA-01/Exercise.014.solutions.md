@@ -16,8 +16,8 @@
    Now using project "teststorage" on server "https://api.crc.testing:6443".
    ```
 
-2. You can use an easy "oc create" command to create the DeploymentConfig:
-
+2. You can use an easy ```oc create``` command to create the DeploymentConfig:
+   
    ```console
    > oc create deploymentconfig tomcat --image=tomcat
    deploymentconfig.apps.openshift.io/tomcat created
@@ -52,7 +52,9 @@
 
    ```console
    > cat tomcat-claim.yaml
-   ---
+   ```
+
+   ```yaml
    apiVersion: v1
    kind: PersistentVolumeClaim
    metadata:
@@ -86,6 +88,9 @@
    ```console
    > oc edit deploymentconfig tomcat
    ...
+   ```
+
+   ```yaml
        spec:
          containers:
          - image: tomcat
@@ -99,6 +104,9 @@
              persistentVolumeClaim:
                claimName: tomcat-claim
    ...
+   ```
+
+   ```console
    deploymentconfig.apps.openshift.io/tomcat edited
    ```
 

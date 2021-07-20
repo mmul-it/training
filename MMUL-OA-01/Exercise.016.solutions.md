@@ -30,7 +30,9 @@
 
    ```console
    > cat nginx-is.yml
-   ---
+   ```
+
+   ```yaml
    apiVersion: image.openshift.io/v1
    kind: ImageStream
    metadata:
