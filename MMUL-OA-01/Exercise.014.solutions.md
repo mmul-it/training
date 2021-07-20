@@ -179,7 +179,7 @@
    ...
    ```
 
-   And see the lclaim in the cluster:
+   And see the claim in the cluster:
 
    ```console
    > oc get pvc
@@ -195,11 +195,18 @@
    NAME             READY   STATUS    RESTARTS   AGE
    tomcat-3-pcspb   1/1     Running   0          3m56s
 
-   > oc exec tomcat-3-pcspb -- mount | grep \/storage\
+   > oc exec tomcat-3-pcspb -- mount | grep '/storage '
    /dev/vda4 on /storage type xfs (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,prjquota)
 
    > oc exec tomcat-3-pcspb -- ls -al /storage
    total 0
    drwxrwx---. 2 root root  6 Jul  2 04:01 .
    dr-xr-xr-x. 1 root root 78 Jul 16 08:52 ..
+   ```
+
+   Cleanup:
+
+   ```console
+   > oc delete project teststorage
+   project.project.openshift.io "teststorage" deleted
    ```
