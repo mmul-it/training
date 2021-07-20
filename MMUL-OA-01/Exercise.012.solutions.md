@@ -61,21 +61,9 @@ previous output:
      statsUsername: ZFhObGNtMW5jbmh3
    ```
 
-4. Using the private key for CodeReady VM in your home directory, you can login
-with the core user on that. SSH port may vary on different CodeReady
-installations:
+4. Check HAProxy port by pointing directly to crc IP:
 
    ```console
-   > ssh -i ~/.crc/machines/crc/id_ecdsa core@127.0.0.1 -p2222
-   Red Hat Enterprise Linux CoreOS 47.83.202106200838-0
-   Part of OpenShift 4.7, RHCOS is a Kubernetes native operating system
-   managed by the Machine Config Operator (`clusteroperator/machine-config`).
-   ...
-   ```
-
-   From that you can curl the /healtz endpoint on the haproxy metrics port:
-
-   ```console
-   [core@crc-4727w-master-0 ~]$ curl http://localhost:1936/healthz ; echo
+   > curl $(crc ip):1936/healthz
    ok
    ```
