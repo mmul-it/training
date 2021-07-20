@@ -2,40 +2,7 @@
 
 ---
 
-1. Use the command ```oc new-app``` to create the yaml file:
-
-   ```console
-   > oc new-app mariadb MYSQL_USER=user MYSQL_PASSWORD=pass MYSQL_DATABASE=testdb -l db=mariadb > mariadb-deployment.yaml
-   ```
-
-2. Check the content of *mariadb-deployment.yaml*:
-
-   ```console
-   > cat mariadb-deployment.yaml
-   ...
-   ```
-
-   Or if you want to extract just the main resources defined:
-
-   ```console
-   > grep "  kind:" mariadb-deployment.yaml
-     kind: ImageStreamTag
-         kind: DockerImage
-     kind: Deployment
-     kind: Service
-   ```
-
-3) While editing the file:
-   - In the Deployment section, look for ```spec:``` and its replicas:
-     definition.
-     Change the value from 1 to 2;
-   - In the Deployment section, add ```zone: dmz``` in
-     ```metadata:labels:```
-     and
-     ```spec:template:metadata:labels:```
-   - Remove entirely the Service resource (with kind: Service)
-
-4) Login as developer and create the 'my-second-project':
+1. Login as developer and create the 'my-second-project':
 
    ```console
    > oc login -u developer
@@ -57,7 +24,38 @@
        kubectl create deployment hello-node --image=k8s.gcr.io/serve_hostname
    ```
 
-   Create the deployment with ```oc create -f```:
+   Use the command ```oc new-app``` to create the yaml file:
+
+   ```console
+   > oc new-app mariadb MYSQL_USER=user MYSQL_PASSWORD=pass MYSQL_DATABASE=testdb -l db=mariadb -o yaml > mariadb-deployment.yaml
+   ```
+
+2. Check the content of *mariadb-deployment.yaml*:
+
+   ```console
+   > cat mariadb-deployment.yaml
+   ...
+   ```
+
+   Or if you want to extract just the main resources defined:
+
+   ```console
+   > grep "  kind:" mariadb-deployment.yaml
+     kind: Deployment
+     kind: Service
+   ```
+
+3. While editing the file:
+   - In the Deployment section, look for ```spec:``` and its replicas:
+     definition.
+     Change the value from 1 to 2;
+   - In the Deployment section, add ```zone: dmz``` in
+     ```metadata:labels:```
+     and
+     ```spec:template:metadata:labels:```
+   - Remove entirely the Service resource (with kind: Service)
+
+4. Create the deployment with ```oc create -f```:
 
    ```console
    > oc create -f mariadb-deployment.yaml
@@ -65,7 +63,7 @@
    deployment.apps/mariadb created
    ```
 
-5) Use ```oc describe deployment``` to get details of the deployment:
+5. Use ```oc describe deployment``` to get details of the deployment:
 
    ```console
    > oc describe deployment mariadb
@@ -89,7 +87,7 @@
    mariadb-64bcf6dd4c-4vqzs   1/1     Running   0          76s
    mariadb-64bcf6dd4c-l4rdh   1/1     Running   0          80s
 
-   > oc logs mysql-jb97m
+   > oc logs mariadb-64bcf6dd4c-4vqzs
    => sourcing 20-validate-variables.sh ...
    => sourcing 25-validate-replication-variables.sh ...
    => sourcing 30-base-config.sh ...
@@ -104,7 +102,7 @@
    ...
    ```
 
-6) Using ```oc delete``` with -l to select zone, delete all the elements:
+6. Using ```oc delete``` with -l to select zone, delete all the elements:
 
    ```console
    > oc delete all -l zone=dmz

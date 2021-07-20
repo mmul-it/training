@@ -41,23 +41,7 @@
    Browse the OpenShift web interface;
    ```
 
-4. Use again ```oc new-project``` for the new one:
-
-   ```console
-   > oc new-project new-test --description "NEW Test Project for course" --display-name "NEW Test Project"
-   Now using project "new-test" on server "https://api.crc.testing:6443".
-   ...
-
-   > oc projects
-   You have access to the following projects and can switch between them with 'oc project <projectname>':
-
-   ...
-     * new-test - NEW Test Project
-   ...
-       test - Test Project
-   ```
-
-5. Use ```oc login``` to log as developer:
+4. Use ```oc login``` to log as developer:
 
    ```console
    > oc login -u developer
@@ -73,7 +57,7 @@
    To see projects on another server, pass '--server=<server>'.
    ```
 
-6. Moving back to ```kubeadmin```, delete the two created projects:
+5. Moving back to ```kubeadmin```, delete the two created projects:
 
    ```console
    > oc login -u kubeadmin
@@ -82,7 +66,4 @@
 
    > oc delete project test
    project.project.openshift.io "test" deleted
-
-   > oc delete project new-test
-   project.project.openshift.io "new-test" deleted
    ```

@@ -8,8 +8,6 @@
 
 3. See the new project either from cli and from web interface;
 
-4. Create an additional project "new-test";
+4. See how different users (like developer) can see different projects;
 
-5. See how different users (like developer) can see different projects;
-
-6. Cleanup everything
+5. Cleanup everything;
