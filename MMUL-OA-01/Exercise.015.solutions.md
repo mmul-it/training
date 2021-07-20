@@ -85,7 +85,7 @@
    Welcome in MMUL!
    ```
 
-5. Remove the application can be done in two passages. First of all remove the
+5. Application removal can be done in two steps. First of all remove the
    application service and route:
 
    ```console
@@ -115,7 +115,7 @@
    to the oc new-app command:
 
    ```console
-   > oc new-app nginx
+   > oc new-app --docker-image=nginx:latest
    --> Found image 3f3b9d2 (3 weeks old) in image stream "openshift/nginx" under tag "1.18-ubi8" for "nginx"
    ...
    --> Success
@@ -135,6 +135,29 @@
 
    As you can see, creating an app from a Docker image doesn't require to build
    anything, so the BuildConfig wasn't create.
+
+   Remember that nginx image from Docker will require high permissions to run.
+   So you need to assign the ```serviceAccountName: useroot``` to the
+   application spec, as shown in [Exercise 009](https://github.com/mmul-it/training/blob/master/MMUL-OA-01/Exercise.009.solutions.md):
+
+   ```console
+   >  oc login -u kubeadmin
+   Logged into "https://api.crc.testing:6443" as "kubeadmin" using existing credentials.
+   ...
+
+   > oc create serviceaccount useroot
+   serviceaccount/useroot created
+
+   > oc adm policy add-scc-to-user anyuid -z useroot
+   clusterrole.rbac.authorization.k8s.io/system:openshift:scc:anyuid added: "useroot"
+
+   > oc login -u developer
+   Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
+   ...
+
+   > oc patch deployment nginx --patch '{"spec":{"template":{"spec":{"serviceAccountName": "useroot"}}}}'
+   deployment.apps/nginx patched
+   ```
 
 7. As before, expose the application by using the Service name:
 
@@ -164,8 +187,7 @@
    service "nginx" deleted
    ```
 
-   This time you can just delete the Deployment, so it will delete the created
-   pod also:
+   This time you can just delete the Deployment, it will also delete the pod:
 
    ```console
    > oc delete deployment nginx
@@ -177,4 +199,7 @@
 
    > oc get pods
    No resources found in testdeploy namespace.
+
+   > oc delete project testdeploy
+   project.project.openshift.io "testdeploy" deleted
    ```
