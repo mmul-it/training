@@ -2,11 +2,14 @@
 
 ---
 
-1. Login as developer on the cluster:
+1. Login as developer on the cluster and create a project named 'pvc-test':
 
    ```console
    > oc login -u developer
    Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
+
+   > oc new-project pvc-test
+   Now using project "pvc-test" on server "https://api.crc.testing:6443".
    ```
 
    Write a yaml with the PersistentVolumeClaim definition:
@@ -18,12 +21,12 @@
    apiVersion: v1
    metadata:
      name: myclaim
-     spec:
-       accessModes:
-         - ReadWriteOnce
-       resources:
-         requests:
-           storage: 2Gi
+   spec:
+     accessModes:
+       - ReadWriteOnce
+     resources:
+       requests:
+         storage: 2Gi
    ```
 
    Create the claim on the cluster:
@@ -47,19 +50,19 @@
    ```console
    > oc describe pvc myclaim
    Name:          myclaim
-   Namespace:     route-test
+   Namespace:     pvc-test
    StorageClass:
    Status:        Bound
    Volume:        pv0016
    Labels:        <none>
    Annotations:   pv.kubernetes.io/bind-completed: yes
                   pv.kubernetes.io/bound-by-controller: yes
-                           Finalizers:    [kubernetes.io/pvc-protection]
-                           Capacity:      100Gi
-                           Access Modes:  RWO,ROX,RWX
-                           VolumeMode:    Filesystem
-                           Used By:       <none>
-                           Events:        <none>
+   Finalizers:    [kubernetes.io/pvc-protection]
+   Capacity:      100Gi
+   Access Modes:  RWO,ROX,RWX
+   VolumeMode:    Filesystem
+   Used By:       <none>
+   Events:        <none>
    ```
 
 3. Check the available PersitentVolumes on the cluster:
