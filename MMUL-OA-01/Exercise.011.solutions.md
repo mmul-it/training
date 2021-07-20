@@ -40,8 +40,28 @@
    ```
 
    if you see the pod in CrashLoop status, remember that nginx image from Docker
-   will require high permissions to run. So you need to assign the useroot
-   serviceAccountName: to the application spec (see Exercise 009).
+   will require high permissions to run. So you need to assign the
+   ```serviceAccountName: useroot``` to the application spec, as shown in
+   [Exercise 009](https://github.com/mmul-it/training/blob/master/MMUL-OA-01/Exercise.009.solutions.md):
+
+   ```console
+   >  oc login -u kubeadmin
+   Logged into "https://api.crc.testing:6443" as "kubeadmin" using existing credentials.
+   ...
+
+   > oc create serviceaccount useroot
+   serviceaccount/useroot created
+
+   > oc adm policy add-scc-to-user anyuid -z useroot
+   clusterrole.rbac.authorization.k8s.io/system:openshift:scc:anyuid added: "useroot"
+
+   > oc login -u developer
+   Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
+   ...
+
+   > oc patch deployment testroute --patch '{"spec":{"template":{"spec":{"serviceAccountName": "useroot"}}}}'
+   deployment.apps/testroute patched
+   ```
 
 3) Create a key and a certificate request:
 
@@ -97,4 +117,11 @@
    ...
                                                                   <h1>Welcome to nginx!</h1>
    ...
+   ```
+
+   Cleanup:
+
+   ```console
+   > oc delete project route-test
+   project.project.openshift.io "route-test" deleted
    ```
