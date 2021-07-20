@@ -146,11 +146,14 @@ which is availabe in the httpd-tools package:
 
        oc new-project <projectname>
 
+   > oc login -u kubeadmin
+   Logged into "https://api.crc.testing:6443" as "kubeadmin" using existing credentials.
+
    > oc get users
    NAME        UID                                    FULL NAME   IDENTITIES
    developer   caa355c8-c867-4397-b9df-78d7a3ad3ca6               developer:developer
    kubeadmin   2f07aa13-30f9-4db0-8aa5-c1e546f5196e               developer:kubeadmin
-   rasca       48ea9309-8e3c-44ab-94ee-0b16e1e5833b               developer:rasca
+   myuser      48ea9309-8e3c-44ab-94ee-0b16e1e5833b               developer:myuser
 
    The user is by default part of the developer identity, which means that can
    create new projects.
