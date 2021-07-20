@@ -12,14 +12,14 @@
 2. Find the template to use as a starting point:
 
    ```console
-   > oc get templates | grep nginx
-   nginx-example                                   An example Nginx HTTP server and a reverse proxy (nginx) application that ser...   10 (3 blank)      5
+   > oc get templates -A | grep nginx
+   openshift   nginx-example                                   An example Nginx HTTP server and a reverse proxy (nginx) application that ser...   10 (3 blank)      5
    ```
 
-   From that we can generate our yml file:
+   From which we can generate our yml file:
 
    ```console
-   > oc get template nginx-example -o yaml > my-simple-nginx-template.yml
+   > oc -n openshift get template nginx-example -o yaml > my-simple-nginx-template.yml
    ```
 
 3. Edit the my-simple-nginx-template.yml file and:
@@ -53,9 +53,18 @@
    template.template.openshift.io/simple-nginx created
    ```
 
-5. Using your template is now possibile via the new-app command.
+5. As 'developer' using your template is now possibile via the ```oc new-app```
+   command:
 
    ```console
+   > oc login -u developer
+   Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
+   ...
+
+   > oc new-project template-test
+   Now using project "template-test" on server "https://api.crc.testing:6443".
+   ...
+
    > oc new-app -p REPLICAS=2 simple-nginx
    --> Deploying template "openshift/simple-nginx" to project openshift
    ...
@@ -83,4 +92,11 @@
      dc/simple-nginx deploys istag/simple-nginx:latest <-
          bc/simple-nginx source builds https://github.com/sclorg/nginx-ex.git on istag/nginx:1.16-el8
    	  deployment #1 deployed 38 seconds ago - 2 pods
+   ```
+
+   Cleanup:
+
+   ```console
+   > oc delete project template-test
+   project.project.openshift.io "template-test" deleted
    ```
