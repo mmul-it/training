@@ -31,3 +31,26 @@
    > podman-remote ps -a
    CONTAINER ID  IMAGE   COMMAND  CREATED  STATUS  PORTS   NAMES
    ```
+
+   **IMPORTANT NOTE!** there's a bug that prevents podman-remote to get always
+   the expected output, causing sometimes output like this:
+
+   ```console
+   [crc@CentOS-83-64-minimal ~]$ podman-remote ps
+   CONTAINER ID  IMAGE   COMMAND  CREATED  STATUS  PORTS   NAMES
+
+   [crc@CentOS-83-64-minimal ~]$ podman-remote ps
+   Error: Get "http://d/v2.0.0/libpod/_ping": EOF
+
+   [crc@CentOS-83-64-minimal ~]$ podman-remote ps
+   Error: Get "http://d/v2.0.0/libpod/_ping": EOF
+
+   [crc@CentOS-83-64-minimal ~]$ podman-remote ps
+   CONTAINER ID  IMAGE   COMMAND  CREATED  STATUS  PORTS   NAMES
+
+   [crc@CentOS-83-64-minimal ~]$ podman-remote ps
+   Error: Get "http://d/v2.0.0/libpod/_ping": EOF
+   ```
+
+   So it might be that this exercise will fail until this bug
+   https://github.com/code-ready/crc/issues/2609 gets solved.
