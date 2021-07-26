@@ -21,12 +21,12 @@ CONTAINER ID  IMAGE                 COMMAND  CREATED         STATUS   PORTS   NA
 Then it will be possible to create containers inside the pod, like this:
 
 ```console
-[core@crc-m89r2-master-0 ~]$ podman run -dt --pod mypod --name mynginx quay.io/libpod/alpine_nginx:latest
+[core@crc-m89r2-master-0 ~]$ podman run -d --pod mypod --name mynginx quay.io/libpod/alpine_nginx:latest
 07872490612e5615d4bc21f266bdbb7de28cb99fa0bd2059b29b43e0b327d3fd
 ```
 
 ```console
-[core@crc-m89r2-master-0 ~]$ podman run -dt --pod mypod --name mymariadb -e MARIADB_ROOT_PASSWORD=mypassword mariadb:latest
+[core@crc-m89r2-master-0 ~]$ podman run -d --pod mypod --name mymariadb -e MARIADB_ROOT_PASSWORD=mypassword mariadb:latest
 1bcb29fb46c24c5257998129ce7a8998b8a62fef77047bc2b30a6623f4ff928d
 ```
 
@@ -55,5 +55,5 @@ this means that a pod can be associated entirely to "localhost".
 **NOTE 2**: a pod can be implicitly created by using the --pod new:<podname>, like:
 
 ```console
-[core@crc-m89r2-master-0 ~]$ podman run -dt --pod new:mypod -e MARIADB_ROOT_PASSWORD=password mariadb:latest
+[core@crc-m89r2-master-0 ~]$ podman run -d --pod new:mypod -e MARIADB_ROOT_PASSWORD=password mariadb:latest
 ```
