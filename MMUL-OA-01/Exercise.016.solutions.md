@@ -1,74 +1,129 @@
-# Exercise 016 - Create an ImageStream for nginx:alpine and verify available images - Solutions
+# Exercise 016 - Create an ImageStream, deploy and expose an application - Solutions
 
 ---
 
 1. Login to the cluster:
 
    ```console
+   > oc login -u developer
+   Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
+   ...
+   ```
+
+   Create a new project:
+
+   ```console
+   > oc new-project test-image-streams
+   Now using project "test-image-streams" on server "https://api.crc.testing:6443".
+   ...
+   ```
+
+   Check if there is any available ImageStreams
+
+   ```console
+   > oc get is
+   No resources found in test-image-streams namespace.
+   ```
+
+2. Become the kubeadmin user:
+
+   ```console
    > oc login -u kubeadmin
    Logged into "https://api.crc.testing:6443" as "kubeadmin" using existing credentials.
    ```
 
-   Check if there is an nginx ImageStream and an nginx:alpine image
+   Create the yaml:
 
    ```console
-   > oc get is
-   No resources found in testdeploy namespace.
-
-   > oc get images | grep nginx
-   sha256:1fdc4d81415e4750f8e645ccb07470ea2719b041b3cfa165e94c57a617f56585   registry.redhat.io/ubi8/nginx-118@sha256:1fdc4d81415e4750f8e645ccb07470ea2719b041b3cfa165e94c57a617f56585
-   sha256:3b46c4749a6b155e2d4bc0f7a83706e70fdac9884080cc785716ea10b1d19cf0   registry.redhat.io/rhscl/nginx-116-rhel7@sha256:3b46c4749a6b155e2d4bc0f7a83706e70fdac9884080cc785716ea10b1d19cf0
-   sha256:97cfbb52ae49f8946f262d3cc5b5df05b067510c16e9fd7c905e44bfa113ed35   registry.redhat.io/rhel8/nginx-116@sha256:97cfbb52ae49f8946f262d3cc5b5df05b067510c16e9fd7c905e44bfa113ed35
-   sha256:a607acf93a1c532cef8d36f84ddd07ca782821cc80eac57b2bceb0d142d02d50   registry.redhat.io/ubi7/nginx-118@sha256:a607acf93a1c532cef8d36f84ddd07ca782821cc80eac57b2bceb0d142d02d50
-   sha256:c9e035d14cc8681307275eb62a2b2a054048121941ba70e68e1c6ac89dc875ed   registry.redhat.io/rhel8/nginx-114@sha256:c9e035d14cc8681307275eb62a2b2a054048121941ba70e68e1c6ac89dc875ed
-   ```
-
-   There are some provided by RedHat for specific nginx version, but nothing for
-   nginx:alpine offical image.
-
-2. Write the yaml:
-
-   ```console
-   > cat nginx-is.yml
+   > cat webserver-is.yml
    ```
 
    ```yaml
    apiVersion: image.openshift.io/v1
    kind: ImageStream
    metadata:
-     name: nginx
+     name: webserver
    spec:
      lookupPolicy:
        local: false
      tags:
        - from:
            kind: DockerImage
-           name: nginx:alpine
+           name: nginxinc/nginx-unprivileged:stable
          generation: null
          importPolicy: {}
-         name: alpine
+         name: latest
    ```
 
-3. You can now create the ImageStream resource on the cluster:
+   Create the ImageStream resource on the cluster:
 
    ```console
-   > oc create -f nginx-is.yml
-   imagestream.image.openshift.io/nginx created
+   > oc create -f webserver-is.yml
+   imagestream.image.openshift.io/webserver created
    ```
 
    Check if available:
 
    ```console
    > oc get is
-   NAME    IMAGE REPOSITORY                                                           TAGS     UPDATED
-   nginx   default-route-openshift-image-registry.apps-crc.testing/testdeploy/nginx   alpine   30 seconds ago
+   NAME        IMAGE REPOSITORY                                                                       TAGS     UPDATED
+   webserver   default-route-openshift-image-registry.apps-crc.testing/test-image-streams/webserver   latest   7 seconds ago
    ```
 
    Now you can find the expected images in the list of available images:
 
    ```console
-   > oc get image | grep nginx
+   > oc get image | grep unpriv
+   sha256:c452614d70306cb43310a89a5b3004c29b4c6fa702ee1090d03d2b6ab9294a35   nginxinc/nginx-unprivileged@sha256:c452614d70306cb43310a89a5b3004c29b4c6fa702ee1090d03d2b6ab9294a35
+   ```
+
+3. Log back as developer:
+
+   ```console
+   > oc login -u developer
+   Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
+   ```
+
+   Check if the ImageStream is available:
+
+   ```console
+   > oc get is
+   NAME        IMAGE REPOSITORY                                                                       TAGS     UPDATED
+   webserver   default-route-openshift-image-registry.apps-crc.testing/test-image-streams/webserver   latest   45 seconds ago
+   ```
+
+4. Deploy a new app from this ImageStream:
+
+   ```console
+   > oc new-app --image-stream=webserver
+   --> Found image e2328fa (2 weeks old) in image stream "test-image-streams/webserver" under tag "latest" for "webserver"
+   
+   
+   --> Creating resources ...
+       deployment.apps "webserver" created
+       service "webserver" created
+   --> Success
+       Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+        'oc expose service/webserver'
+       Run 'oc status' to view your app.
+   ```
+
+   Expose the application outside the cluster:
+
+   ```console
+   > oc expose service webserver
+   route.route.openshift.io/webserver exposed
+   
+   > oc get routes
+   NAME        HOST/PORT                                       PATH   SERVICES    PORT       TERMINATION   WILDCARD
+   webserver   webserver-test-image-streams.apps-crc.testing          webserver   8080-tcp                 None
+   ```
+
+   Check if it is the expected version:
+
+   ```console
+   > curl http://webserver-test-image-streams.apps-crc.testing/sourcesense
    ...
-   sha256:c35699d53f03ff9024ce2c8f6730567f183a15cc27b24453c5d90f0e7542daea   nginx@sha256:c35699d53f03ff9024ce2c8f6730567f183a15cc27b24453c5d90f0e7542daea
+   <hr><center>nginx/1.20.1</center>
    ...
    ```
