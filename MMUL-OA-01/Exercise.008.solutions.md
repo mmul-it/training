@@ -102,10 +102,12 @@
    developer:$2a$10$70Njyzs7d8Bxr6mtUpHI4uzTctzqSpTPlAGodrX8KU6rbSNLAcNse
    kubeadmin:$2a$10$df/EkrOnfR7RHQqZtunAsuJe7xHg7hhRhFpVdaY3cpbB8Iy8fEfl6
    myuser:$2y$05$4Mgz9BXGY.CxHn2lsIuvPeZi.lhZmb3SRAUPsGepwgJlWTwYv/mOm
+   ```
 
    Once you're done, you can push back the new file in the secret:
 
-   > oc -n openshift-config set data secret/htpass-secret --from-file htpasswd=./htpasswd -n openshift-config
+   ```console
+   > oc -n openshift-config set data secret/htpass-secret --from-file htpasswd=./htpasswd
    secret/htpass-secret data updated
    ```
 
