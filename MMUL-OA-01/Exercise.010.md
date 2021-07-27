@@ -9,7 +9,7 @@
 
 3. Expose both applications;
 
-4. Verify that both applications are reachable. Is it true? Understand just
-   'tomcat' can be reached.
+4. Verify that both applications are reachable. Is it true? Understand why just
+   'tomcat' can be reached and find out a way to expose mariadb;
 
 5. Cleanup everything;

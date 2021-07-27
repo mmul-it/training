@@ -113,8 +113,39 @@
    tomcat   tomcat-expose-test.apps-crc.testing          tomcat     8080-tcp                 None
    ```
 
+   It is possible to define a Nodeport to expose the 3306 port, this can be
+   done via oc expose:
+
+   ```console
+   > oc expose service mariadb --type=NodePort --target-port=3306 --generator=service/v1 --name=mariadbnp
+   service/mariadbnodeport exposed
+
+   > oc get svc
+   NAME              TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+   mariadb           ClusterIP   10.217.5.79    <none>        3306/TCP         8m5s
+   mariadbnodeport   NodePort    10.217.4.190   <none>        3306:31384/TCP   3s
+   tomcat            ClusterIP   10.217.5.9     <none>        8080/TCP         7m57s
+   ```
+
+   This will expose the upper port 31384 on all the OpenShift nodes, in this
+   case only one, the crc host, which ip can be obtained by using the
+   ```crc ip``` command:
+
+   ```console
+   > mysql --host=$(crc ip) --port=31384 --user=user --password=pass --database=testdb
+   Welcome to the MariaDB monitor.  Commands end with ; or \g.
+   Your MariaDB connection id is 12
+   Server version: 10.3.28-MariaDB MariaDB Server
+
+   Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+   Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+   MariaDB [testdb]>
+   ```
+
 5. By deleting the project with 'oc delete project' everything will be wiped
-as well:
+   as well:
 
    ```console
    > oc delete project expose-test
