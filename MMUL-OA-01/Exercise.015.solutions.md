@@ -115,8 +115,8 @@
    to the ```oc new-app``` command:
 
    ```console
-   > oc new-app --docker-image=nginx:latest
-   --> Found image 3f3b9d2 (3 weeks old) in image stream "openshift/nginx" under tag "1.18-ubi8" for "nginx"
+   > oc new-app --docker-image=nginxinc/nginx-unprivileged --name=nginx
+   --> Found container image 9715b46 (2 weeks old) from Docker Hub for "nginxinc/nginx-unprivileged"
    ...
    --> Success
    ...
@@ -125,39 +125,19 @@
    Then you can check what is created:
 
    ```console
-   > oc status
-   ...
-   svc/nginx - 10.217.4.136 ports 8080, 8443
-     deployment/nginx deploys openshift/nginx:1.18-ubi8
-       deployment #2 running for 27 seconds - 0/1 pods
-       deployment #1 deployed 29 seconds ago - 0/1 pods growing to 1
+   In project testdeploy on server https://api.crc.testing:6443
+
+   svc/nginx - 10.217.4.105:8080
+     deployment/nginx deploys istag/nginx:latest
+       deployment #2 running for 34 seconds - 1 pod
+       deployment #1 deployed 36 seconds ago
+
+
+   1 info identified, use 'oc status --suggest' to see details.
    ```
 
    As you can see, creating an app from a Docker image doesn't require to build
    anything, so the BuildConfig wasn't create.
-
-   Remember that nginx image from Docker will require high permissions to run.
-   So you need to assign the ```serviceAccountName: useroot``` to the
-   application spec, as shown in [Exercise 009](https://github.com/mmul-it/training/blob/master/MMUL-OA-01/Exercise.009.solutions.md):
-
-   ```console
-   >  oc login -u kubeadmin
-   Logged into "https://api.crc.testing:6443" as "kubeadmin" using existing credentials.
-   ...
-
-   > oc create serviceaccount useroot
-   serviceaccount/useroot created
-
-   > oc adm policy add-scc-to-user anyuid -z useroot
-   clusterrole.rbac.authorization.k8s.io/system:openshift:scc:anyuid added: "useroot"
-
-   > oc login -u developer
-   Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
-   ...
-
-   > oc patch deployment nginx --patch '{"spec":{"template":{"spec":{"serviceAccountName": "useroot"}}}}'
-   deployment.apps/nginx patched
-   ```
 
 7. As before, expose the application by using the Service name:
 
