@@ -22,7 +22,7 @@
    use the '--docker-image=' switch:
 
    ```console
-   > oc new-app --name=testroute --docker-image=nginx:latest
+   > oc new-app --name=testroute --docker-image=nginxinc/nginx-unprivileged
    --> Found container image 4cdc5dd (8 days old) from Docker Hub for "nginx"
    ...
    ```
@@ -31,36 +31,10 @@
 
    ```console
    > oc status
-   ...
-   svc/testroute - 10.217.5.6:80
-     deployment/testroute deploys istag/testroute:latest
-         deployment #3 running for about a minute - 1 pod
-              deployment #2 deployed 6 minutes ago
-                      deployment #1 deployed 6 minutes ago
-   ```
-
-   if you see the pod in CrashLoop status, remember that nginx image from Docker
-   will require high permissions to run. So you need to assign the
-   ```serviceAccountName: useroot``` to the application spec, as shown in
-   [Exercise 009](https://github.com/mmul-it/training/blob/master/MMUL-OA-01/Exercise.009.solutions.md):
-
-   ```console
-   >  oc login -u kubeadmin
-   Logged into "https://api.crc.testing:6443" as "kubeadmin" using existing credentials.
-   ...
-
-   > oc create serviceaccount useroot
-   serviceaccount/useroot created
-
-   > oc adm policy add-scc-to-user anyuid -z useroot
-   clusterrole.rbac.authorization.k8s.io/system:openshift:scc:anyuid added: "useroot"
-
-   > oc login -u developer
-   Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
-   ...
-
-   > oc patch deployment testroute --patch '{"spec":{"template":{"spec":{"serviceAccountName": "useroot"}}}}'
-   deployment.apps/testroute patched
+   svc/testroute - 10.217.4.202:8080
+     deployment/testroute deploys istag/testroute:latest 
+       deployment #2 running for 6 seconds - 1 pod
+       deployment #1 deployed 7 seconds ago
    ```
 
 3) Create a key and a certificate request:
