@@ -5,12 +5,12 @@
 1. Login as 'developer' and create the new 'testscale' project;
 
 2. Deploy a new application named scale-docker-app based on the context dir
-   ncat-msg-http-port in the git repository https://github.com/mmul-it/docker;
+   s2i-php-helloworld in the git repository https://github.com/mmul-it/docker;
 
-3. Check the ReplicaSet and see if requirements are met;
+3. Check the Replication Controller and see if requirements are met;
 
-4. Scale the application up to 3 replicas. Check changes in the ReplicaSet and
-   in the running pods;
+4. Scale the application up to 3 replicas. Check for changes in the Replication
+   Controller and in the running pods;
 
 5. Scale down the application to 1 replica. Check and see when the operation
    ends;
