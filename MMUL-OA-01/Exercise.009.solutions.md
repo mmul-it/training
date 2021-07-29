@@ -141,7 +141,7 @@
    > oc whoami
    kubeadmin
 
-   > oc adm policy add-scc-to-user anyuid -z useroot
+   > oc adm policy add-scc-to-user anyuid --serviceaccount useroot
    clusterrole.rbac.authorization.k8s.io/system:openshift:scc:anyuid added: "useroot"
    ```
 
