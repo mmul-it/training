@@ -1,129 +1,183 @@
-# Exercise 016 - Create an ImageStream, deploy and expose an application - Solutions
+# Exercise 016 - Use ImageStreams to perform updates and rollback of a DeploymentConfig - Solutions
 
 ---
 
-1. Login to the cluster:
+1. Login as 'developer' and create the new 'testdeploy' project:
 
    ```console
    > oc login -u developer
    Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
    ...
-   ```
 
-   Create a new project:
-
-   ```console
-   > oc new-project test-image-streams
-   Now using project "test-image-streams" on server "https://api.crc.testing:6443".
+   > oc new-project testdeploy
+   Now using project "testdeploy" on server "https://api.crc.testing:6443".
    ...
    ```
 
-   Check if there is any available ImageStreams
+2. Create the (empty) image stream named 'webserver' that will be used for our
+   deployment configuration:
 
    ```console
-   > oc get is
-   No resources found in test-image-streams namespace.
-   ```
-
-2. Become the kubeadmin user:
-
-   ```console
-   > oc login -u kubeadmin
-   Logged into "https://api.crc.testing:6443" as "kubeadmin" using existing credentials.
-   ```
-
-   Create the yaml:
-
-   ```console
-   > cat webserver-is.yml
-   ```
-
-   ```yaml
-   apiVersion: image.openshift.io/v1
-   kind: ImageStream
-   metadata:
-     name: webserver
-   spec:
-     lookupPolicy:
-       local: false
-     tags:
-       - from:
-           kind: DockerImage
-           name: nginxinc/nginx-unprivileged:stable
-         generation: null
-         importPolicy: {}
-         name: latest
-   ```
-
-   Create the ImageStream resource on the cluster:
-
-   ```console
-   > oc create -f webserver-is.yml
+   > oc create is webserver
    imagestream.image.openshift.io/webserver created
-   ```
 
-   Check if available:
-
-   ```console
    > oc get is
-   NAME        IMAGE REPOSITORY                                                                       TAGS     UPDATED
-   webserver   default-route-openshift-image-registry.apps-crc.testing/test-image-streams/webserver   latest   7 seconds ago
+   NAME        IMAGE REPOSITORY                                                               TAGS      UPDATED
+   webserver   default-route-openshift-image-registry.apps-crc.testing/testdeploy/webserver
    ```
 
-   Now you can find the expected images in the list of available images:
+   Now import into the newly created image stream the specific ```1.19-perl```
+   image from the public registry ```nginxinc/nginx-unprivileged:1.19-perl```:
 
    ```console
-   > oc get image | grep unpriv
-   sha256:c452614d70306cb43310a89a5b3004c29b4c6fa702ee1090d03d2b6ab9294a35   nginxinc/nginx-unprivileged@sha256:c452614d70306cb43310a89a5b3004c29b4c6fa702ee1090d03d2b6ab9294a35
-   ```
+   > oc import-image webserver:1.19-perl --from=nginxinc/nginx-unprivileged:1.19-perl --confirm
+   imagestream.image.openshift.io/webserver imported
+   ...
 
-3. Log back as developer:
-
-   ```console
-   > oc login -u developer
-   Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
-   ```
-
-   Check if the ImageStream is available:
-
-   ```console
    > oc get is
-   NAME        IMAGE REPOSITORY                                                                       TAGS     UPDATED
-   webserver   default-route-openshift-image-registry.apps-crc.testing/test-image-streams/webserver   latest   45 seconds ago
+   NAME        IMAGE REPOSITORY                                                               TAGS        UPDATED
+   webserver   default-route-openshift-image-registry.apps-crc.testing/testdeploy/webserver   1.19-perl   5 seconds ago
    ```
 
-4. Deploy a new app from this ImageStream:
+   Now add the tag ```latest``` to the imported image so that it will be
+   possible to refer to this image also by using the general 'latest' version:
 
    ```console
-   > oc new-app --image-stream=webserver
-   --> Found image e2328fa (2 weeks old) in image stream "test-image-streams/webserver" under tag "latest" for "webserver"
-   
-   
-   --> Creating resources ...
-       deployment.apps "webserver" created
-       service "webserver" created
-   --> Success
-       Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
-        'oc expose service/webserver'
-       Run 'oc status' to view your app.
+   > oc tag webserver:1.19-perl webserver:latest
+   Tag webserver:latest set to webserver@sha256:8974116f08df4cbeb69bee35437675b225e745e67e6075f43523d9f8230a1191.
+
+   > oc get is
+   NAME        IMAGE REPOSITORY                                                               TAGS               UPDATED
+   webserver   default-route-openshift-image-registry.apps-crc.testing/testdeploy/webserver   latest,1.19-perl   3 seconds ago
    ```
 
-   Expose the application outside the cluster:
+3. When creating and exposing the new app we're going to use the
+   ```--as-deployment-config``` option to force the creation of a deployment
+   config component, the only one that supports triggers, using the 'webserver'
+   image stream with the 'latest' version.
+   Once pods will be deployed, we can verify the NGinx version using curl, as
+   follows:
 
    ```console
+   > oc new-app --as-deployment-config --name=webserver --image-stream=webserver:latest
+   --> Found image ee54951 (3 months old) in image stream "testdeploy/webserver" under tag "latest" for "webserver:latest"
+
    > oc expose service webserver
    route.route.openshift.io/webserver exposed
-   
-   > oc get routes
-   NAME        HOST/PORT                                       PATH   SERVICES    PORT       TERMINATION   WILDCARD
-   webserver   webserver-test-image-streams.apps-crc.testing          webserver   8080-tcp                 None
+
+   > curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
+   <hr><center>nginx/1.19.10</center>
    ```
 
-   Check if it is the expected version:
+4. The new-app commmand automatically creates a trigger based upon the image
+   stream version:
 
    ```console
-   > curl http://webserver-test-image-streams.apps-crc.testing/sourcesense
+   > oc get deploymentconfigs.apps.openshift.io webserver -o yaml
    ...
-   <hr><center>nginx/1.20.1</center>
+     triggers:
+     - type: ConfigChange
+     - imageChangeParams:
+         automatic: true
+         containerNames:
+         - webserver
+         from:
+           kind: ImageStreamTag
+           name: webserver:latest
+           namespace: testdeploy
+         lastTriggeredImage: nginxinc/nginx-unprivileged@sha256:8974116f08df4cbeb69bee35437675b225e745e67e6075f43523d9f8230a1191
+       type: ImageChange
    ...
    ```
+
+   This means that whenever 'latest' will change a new deployment will be
+   produced.
+
+5. To import the '1.20-perl' release into the image stream the
+   ```oc import-image``` command can be used as before:
+
+   ```console
+   > oc import-image webserver:1.20-perl --from=nginxinc/nginx-unprivileged:1.20-perl --confirm
+   imagestream.image.openshift.io/webserver imported
+   ...
+   ```
+
+   Tag it as 'latest', looking at the deployment config for the triggered
+   action:
+
+   ```console
+   > oc tag webserver:1.20-perl webserver:latest
+   Tag webserver:latest set to webserver@sha256:a6915075a63fc9da232500402f03268efb3b159e5882190a65090fe24510b3a3.
+
+   > oc status
+   In project testdeploy on server https://api.crc.testing:6443
+
+   http://webserver-testdeploy.apps-crc.testing to pod port 8080-tcp (svc/webserver)
+     dc/webserver deploys istag/webserver:latest
+       deployment #2 running for 9 seconds - 1 pod
+       deployment #1 deployed 2 minutes ago
+
+
+   4 infos identified, use 'oc status --suggest' to see details.
+
+   > curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
+   <hr><center>nginx/1.20.1</center>
+   ```
+
+6. Apply the same process for the ```1.21-perl``` release:
+
+   ```console
+   > oc import-image webserver:1.21-perl --from=nginxinc/nginx-unprivileged:1.21-perl --confirm
+   imagestream.image.openshift.io/webserver imported
+
+   > oc tag webserver:1.21-perl webserver:latest
+   Tag webserver:latest set to webserver@sha256:33aa22ba83302a9fb73b19a9fca8a4a143084e990e7340c6b88b7318e6a72853.
+
+   > oc status
+   In project testdeploy on server https://api.crc.testing:6443
+
+   http://webserver-testdeploy.apps-crc.testing to pod port 8080-tcp (svc/webserver)
+     dc/webserver deploys istag/webserver:latest
+       deployment #3 deployed 14 seconds ago - 1 pod
+       deployment #2 deployed about a minute ago
+       deployment #1 deployed 3 minutes ago
+
+
+   5 infos identified, use 'oc status --suggest' to see details.
+
+   > curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
+   <hr><center>nginx/1.21.1</center>
+   ```
+
+7. Now look at the rollout history:
+
+   ```console
+   > oc rollout history deploymentconfig webserver
+   deploymentconfigs "webserver"
+   REVISION	STATUS		CAUSE
+   1		Complete	config change
+   2		Complete	image change
+   3		Complete	image change
+   ```
+
+   And move back to the initial revision, checking the service will move back
+   to the 1.19 release:
+
+   ```console
+   > oc rollout undo dc/webserver --to-revision=1
+   deploymentconfig.apps.openshift.io/webserver rolled back
+
+   > oc rollout history deploymentconfig webserver
+   deploymentconfigs "webserver"
+   REVISION	STATUS		CAUSE
+   1		Complete	config change
+   2		Complete	image change
+   3		Complete	image change
+   4		Complete	image change
+
+   > curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
+   <hr><center>nginx/1.19.10</center>
+   ```
+
+   Note that for each 'undo' action a new revision will be produced, so to keep
+   track in the history.

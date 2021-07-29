@@ -1,16 +1,24 @@
-# Exercise 016 - Create an ImageStream, deploy and expose an application
+# Exercise 016 - Use ImageStreams to perform updates and rollback of a DeploymentConfig
 
 ---
 
-1. Login as developer, create a new project named 'test-image-streams', and
-   check if there are an ImageStream and an Image for
-   nginxinc/nginx-unprivileged:stable;
+1. As developer create a new project named 'testdeploy';
 
-2. Become kubeadmin, write the yaml file and create a new ImageStream named
-   'webserver' and tagget as 'latest', that point to the 'nginxinc/nginx-unprivileged:stable'
-   docker image. Check if the image is now available in the cluster;
+2. Create an ImageStream named 'webserver', and import as 'webserver:1.19-perl'
+   the image coming from ```nginxinc/nginx-unprivileged:1.19-perl``` into it,
+   tagging it also 'latest';
 
-3. Become developer and check if the ImageStream is now available;
+3. Create and expose a DeploymentConfig by using ```oc new-app``` command with
+   the specific ```--as-deployment-config``` option, naming it 'webserver' and
+   getting the image from the image stream 'webserver:latest';
 
-4. Deploy and expose a new application from the ImageStream. Test if it
-   provides the expected result;
+4. Check the automatically created trigger inside the 'webserver'
+   DeploymentConfig;
+
+5. Import into the 'webserver' ImageStream the '1.20-perl' image, tagging it as
+   'latest', and look if the trigger is executed;
+
+6. Import into the 'webserver' ImageStream the '1.21-perl' image, tagging also
+   this new one as 'latest', and look if the trigger is executed;
+
+7. Look at the rollout history and rollback the deployment its first iteration;
