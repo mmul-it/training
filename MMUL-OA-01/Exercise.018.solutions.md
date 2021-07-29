@@ -41,18 +41,18 @@
    scale-docker-app-5b7ccb8dd5-qdz5c   1/1     Running     0          17s
    ```
 
-3. Obtaining a list of Replication Controller:
+3. Obtaining a list of ReplicaSet:
 
    ```console
-   > oc get rc
+   > oc get rs
    NAME                          DESIRED   CURRENT   READY   AGE
    scale-docker-app-5b7ccb8dd5   1         1         1       72s
    ```
 
-   Then see the Replication Controller specification:
+   Then see the ReplicaSet specification:
 
    ```console
-   > oc describe rc scale-docker-app-5b7ccb8dd5
+   > oc describe rs scale-docker-app-5b7ccb8dd5
    ...
    Replicas:       1 current / 1 desired
    Pods Status:    1 Running / 0 Waiting / 0 Succeeded / 0 Failed
@@ -67,11 +67,10 @@
    deployment.apps/scale-docker-app scaled
    ```
    
-   If you quickly check again the Replication Controller you can see the
-   current status:
+   If you quickly check again the ReplicaSet you can see the current status:
    
    ```console
-   > oc describe rc scale-docker-app-5b7ccb8dd5
+   > oc describe rs scale-docker-app-5b7ccb8dd5
    ...
    Replicas:       3 current / 3 desired
    Pods Status:    1 Running / 2 Waiting / 0 Succeeded / 0 Failed
@@ -81,7 +80,7 @@
    After few moments everything is scaled:
 
    ```console
-   > oc describe rc scale-docker-app-5b7ccb8dd5
+   > oc describe rs scale-docker-app-5b7ccb8dd5
    ...
    Replicas:       3 current / 3 desired
    Pods Status:    3 Running / 0 Waiting / 0 Succeeded / 0 Failed
@@ -108,7 +107,7 @@
    Quickly, the replicas scale down to 1:
    
    ```console
-   > oc get rc
+   > oc get rs
    NAME                          DESIRED   CURRENT   READY   AGE
    scale-docker-app-5b7ccb8dd5   1         1         1       8m11s
 
@@ -129,7 +128,7 @@
    doesn't change anything:
 
    ```console
-   > oc get rc
+   > oc get rs
    NAME                          DESIRED   CURRENT   READY   AGE
    scale-docker-app-5b7ccb8dd5   1         1         1       11m
    ```
