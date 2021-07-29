@@ -12,7 +12,7 @@
 2. Find the template to use as a starting point:
 
    ```console
-   > oc get templates -A | grep nginx
+   > oc get templates -n openshift | grep nginx
    openshift   nginx-example                                   An example Nginx HTTP server and a reverse proxy (nginx) application that ser...   10 (3 blank)      5
    ```
 
@@ -31,11 +31,11 @@
      ```yaml
      - description: How many replicas of nginx you need.
        displayName: Nginx Replicas
-         value: "1"
-         name: REPLICAS
+       value: "1"
+       name: REPLICAS
      ```
 
-   - Replace the static replicas value in the DeploymentConfig specs twith the
+   - Replace the static replicas value in the DeploymentConfig specs with the
      parameter:
 
      ```yaml
