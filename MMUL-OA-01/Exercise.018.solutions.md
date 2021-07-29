@@ -41,7 +41,7 @@
    scale-docker-app-5b7ccb8dd5-qdz5c   1/1     Running     0          17s
    ```
 
-3. Obtaining a list of ReplicaSet:
+3. Get a list of ReplicaSet:
 
    ```console
    > oc get rs
@@ -86,6 +86,7 @@
    Pods Status:    3 Running / 0 Waiting / 0 Succeeded / 0 Failed
    ...
    ```
+
    There are more pods now:
    
    ```console
@@ -117,7 +118,8 @@
    scale-docker-app-5b7ccb8dd5-qdz5c   1/1     Running     0          8m25s
    ```
 
-6. Autoscaling can also be done with a single command:
+6. It is possible to configure autoscale with a single ```oc autoscale```
+   command:
 
    ```console
    > oc autoscale deployment scale-docker-app --min 1 --max 3 --cpu-percent=50

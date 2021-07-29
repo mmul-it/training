@@ -5,7 +5,7 @@
 1. Login as 'developer' and create the new 'testscale' project;
 
 2. Deploy a new application named scale-docker-app based on the context dir
-   ncat-msg-http-port in the git repository https://github.com/mmul-it/docker;
+   s2i-php-helloworld in the git repository https://github.com/mmul-it/docker;
 
 3. Check the ReplicaSet and see if requirements are met;
 
