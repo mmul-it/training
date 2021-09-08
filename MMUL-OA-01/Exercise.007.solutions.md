@@ -31,6 +31,11 @@
    clusterrole.rbac.authorization.k8s.io/self-provisioner removed: ["system:authenticated" "system:authenticated:oauth"]
    ```
 
+   **IMPORTANT NOTE!** The warning you see says that this association may get
+   lost if a reboot happens. You can chose whether to apply the suggested
+   command to be 100% sure everything will behave as expected. In this case we
+   don't care since we are in a test environment.
+
 3. Become the 'developer' user:
 
    ```console
