@@ -4,8 +4,8 @@
 
 1. As user developer create a project named my-first-project;
 
-2. Create a new application named that will deploy mariadb with these
-   environment variable passed on the command line:
+2. Create a new application named ```mariadb``` that will deploy mariadb with
+   these environment variable passed on the command line:
 
    ```yaml
    - MYSQL_USER=user
