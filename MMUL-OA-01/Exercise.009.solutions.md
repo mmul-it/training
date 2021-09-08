@@ -22,6 +22,7 @@
    And specifically on 'anyuid', 'privileged', 'restricted':
 
    ```console
+   > oc describe scc/anyuid
    Name:                              anyuid
    Priority:                          10
    Access:
@@ -79,6 +80,7 @@
    > oc new-project scc-test
    Now using project "scc-test" on server "https://api.crc.testing:6443".
    ...
+   ```
 
    To specifically use the 'nginx' image from the 'docker-image' you'll need to
    use the '--docker-image=' switch:
