@@ -117,7 +117,7 @@
    done via oc expose:
 
    ```console
-   > oc expose service mariadb --type=NodePort --target-port=3306 --generator=service/v1 --name=mariadbnp
+   > oc expose service mariadb --type=NodePort --target-port=3306 --generator=service/v2 --name=mariadbnp
    service/mariadbnodeport exposed
 
    > oc get svc
@@ -128,8 +128,13 @@
    ```
 
    This will expose the upper port 31384 on all the OpenShift nodes, in this
-   case only one, the crc host, which ip can be obtained by using the
-   ```crc ip``` command:
+   case only one, the crc host.
+
+   **IMPORTANT NOTE!** depending on the OpenShift release you are using a
+   different version of generator (klike service/v1) might be used. You will
+   need to rely on the output of the command to know it.
+
+   The crc ip can be obtained by using the ```crc ip``` command:
 
    ```console
    > mysql --host=$(crc ip) --port=31384 --user=user --password=pass --database=testdb
