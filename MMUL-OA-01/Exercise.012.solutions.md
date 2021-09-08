@@ -29,36 +29,20 @@
 
    ```console
    > oc describe pod router-default-5f7c456ff-pxgf7 | grep STATS
-   STATS_PASSWORD:                            <set to the key 'statsPassword' in secret 'router-stats-default'>  Optional: false
+   STATS_PASSWORD_FILE:                       /var/lib/haproxy/conf/metrics-auth/statsPassword
    STATS_PORT:                                1936
-   STATS_USERNAME:                            <set to the key 'statsUsername' in secret 'router-stats-default'>  Optional: false
+   STATS_USERNAME_FILE:                       /var/lib/haproxy/conf/metrics-auth/statsUsername
    ```
 
-3. Check if the router-stats-default secret contains the two keys reported in the
-   previous output:
+3. Extract username and password by looking into the content of the files
+   inside the container:
 
    ```console
-   > oc describe secret router-stats-default
-   Name:         router-stats-default
-   Namespace:    openshift-ingress
-   Labels:       <none>
-   Annotations:  <none>
+   > oc exec router-default-8475b74568-zdwjm -- cat /var/lib/haproxy/conf/metrics-auth/statsUsername
+   dXNlcmJqNXE0
 
-   Type:  Opaque
-
-   Data
-   ====
-   statsPassword:  12 bytes
-   statsUsername:  12 bytes
-   ```
-
-   The secret have the Type: Opaque defined, so you need to inspect the yaml of
-   the secret itself to see the content of those keys:
-
-   ```console
-   > oc get secret router-stats-default -o yaml | awk '/Username|Password/ && !/f:/'
-     statsPassword: Y0dGemMyWm5kbTVu
-     statsUsername: ZFhObGNtMW5jbmh3
+   > oc exec router-default-8475b74568-zdwjm -- cat /var/lib/haproxy/conf/metrics-auth/statsPassword
+   cGFzc2dqYmc1
    ```
 
 4. Check HAProxy port by pointing directly to crc IP:
