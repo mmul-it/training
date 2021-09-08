@@ -179,5 +179,11 @@
    <hr><center>nginx/1.19.10</center>
    ```
 
-   Note that for each 'undo' action a new revision will be produced, so to keep
-   track in the history.
+   For each 'undo' action a new revision will be produced, so to keep track in
+   the history.
+
+   **IMPORTANT NOTE!** Any image triggers present in the rolled back
+   configuration will be disabled with a warning. This is to help prevent
+   your rolled back deployment from being replaced by a triggered deployment
+   soon after your rollback.
+   To re-enable the triggers, use the ```oc set triggers --auto``` command.
