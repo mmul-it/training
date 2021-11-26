@@ -26,7 +26,7 @@
 
    - Replace all occurrence of "nginx-example" with "simple-nginx"
    - In the parameters section, add a parameter named REPLICAS with proper
-     descriptions and a default vault of 1:
+     descriptions and a default value of 1:
 
      ```yaml
      - description: How many replicas of nginx you need.
