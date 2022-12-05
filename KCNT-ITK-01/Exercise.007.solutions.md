@@ -1,4 +1,4 @@
-# Exercise 006 - Local directory volume mapping - Solutions
+# Exercise 007 - Local directory volume mapping - Solutions
 
 1. Create a local directory:
 

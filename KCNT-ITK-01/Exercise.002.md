@@ -1,4 +1,4 @@
-# Exercise 001 - Run modes
+# Exercise 002 - Run modes
 
 1. Pull the image "hello-world" from the docker registry.
 

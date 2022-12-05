@@ -24,10 +24,10 @@
    network-host-test
    ```
 
-4. Use both `--network host` and `-p 80:8888` to check whether it is possible to publish the port:
+4. Use both `--network host` and `-p 8888:80` to check whether it is possible to publish the port:
 
    ``` console
-   docker@minikube:~$ docker run -d --name network-host-test --rm --network host -p 80:8888 nginx 
+   docker@minikube:~$ docker run -d --name network-host-test --rm --network host -p 8888:80 nginx 
    WARNING: Published ports are discarded when using host network mode
    e5c600cf3eab15ef23cb6b79870d7bba8ac4a2fabda7ae7e2a8ba24fbddd5925
    ```

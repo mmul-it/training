@@ -1,4 +1,4 @@
-# Exercise 001 - Run modes - Solutions
+# Exercise 002 - Run modes - Solutions
 
 1. Log into minikube and pull hello world image:
 

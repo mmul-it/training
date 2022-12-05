@@ -45,6 +45,15 @@
 
    ```
 
+   **NOTE 1**: depending on the way you want to install Minikube you can pass different driver as paramenter to `minikube start`. By default it will try to use the Docker driver, so if you don't have Docker installed on your environment you might want to install it by [following the official instructions](https://docs.docker.com/engine/install/).
+
+   **NOTE 2**: if you are using Docker remember that your user must be part of the `docker` system group. This can be done as follows:
+
+   ```console
+   > adduser <you user name> docker
+   > newgrp docker
+   ```
+
 5. Download the `kubectl` command:
 
    ```console
