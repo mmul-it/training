@@ -64,7 +64,10 @@
    Make it available in your shell:
    
    ```console
-   > echo 'alias kubectl="minikube kubectl --"' >> ~/.bashrc
+   > find .minikube/ -name kubectl
+   .minikube/cache/linux/amd64/v1.25.3/kubectl
+
+   > echo 'PATH=.minikube/cache/linux/amd64/v1.25.3/:$PATH' >> ~/.bashrc
 
    > source ~/.bashrc
 
