@@ -1,4 +1,4 @@
-# Exercise 004 - First Kubernetes deployment - Solutions
+# Exercise 009 - First Kubernetes deployment - Solutions
 
 
 1. Create a new namespace with `kubectl create namespace`:
