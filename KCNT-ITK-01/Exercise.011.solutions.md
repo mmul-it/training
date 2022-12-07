@@ -3,19 +3,19 @@
 1. Ensure you are using the right context named `minikube`:
 
    ```console
-   > kubectl  config use-context minikube
+   > kubectl config use-context minikube
    Switched to context "minikube".
    ```
 
    Check something about `view` in cluster roles:
 
    ```console
-   > kubectl  get clusterroles | grep view
+   > kubectl get clusterroles | grep view
    system:aggregate-to-view                                               2022-12-05T14:28:56Z
    system:public-info-viewer                                              2022-12-05T14:28:56Z
    view                                                                   2022-12-05T14:28:56Z
 
-   > kubectl  describe clusterrole view
+   > kubectl describe clusterrole view
    Name:         view
    Labels:       kubernetes.io/bootstrapping=rbac-defaults
                  rbac.authorization.k8s.io/aggregate-to-edit=true
@@ -33,13 +33,16 @@
 2. So the `view` cluster role can be assigned to `myuser` via role binding:
 
    ```console
-   >  kubectl  create clusterrolebinding view-to-myuser --clusterrole=view --user=myuser
+   > kubectl create clusterrolebinding view-to-myuser --clusterrole=view --user=myuser
    clusterrolebinding.rbac.authorization.k8s.io/view-to-myuser created
    ```
 
    Now, by using the `myuser@minikube` context it should be possible to get the resources for both namespace `myns` (which is empty right now) and the entire cluster:
 
    ```console
+   > kubectl config use-context myuser@minikube
+   Switched to context "myuser@minikube".
+
    > kubectl -n myns get all
    No resources found in myns namespace.
 
@@ -73,7 +76,7 @@
    > kubectl config current-context
    myuser@minikube
 
-   >  kubectl -n myns create deployment nginx --image=nginx:latest
+   > kubectl -n myns create deployment nginx --image=nginx:latest
    error: failed to create deployment: deployments.apps is forbidden: User "myuser" cannot create resource "deployments" in API group "apps" in the namespace "myns"
    ```
 
@@ -90,7 +93,7 @@
    Bind the new role to the user:
 
    ```console
-   kubectl create rolebinding deploy-creator-to-myuser --role=deploy-creator --user=myuser --namespace=myns
+   > kubectl create rolebinding deploy-creator-to-myuser --role=deploy-creator --user=myuser --namespace=myns
    rolebinding.rbac.authorization.k8s.io/deploy-creator-to-myuser created
    ```
 
@@ -103,7 +106,7 @@
    > kubectl -n myns create deployment nginx --image=nginx:latest
    deployment.apps/nginx created
 
-   > kubectl get all
+   > kubectl -n myns get all
    NAME                         READY   STATUS              RESTARTS   AGE
    pod/nginx-6d666844f6-8j42s   0/1     ContainerCreating   0          6s
 
@@ -113,7 +116,7 @@
    NAME                               DESIRED   CURRENT   READY   AGE
    replicaset.apps/nginx-6d666844f6   1         1         0       6s
 
-   > kubectl get all
+   > kubectl -n myns get all
    NAME                         READY   STATUS    RESTARTS   AGE
    pod/nginx-6d666844f6-8j42s   1/1     Running   0          39s
 
@@ -123,9 +126,9 @@
    NAME                               DESIRED   CURRENT   READY   AGE
    replicaset.apps/nginx-6d666844f6   1         1         1       39s
 
-   > kubectl delete deployment nginx
+   > kubectl -n myns delete deployment nginx
    deployment.apps "nginx" deleted
 
-   > kubectl get all
+   > kubectl -n myns get all
    No resources found in myns namespace.
    ```

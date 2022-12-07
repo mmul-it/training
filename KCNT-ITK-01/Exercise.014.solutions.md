@@ -48,6 +48,16 @@
    Then check the status of the objects:
 
    ```yaml
+   > kubectl -n volumes-test get all
+   NAME                         READY   STATUS    RESTARTS   AGE
+   pod/nginx-84655c5fd7-fk7sc   1/1     Running   0          19s
+   
+   NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+   deployment.apps/nginx   1/1     1            1           53s
+   
+   NAME                               DESIRED   CURRENT   READY   AGE
+   replicaset.apps/nginx-6d666844f6   0         0         0       53s
+   replicaset.apps/nginx-84655c5fd7   1         1         1       19s
    ```
 
    The replicaset create a new pod to mount the volume.

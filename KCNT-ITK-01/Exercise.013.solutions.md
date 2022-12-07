@@ -26,7 +26,7 @@
    Create the resource by using `kubectl create -f pv001.yaml` command:
 
    ```console
-   > kubectl create -f pv001.yaml
+   > kubectl create -f pv-test.yml
    persistentvolume/pv0001 created
 
    > kubectl get pv

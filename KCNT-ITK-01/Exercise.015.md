@@ -2,7 +2,7 @@
 
 1. Create a namespace named `scale-test`.
 
-2. Deploy an `nginx` deployment insde the `scale-test` namespace.
+2. Deploy an `nginx` deployment inside the `scale-test` namespace.
 
 3. Check the ReplicaSet and see if requirements are met;
 
