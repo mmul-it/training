@@ -1,7 +1,5 @@
 # Exercise 015 - Scale-up, scale-down and configure autoscaling - Solutions
 
----
-
 1. Create the new namespace:
 
    ```console
@@ -18,10 +16,10 @@
    > kubectl -n scale-test get all
    NAME                         READY   STATUS    RESTARTS   AGE
    pod/nginx-6d666844f6-wwdzc   1/1     Running   0          29s
-   
+
    NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
    deployment.apps/nginx   1/1     1            1           29s
-   
+
    NAME                               DESIRED   CURRENT   READY   AGE
    replicaset.apps/nginx-6d666844f6   1         1         1       29s
    ```
@@ -37,7 +35,7 @@
    Then see the ReplicaSet specification:
 
    ```console
-   > kubectl -n scale-test describe replicasets.apps nginx-6d666844f6 
+   > kubectl -n scale-test describe replicasets.apps nginx-6d666844f6
    Name:           nginx-6d666844f6
    Namespace:      scale-test
    ...
@@ -52,9 +50,9 @@
    ```console
    > kubectl -n scale-test scale --replicas=3 deployment nginx
    ```
-   
+
    If you quickly check again the ReplicaSet you can see the current status:
-   
+
    ```console
    ...
    Replicas:       3 current / 3 desired
@@ -72,7 +70,7 @@
    ```
 
    There are more pods now:
-   
+
    ```console
    > kubectl -n scale-test get pods
    NAME                     READY   STATUS    RESTARTS   AGE
@@ -89,7 +87,7 @@
    ```
 
    Quickly, the replicas scale down to 1:
-   
+
    ```console
    > kubectl -n scale-test get pods,rs
    NAME                         READY   STATUS    RESTARTS   AGE
@@ -116,9 +114,9 @@
    NAME                               DESIRED   CURRENT   READY   AGE
    replicaset.apps/nginx-6d666844f6   1         1         1       8m1s
    ```
-   
+
    But a new HorizontalPodAutoscaling resource was created:
-   
+
    ```console
    > kubectl -n scale-test get hpa
    NAME    REFERENCE          TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
@@ -137,7 +135,7 @@
    ...
    ```
 
-   To make everything *effectively* work, and so make the `<unknown>` disappear from the outputs, the metrics server must be enabled in minikube, with:
+   To make everything *effectively* work, the metrics server must be enabled in minikube, with:
 
    ```console
    > minikube addons enable metrics-server
@@ -147,4 +145,82 @@
    🌟  The 'metrics-server' addon is enable
    ```
 
-   And after some time the `<unknown>` should disappear.
+   Due to [this limitation](https://github.com/kubernetes-sigs/metrics-server/issues/989#issuecomment-1313971365) to make the `<unknown>` value disappear a `request` must be added to the deployment:
+
+   ```console
+   > kubectl -n scale-test set resources deployment nginx --requests=cpu=200m
+   deployment.apps/nginx resource requirements updated
+
+   > kubectl -n scale-test get hpa
+   NAME    REFERENCE          TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+   nginx   Deployment/nginx   0%/50%    1         3         1          3h39m
+   ```
+
+   The `<unknown>` value is finally gone.
+
+7. Install `stress` in the `nginx` pod:
+
+   ```console
+   > kubectl -n scale-test exec -it nginx-69d7f674df-lvrzw  /bin/bash
+   kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+   root@nginx-69d7f674df-lvrzw:/# apt-get update
+   ...
+   Reading package lists... Done
+
+   root@nginx-69d7f674df-lvrzw:/# apt-get -y install stress
+   ...
+   Setting up stress (1.0.4-7) ...
+   ```
+
+   Then launch `stress` to start consuming cpu:
+
+   ```console
+   root@nginx-69d7f674df-lvrzw:/# stress --cpu 3
+   stress: info: [312] dispatching hogs: 3 cpu, 0 io, 0 vm, 0 hdd
+   ```
+
+   From another console check the status of the deployment:
+
+   ```console
+   NAME                         READY   STATUS    RESTARTS   AGE
+   pod/nginx-69d7f674df-ghq44   1/1     Running   0          26s
+   pod/nginx-69d7f674df-klkn9   1/1     Running   0          26s
+   pod/nginx-69d7f674df-lvrzw   1/1     Running   0          49m
+
+   NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+   deployment.apps/nginx   3/3     3            3           3h21m
+
+   NAME                               DESIRED   CURRENT   READY   AGE
+   replicaset.apps/nginx-67b86fd54d   0         0         0       50m
+   replicaset.apps/nginx-69d7f674df   3         3         3       49m
+   replicaset.apps/nginx-6d666844f6   0         0         0       3h21m
+
+   NAME                                        REFERENCE          TARGETS      MINPODS   MAXPODS   REPLICAS   AGE
+   horizontalpodautoscaler.autoscaling/nginx   Deployment/nginx   24500%/50%   1         3         3          3h16m
+   ```
+
+   The `TARGETS` column is saying that we're consuming *a lot* of cpu :).
+
+8. You can stop with Ctrl+C the `stress` command and check the targets:
+
+   ```console
+   > kubectl -n scale-test get hpa
+   NAME                                        REFERENCE          TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+   horizontalpodautoscaler.autoscaling/nginx   Deployment/nginx   0%/50%    1         3         3          3h19m
+   ```
+
+   After some time (at least 10 minutes), hpa should reduce the amount of pods:
+
+   ```console
+   > kubectl -n scale-test describe hpa
+   ...
+     Type    Reason             Age   From                       Message
+     ----    ------             ----  ----                       -------
+     Normal  SuccessfulRescale  10m   horizontal-pod-autoscaler  New size: 3; reason: cpu resource utilization (percentage of request) above target
+     Normal  SuccessfulRescale  4m6s  horizontal-pod-autoscaler  New size: 2; reason: All metrics below target
+     Normal  SuccessfulRescale  6s    horizontal-pod-autoscaler  New size: 1; reason: All metrics below target
+
+   > kubectl -n scale-test get pods
+   NAME                     READY   STATUS    RESTARTS   AGE
+   nginx-69d7f674df-lvrzw   1/1     Running   0          60m
+   ```
