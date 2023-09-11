@@ -24,7 +24,7 @@
 3. Use another shell, overriding the content of the variable:
 
    ```console
-   docker exec -it -e MESSAGE="Modified test content" environment-var-test /bin/bash
+   docker@minikube:~$ docker exec -it -e MESSAGE="Modified test content" environment-var-test /bin/bash
    root@d1a23db58736:/# echo $MESSAGE
    Modified test content
 
@@ -45,5 +45,7 @@
    docker@minikube:~$
    ```
 
-5. No, the value is still the original. This means that the override produced by the exec counts just from there on, it is not retroactive. Which means that the only way to reset the environment variable is to stop and start the container once again with a new -e option specified.
-
+5. No, the value is still the original. This means that the override produced by
+   the exec counts just from there on, it is not retroactive. Which means that
+   the only way to reset the environment variable is to stop and start the
+   container once again with a new -e option specified.
