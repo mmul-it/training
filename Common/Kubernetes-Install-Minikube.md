@@ -1,4 +1,4 @@
-# Exercise | Install Minikube | Solution
+# Lab | Install Minikube
 
 1. Your system should have, at least:
    - 2 CPUs or more
@@ -45,13 +45,26 @@
 
    ```
 
-   **NOTE 1**: depending on the way you want to install Minikube you can pass different driver as paramenter to `minikube start`. By default it will try to use the Docker driver, so if you don't have Docker installed on your environment you might want to install it by [following the official instructions](https://docs.docker.com/engine/install/).
+   **NOTE 1**: depending on the way you want to install Minikube you can pass
+   different driver as paramenter to `minikube start`. By default it will try to
+   use the Docker driver, so if you don't have Docker installed on your
+   environment you might want to install it by
+   [following the official instructions](https://docs.docker.com/engine/install/).
 
-   **NOTE 2**: if you are using Docker remember that your user must be part of the `docker` system group. This can be done as follows:
+   **NOTE 2**: if you are using Docker remember that your user must be part of
+   the `docker` system group. This can be done as follows:
 
    ```console
-   > adduser <you user name> docker
+   > sudo usermod --append --groups docker <you user name>
    > newgrp docker
+   ```
+
+   **NOTE 3**: if you need to enable a specific insecure registry in your
+   minikube installation, it is possible to pass the `--insecure-registries`
+   options:
+
+   ```console
+   > minikube start --insecure-registry=172.16.99.1:5000
    ```
 
 5. Download the `kubectl` command:
@@ -76,9 +89,9 @@
    > find .minikube/ -name kubectl
    .minikube/cache/linux/amd64/v1.25.3/kubectl
 
-   > echo 'PATH=.minikube/cache/linux/amd64/v1.25.3/:$PATH' >> ~/.bashrc
+   > echo 'PATH=.minikube/cache/linux/amd64/v1.25.3/:$PATH' >> ~/.bash_profile
 
-   > source ~/.bashrc
+   > source ~/.bash_profile
 
    > kubectl get po -A
    NAMESPACE     NAME                               READY   STATUS    RESTARTS     AGE
@@ -91,13 +104,24 @@
    kube-system   storage-provisioner                1/1     Running   2 (6m ago)   6m13s
    ```
 
-6. The `kubectl` command can be used to produce a bash completion file to be included in your shell: 
+6. The `kubectl` command can be used to produce a bash completion file to be
+   included in your shell.
+
+   The `bash-completion` package is mandatory:
+
+   ```console
+   > sudo yum -y install bash-completion
+   ```
+
+   And then the completion can be activated:
 
    ```console
    > kubectl completion bash > ~/.kubectl-completion
  
-   > echo "source ~/.kubectl-completion" >> ~/.bashrc
+   > echo "source ~/.kubectl-completion" >> ~/.bash_profile
  
+   > source ~/.bash_profile
+
    > kubectl <PRESS TAB>
    annotate       attach         cluster-info   cordon         describe       exec           kustomize      patch          replace        set            version
    api-resources  auth           completion     cp             diff           explain        label          plugin         rollout        taint          wait
