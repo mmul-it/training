@@ -32,7 +32,7 @@
            - name: trivy-admission-webhook
              image: quay.io/mmul/trivy-admission-webhook
              env:
-               - name: "ALLOW_INSECURE_REGISTRIES"
+               - name: "TRIVY_WEBHOOK_ALLOW_INSECURE_REGISTRIES"
                  value: "True"
              volumeMounts:
               - name: certs

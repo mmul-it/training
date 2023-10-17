@@ -57,6 +57,8 @@
      ...
      - sonarqube
 
+   ...
+
    sonarqube_job:
      stage: sonarqube
      image: sonarsource/sonar-scanner-cli:latest

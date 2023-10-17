@@ -188,15 +188,16 @@
    Add the build process to the pipeline adding to `.gitlab-ci.yml` this code:
 
    ```yaml
+   variables:
+     ...
+     DOCKER_IMAGE_NAME: ncat_http_msg_port
+
    stages:
      ...
      - build
      - publish
 
-   variables:
-     ...
-     ...
-     DOCKER_IMAGE_NAME: ncat_http_msg_port
+   ...
 
    build_job:
      stage: build

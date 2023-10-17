@@ -41,7 +41,7 @@
 
    Login into interface and create a user:
 
-   [http://localhost:8080/admin/users/new](http://localhost:8080/admin/users/new)
+   [http://172.16.99.1:8080/admin/users/new](http://172.16.99.1:8080/admin/users/new)
 
    By giving these inputs:
 
@@ -60,11 +60,11 @@
 
    And then add the key by Impersonating the newly created user:
 
-   [http://localhost:8080/admin/users/devsecops/impersonate](http://localhost:8080/admin/users/devsecops/impersonate)
+   [http://172.16.99.1:8080/admin/users/devsecops/impersonate](http://172.16.99.1:8080/admin/users/devsecops/impersonate)
 
    And by adding the `id_rsa.pub` contents as a key for the user:
 
-   [http://localhost:8080/-/profile/keys](http://localhost:8080/-/profile/keys)
+   [http://172.16.99.1:8080/-/profile/keys](http://172.16.99.1:8080/-/profile/keys)
 
    Move out from impersonation by click on the `Stop impersonation` icon on the
    top right container.
@@ -72,15 +72,14 @@
 3. Test the credentials:
 
    ```console
-   > ssh -p 2222 git@localhost
-   The authenticity of host '[localhost]:2222 ([::1]:2222)' can't be established.
-   ED25519 key fingerprint is SHA256:ek60stwFDQK1eHrkRNlRpW4EHETBt8HCjqwtIKZN4J0.
-   This key is not known by any other names
+   > ssh -p 2222 git@172.16.99.1
+   The authenticity of host '[172.16.99.1]:2222 ([172.16.99.1]:2222)' can't be established.
+   ECDSA key fingerprint is SHA256:cUOv255bj/4Jj5UFUXTItk53CA+/85YnQoKaD1bAjHo.
    Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-   Warning: Permanently added '[localhost]:2222' (ED25519) to the list of known hosts.
+   Warning: Permanently added '[172.16.99.1]:2222' (ECDSA) to the list of known hosts.
    PTY allocation request failed on channel 0
    Welcome to GitLab, @devsecops!
-   Connection to localhost closed.
+   Connection to 172.16.99.1 closed.
    ```
 
    Create a project with an initial push:
@@ -96,11 +95,11 @@
 
    > git config --global user.name "devsecops"
 
+   > git config --global init.defaultBranch main
+
    > echo 'My DevSecOps repo' > README.md
 
    > git add . && git commit -m "Initial commit"
-
-   > git config --global init.defaultBranch main
 
    > git remote add origin ssh://git@172.16.99.1:2222/devsecops/myproject.git
 
@@ -121,7 +120,7 @@
    remote:
    remote:
    remote:
-   To ssh://localhost:2222/devsecops/myproject.git
+   To ssh://172.16.99.1:2222/devsecops/myproject.git
     * [new branch]                main -> main
    Branch 'main' set up to track remote branch 'main' from 'origin'.
    ```
