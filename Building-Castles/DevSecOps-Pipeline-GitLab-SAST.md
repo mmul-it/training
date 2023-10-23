@@ -35,20 +35,20 @@
    // This code contains a security vulnerability
 
    // Extract user input from GET parameters
-   $id = $_GET['id'];
+   \$id = \$_GET['id'];
 
    // SQL query without proper input validation
-   $query = "SELECT * FROM users WHERE id = $id";
+   \$query = "SELECT * FROM users WHERE id = \$id";
 
    // Execute the SQL query
-   $result = mysqli_query($connection, $query);
+   \$result = mysqli_query(\$connection, \$query);
 
    // Fetch the data
-   $data = mysqli_fetch_assoc($result);
+   \$data = mysqli_fetch_assoc($result);
 
    // Display the user's details
-   echo "Username: " . $data['username'] . "<br>";
-   echo "Email: " . $data['email'] . "<br>";
+   echo "Username: " . \$data['username'] . "<br>";
+   echo "Email: " . \$data['email'] . "<br>";
    EOF
    ```
 

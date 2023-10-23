@@ -2,6 +2,7 @@
 
 1. Launch the GitLab instance using the `gitlab/gitlab-ce:latest` container,
    exposing these ports (Host/Container):
+
    - 8080:80
    - 8443:443
    - 2222:22
@@ -46,8 +47,8 @@
    By giving these inputs:
 
    - Name: DevSecOps
-     Username: devsecops
-     Email: devsecops@example.com
+   - Username: devsecops
+   - Email: devsecops@example.com
 
    And press "Create user".
 
@@ -85,17 +86,17 @@
    Create a project with an initial push:
 
    ```console
-   > mkdir myproject
-
-   > cd myproject
-
-   > git init
-
    > git config --global user.email "devsecops@example.com"
 
    > git config --global user.name "devsecops"
 
    > git config --global init.defaultBranch main
+
+   > mkdir myproject
+
+   > cd myproject
+
+   > git init
 
    > echo 'My DevSecOps repo' > README.md
 
