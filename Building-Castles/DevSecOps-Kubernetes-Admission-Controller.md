@@ -189,6 +189,13 @@
 
    Not all the containers inside the `nginx-insecure` pod are secure!
 
+   **NOTE**: it might be that, by the time this exercise was created, the
+   `nginx:latest` container version might be vulnarable as well as the
+   `nginx:1.18`. To get an image not affected by any `CRITICAL` vulnerability
+   it is possible to refer to the [Nginx Docker Hub page](https://hub.docker.com/_/nginx/tags)
+   and look for a specific tag (tip: the `alpine` tags are usually not carrying
+   vulnerabilities because of their lighter nature).
+
 5. Last thing will be the deployment of the application coming from the internal
    registry. It will be the one that was produced by the pipeline, so
    `172.16.99.1:5000/ncat_http_msg_port:latest`.
