@@ -43,15 +43,6 @@ kubectl apply -f https://github.com/operator-framework/operator-lifecycle-manage
 That should produce this output:
 
 ```console
-customresourcedefinition.apiextensions.k8s.io/catalogsources.operators.coreos.com serverside-applied
-customresourcedefinition.apiextensions.k8s.io/clusterserviceversions.operators.coreos.com serverside-applied
-customresourcedefinition.apiextensions.k8s.io/installplans.operators.coreos.com serverside-applied
-customresourcedefinition.apiextensions.k8s.io/olmconfigs.operators.coreos.com serverside-applied
-customresourcedefinition.apiextensions.k8s.io/operatorconditions.operators.coreos.com serverside-applied
-customresourcedefinition.apiextensions.k8s.io/operatorgroups.operators.coreos.com serverside-applied
-customresourcedefinition.apiextensions.k8s.io/operators.operators.coreos.com serverside-applied
-customresourcedefinition.apiextensions.k8s.io/subscriptions.operators.coreos.com serverside-applied
-[kirater@training-kfs-minikube ~]$ kubectl apply -f https://github.com/operator-framework/operator-lifecycle-manager/releases/latest/download/olm.yaml --server-side=true
 namespace/olm serverside-applied
 namespace/operators serverside-applied
 serviceaccount/olm-operator-serviceaccount serverside-applied
