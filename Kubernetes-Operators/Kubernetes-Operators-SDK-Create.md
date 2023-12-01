@@ -32,7 +32,7 @@ command:
 ```bash
 [kirater@training-kfs-minikube kiraop]$ ls roles
 
-[kirater@training-kfs-minikube kiraop]$ operator-sdk create api --group cache --version v1alpha1 --kind Akit --generate-role
+[kirater@training-kfs-minikube kiraop]$ operator-sdk create api --version v1alpha1 --kind Akit --generate-role
 Writing kustomize manifests for you to edit...
 
 [kirater@training-kfs-minikube kiraop]$ ls roles/
@@ -87,7 +87,7 @@ What will effectively be done by the operator will be defined inside the file
         labels:
           app: akit
         name: akit
-        namespace: "{{ akit_ns }}"
+        namespace: "{{ akit_namespace }}"
       spec:
         ports:
           - name: http
@@ -191,6 +191,9 @@ Login Succeeded
 Not it is time to effectively build and push the operator container image:
 
 ```console
+
+$ make docker-build docker-push IMG=quay.io/mmul/kiraop:v0.0.1
+
 [kirater@training-kfs-minikube kiraop]$ make docker-build docker-push
 docker build -t quay.io/mmul/kiraop:0.0.1 .
 [+] Building 0.8s (11/11) FINISHED                                                        docker:default

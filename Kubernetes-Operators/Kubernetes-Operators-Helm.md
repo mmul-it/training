@@ -2,27 +2,41 @@
 
 This lab will use the `helm` tool to install and manage the [MariaDB operator](https://mariadb.org/mariadb-in-kubernetes-with-mariadb-operator/).
 
-```bash
-helm repo add mariadb-operator https://mariadb-operator.github.io/mariadb-operator
-```
+## Install Helm
+
+Instructions about how to install `helm` are available [on the official website](https://helm.sh/docs/intro/install/)
+and choosing the `v3.13.2` version, the package can be downloaded and put into
+the system's path:
 
 ```console
+$ curl -o helm.tar.gz https://get.helm.sh/helm-v3.13.2-linux-amd64.tar.gz
+$ tar -xf helm.tar.gz
+$ sudo mv linux-amd64/helm /usr/local/bin/helm
+$ helm version
+version.BuildInfo{Version:"v3.13.2", GitCommit:"2a2fb3b98829f1e0be6fb18af2f6599e0f4e8243", GitTreeState:"clean", GoVersion:"go1.20.10"}
+```
+
+## Install MarDB Operator using Helm
+
+First the mariadb-operator Helm repository should be added to the available ones:
+
+```bash
+$ helm repo add mariadb-operator https://mariadb-operator.github.io/mariadb-operator
 "mariadb-operator" has been added to your repositories
 ```
 
-```bash
-kubectl create ns mariadb-system
-```
+Then a specific `namespace` will be created:
 
-```console
+```bash
+$ kubectl create ns mariadb-system
 namespace/mariadb-system created
 ```
 
-```bash
-helm install mariadb-operator mariadb-operator/mariadb-operator -n mariadb-system
-```
+This namespace will run the operator itself. Since there's no need to customize
+anything, the operator can be installed like:
 
-```console
+```bash
+$ helm install mariadb-operator mariadb-operator/mariadb-operator -n mariadb-system
 NAME: mariadb-operator
 LAST DEPLOYED: Thu Oct 26 12:20:43 2023
 NAMESPACE: mariadb-system
@@ -36,22 +50,64 @@ Not sure what to do next? 😅 Check out:
 https://github.com/mariadb-operator/mariadb-operator#quickstart
 ```
 
+And from now on the application will be manageable via Helm:
+
 ```bash
 helm list
-```
-
-```console
 NAME                    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
 mariadb-operator        default         1               2023-10-26 12:29:52.351187045 +0000 UTC deployed        mariadb-operator-0.22.0 v0.0.22
 ```
 
+## Test the operator
+
+### Prepare database storage
+
+The MariaDB custom resource will rely on some persistent storage, and to create
+a test one on the nodes, a `storageClass` with a `PersistentVolume` will be
+created:
+
 ```bash
-kubectl create secret generic mariadb --from-literal=root-password=mariadb
+kubectl apply -f - <<EOF
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local
+  annotations:
+    storageclass.kubernetes.io/is-default-class: 'true'
+provisioner: kubernetes.io/hostpath
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: data
+  labels:
+    type: local
+spec:
+  storageClassName: local
+  persistentVolumeReclaimPolicy: Recycle
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data"
+EOF
+storageclass.storage.k8s.io/local created
+persistentvolume/data created
 ```
 
-```console
+### Prepare the database secret
+
+Every `mariadb` instance needs a root password, that will rely on a secret:
+
+```bash
+kubectl create secret generic mariadb --from-literal=root-password=mariadb
 secret/mariadb created
 ```
+
+### Create the resource
+
+Once everything is in place, the `mariadb` can effectively be created:
 
 ```bash
 kubectl apply -f - <<EOF
@@ -86,9 +142,6 @@ spec:
       cpu: 300m
       memory: 512Mi
 EOF
-```
-
-```console
 mariadb.mariadb.mmontes.io/mariadb created
 ```
 
@@ -117,6 +170,8 @@ NAME                       READY   AGE
 statefulset.apps/mariadb   1/1     2m3s
 ```
 
+### Access the application
+
 Expose the service with:
 
 ```bash
@@ -131,14 +186,10 @@ mariadb-0   LoadBalancer   10.109.27.130   192.168.99.101   3306:32054/TCP   2m3
 ```
 
 The service is exposed and accessible, by installing the mariadb package (`yum
--y install mariadb`) and then invoke `mysql -h 192.168.99.101 -u root -pmariadb`:
+-y install mariadb`) and then invoke:
 
 ```console
-Ncat: Version 7.70 ( https://nmap.org/ncat )
-Ncat: Connected to 192.168.99.101:3306.
-q
-5.5.5-10.11.3-MariaDB-1:10.11.3+maria~ubu22049c7']!)K{-OT9_S`kx8N_tmysql_native_password
-
+$ mysql -h 192.168.99.101 -u root -pmariadb
 Welcome to the MariaDB monitor.  Commands end with ; or \g.
 Your MariaDB connection id is 128
 Server version: 10.11.3-MariaDB-1:10.11.3+maria~ubu2204 mariadb.org binary distribution
@@ -157,5 +208,4 @@ MariaDB [(none)]> SHOW DATABASES;
 | sys                |
 +--------------------+
 4 rows in set (0,008 sec)
-
 ```
