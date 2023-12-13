@@ -1,4 +1,18 @@
-# Exercise | Mounting a filesystem | Solution
+# Lab 003 - Mounting a filesystem
+
+In this lab you will:
+
+1. View active mounts.
+2. Create a mountpoint called `ram_disk`, and mount (as root) a new filesystem:
+  - type `tmpfs`.
+  - options `size=512k`.
+  - device `tmpfs`.
+3. Verify mount of `ram_disk`.
+4. Create a file into the new filesystem, and list it.
+5. Umount (as root) `ram_disk`.
+6. Verify `ram_disk` is now empty and remove mountpoint.
+
+## Solution
 
 1. View active mounts:
 

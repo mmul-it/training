@@ -1,4 +1,16 @@
-# Exercise | Making your own library | Solutions
+# Lab | Making your own library
+
+In this lab you will:
+
+1. Log into the machine with the credentials you own.
+2. Create a file named `myfunctions1` that will contain a function printing this
+   simple text: `This is my first function`.
+3. Create a file named `myfunctions2` that will contain a function printing this
+   simple text: `This is my second function`.
+3. Create a file named `myfunctions.sh` that will include the two libraries and
+   call sequentially the two functions.
+
+## Solution
 
 1. Suppose your user is `kirater` and your machine is `machine`:
 

@@ -1,4 +1,12 @@
-# Exercise | Kubernetes Create PV PVC | Solution
+# Lab | Kubernetes Create PV PVC
+
+In this lab you will:
+
+1. Create a PV of 5G pointing to the `/data` directory and a `storageClassName` named `localpv`.
+2. Create a namespace named `volumes-test` with a PersistentVolumeClaim of 1G claiming for the `storageClassName` named `localpv`.
+3. Find the bounded volumes and show the details;
+
+## Solution
 
 1. Create a yaml file with the Persistent Volume named 'pv001' definition:
 
