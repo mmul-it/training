@@ -1,5 +1,8 @@
 # Lab | Install, configure and use MetalLB operator
 
+In this lab you will install, configure and create the custom resources from
+the MetalLB operator.
+
 ## Operator's initialization
 
 Installation can be made directly by pointing to the GitHub's yaml:

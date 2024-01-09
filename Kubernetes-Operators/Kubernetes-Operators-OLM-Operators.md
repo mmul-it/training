@@ -1,5 +1,8 @@
 # Lab | Install OLM and manage operators
 
+In this lab you will install the Operator Life-cycle Manager and use it to
+manage the deployment of the Trivy Operator life-cycle.
+
 ## Install OLM using operator-sdk
 
 The best way to install OLM into a running cluster is by using the operator-sdk`

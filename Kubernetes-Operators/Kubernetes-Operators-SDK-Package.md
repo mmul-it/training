@@ -1,5 +1,8 @@
 # Lab | Manage Ansible Operator packages
 
+In this lab you will define a method to package and version the Ansible based
+Kubernetes Operator.
+
 ## Make the original working directory a Git repository
 
 ```console

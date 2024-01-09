@@ -1,4 +1,7 @@
-# Lab | Debug an Ansible Operator
+# Lab | Debug a Kubernetes Operator
+
+In this lab you will show how to check status, logs and messages coming from a
+Kubernetes Operator.
 
 ## Check Operator status
 

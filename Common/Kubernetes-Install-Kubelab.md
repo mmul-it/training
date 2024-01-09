@@ -1,8 +1,10 @@
 # Lab | Install Kubelab
 
+In this lab you will prepare a Kubernetes cluster using four internal machines.
+
 ## Launch the Kubelab playbook
 
-This lab will implement the sample cluster into the four available machines, by
+In this lab you will implement the sample cluster into the four available machines, by
 using the [Kubelab](https://github.com/mmul-it/kubelab) project.
 
 Machines should already be available, and the only needed steps are the ones to

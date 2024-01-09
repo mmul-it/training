@@ -1,5 +1,7 @@
 # Lab | Install Minikube
 
+In this lab you will install Minikube to get a working Kubernetes cluster.
+
 ## Check requirements
 
 Your system should have, at least:

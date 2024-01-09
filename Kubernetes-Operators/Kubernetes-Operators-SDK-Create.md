@@ -1,5 +1,8 @@
 # Lab | Create an Ansible Operator
 
+In this lab you will create a working Ansible based operator that will enable a
+specific Custom Resource to automate application deployments.
+
 ## Operator's initialization
 
 Initialize the operator's main directory by using the `operator-sdk init`
@@ -16,8 +19,8 @@ Next: define a resource with:
 $ operator-sdk create api
 ```
 
-The initialization will produce some content inside the directory that will serve
-as the operator's working directory:
+The initialization will produce some content inside the directory that will
+serve as the operator's working directory:
 
 ```bash
 [kirater@training-kfs-minikube kiraop]$ ls
@@ -120,7 +123,8 @@ What will effectively be done by the operator will be defined inside the file
 ```
 
 So, every `Akit` Custom Resource will be a group composed by a `namespace`, a
-`deployment`, and two services, a `ClusterIP` (default) one and a `LoadBalancer`.
+`deployment`, and two services, a `ClusterIP` (default) one and a
+`LoadBalancer`.
 
 Defaults will be defined under `roles/akit/defaults/main.yml`:
 
@@ -133,9 +137,9 @@ akit_container: 'public.ecr.aws/nginx/nginx:latest'
 akit_expose_lb: true
 ```
 
-To define the permissions needed by the operator the `config/rbac/role.yaml` must
-be edited. In the proposed example the operator should have powers to create a
-lot of resources, so a specific `ClusterRole` will be defined:
+To define the permissions needed by the operator the `config/rbac/role.yaml`
+must be edited. In the proposed example the operator should have powers to
+create a lot of resources, so a specific `ClusterRole` will be defined:
 
 ```yaml
 ---

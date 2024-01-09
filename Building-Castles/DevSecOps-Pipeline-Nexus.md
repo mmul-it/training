@@ -1,5 +1,8 @@
 # Lab | Nexus installation, configuration and pipeline integration
 
+In this lab you will launch Nexus container and integrate it inside the GitLab
+CI pipeline, by introducing a docker build step.
+
 ## Launch Nexus
 
 Prepare the environment on which the Nexus container will run, by creating
@@ -14,7 +17,7 @@ and assigning to the user `nexus` (with uid `200`) the `nexus` directory:
 ```
 
 Then it will be possible to launch the Nexus instance using the
-`sonatype/nexus3` containera, exposing these ports (Host/Container):
+`sonatype/nexus3` container, exposing these ports (Host/Container):
 
 - 8081:8081
 - 9443:9443

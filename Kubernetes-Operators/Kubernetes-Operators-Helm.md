@@ -1,6 +1,6 @@
 # Lab | Use Helm to manage Kubernetes Operators
 
-This lab will use the `helm` tool to install and manage the [MariaDB operator](https://mariadb.org/mariadb-in-kubernetes-with-mariadb-operator/).
+In this lab you will use the `helm` tool to install and manage the [MariaDB operator](https://mariadb.org/mariadb-in-kubernetes-with-mariadb-operator/).
 
 ## Install Helm
 

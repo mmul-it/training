@@ -1,5 +1,7 @@
 # Lab | Implement a Vulnerability Monitor using the Trivy operator
 
+In this lab you will manually install the Trivy operator.
+
 ## Install the Trivy Operator
 
 First of all you'll need to install the [Trivy Operator](https://github.com/aquasecurity/trivy-operator)

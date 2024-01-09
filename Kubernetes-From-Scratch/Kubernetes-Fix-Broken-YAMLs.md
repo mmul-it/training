@@ -1,6 +1,6 @@
 # Lab | Fix broken YAMLs
 
-This lab will show three YAML files related to Kubernetes resources with
+In this lab you will show three YAML files related to Kubernetes resources with
 problems. Try to find out where the problem is before looking at the solution.
 
 ## Faulty YAML 1

@@ -1,5 +1,8 @@
 # Lab | Configure GitLab on an example git repository
 
+In this lab you will configure a git repository to be processed by GitLab SAST
+capabilities that will affect the CI process.
+
 ## Add some code into the repo
 
 We will need some code inside `myproject` to check GitLab's SAST

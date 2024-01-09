@@ -1,5 +1,7 @@
 # Lab | Install Code Ready Containers
 
+In this lab you will install Code Ready Containers, an OpenShift test cluster.
+
 ## Download and prepare crc
 
 Register at [https://cloud.redhat.com/openshift/create/local](https://cloud.redhat.com/openshift/create/local)

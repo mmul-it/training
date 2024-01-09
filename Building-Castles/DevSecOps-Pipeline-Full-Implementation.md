@@ -1,5 +1,8 @@
 # Lab | Block the DevSecOps pipeline in case of problems
 
+In this lab you will complete the DevSecOps GitLab CI pipeline by making the
+SonarQube step affecting the promotion of the code.
+
 ## Simulate faulty source code
 
 Let's push a faulty source code to our repo:

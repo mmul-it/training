@@ -1,5 +1,8 @@
 # Lab | Set the requirements
 
+This lab defines the requirements for the entire lab that will be used during
+the Building Castles course.
+
 ## Docker
 
 Docker is a requirement for all the exercises and the entire DevSecOps

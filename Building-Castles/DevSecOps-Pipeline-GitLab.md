@@ -1,5 +1,7 @@
 # Lab | Install GitLab on a container and configure a runner
 
+In this lab you will install GitLab and configure its runner to play with CI.
+
 ## Launch GitLab
 
 Launch the GitLab instance using the `gitlab/gitlab-ce:latest` container,

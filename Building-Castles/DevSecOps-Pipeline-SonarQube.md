@@ -1,5 +1,8 @@
 # Lab | Install SonarQube and integrate it inside a GitLab pipeline
 
+In this lab you will launch SonarQube container and integrate it inside the
+GitLab CI pipeline.
+
 ## Launch SonarQube
 
 Launch the SonarQube instance using the `sonarqube:latest` container image,

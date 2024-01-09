@@ -1,5 +1,8 @@
 # Lab | Implement a Kubernetes Admission Controller using Trivy
 
+In this lab you will implement a Kubernetes Admission Controller using Trivy
+inside a Minikube cluster and then doing the same in a multi node cluster setup.
+
 ## Requirements
 
 This exercise is base upon the container [https://quay.io/repository/mmul/trivy-admission-webhook](https://quay.io/repository/mmul/trivy-admission-webhook)

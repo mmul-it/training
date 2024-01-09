@@ -1,5 +1,7 @@
 # Lab | Install the Operator SDK
 
+In this lab you will install and nable the Operator SDK environment.
+
 ## Download and install the executable
 
 Following the [official project website](https://sdk.operatorframework.io/), the
