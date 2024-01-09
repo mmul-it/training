@@ -21,7 +21,7 @@ In this lab you will:
 1. First login as 'kubeadmin':
 
    ```console
-   > oc login -u kubeadmin
+   $ oc login -u kubeadmin
    Logged into "https://api.crc.testing:6443" as "kubeadmin" using existing credentials.
    ...
    ```
@@ -29,7 +29,7 @@ In this lab you will:
    Than take a look at the available scc:
 
    ```console
-   > oc get scc
+   $ oc get scc
    NAME               PRIV      CAPS      SELINUX     RUNASUSER          FSGROUP     SUPGROUP    PRIORITY   READONLYROOTFS   VOLUMES
    anyuid             false     []        MustRunAs   RunAsAny           RunAsAny    RunAsAny    10         false            [configMap downwardAPI emptyDir persistentVolumeClaim projected secret]
    ...
@@ -38,7 +38,7 @@ In this lab you will:
    And specifically on 'anyuid', 'privileged', 'restricted':
 
    ```console
-   > oc describe scc/anyuid
+   $ oc describe scc/anyuid
    Name:                              anyuid
    Priority:                          10
    Access:
@@ -73,17 +73,17 @@ In this lab you will:
        Ranges:                        <none>
      Supplemental Groups Strategy: RunAsAny
        Ranges:                        <none>
-   > oc describe scc/privileged
+   $ oc describe scc/privileged
    ...
 
-   > oc describe scc/restricted
+   $ oc describe scc/restricted
    ...
    ```
 
 2. Become 'developer':
 
    ```console
-   > oc login -u developer
+   $ oc login -u developer
    Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
    ...
    ```
@@ -91,7 +91,7 @@ In this lab you will:
    And create 'scc-test' project:
 
    ```console
-   > oc new-project scc-test
+   $ oc new-project scc-test
    Now using project "scc-test" on server "https://api.crc.testing:6443".
    ...
    ```
@@ -100,7 +100,7 @@ In this lab you will:
    use the '--docker-image=' switch:
 
    ```console
-   > oc new-app --name=nginx --docker-image=nginx:latest
+   $ oc new-app --name=nginx --docker-image=nginx:latest
    --> Found container image 4cdc5dd (8 days old) from Docker Hub for "nginx:latest"
    ...
    ```
@@ -108,7 +108,7 @@ In this lab you will:
 3. Check the status:
 
    ```console
-   > oc status
+   $ oc status
    svc/nginx - 10.217.5.66:80
      deployment/nginx deploys istag/nginx:latest
        deployment #2 running for 42 seconds - 0/1 pods (warning: 2 restarts)
@@ -119,7 +119,7 @@ In this lab you will:
 
    1 error, 1 info identified, use 'oc status --suggest' to see details.
 
-   > oc logs nginx-1-nwhqs -c nginx
+   $ oc logs nginx-1-nwhqs -c nginx
    /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
    /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
    /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
@@ -139,14 +139,14 @@ In this lab you will:
 4. Become 'kubeadmin' again:
 
    ```console
-   > oc login -u kubeadmin
+   $ oc login -u kubeadmin
    Logged into "https://api.crc.testing:6443" as "kubeadmin" using existing credentials
    ```
 
    Then you can create the 'useroot' serviceaccount:
 
    ```console
-   > oc create serviceaccount useroot
+   $ oc create serviceaccount useroot
    serviceaccount/useroot created
    ```
 
@@ -154,28 +154,29 @@ In this lab you will:
    to the 'anyuid' scc:
 
    ```console
-   > oc whoami
+   $ oc whoami
    kubeadmin
 
-   > oc adm policy add-scc-to-user anyuid --serviceaccount useroot
+   $ oc adm policy add-scc-to-user anyuid --serviceaccount useroot
    clusterrole.rbac.authorization.k8s.io/system:openshift:scc:anyuid added: "useroot"
    ```
 
 6. Become 'developer' again:
 
    ```console
-   > oc login -u developer
+   $ oc login -u developer
    Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
    ...
 
-   > oc project scc-test
+   $ oc project scc-test
    Now using project "scc-test" on server "https://192.168.42.154:8443".
    ```
 
    There are two ways for adding the attribute, by using 'oc edit deployment':
 
    ```console
-   > oc edit deployment nginx
+   $ oc edit deployment nginx
+   (vim interface opens)
    ```
 
    And add the 'serviceAccountName:' attribute inside 'spec:template:spec:'
@@ -200,14 +201,14 @@ In this lab you will:
    Or by using the 'oc patch' command like this:
 
    ```console
-   > oc patch deployment nginx --patch '{"spec":{"template":{"spec":{"serviceAccountName": "useroot"}}}}'
+   $ oc patch deployment nginx --patch '{"spec":{"template":{"spec":{"serviceAccountName": "useroot"}}}}'
    deployment.apps/nginx patched
    ```
 
 7. Check the status via 'oc status':
 
    ```console
-   > oc status
+   $ oc status
    In project scc-test on server https://api.crc.testing:6443
 
    svc/nginx - 10.217.5.66:80
@@ -221,7 +222,7 @@ In this lab you will:
    Check pods:
 
    ```console
-   > oc get pods
+   $ oc get pods
    NAME                    READY   STATUS    RESTARTS   AGE
    nginx-bdb8f978d-498jh   1/1     Running   0          53m
    ```
@@ -229,7 +230,7 @@ In this lab you will:
    And finally check logs:
 
    ```console
-   > oc logs pod/nginx-bdb8f978d-498jh -c nginx
+   $ oc logs pod/nginx-bdb8f978d-498jh -c nginx
    /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
    /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
    /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
@@ -253,6 +254,6 @@ In this lab you will:
    Cleanup:
 
    ```console
-   > oc delete project scc-test
+   $ oc delete project scc-test
    project.project.openshift.io "scc-test" deleted
    ```

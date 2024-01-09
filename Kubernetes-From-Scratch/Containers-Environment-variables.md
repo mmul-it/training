@@ -13,7 +13,7 @@ In this lab you will:
 1. Run the container after logging into minikube via ssh:
 
    ```console
-   > minikube ssh
+   $ minikube ssh
 
    docker@minikube:~$ docker run -d -e MESSAGE="Test content" --name environment-var-test nginx
    7c1f15079d3ca1e851af947d8cb673cfb80177421da21be3da3c35ab2c4609d6

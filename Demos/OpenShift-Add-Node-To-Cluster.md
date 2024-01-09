@@ -6,6 +6,7 @@ After this it is possible to launch the coreos installation:
 
 ```console
 $ sudo coreos-installer install --copy-network --ignition-url=http://ocp-bastion.test.kiratech.local/openshift-install-dir/worker.ign /dev/sda --insecure-ignition
+...
 ```
 
 On the bastion machine after some time a request for a 'bootstrapper'

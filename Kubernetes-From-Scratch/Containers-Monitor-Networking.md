@@ -12,27 +12,26 @@ In this lab you will
 1. Use `docker run` to start MySQL container, passing the `MYSQL_ROOT_PASSWORD` environmental variable:
 
    ```console
-   > minikube ssh
+   $ minikube ssh
 
    docker@minikube:~$ docker run --rm --detach --name network-test -p 3306:3306 -e MYSQL_ROOT_PASSWORD=testr00t mysql
    Unable to find image 'mysql:latest' locally
    latest: Pulling from library/mysql
-   996f1bba14d6: Pull complete 
-   a4355e2c82df: Pull complete 
-   a9d7aedb7ad7: Pull complete 
-   24ee75d8667d: Pull complete 
-   da8c1ec8ff26: Pull complete 
-   ea8748759282: Pull complete 
-   e0859d5816ee: Pull complete 
-   26e144df551b: Pull complete 
-   9878df6a0cc3: Pull complete 
-   b43b187428e3: Pull complete 
-   202e454031c6: Pull complete 
+   996f1bba14d6: Pull complete
+   a4355e2c82df: Pull complete
+   a9d7aedb7ad7: Pull complete
+   24ee75d8667d: Pull complete
+   da8c1ec8ff26: Pull complete
+   ea8748759282: Pull complete
+   e0859d5816ee: Pull complete
+   26e144df551b: Pull complete
+   9878df6a0cc3: Pull complete
+   b43b187428e3: Pull complete
+   202e454031c6: Pull complete
    Digest: sha256:66efaaa129f12b1c5871508bc8481a9b28c5b388d74ac5d2a6fc314359bbef91
    Status: Downloaded newer image for mysql:latest
    47d40addd8d0475685c8147b2937e47242615f38ab4b2de48387edcfe0ecfdaf
    ```
-
 
 2. There are two methods to find out the PID, one is via `ps` command:
 
@@ -51,12 +50,12 @@ In this lab you will
 3. Install `tcpdump` and execute `nsenter`:
 
    ```console
-   docker@minikube:~$ sudo apt-get update            
+   docker@minikube:~$ sudo apt-get update
    ...
-   
+
    docker@minikube:~$ sudo apt-get install -y tcpdump
    ...
-   
+
    docker@minikube:~$ sudo nsenter -t 290813 -n tcpdump -i eth0 -vvv
    tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
    ```
@@ -64,7 +63,7 @@ In this lab you will
 4. From another console use `nc` to reach the 3306 port:
 
    ```console
-   > minikube ssh
+   $ minikube ssh
 
    docker@minikube:~$ nc -v localhost 3306
    Connection to localhost 3306 port [tcp/mysql] succeeded!
@@ -88,7 +87,7 @@ In this lab you will
 
 ---
 
-## Alternate method to get access to the network namespace:
+## Alternate method to get access to the network namespace
 
 Create the name spaces directory /var/run/netns and link the system namespace associated with the process (/proc/<PID>/ns/net) with the container ID (/var/run/netns/<containerID>):
 

@@ -12,7 +12,7 @@ In this lab you will:
 1. Ensure minikube is up and running:
 
    ```console
-   > minikube status
+   $ minikube status
    minikube
    type: Control Plane
    host: Running
@@ -24,25 +24,25 @@ In this lab you will:
 2. Launch `kubectl cluster-info` and `kubectl version --short`:
 
    ```console
-   > kubectl cluster-info 
+   $ kubectl cluster-info
    Kubernetes control plane is running at https://192.168.49.2:8443
    CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
-   
+
    To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
-   
-   > kubectl version --short
+
+   $ kubectl version --short
    Flag --short has been deprecated, and will be removed in the future. The --short output will become the default.
    Client Version: v1.25.3
    Kustomize Version: v4.5.7
    Server Version: v1.25.3
    ```
-   
+
    Release is `v1.25.3`.
 
 3. Launch `kubectl get nodes`:
 
    ```console
-   > kubectl get nodes
+   $ kubectl get nodes
    NAME       STATUS   ROLES           AGE   VERSION
    minikube   Ready    control-plane   23h   v1.25.3
    ```

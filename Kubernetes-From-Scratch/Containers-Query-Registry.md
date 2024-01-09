@@ -14,7 +14,7 @@ In this lab you will:
 1. The `curl` command can be invoked in one single command, as follows:
 
    ```console
-   > curl -s -X GET -u dockertraining:l3tstr41n https://www.mmul.it:5000/v2/_catalog | jq -r .repositories[]
+   $ curl -s -X GET -u dockertraining:l3tstr41n https://www.mmul.it:5000/v2/_catalog | jq -r .repositories[]
    {
      "repositories": [
        "ncat-msg-http-port",
@@ -22,7 +22,7 @@ In this lab you will:
      ]
    }
 
-   > curl -s -X GET -u dockertraining:l3tstr41n https://www.mmul.it:5000/v2/ncat-msg-http-port/tags/list | jq
+   $ curl -s -X GET -u dockertraining:l3tstr41n https://www.mmul.it:5000/v2/ncat-msg-http-port/tags/list | jq
    {
      "name": "ncat-msg-http-port",
      "tags": [
@@ -30,7 +30,7 @@ In this lab you will:
      ]
    }
 
-   $ curl -s -X GET -u dockertraining:l3tstr41n https://www.mmul.it:5000/v2/print-date/tags/list | jq 
+   $ curl -s -X GET -u dockertraining:l3tstr41n https://www.mmul.it:5000/v2/print-date/tags/list | jq
    {
      "name": "print-date",
      "tags": [
@@ -43,7 +43,7 @@ In this lab you will:
    that is also available as a container, and can be invoked as follows:
 
    ```console
-   > docker run --rm anoxis/registry-cli -r https://www.mmul.it:5000 -l dockertraining:l3tstr41n
+   $ docker run --rm anoxis/registry-cli -r https://www.mmul.it:5000 -l dockertraining:l3tstr41n
    ---------------------------------
    Image: ncat-msg-http-port
      tag: latest

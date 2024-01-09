@@ -20,15 +20,17 @@ In this lab you will:
    should be downloaded and uncompressed:
 
    ```console
-   > curl -sL https://github.com/mmul-it/training/raw/master/Kubernetes-From-Scratch/Containers-Import-Image-From-tar.nginx-saved-container.tar.xz -o Containers-Import-Image-From-tar.nginx-saved-container.tar.xz
+   $ curl -sL https://github.com/mmul-it/training/raw/master/Kubernetes-From-Scratch/Containers-Import-Image-From-tar.nginx-saved-container.tar.xz -o Containers-Import-Image-From-tar.nginx-saved-container.tar.xz
+   ...
 
-   > xz -d Containers-Import-Image-From-tar.nginx-saved-container.tar.xz
+   $ xz -d Containers-Import-Image-From-tar.nginx-saved-container.tar.xz
+   (no output)
    ```
 
 2. To load the image use `docker load`:
 
    ```console
-   > docker load -i Containers-Import-Image-From-tar.nginx-saved-container.tar
+   $ docker load -i Containers-Import-Image-From-tar.nginx-saved-container.tar
    7b4e562e58dc: Loading layer [==================================================>]  58.44MB/58.44MB
    c9c2a3696080: Loading layer [==================================================>]  54.44MB/54.44MB
    b7efe781401d: Loading layer [==================================================>]  3.584kB/3.584kB
@@ -39,9 +41,9 @@ In this lab you will:
 3. To run the image use `docker run` publishing the `8080` port on localhost:
 
    ```console
-   > docker run --detach --name imported-nginx --rm --publish 8080:80 nginx-saved-container
+   $ docker run --detach --name imported-nginx --rm --publish 8080:80 nginx-saved-container
 
-   > curl localhost:8080
+   $ curl localhost:8080
    This container image was saved from a running nginx container
    ```
 
@@ -49,22 +51,24 @@ In this lab you will:
    should be downloaded and uncompressed:
 
    ```console
-   > curl -sL https://github.com/mmul-it/training/raw/master/Kubernetes-From-Scratch/Containers-Import-Image-From-tar.nginx-exported-container.tar.xz -o Containers-Import-Image-From-tar.nginx-exported-container.tar.xz
+   $ curl -sL https://github.com/mmul-it/training/raw/master/Kubernetes-From-Scratch/Containers-Import-Image-From-tar.nginx-exported-container.tar.xz -o Containers-Import-Image-From-tar.nginx-exported-container.tar.xz
+   ...
 
-   > xz -d Containers-Import-Image-From-tar.nginx-exported-container.tar.xz
+   $ xz -d Containers-Import-Image-From-tar.nginx-exported-container.tar.xz
+   (no output)
    ```
 
 5. The `docker load` command should end up in an error:
 
    ```console
-   > docker load -i Containers-Import-Image-From-tar.nginx-exported-container.tar
+   $ docker load -i Containers-Import-Image-From-tar.nginx-exported-container.tar
    open /var/lib/docker/tmp/docker-import-876757938/bin/json: no such file or directory
    ```
 
 6. On the other side `docker import` should work as expoected:
 
    ```console
-   > docker import Containers-Import-Image-From-tar.nginx-exported-container.tar
+   $ docker import Containers-Import-Image-From-tar.nginx-exported-container.tar
    sha256:14d03acca58c313b665d9cc9f283147239b1b8b7bb25fc731b674dffa01d07d8
    ```
 
@@ -75,7 +79,7 @@ In this lab you will:
 7. But the problem is now `docker run`, that will not work:
 
    ```console
-   > docker run --detach --name nginx-exported-container --rm --publish 8080:80 nginx-exported-container
+   $ docker run --detach --name nginx-exported-container --rm --publish 8080:80 nginx-exported-container
    docker: Error response from daemon: No command specified.
    See 'docker run --help'.
    ```

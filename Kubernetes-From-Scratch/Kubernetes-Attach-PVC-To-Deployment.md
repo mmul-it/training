@@ -18,10 +18,10 @@ In this lab you will:
 1. Use `kubectl run` to run the nginx deployment:
 
    ```console
-   > kubectl -n volumes-test create deployment nginx --image=nginx:latest
+   $ kubectl -n volumes-test create deployment nginx --image=nginx:latest
    deployment.apps/nginx created
 
-   > kubectl -n volumes-test get pod
+   $ kubectl -n volumes-test get pod
    NAME                     READY   STATUS    RESTARTS   AGE
    nginx-6d666844f6-8t28s   1/1     Running   0          10s
    ```
@@ -34,25 +34,25 @@ In this lab you will:
    ```
 
    ```yaml
-   apiVersion: apps/v1                                                             
-   kind: Deployment                                                                
+   apiVersion: apps/v1
+   kind: Deployment
    ...
-   spec: 
+   spec:
    ...
-       spec:                                                                       
-         containers:                                                               
-         - image: nginx:latest                                                     
-           imagePullPolicy: Always                                                 
-           name: nginx                                                             
-           resources: {}                                                           
-           terminationMessagePath: /dev/termination-log                            
-           terminationMessagePolicy: File                                          
-           volumeMounts:                                                           
-           - mountPath: /usr/share/nginx/html                                      
-             name: nginx-docroot                                                   
-         volumes:                                                                  
-         - name: nginx-docroot                                                     
-           persistentVolumeClaim:                                                  
+       spec:
+         containers:
+         - image: nginx:latest
+           imagePullPolicy: Always
+           name: nginx
+           resources: {}
+           terminationMessagePath: /dev/termination-log
+           terminationMessagePolicy: File
+           volumeMounts:
+           - mountPath: /usr/share/nginx/html
+             name: nginx-docroot
+         volumes:
+         - name: nginx-docroot
+           persistentVolumeClaim:
              claimName: myclaim
    ...
    ```
@@ -64,13 +64,13 @@ In this lab you will:
    Then check the status of the objects:
 
    ```yaml
-   > kubectl -n volumes-test get all
+   $ kubectl -n volumes-test get all
    NAME                         READY   STATUS    RESTARTS   AGE
    pod/nginx-84655c5fd7-fk7sc   1/1     Running   0          19s
-   
+
    NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
    deployment.apps/nginx   1/1     1            1           53s
-   
+
    NAME                               DESIRED   CURRENT   READY   AGE
    replicaset.apps/nginx-6d666844f6   0         0         0       53s
    replicaset.apps/nginx-84655c5fd7   1         1         1       19s
@@ -81,7 +81,7 @@ In this lab you will:
 3. Create the file using `minikube ssh`:
 
    ```console
-   > minikube ssh
+   $ minikube ssh
 
    docker@minikube:~$ sudo bash -c "echo 'THIS COMES FROM MY VOLUME' > /data/index.html"
    ```
@@ -90,11 +90,11 @@ In this lab you will:
    is using the volume:
 
    ```console
-   > kubectl -n volumes-test get pods
+   $ kubectl -n volumes-test get pods
    NAME                     READY   STATUS    RESTARTS   AGE
    nginx-84655c5fd7-xgm2f   1/1     Running   0          8m34s
 
-   > kubectl -n volumes-test port-forward nginx-84655c5fd7-xgm2f 8080:80
+   $ kubectl -n volumes-test port-forward nginx-84655c5fd7-xgm2f 8080:80
    Forwarding from 127.0.0.1:8080 -> 80
    Forwarding from [::1]:8080 -> 80
    ```
@@ -102,21 +102,21 @@ In this lab you will:
    And from another console:
 
    ```console
-   >  curl localhost:8080
+   $  curl localhost:8080
    THIS COMES FROM MY VOLUME
    ```
 
 5. Delete the namespace and see the new PV status:
 
    ```console
-   > kubectl get pv pv0001 
+   $ kubectl get pv pv0001
    NAME     CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                  STORAGECLASS   REASON   AGE
    pv0001   5Gi        RWO            Retain           Bound    volumes-test/myclaim   localpv                 30m
 
-   >  kubectl delete namespace volumes-test 
+   $  kubectl delete namespace volumes-test
    namespace "volumes-test" deleted
 
-   >  kubectl get pv pv0001 
+   $  kubectl get pv pv0001
    NAME     CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM                  STORAGECLASS   REASON   AGE
    pv0001   5Gi        RWO            Retain           Released   volumes-test/myclaim   localpv                 30m
    ```

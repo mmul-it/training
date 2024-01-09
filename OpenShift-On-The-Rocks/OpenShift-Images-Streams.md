@@ -22,11 +22,11 @@ In this lab you will:
 1. Login as `developer` and create the new `testdeploy` project:
 
    ```console
-   > oc login -u developer
+   $ oc login -u developer
    Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
    ...
 
-   > oc new-project testdeploy
+   $ oc new-project testdeploy
    Now using project "testdeploy" on server "https://api.crc.testing:6443".
    ...
    ```
@@ -35,10 +35,10 @@ In this lab you will:
    deployment configuration:
 
    ```console
-   > oc create is webserver
+   $ oc create is webserver
    imagestream.image.openshift.io/webserver created
 
-   > oc get is
+   $ oc get is
    NAME        IMAGE REPOSITORY                                                               TAGS      UPDATED
    webserver   default-route-openshift-image-registry.apps-crc.testing/testdeploy/webserver
    ```
@@ -47,11 +47,11 @@ In this lab you will:
    image from the public registry `nginxinc/nginx-unprivileged:1.19-perl`:
 
    ```console
-   > oc import-image webserver:1.19-perl --from=nginxinc/nginx-unprivileged:1.19-perl --confirm
+   $ oc import-image webserver:1.19-perl --from=nginxinc/nginx-unprivileged:1.19-perl --confirm
    imagestream.image.openshift.io/webserver imported
    ...
 
-   > oc get is
+   $ oc get is
    NAME        IMAGE REPOSITORY                                                               TAGS        UPDATED
    webserver   default-route-openshift-image-registry.apps-crc.testing/testdeploy/webserver   1.19-perl   5 seconds ago
    ```
@@ -60,10 +60,10 @@ In this lab you will:
    refer to this image also by using the general `latest` version:
 
    ```console
-   > oc tag webserver:1.19-perl webserver:latest
+   $ oc tag webserver:1.19-perl webserver:latest
    Tag webserver:latest set to webserver@sha256:8974116f08df4cbeb69bee35437675b225e745e67e6075f43523d9f8230a1191.
 
-   > oc get is
+   $ oc get is
    NAME        IMAGE REPOSITORY                                                               TAGS               UPDATED
    webserver   default-route-openshift-image-registry.apps-crc.testing/testdeploy/webserver   latest,1.19-perl   3 seconds ago
    ```
@@ -76,13 +76,13 @@ In this lab you will:
    follows:
 
    ```console
-   > oc new-app --as-deployment-config --name=webserver --image-stream=webserver:latest
+   $ oc new-app --as-deployment-config --name=webserver --image-stream=webserver:latest
    --> Found image ee54951 (3 months old) in image stream "testdeploy/webserver" under tag "latest" for "webserver:latest"
 
-   > oc expose service webserver
+   $ oc expose service webserver
    route.route.openshift.io/webserver exposed
 
-   > curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
+   $ curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
    <hr><center>nginx/1.19.10</center>
    ```
 
@@ -90,7 +90,7 @@ In this lab you will:
    stream version:
 
    ```console
-   > oc get deploymentconfigs.apps.openshift.io webserver -o yaml
+   $ oc get deploymentconfigs.apps.openshift.io webserver -o yaml
    ...
      triggers:
      - type: ConfigChange
@@ -114,7 +114,7 @@ In this lab you will:
    command can be used as before:
 
    ```console
-   > oc import-image webserver:1.20-perl --from=nginxinc/nginx-unprivileged:1.20-perl --confirm
+   $ oc import-image webserver:1.20-perl --from=nginxinc/nginx-unprivileged:1.20-perl --confirm
    imagestream.image.openshift.io/webserver imported
    ...
    ```
@@ -123,10 +123,10 @@ In this lab you will:
    action:
 
    ```console
-   > oc tag webserver:1.20-perl webserver:latest
+   $ oc tag webserver:1.20-perl webserver:latest
    Tag webserver:latest set to webserver@sha256:a6915075a63fc9da232500402f03268efb3b159e5882190a65090fe24510b3a3.
 
-   > oc status
+   $ oc status
    In project testdeploy on server https://api.crc.testing:6443
 
    http://webserver-testdeploy.apps-crc.testing to pod port 8080-tcp (svc/webserver)
@@ -135,20 +135,20 @@ In this lab you will:
        deployment #1 deployed 2 minutes ago
    4 infos identified, use 'oc status --suggest' to see details.
 
-   > curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
+   $ curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
    <hr><center>nginx/1.20.1</center>
    ```
 
 6. Apply the same process for the `1.21-perl` release:
 
    ```console
-   > oc import-image webserver:1.21-perl --from=nginxinc/nginx-unprivileged:1.21-perl --confirm
+   $ oc import-image webserver:1.21-perl --from=nginxinc/nginx-unprivileged:1.21-perl --confirm
    imagestream.image.openshift.io/webserver imported
 
-   > oc tag webserver:1.21-perl webserver:latest
+   $ oc tag webserver:1.21-perl webserver:latest
    Tag webserver:latest set to webserver@sha256:33aa22ba83302a9fb73b19a9fca8a4a143084e990e7340c6b88b7318e6a72853.
 
-   > oc status
+   $ oc status
    In project testdeploy on server https://api.crc.testing:6443
 
    http://webserver-testdeploy.apps-crc.testing to pod port 8080-tcp (svc/webserver)
@@ -158,37 +158,37 @@ In this lab you will:
        deployment #1 deployed 3 minutes ago
    5 infos identified, use 'oc status --suggest' to see details.
 
-   > curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
+   $ curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
    <hr><center>nginx/1.21.1</center>
    ```
 
 7. Now look at the rollout history:
 
    ```console
-   > oc rollout history deploymentconfig webserver
+   $ oc rollout history deploymentconfig webserver
    deploymentconfigs "webserver"
-   REVISION	STATUS		CAUSE
-   1		Complete	config change
-   2		Complete	image change
-   3		Complete	image change
+   REVISION    STATUS        CAUSE
+   1        Complete    config change
+   2        Complete    image change
+   3        Complete    image change
    ```
 
    And move back to the initial revision, checking the service will move back
    to the `1.19` release:
 
    ```console
-   > oc rollout undo dc/webserver --to-revision=1
+   $ oc rollout undo dc/webserver --to-revision=1
    deploymentconfig.apps.openshift.io/webserver rolled back
 
-   > oc rollout history deploymentconfig webserver
+   $ oc rollout history deploymentconfig webserver
    deploymentconfigs "webserver"
-   REVISION	STATUS		CAUSE
-   1		Complete	config change
-   2		Complete	image change
-   3		Complete	image change
-   4		Complete	image change
+   REVISION    STATUS        CAUSE
+   1        Complete    config change
+   2        Complete    image change
+   3        Complete    image change
+   4        Complete    image change
 
-   > curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
+   $ curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
    <hr><center>nginx/1.19.10</center>
    ```
 

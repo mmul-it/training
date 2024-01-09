@@ -2,79 +2,77 @@
 
 In this lab you will:
 
-1. Log into the machine with the credentials you own.
-2. Create a script which require one of these parameters:
+1. Create a script which require one of these parameters:
 
    - start
    - stop
    - restart
    - status
 
-3. The script must print some sort of help if launched without parameters.
-4. The script must validate the passed parameter and print error if isn't in
+2. The script must print some sort of help if launched without parameters.
+3. The script must validate the passed parameter and print error if isn't in
    the list provided before.
-5. The script must create a file named `/tmp/${0}.pid` with the current process
+4. The script must create a file named `/tmp/${0}.pid` with the current process
    PID inside.
-6. You must check every possible status:
+5. You must check every possible status:
 
    - On start: don't start if already started.
    - On stop: don't stop if not yet running.
    - On restart: don't stop if not yet running, then start.
 
-7. On status, the script must print a readable status and the PID saved inside
+6. On status, the script must print a readable status and the PID saved inside
    the file (if running).
 
 ## Solution
 
-1. Suppose your user is `kirater` and your machine is `machine`:
+1. ->
+2. ->
+3. ->
+4. ->
+5. ->
+6. Steps from 2 to 7 build a script that will look like this:
 
-   ```console
-   > ssh kirater@machine
+   ```bash
+   #!/bin/bash
+
+   if [ $# -ne 1 ]; then
+       echo "usage: $0 <start|stop|restart|status>"
+   else
+       COMMAND=$1
+       CURRENT_PID=$$
+       PID_FILE="/tmp/${0}.pid"
+
+       case $COMMAND in
+           start)
+               if [ -f $PID_FILE ]; then
+                   echo "$0 already running"
+               else
+                   echo $CURRENT_PID > $PID_FILE
+               fi
+               ;;
+           stop)
+               if [ -f $PID_FILE ]; then
+                   rm -f $PID_FILE
+               else
+                   echo "$0 not running"
+               fi
+               ;;
+           restart)
+               if [ -f $PID_FILE ]; then
+                   rm -f $PID_FILE
+               fi
+               echo $CURRENT_PID > $PID_FILE
+               ;;
+           status)
+               if [ -f $PID_FILE ]; then
+                   echo "$0 is running ($(cat $PID_FILE))"
+               else
+                   echo "$0 not running"
+               fi
+               ;;
+           *)
+               echo "Unknown parameter"
+               ;;
+       esac
+   fi
    ```
-
-2-7. Steps from 2 to 7 build a script that will look like this:
-
-     ```bash
-     #!/bin/bash
-     
-     if [ $# -ne 1 ]; then
-     	echo "usage: $0 <start|stop|restart|status>"
-     else
-     	COMMAND=$1
-     	CURRENT_PID=$$
-     	PID_FILE="/tmp/${0}.pid"
-     
-     	case $COMMAND in
-     		start)
-     			if [ -f $PID_FILE ]; then
-     				echo "$0 already running"
-     			else
-     				echo $CURRENT_PID > $PID_FILE
-     			fi
-     			;;
-     		stop)
-     			if [ -f $PID_FILE ]; then
-     				rm -f $PID_FILE
-     			else
-     				echo "$0 not running"
-     			fi
-     			;;
-     		restart)
-     			if [ -f $PID_FILE ]; then
-     				rm -f $PID_FILE
-     			fi
-     			echo $CURRENT_PID > $PID_FILE
-     			;;
-     		status)
-     			if [ -f $PID_FILE ]; then
-     				echo "$0 is running ($(cat $PID_FILE))"
-     			else
-     				echo "$0 not running"
-     			fi
-     			;;
-     		*)
-     			echo "Unknown parameter"
-     			;;
-     	esac
-     fi
-     ```

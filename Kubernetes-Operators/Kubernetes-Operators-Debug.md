@@ -66,23 +66,23 @@ like in the case of MetalLB, where a controller for the specific instance is
 created:
 
 ```console
-$ kubectl -n metallb-system logs pod/controller-85d8bf7b75-v9tng                                                    
-{"branch":"dev","caller":"main.go:162","commit":"dev","goversion":"gc / go1.20.10 / amd64","level":"info","msg":"MetalLB controller starting (commit dev, 
-branch dev)","ts":"2023-11-28T10:38:41Z","version":""}                                                                                                    
-{"caller":"k8s.go:371","level":"info","msg":"secret successfully created","op":"CreateMlSecret","ts":"2023-11-28T10:38:41Z"}                              
-{"caller":"k8s.go:394","level":"info","msg":"Starting Manager","op":"Run","ts":"2023-11-28T10:38:41Z"}                                                    
+$ kubectl -n metallb-system logs pod/controller-85d8bf7b75-v9tng
+{"branch":"dev","caller":"main.go:162","commit":"dev","goversion":"gc / go1.20.10 / amd64","level":"info","msg":"MetalLB controller starting (commit dev,
+branch dev)","ts":"2023-11-28T10:38:41Z","version":""}
+{"caller":"k8s.go:371","level":"info","msg":"secret successfully created","op":"CreateMlSecret","ts":"2023-11-28T10:38:41Z"}
+{"caller":"k8s.go:394","level":"info","msg":"Starting Manager","op":"Run","ts":"2023-11-28T10:38:41Z"}
 {"level":"info","ts":"2023-11-28T10:38:41Z","msg":"Starting EventSource","controller":"ipaddresspool","controllerGroup":"metallb.io","controllerKind":"IPA
-ddressPool","source":"kind source: *v1beta1.IPAddressPool"}                                                                                               
+ddressPool","source":"kind source: *v1beta1.IPAddressPool"}
 {"level":"info","ts":"2023-11-28T10:38:41Z","msg":"Starting EventSource","controller":"ipaddresspool","controllerGroup":"metallb.io","controllerKind":"IPA
-ddressPool","source":"kind source: *v1beta1.AddressPool"}                                                                                                 
+ddressPool","source":"kind source: *v1beta1.AddressPool"}
 {"level":"info","ts":"2023-11-28T10:38:41Z","msg":"Starting EventSource","controller":"ipaddresspool","controllerGroup":"metallb.io","controllerKind":"IPA
-ddressPool","source":"kind source: *v1beta1.Community"}                                                                                                   
+ddressPool","source":"kind source: *v1beta1.Community"}
 {"level":"info","ts":"2023-11-28T10:38:41Z","msg":"Starting EventSource","controller":"ipaddresspool","controllerGroup":"metallb.io","controllerKind":"IPA
-ddressPool","source":"kind source: *v1.Namespace"}                                                                                                        
+ddressPool","source":"kind source: *v1.Namespace"}
 {"level":"info","ts":"2023-11-28T10:38:41Z","msg":"Starting Controller","controller":"ipaddresspool","controllerGroup":"metallb.io","controllerKind":"IPAd
-dressPool"}                                                                                                                                               
+dressPool"}
 {"level":"info","ts":"2023-11-28T10:38:41Z","msg":"Starting EventSource","controller":"service","controllerGroup":"","controllerKind":"Service","source":"
-kind source: *v1.Service"}                                                                                                                                
+kind source: *v1.Service"}
 {"level":"info","ts":"2023-11-28T10:38:41Z","msg":"Starting EventSource","controller":"service","controllerGroup":"","controllerKind":"Service","source":"
 channel source: 0xc00041ae00"}
 ...
@@ -92,7 +92,7 @@ channel source: 0xc00041ae00"}
 As well as "speaker" Pods, generally in a number equal to the nodes:
 
 ```console
-$ kubectl -n metallb-system logs pod/speaker-c9ssg  | more                                                         
+$ kubectl -n metallb-system logs pod/speaker-c9ssg  | more
 {"branch":"dev","caller":"main.go:100","commit":"dev","goversion":"gc / go1.20.10 / amd64","level":"info","msg":"MetalLB speaker starting (commit dev, bra
 nch dev)","ts":"2023-11-28T10:38:48Z","version":""}
 {"caller":"announcer.go:125","event":"createARPResponder","interface":"eth0","level":"info","msg":"created ARP responder for interface","ts":"2023-11-28T1

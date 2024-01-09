@@ -2,27 +2,21 @@
 
 In this lab you will:
 
-1. Log into the machine with the credentials you own.
-2. In a single command line, find all the files in the `/etc` path, filter the
+1. In a single command line, find all the files in the `/etc` path, filter the
    result to include just the `a` letter, sort the output alphabetically.
-3. Put the list you got in a local file named `etc_a_file_list` with all the
+2. Put the list you got in a local file named `etc_a_file_list` with all the
    errors from the find command archived in a file named `etc_errors`.
-4. Define a command line that based on the result of the listing for the
+3. Define a command line that based on the result of the listing for the
    `/etc/hosts` file will do the `echo OK` command  if the file is found and
    the `echo KO` if it is not found.
 
 ## Solution
 
-1. Supposing your user is "kirater" and your machine is "machine":
+1. The command line will be composed as follow:
 
    ```console
-   > ssh kirater@machine
-   ```
-
-2. The command line will be composed as follow:
-
-   ```console
-   [kirater@machine ~]$ find /etc | grep a | sort
+   $ find /etc | grep a | sort
+   ...
    ```
 
    This means:
@@ -31,11 +25,12 @@ In this lab you will:
    - Filter where the `a` char is present.
    - Sort alphabetically the result.
 
-3. To put everything in a file we need to rely on the standard output and
+2. To put everything in a file we need to rely on the standard output and
    standard error, so it will be:
 
    ```console
-   [kirater@machine ~]$ find /etc/ 2> etc_errors | grep a | sort > etc_a_file_list
+   $ find /etc/ 2> etc_errors | grep a | sort > etc_a_file_list
+   (no output)
    ```
 
    So there will be no output and everything should be contained in the files.
@@ -44,10 +39,10 @@ In this lab you will:
      placed RIGHT AFTER the find command, not elsewhere.
    - The full stdout should be at the end.
 
-4. Using the `&&` and `||` combined, the command line will be:
+3. Using the `&&` and `||` combined, the command line will be:
 
    ```console
-   [kirater@machine ~]$ ls /etc/hosts && echo OK || echo KO
+   $ ls /etc/hosts && echo OK || echo KO
    /etc/hosts
    OK
    ```
@@ -56,7 +51,7 @@ In this lab you will:
    You can do the verification like this:
 
    ```console
-   [kirater@machine ~]$ ls /etc/hosts || echo OK && echo OOO
+   $ ls /etc/hosts || echo OK && echo OOO
    /etc/hosts
    OOO
    ```
@@ -64,7 +59,7 @@ In this lab you will:
    But things messes up once you use the opposite approach:
 
    ```console
-   [kirater@machine ~]$ ls /etc/nonexistent || echo OK && echo KO
+   $ ls /etc/nonexistent || echo OK && echo KO
    ls: cannot access '/etc/nonexistent': No such file or directory
    OK
    KO

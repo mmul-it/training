@@ -14,7 +14,7 @@ In this lab you will:
 1. Log into OCP with 'kubeadmin':
 
    ```console
-   > oc login -u kubeadmin
+   $ oc login -u kubeadmin
    Logged into "https://api.crc.testing:6443" as "kubeadmin" using existing credentials.
    ...
    ```
@@ -22,7 +22,7 @@ In this lab you will:
    In crc we have this default OAuth:
 
    ```console
-   > oc get oauth cluster -o yaml
+   $ oc get oauth cluster -o yaml
    apiVersion: config.openshift.io/v1
    kind: OAuth
    metadata:
@@ -46,11 +46,11 @@ In this lab you will:
 2. The secret is:
 
    ```console
-   > oc get -n openshift-config secret htpass-secret
+   $ oc get -n openshift-config secret htpass-secret
    NAME            TYPE     DATA   AGE
    htpass-secret   Opaque   1      13d
 
-   > oc get -n openshift-config secret htpass-secret -o yaml
+   $ oc get -n openshift-config secret htpass-secret -o yaml
    apiVersion: v1
    data:
      htpasswd: ZGV2ZWxvcGVyOiQyYSQxMCQ3ME5qeXpzN2Q4QnhyNm10VXBISTR1elRjdHpxU3BUUGxBR29kclg4S1U2cmJTTkxBY05zZQprdWJlYWRtaW46JDJhJDEwJGRmL0Vrck9uZlI3UkhRcVp0dW5Bc3VKZTd4SGc3aGhSaEZwVmRhWTNjcGJCOEl5OGZFZmw2
@@ -67,7 +67,7 @@ In this lab you will:
    This is how to decode it:
 
    ```console
-   > echo ZGV2ZWxvcGVyOiQyYSQxMCQ3ME5qeXpzN2Q4QnhyNm10VXBISTR1elRjdHpxU3BUUGxBR29kclg4S1U2cmJTTkxBY05zZQprdWJlYWRtaW46JDJhJDEwJGRmL0Vrck9uZlI3UkhRcVp0dW5Bc3VKZTd4SGc3aGhSaEZwVmRhWTNjcGJCOEl5OGZFZmw2 | base64 --decode
+   $ echo ZGV2ZWxvcGVyOiQyYSQxMCQ3ME5qeXpzN2Q4QnhyNm10VXBISTR1elRjdHpxU3BUUGxBR29kclg4S1U2cmJTTkxBY05zZQprdWJlYWRtaW46JDJhJDEwJGRmL0Vrck9uZlI3UkhRcVp0dW5Bc3VKZTd4SGc3aGhSaEZwVmRhWTNjcGJCOEl5OGZFZmw2 | base64 --decode
    developer:$2a$10$70Njyzs7d8Bxr6mtUpHI4uzTctzqSpTPlAGodrX8KU6rbSNLAcNse
    kubeadmin:$2a$10$df/EkrOnfR7RHQqZtunAsuJe7xHg7hhRhFpVdaY3cpbB8Iy8fEfl6
    ```
@@ -75,7 +75,7 @@ In this lab you will:
 3. To download the file locally you can use 'oc extract':
 
    ```console
-   > oc -n openshift-config extract secret/htpass-secret -n openshift-config --to . --confirm
+   $ oc -n openshift-config extract secret/htpass-secret -n openshift-config --to . --confirm
    htpasswd
    ```
 
@@ -83,13 +83,14 @@ In this lab you will:
    which is availabe in the httpd-tools package:
 
    ```console
-   > yum -y install httpd-tools
+   $ yum -y install httpd-tools
+   ...
    ```
 
    Then you can add a user:
 
    ```console
-   > htpasswd -B htpasswd myuser
+   $ htpasswd -B htpasswd myuser
    New password:
    Re-type new password:
    Adding password for user myuser
@@ -98,7 +99,7 @@ In this lab you will:
    Be careful on the content of the file:
 
    ```console
-   > cat htpasswd
+   $ cat htpasswd
    developer:$2a$10$70Njyzs7d8Bxr6mtUpHI4uzTctzqSpTPlAGodrX8KU6rbSNLAcNse
    kubeadmin:$2a$10$df/EkrOnfR7RHQqZtunAsuJe7xHg7hhRhFpVdaY3cpbB8Iy8fEfl6myuser:$2y$05$4Mgz9BXGY.CxHn2lsIuvPeZi.lhZmb3SRAUPsGepwgJlWTwYv/mOm
    ```
@@ -107,7 +108,7 @@ In this lab you will:
    new line, so you'll need to edit manually and get this result:
 
    ```console
-   > cat htpasswd
+   $ cat htpasswd
    developer:$2a$10$70Njyzs7d8Bxr6mtUpHI4uzTctzqSpTPlAGodrX8KU6rbSNLAcNse
    kubeadmin:$2a$10$df/EkrOnfR7RHQqZtunAsuJe7xHg7hhRhFpVdaY3cpbB8Iy8fEfl6
    myuser:$2y$05$4Mgz9BXGY.CxHn2lsIuvPeZi.lhZmb3SRAUPsGepwgJlWTwYv/mOm
@@ -116,14 +117,14 @@ In this lab you will:
    Once you're done, you can push back the new file in the secret:
 
    ```console
-   > oc -n openshift-config set data secret/htpass-secret --from-file htpasswd=./htpasswd
+   $ oc -n openshift-config set data secret/htpass-secret --from-file htpasswd=./htpasswd
    secret/htpass-secret data updated
    ```
 
 5. Check the login:
 
    ```console
-   > oc login -u myuser
+   $ oc login -u myuser
    Authentication required for https://api.crc.testing:6443 (openshift)
    Username: myuser
    Password:
@@ -135,19 +136,19 @@ In this lab you will:
    mapped to the one created in the secret:
 
    ```console
-   > oc get users
+   $ oc get users
    NAME        UID                                    FULL NAME   IDENTITIES
    developer   caa355c8-c867-4397-b9df-78d7a3ad3ca6               developer:developer
    kubeadmin   2f07aa13-30f9-4db0-8aa5-c1e546f5196e               developer:kubeadmin
 
-   > oc create user myuser
+   $ oc create user myuser
    user.user.openshift.io/myuser created
    ```
 
    Finally you'll be able to login with the new user:
 
    ```console
-   > oc login -u myuser
+   $ oc login -u myuser
    Authentication required for https://api.crc.testing:6443 (openshift)
    Username: myuser
    Password:
@@ -157,10 +158,10 @@ In this lab you will:
 
        oc new-project <projectname>
 
-   > oc login -u kubeadmin
+   $ oc login -u kubeadmin
    Logged into "https://api.crc.testing:6443" as "kubeadmin" using existing credentials.
 
-   > oc get users
+   $ oc get users
    NAME        UID                                    FULL NAME   IDENTITIES
    developer   caa355c8-c867-4397-b9df-78d7a3ad3ca6               developer:developer
    kubeadmin   2f07aa13-30f9-4db0-8aa5-c1e546f5196e               developer:kubeadmin

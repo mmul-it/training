@@ -68,6 +68,7 @@ And commit everything.
 
 ```console
 $ git add . && git commit -m "Version 0.0.1"
+...
 ```
 
 ## Generate a new version

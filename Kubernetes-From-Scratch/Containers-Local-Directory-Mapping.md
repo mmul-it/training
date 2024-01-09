@@ -14,7 +14,7 @@ In this lab you will:
 1. Create a local directory:
 
    ```console
-   > minikube ssh
+   $ minikube ssh
 
    docker@minikube:~$ mkdir local-dir
    ```
@@ -23,7 +23,8 @@ In this lab you will:
    are on a CentOS/Red Hat system:
 
    ```console
-   > chcon -R -t container_file_t local-dir
+   $ chcon -R -t container_file_t local-dir
+   (no output)
    ```
 
 2. Launch the container mapping the directory with `--volume`:

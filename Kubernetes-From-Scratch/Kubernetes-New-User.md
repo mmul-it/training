@@ -13,28 +13,28 @@ In this lab you will:
 1. Create the namespace:
 
    ```console
-   > kubectl create namespace myns 
+   $ kubectl create namespace myns
    namespace/myns created
    ```
 
 2. Use `openssl` to create the key:
 
    ```console
-   > openssl genrsa -out ./myuser.key 2048
-   
-   > ls ./myuser.key 
+   $ openssl genrsa -out ./myuser.key 2048
+
+   $ ls ./myuser.key
    ./myuser.key
    ```
 
 3. Use `openssl` to sign, using the CA located in `.minikube/ca.crt`:
 
    ```console
-   > openssl req -new -key myuser.key -out myuser.csr -subj "/CN=myuser/O=myns"
-   
-   > ls myuser.csr 
+   $ openssl req -new -key myuser.key -out myuser.csr -subj "/CN=myuser/O=myns"
+
+   $ ls myuser.csr
    myuser.csr
-   
-   > openssl x509 -req -in myuser.csr -CA .minikube/ca.crt -CAkey .minikube/ca.key -CAcreateserial -out myuser.crt -days 365
+
+   $ openssl x509 -req -in myuser.csr -CA .minikube/ca.crt -CAkey .minikube/ca.key -CAcreateserial -out myuser.crt -days 365
    Certificate request self-signature ok
    subject=CN = myuser, O = myns\C3\A2\C2\80\C2\8B
    ```
@@ -42,28 +42,28 @@ In this lab you will:
 4. User can now be added by first creating the context:
 
    ```console
-   > kubectl config set-context myuser@minikube --cluster=minikube --user=myuser --namespace=myns
+   $ kubectl config set-context myuser@minikube --cluster=minikube --user=myuser --namespace=myns
    Context "myuser@minikube" created.
    ```
 
    And then by adding the credentials:
 
    ```console
-   > kubectl config set-credentials myuser --client-certificate=./myuser.crt --client-key=./myuser.key
+   $ kubectl config set-credentials myuser --client-certificate=./myuser.crt --client-key=./myuser.key
    User "myuser" set.
    ```
 
 5. Using the new context:
 
    ```console
-   > kubectl config use-context myuser@minikube
+   $ kubectl config use-context myuser@minikube
    Switched to context "myuser@minikube".
    ```
 
    We can try to get all the resources in namespace `myns`:
 
    ```console
-   > kubectl -n myns get all
+   $ kubectl -n myns get all
    Error from server (Forbidden): pods is forbidden: User "myuser" cannot list resource "pods" in API group "" in the namespace "myns"
    Error from server (Forbidden): replicationcontrollers is forbidden: User "myuser" cannot list resource "replicationcontrollers" in API group "" in the namespace "myns"
    Error from server (Forbidden): services is forbidden: User "myuser" cannot list resource "services" in API group "" in the namespace "myns"

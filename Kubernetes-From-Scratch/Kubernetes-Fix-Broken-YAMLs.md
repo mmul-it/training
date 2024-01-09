@@ -20,7 +20,7 @@ spec:
       - containerPort: 80
 ```
 
-### Solution
+### Faulty YAML 1 - Solution
 
 The issue is: **Incorrect Indentation**.
 
@@ -58,7 +58,7 @@ spec:
     targetPort: 8080
 ```
 
-### Solution
+### Faulty YAML 2 - Solution
 
 The issue is: **Missing Selector**.
 
@@ -97,7 +97,7 @@ spec:
   - name: nginx:latest
 ```
 
-### Solution
+### Faulty YAML 3 - Solution
 
 The issue is: **Missing image declaration for the container**.
 

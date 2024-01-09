@@ -15,7 +15,7 @@ In this lab you will:
 1. Become `developer`:
 
    ```console
-   > oc login -u developer
+   $ oc login -u developer
    Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
    ...
    ```
@@ -23,7 +23,7 @@ In this lab you will:
    And create `route-test` project:
 
    ```console
-   > oc new-project route-test
+   $ oc new-project route-test
    Now using project "route-test" on server "https://api.crc.testing:6443".
    ...
    ```
@@ -31,7 +31,7 @@ In this lab you will:
    To specifically use the `nginx` image you'll need the '--image=' switch:
 
    ```console
-   > oc new-app --name=testroute --image=nginxinc/nginx-unprivileged
+   $ oc new-app --name=testroute --image=nginxinc/nginx-unprivileged
    --> Found container image 4cdc5dd (8 days old) from Docker Hub for "nginx"
    ...
    ```
@@ -39,9 +39,9 @@ In this lab you will:
 2. Check the status:
 
    ```console
-   > oc status
+   $ oc status
    svc/testroute - 10.217.4.202:8080
-     deployment/testroute deploys istag/testroute:latest 
+     deployment/testroute deploys istag/testroute:latest
        deployment #2 running for 6 seconds - 1 pod
        deployment #1 deployed 7 seconds ago
    ```
@@ -49,23 +49,24 @@ In this lab you will:
 3. Create a key and a certificate request:
 
    ```console
-   > openssl genrsa -out example.key 2048
+   $ openssl genrsa -out example.key 2048
    ...
 
-   > openssl req -new -key example.key -out example.csr -subj "/C=IT/ST=IT/L=Milan/O=Example/OU=IT/CN=nginx-route-test.apps-crc.testing"
+   $ openssl req -new -key example.key -out example.csr -subj "/C=IT/ST=IT/L=Milan/O=Example/OU=IT/CN=nginx-route-test.apps-crc.testing"
    ...
    ```
 
    then sign the request with the key to generate your certificate:
 
    ```console
-   > openssl x509 -req -days 366 -in example.csr -signkey example.key -out example.crt
+   $ openssl x509 -req -days 366 -in example.csr -signkey example.key -out example.crt
+   (no output)
    ```
 
 4. Find the name of the app generated service:
 
    ```console
-   > oc get services
+   $ oc get services
    NAME        TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
    testroute   ClusterIP   10.217.5.6   <none>        80/TCP    30m
    ```
@@ -74,14 +75,14 @@ In this lab you will:
    just created:
 
    ```console
-   > oc create route edge nginx --service=testroute --key=example.key --cert=example.crt
+   $ oc create route edge nginx --service=testroute --key=example.key --cert=example.crt
    route.route.openshift.io/nginx created
    ```
 
    then see the newly created rule:
 
    ```console
-   > oc get routes
+   $ oc get routes
    NAME    HOST/PORT                           PATH   SERVICES    PORT     TERMINATION   WILDCARD
    nginx   nginx-route-test.apps-crc.testing          testroute   80-tcp   edge          None
    ```
@@ -89,7 +90,7 @@ In this lab you will:
 5. Test the secure connection:
 
    ```console
-   > curl -k -v https://nginx-route-test.apps-crc.testing
+   $ curl -k -v https://nginx-route-test.apps-crc.testing
    ...
      * Server certificate:
      *  subject: C=IT; ST=IT; L=Milan; O=Example; OU=IT; CN=nginx-route-test.apps-crc.testing
@@ -105,6 +106,6 @@ In this lab you will:
    Cleanup:
 
    ```console
-   > oc delete project route-test
+   $ oc delete project route-test
    project.project.openshift.io "route-test" deleted
    ```

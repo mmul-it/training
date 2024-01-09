@@ -1,266 +1,276 @@
 # Lab | Configure GitLab on an example git repository
 
-1. We will need some code inside `myproject` to check GitLab's SAST
-   functionalities, so we will create two kind of sources.
+## Add some code into the repo
 
-   A faulty Kubernetes Pod manifest:
+We will need some code inside `myproject` to check GitLab's SAST
+functionalities, so we will create two kind of sources.
 
-   ```console
-   > pwd
-   /home/kirater/myproject
+A faulty Kubernetes Pod manifest:
 
-   > mkdir manifests
+```console
+> pwd
+/home/kirater/myproject
 
-   > cat <<EOF > manifests/Pod.yml
-   apiVersion: v1
-   kind: Pod
-   metadata:
-     name: kubesec-demo
-   spec:
-     containers:
-     - name: kubesec-demo
-       image: gcr.io/google-samples/node-hello:1.0
-       securityContext:
-         allowPrivilegeEscalation: true
-   EOF
-   ```
+> mkdir manifests
 
-   A faulty php source code:
+> cat <<EOF > manifests/Pod.yml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kubesec-demo
+spec:
+  containers:
+  - name: kubesec-demo
+    image: gcr.io/google-samples/node-hello:1.0
+    securityContext:
+      allowPrivilegeEscalation: true
+EOF
+```
 
-   ```console
-   > mkdir php
+A faulty php source code:
 
-   > cat <<EOF > php/faulty.php
-   <?php
-   // This code contains a security vulnerability
+```console
+> mkdir php
 
-   // Extract user input from GET parameters
-   \$id = \$_GET['id'];
+> cat <<EOF > php/faulty.php
+<?php
+// This code contains a security vulnerability
 
-   // SQL query without proper input validation
-   \$query = "SELECT * FROM users WHERE id = \$id";
+// Extract user input from GET parameters
+\$id = \$_GET['id'];
 
-   // Execute the SQL query
-   \$result = mysqli_query(\$connection, \$query);
+// SQL query without proper input validation
+\$query = "SELECT * FROM users WHERE id = \$id";
 
-   // Fetch the data
-   \$data = mysqli_fetch_assoc($result);
+// Execute the SQL query
+\$result = mysqli_query(\$connection, \$query);
 
-   // Display the user's details
-   echo "Username: " . \$data['username'] . "<br>";
-   echo "Email: " . \$data['email'] . "<br>";
-   EOF
-   ```
+// Fetch the data
+\$data = mysqli_fetch_assoc($result);
 
-2. To activate a GitLab CI and use GitLab's SAST functionalities it is
-   sufficient to create a file named `.gitlab-ci.yml` inside the root directory
-   of your project with these contents:
+// Display the user's details
+echo "Username: " . \$data['username'] . "<br>";
+echo "Email: " . \$data['email'] . "<br>";
+EOF
+```
 
-   ```console
-   > cat <<EOF > .gitlab-ci.yml
-   include:
-     - template: Jobs/SAST.gitlab-ci.yml
+## Activate SAST in GitLab CI
 
-   variables:
-     SECURE_LOG_LEVEL: "debug"
-     SCAN_KUBERNETES_MANIFESTS: "true"
+To activate a GitLab CI and use GitLab's SAST functionalities it is
+sufficient to create a file named `.gitlab-ci.yml` inside the root directory
+of your project with these contents:
 
-   stages:
-     - test
+```console
+> cat <<EOF > .gitlab-ci.yml
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
 
-   sast:
-     stage: test
-     artifacts:
-       paths:
-         - gl-sast-report.json
-   EOF
-   ```
+variables:
+  SECURE_LOG_LEVEL: "debug"
+  SCAN_KUBERNETES_MANIFESTS: "true"
 
-   This will activate the pre-built SAST template in GitLab `Jobs/SAST.gitlab-ci.yml`
-   and launch all the tests for the files, using a debug log level and scanning
-   also Kubernetes manifests (by default disabled).
+stages:
+  - test
 
-   Eventually the scan results will be stored in a file named `gl-sast-report.json`.
+sast:
+  stage: test
+  artifacts:
+    paths:
+      - gl-sast-report.json
+EOF
+```
 
-   To make everything running, it will be enough to create a commit with all the
-   newly created files:
+This will activate the pre-built SAST template in GitLab `Jobs/SAST.gitlab-ci.yml`
+and launch all the tests for the files, using a debug log level and scanning
+also Kubernetes manifests (by default disabled).
 
-   ```console
-   > git add . && git commit -m "Activate CI"
-   [main 91d522538048] Activate CI
-    3 files changed, 43 insertions(+)
-    create mode 100644 .gitlab-ci.yml
-    create mode 100644 manifests/Pod.yml
-    create mode 100644 php/faulty.php
+Eventually the scan results will be stored in a file named `gl-sast-report.json`.
 
-   > git push
-   ```
+To make everything running, it will be enough to create a commit with all the
+newly created files:
 
-3. Inside the GitLab web interface, in short, under the CI/CD section of
-   `myproject` it will be possible to select `Pipelines` and look at the status:
+```console
+> git add . && git commit -m "Activate CI"
+[main 91d522538048] Activate CI
+ 3 files changed, 43 insertions(+)
+ create mode 100644 .gitlab-ci.yml
+ create mode 100644 manifests/Pod.yml
+ create mode 100644 php/faulty.php
 
-   ![DevSecOps-Pipeline-GitLab-SAST-CI-1.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-1.png)
+> git push
+```
 
-   And after some time everything should be green:
+## Check results
 
-   ![DevSecOps-Pipeline-GitLab-SAST-CI-2.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-2.png)
+Inside the GitLab web interface, in short, under the CI/CD section of
+`myproject` it will be possible to select `Pipelines` and look at the status:
 
-   Which it seems good, apart from the fact that we introduced faulty code for
-   both php sources and Kubernetes manifests, and by looking at the details of
-   the pipelines we should see something like this:
+![DevSecOps-Pipeline-GitLab-SAST-CI-1.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-1.png)
 
-   ![DevSecOps-Pipeline-GitLab-SAST-CI-Kube-Critical.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-Kube-Critical.png)
+And after some time everything should be green:
 
-   And the same applies for PHP, but with no `Critical` vulnerabilities.
-   So, if we want to make this worthy, we need to instruct our pipeline to stop
-   if it finds `Critical` vulnerabilites.
+![DevSecOps-Pipeline-GitLab-SAST-CI-2.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-2.png)
 
-4. Each job launched in the `test` stage produces a `gl-sast-report.json` json
-   artifact containing the results of each scan.
-   There are multiple ways to analyze this file and take actions, one is to add
-   a new stage named i.e. `sast-analysis` in which we will use a `jq` query to
-   extract the vulnerabilities based upon their severity:
+Which it seems good, apart from the fact that we introduced faulty code for
+both php sources and Kubernetes manifests, and by looking at the details of
+the pipelines we should see something like this:
 
-   ```yaml
-   stages:
-     - test
-     - sast-analysis
-   ```
+![DevSecOps-Pipeline-GitLab-SAST-CI-Kube-Critical.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-Kube-Critical.png)
 
-   We will first define a varible named `BLOCKING_VULNERABILITY_SEVERITY` that
-   will be set to the defined severity, in this case `Critical`:
+And the same applies for PHP, but with no `Critical` vulnerabilities.
+So, if we want to make this worthy, we need to instruct our pipeline to stop
+if it finds `Critical` vulnerabilites.
 
-   ```yaml
-   variables:
-     ...
-     BLOCKING_VULNERABILITY_SEVERITY: "Critical"
-   ```
+## Analyze reports
 
-   Then for each of the analysis we want to check we will define a related and
-   connected job.
+Each job launched in the `test` stage produces a `gl-sast-report.json` json
+artifact containing the results of each scan.
+There are multiple ways to analyze this file and take actions, one is to add
+a new stage named i.e. `sast-analysis` in which we will use a `jq` query to
+extract the vulnerabilities based upon their severity:
 
-   For php:
+```yaml
+stages:
+  - test
+  - sast-analysis
+```
 
-   ```yaml
-   sast-analysis-php:
-     stage: sast-analysis
-     image: registry.gitlab.com/gitlab-ci-utils/curl-jq
-     needs:
-       - job: phpcs-security-audit-sast
-     script:
-       - JQRESULT=$(jq -r --arg SEV "${BLOCKING_VULNERABILITY_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
-       - echo "JQRESULT -> $JQRESULT"
-       - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${BLOCKING_VULNERABILITY_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
-   ```
+We will first define a variable named `BLOCKING_VULNERABILITY_SEVERITY` that
+will be set to the defined severity, in this case `Critical`:
 
-   Then for `kubesec`:
+```yaml
+variables:
+  ...
+  BLOCKING_VULNERABILITY_SEVERITY: "Critical"
+```
 
-   ```yaml
-   sast-analysis-kubesec:
-     stage: sast-analysis
-     image: registry.gitlab.com/gitlab-ci-utils/curl-jq
-     needs:
-       - job: kubesec-sast
-     script:
-       - JQRESULT=$(jq -r --arg SEV "${BLOCKING_VULNERABILITY_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
-       - echo "JQRESULT -> $JQRESULT"
-       - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${BLOCKING_VULNERABILITY_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
-   ```
+Then for each of the analysis we want to check we will define a related and
+connected job.
 
-   In both cases (note that are both called `sast-analysis`), if there will be
-   `Critical` vulnerabilities inside the json the pipeline will fail.
+For php:
 
-   The resulting and final yaml will be something like this:
+```yaml
+sast-analysis-php:
+  stage: sast-analysis
+  image: registry.gitlab.com/gitlab-ci-utils/curl-jq
+  needs:
+    - job: phpcs-security-audit-sast
+  script:
+    - JQRESULT=$(jq -r --arg SEV "${BLOCKING_VULNERABILITY_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
+    - echo "JQRESULT -> $JQRESULT"
+    - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${BLOCKING_VULNERABILITY_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
+```
 
-   ```yaml
-   include:
-     - template: Jobs/SAST.gitlab-ci.yml
+Then for `kubesec`:
 
-   variables:
-     SECURE_LOG_LEVEL: "debug"
-     SCAN_KUBERNETES_MANIFESTS: "true"
-     BLOCKING_VULNERABILITY_SEVERITY: "Critical"
+```yaml
+sast-analysis-kubesec:
+  stage: sast-analysis
+  image: registry.gitlab.com/gitlab-ci-utils/curl-jq
+  needs:
+    - job: kubesec-sast
+  script:
+    - JQRESULT=$(jq -r --arg SEV "${BLOCKING_VULNERABILITY_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
+    - echo "JQRESULT -> $JQRESULT"
+    - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${BLOCKING_VULNERABILITY_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
+```
 
-   stages:
-     - test
-     - sast-analysis
+In both cases (note that are both called `sast-analysis`), if there will be
+`Critical` vulnerabilities inside the json the pipeline will fail.
 
-   sast:
-     stage: test
-     artifacts:
-       paths:
-         - gl-sast-report.json
+The resulting and final yaml will be something like this:
 
-   sast-analysis-php:
-     stage: sast-analysis
-     image: registry.gitlab.com/gitlab-ci-utils/curl-jq
-     needs:
-       - job: phpcs-security-audit-sast
-     script:
-       - JQRESULT=$(jq -r --arg SEV "${BLOCKING_VULNERABILITY_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
-       - echo "JQRESULT -> $JQRESULT"
-       - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${BLOCKING_VULNERABILITY_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
+```yaml
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
 
-   sast-analysis-kubesec:
-     stage: sast-analysis
-     image: registry.gitlab.com/gitlab-ci-utils/curl-jq
-     needs:
-       - job: kubesec-sast
-     script:
-       - JQRESULT=$(jq -r --arg SEV "${BLOCKING_VULNERABILITY_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
-       - echo "JQRESULT -> $JQRESULT"
-       - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${BLOCKING_VULNERABILITY_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
-   ```
+variables:
+  SECURE_LOG_LEVEL: "debug"
+  SCAN_KUBERNETES_MANIFESTS: "true"
+  BLOCKING_VULNERABILITY_SEVERITY: "Critical"
 
-   Committing the code and pushing the changes:
+stages:
+  - test
+  - sast-analysis
 
-   ```console
-   > git add . && git commit -m "Add blocker for Critical vulnerabilities"
-   [main 43c5361cc999] Add blocker for Critical vulnerabilities
-    1 file changed, 21 insertions(+)
+sast:
+  stage: test
+  artifacts:
+    paths:
+      - gl-sast-report.json
 
-   > git push
-   ```
+sast-analysis-php:
+  stage: sast-analysis
+  image: registry.gitlab.com/gitlab-ci-utils/curl-jq
+  needs:
+    - job: phpcs-security-audit-sast
+  script:
+    - JQRESULT=$(jq -r --arg SEV "${BLOCKING_VULNERABILITY_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
+    - echo "JQRESULT -> $JQRESULT"
+    - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${BLOCKING_VULNERABILITY_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
 
-   Should result in an additional pipeline run, with the two additional stages:
+sast-analysis-kubesec:
+  stage: sast-analysis
+  image: registry.gitlab.com/gitlab-ci-utils/curl-jq
+  needs:
+    - job: kubesec-sast
+  script:
+    - JQRESULT=$(jq -r --arg SEV "${BLOCKING_VULNERABILITY_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
+    - echo "JQRESULT -> $JQRESULT"
+    - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${BLOCKING_VULNERABILITY_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
+```
 
-   ![DevSecOps-Pipeline-GitLab-SAST-CI-Pipeline-With-Check-Failed.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-Pipeline-With-Check-Failed.png)
+Committing the code and pushing the changes:
 
-   The reason why the `sast-analysis-kubesec` ended up in a failure is the one
-   that was defined in the stage:
+```console
+> git add . && git commit -m "Add blocker for Critical vulnerabilities"
+[main 43c5361cc999] Add blocker for Critical vulnerabilities
+ 1 file changed, 21 insertions(+)
 
-   ![DevSecOps-Pipeline-GitLab-SAST-CI-Pipeline-With-Check-Failed-Reason.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-Pipeline-With-Check-Failed-Reason.png)
+> git push
+```
 
-   The `Critical` vulnerability was detected.
+Should result in an additional pipeline run, with the two additional stages:
 
-5. To fix the detected problem we need to understand it from the analysis:
+![DevSecOps-Pipeline-GitLab-SAST-CI-Pipeline-With-Check-Failed.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-Pipeline-With-Check-Failed.png)
 
-   ![DevSecOps-Pipeline-GitLab-SAST-CI-Kube-Critical.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-Kube-Critical.png)
+The reason why the `sast-analysis-kubesec` ended up in a failure is the one
+that was defined in the stage:
 
-   So the problem is the `AllowPrivilegeEscalation` section of the pod
-   definition, which can be modified as follows:
+![DevSecOps-Pipeline-GitLab-SAST-CI-Pipeline-With-Check-Failed-Reason.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-Pipeline-With-Check-Failed-Reason.png)
 
-   ```yaml
-   apiVersion: v1
-   kind: Pod
-   metadata:
-     name: kubesec-demo
-   spec:
-     containers:
-     - name: kubesec-demo
-       image: gcr.io/google-samples/node-hello:1.0
-   ```
+The `Critical` vulnerability was detected.
 
-   And pushed back to the repo:
+## Fix the problem
 
-   ```console
-   > git add . && git commit -m "Fix Pod manifest"
-   [main fdf21ac12104] Fix Pod manifest
-    1 file changed, 2 deletions(-)
+To fix the detected problem we need to understand it from the analysis:
 
-   > git push
-   ```
+![DevSecOps-Pipeline-GitLab-SAST-CI-Kube-Critical.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-Kube-Critical.png)
 
-   Finally, after some time, the pipeline should be all green:
+So the problem is the `AllowPrivilegeEscalation` section of the pod
+definition, which can be modified as follows:
 
-   ![DevSecOps-Pipeline-GitLab-SAST-CI-Pipeline-With-Check-Fixed.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-Pipeline-With-Check-Fixed.png)
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kubesec-demo
+spec:
+  containers:
+  - name: kubesec-demo
+    image: gcr.io/google-samples/node-hello:1.0
+```
+
+And pushed back to the repo:
+
+```console
+> git add . && git commit -m "Fix Pod manifest"
+[main fdf21ac12104] Fix Pod manifest
+ 1 file changed, 2 deletions(-)
+
+> git push
+```
+
+Finally, after some time, the pipeline should be all green:
+
+![DevSecOps-Pipeline-GitLab-SAST-CI-Pipeline-With-Check-Fixed.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-Pipeline-With-Check-Fixed.png)

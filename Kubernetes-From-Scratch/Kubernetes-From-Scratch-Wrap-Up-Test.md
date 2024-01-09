@@ -10,8 +10,10 @@ In Linux, this should be as simple as:
 
 ```sh
 $ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+...
 
 $ sudo install minikube-linux-amd64 /usr/local/bin/minikube
+(no output)
 
 $ minikube delete
 🔥  Deleting "minikube" in docker ...
@@ -36,6 +38,7 @@ rasca@lens:~$ minikube start
 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 
 $ alias kubectl="minikube kubectl --"
+(no output)
 ```
 
 ## Activate ingress plugin for minikube
@@ -98,6 +101,7 @@ You can automate this operation, in Linux, by doing:
 
 ```sh
 $ sed -i -e 's/host: .*/host: 192.168.49.2.nip.io/g' Exercise.Wrap-up.yaml
+(no output)
 ```
 
 ## Create the Kubernetes resources
@@ -106,16 +110,25 @@ Using `kubectl` load the downloaded yaml into the Minikube Kubernetes cluser:
 
 ```sh
 $ kubectl create -f Exercise.Wrap-up.yaml
+namespace/myingress-test created
+configmap/docroot created
+pod/mywebserver created
+service/mywebserver-svc created
+ingress.networking.k8s.io/mywebserver-ingress created
 ```
 
 This will create a namespace named `myingress-test` with some resources.
 
-## Check the results #1: which resources have been created?
+## Check the results #1
+
+**Which resources have been created?**
 
 Use `kubectl -n myingress-test get all,ingress` to track which resources have
 been created in the Minikube cluster.
 
-## Check the results #2: what is the output of the exposed service?
+## Check the results #2
+
+**What is the output of the exposed service?**
 
 Use `curl http://192.168.49.2.nip.io` (changing the url depending on your
 installation to track what is the output produced by the service.

@@ -16,7 +16,7 @@ In this lab you will
 1. Use `docker volume` command to create a volume:
 
    ```console
-   > minikube ssh
+   $ minikube ssh
 
    docker@minikube:~$ docker volume create test-volume
    test-volume

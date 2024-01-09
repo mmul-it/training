@@ -1,6 +1,6 @@
 # Lab | Implement a Vulnerability Monitor using the Trivy operator
 
-# Install the Trivy Operator
+## Install the Trivy Operator
 
 First of all you'll need to install the [Trivy Operator](https://github.com/aquasecurity/trivy-operator)
 on your Kubernetes cluster. To get one check [DevSecOps-Pipeline-Requirements.md](DevSecOps-Pipeline-Requirements.md).
@@ -255,9 +255,9 @@ Installing plugin: krew
 Installed plugin: krew
 \
  | Use this plugin:
- | 	kubectl krew
+ |     kubectl krew
  | Documentation:
- | 	https://krew.sigs.k8s.io/
+ |     https://krew.sigs.k8s.io/
  | Caveats:
  | \
  |  | krew is now installed! To start using kubectl plugins, you need to add
@@ -315,7 +315,7 @@ Display the tree view of the `trivy-operator` deployment:
 
 ```console
 $ kubectl tree -n trivy-system deployment trivy-operator
-NAMESPACE     NAME                                                                         READY  REASON  AGE 
+NAMESPACE     NAME                                                                         READY  REASON  AGE
 trivy-system  Deployment/trivy-operator                                                    -              118m
 trivy-system  ├─ReplicaSet/trivy-operator-5cd7878587                                       -              117m
 trivy-system  │ ├─ConfigAuditReport/replicaset-trivy-operator-5cd7878587                   -              117m

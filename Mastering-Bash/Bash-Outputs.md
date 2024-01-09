@@ -2,69 +2,95 @@
 
 In this lab you will:
 
-1. Log into the machine with the credentials you own;
-2. Using `/etc/passwd` file, print to standard output only the line referring to
+1. Using `/etc/passwd` file, print to standard output only the line referring to
    your user.
-3. Print to standard output only the first or last 5 lines of `/etc/group` file.
-4. Count how many times the word `bash` occurs in `/etc/passwd` file.
-5. Sort, in reverse order, all the users using bash and redirect the output to a
+2. Print to standard output only the first or last 5 lines of `/etc/group` file.
+3. Count how many times the word `bash` occurs in `/etc/passwd` file.
+4. Sort, in reverse order, all the users using bash and redirect the output to a
    file called `results.txt`.
-6. Append to the previously created file all the lines that contain a `:9` from
+5. Append to the previously created file all the lines that contain a `:9` from
    `/etc/group` file.
-7. Sort the content of `results.txt` by name.
-8. Use the `less` pager to view the content of `/var/log/boot.log` and invoke an
+6. Sort the content of `results.txt` by name.
+7. Use the `less` pager to view the content of `/var/log/boot.log` and invoke an
    editor to edit the file.
 
 ## Solution
 
-1. Log into the machine with the credentials you own.
-
-2. Using `/etc/passwd` file, print to standard output only the line referring to
+1. Using `/etc/passwd` file, print to standard output only the line referring to
    your user:
 
    ```console
-   cat /etc/passwd | grep -i kirater
+   $ cat /etc/passwd | grep -i kirater
+   kirater:x:1000:1000::/home/kirater:/bin/bash
    ```
 
-3. Print to standard output only the first or last 5 lines of `/etc/group` file:
+2. Print to standard output only the first or last 5 lines of `/etc/group` file:
 
    ```console
-   [kirater@machine ~]$ tail -5 /etc/group
-   [kirater@machine ~]$ head -5 /etc/group
+   $ tail -5 /etc/group
+   rpcuser:x:29:
+   cockpit-ws:x:990:
+   cockpit-wsinstance:x:989:
+   tcpdump:x:72:
+   kirater:x:1000:
+
+   $ head -5 /etc/group
+   root:x:0:
+   bin:x:1:
+   daemon:x:2:
+   sys:x:3:
+   adm:x:4:
    ```
 
-4. Count how many times the word `bash` occurs in `/etc/passwd` file:
+3. Count how many times the word `bash` occurs in `/etc/passwd` file:
 
    ```console
-   [kirater@machine ~]$ grep -c bash /etc/passwd
+   $ grep -c bash /etc/passwd
    3
    ```
 
-5. Sort, in reverse order, all the users using bash and redirect the output to
+4. Sort, in reverse order, all the users using bash and redirect the output to
    a file called `results.txt`:
 
    ```console
-   grep bash /etc/passwd | sort -r > results.txt
+   $ grep bash /etc/passwd | sort -r > results.txt
+   (no output)
    ```
 
-6. Append to the previously created file all the lines that contain a `:9` from
+5. Append to the previously created file all the lines that contain a `:9` from
    `/etc/group` file:
 
    ```console
-   grep \:9 /etc/group >> results.txt
+   $ grep \:9 /etc/group >> results.txt
+   (no output)
    ```
 
-7. Sort the content of `results.txt` by name
+6. Sort the content of `results.txt` by name
 
    ```console
-   [kirater@machine ~]$ sort -f results.txt
+   $ sort -f results.txt
+   chrony:x:992:
+   cockpit-ws:x:990:
+   cockpit-wsinstance:x:989:
+   input:x:999:
+   kirater:x:1000:1000::/home/kirater:/bin/bash
+   kmem:x:9:
+   polkitd:x:996:
+   render:x:998:
+   root:x:0:0:root:/root:/bin/bash
+   setroubleshoot:x:991:
+   ssh_keys:x:995:
+   sssd:x:993:
+   systemd-coredump:x:997:
+   unbound:x:994:
    ```
 
-8. Use the less pager to view the content of `/var/log/boot.log` and invoke an
+7. Use the less pager to view the content of `/var/log/boot.log` and invoke an
    editor to edit the file:
 
    ```console
-   less /var/log/boot.log
+   $ less /var/log/boot.log
+   (less interface opens)
    ```
 
    and then press `v`.

@@ -4,7 +4,7 @@ In this lab you will:
 
 1. Create a directory called as your user that contains a file
    called testfile1 in /tmp
-2. Check file permissions and, using the numeric annotation, remove 
+2. Check file permissions and, using the numeric annotation, remove
    all permission bits, except for the owner
 3. With another user, remove testfile1
 4. With the initial user, set full permission to all on testfile1
@@ -14,12 +14,12 @@ In this lab you will:
 
 ## Solution
 
-1. Create a directory called as your user that contains a file                  
+1. Create a directory called as your user that contains a file
    called testfile1 in `/tmp`:
 
    ```console
-   [kirater@localhost ~]$ mkdir /tmp/kirater
-   [kirater@localhost ~]$ cd /tmp/kirater/
+   $ mkdir /tmp/kirater
+   $ cd /tmp/kirater/
    [kirater@localhost kirater]$ touch testfile1
    ```
 
@@ -40,7 +40,7 @@ In this lab you will:
    ```console
    [kirater@localhost kirater]$ su - kirater2
 
-   [kirater2@localhost ~]$ cd /tmp/kirater
+   $ cd /tmp/kirater
 
    [kirater2@localhost kirater]$ rm testfile1
    rm: remove write-protected regular empty file 'testfile1'? y
@@ -62,7 +62,7 @@ In this lab you will:
    ```console
    [kirater@localhost kirater]$ su - kirater2
 
-   [kirater2@localhost ~]$ cd /tmp/kirater
+   $ cd /tmp/kirater
 
    [kirater2@localhost kirater]$ ls -l
    -rwxrwxrwx 1 kirater kirater 0 Dec  2 16:41 testfile1
@@ -78,5 +78,5 @@ In this lab you will:
    drwxrwxrwt 34 root root 1720 Dec  2 17:00 /tmp/
    ```
 
-   /tmp has the sticky bit enabled! This means that, despite the full access, 
+   /tmp has the sticky bit enabled! This means that, despite the full access,
    we cannot remove testfile1 because kirater2 is not the owner.

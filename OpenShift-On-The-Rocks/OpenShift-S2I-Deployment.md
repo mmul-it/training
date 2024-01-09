@@ -17,14 +17,14 @@ In this lab you will:
 1. Login as `developer` on the cluster:
 
    ```console
-   > oc login -u developer
+   $ oc login -u developer
    Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
    ```
 
    Then create the new project:
 
    ```console
-   > oc new-project testdeploy
+   $ oc new-project testdeploy
    Now using project "testdeploy" on server "https://api.crc.testing:6443".
    ```
 
@@ -33,7 +33,7 @@ In this lab you will:
    is available:
 
    ```console
-   > oc new-app --name=myapp https://github.com/mmul-it/docker/ --context-dir=s2i-php-helloworld
+   $ oc new-app --name=myapp https://github.com/mmul-it/docker/ --context-dir=s2i-php-helloworld
    --> Found image b416a19 (3 weeks old) in image stream "openshift/php" under tag "7.4-ubi8" for "php"
    ...
    --> Success
@@ -46,7 +46,7 @@ In this lab you will:
    You can now see your app status:
 
    ```console
-   > oc status
+   $ oc status
    In project testdeploy on server https://api.crc.testing:6443
 
    svc/myapp - 10.217.4.73 ports 8080, 8443
@@ -60,7 +60,7 @@ In this lab you will:
    BuildConfig and two pods.
 
    ```console
-   > oc get pods
+   $ oc get pods
    NAME                     READY   STATUS      RESTARTS   AGE
    myapp-1-build            0/1     Completed   0          14m
    myapp-7687d69fdf-9n9jt   1/1     Running     0          12m
@@ -73,7 +73,7 @@ In this lab you will:
    logs of the BuildConfig resource:
 
    ```console
-   > oc logs -f buildconfig/myapp
+   $ oc logs -f buildconfig/myapp
    ...
    Successfully pushed image-registry.openshift-image-registry.svc:5000/testdeploy/myapp@sha256:00b94db50f561b92723a3635300a0f580762c159d665ca6262a3851539f77bf5
    Push successful
@@ -83,10 +83,10 @@ In this lab you will:
    outside the cluster:
 
    ```console
-   > oc expose svc/myapp
+   $ oc expose svc/myapp
    route.route.openshift.io/myapp exposed
 
-   > oc get routes
+   $ oc get routes
    NAME    HOST/PORT                           PATH   SERVICES   PORT       TERMINATION   WILDCARD
    myapp   myapp-testdeploy.apps-crc.testing          myapp      8080-tcp                 None
    ```
@@ -94,7 +94,7 @@ In this lab you will:
    And test the application:
 
    ```console
-   > curl http://myapp-testdeploy.apps-crc.testing ; echo
+   $ curl http://myapp-testdeploy.apps-crc.testing ; echo
    Welcome in MMUL!
    ```
 
@@ -102,7 +102,7 @@ In this lab you will:
    application service and route:
 
    ```console
-   > oc delete route/myapp service/myapp
+   $ oc delete route/myapp service/myapp
    route.route.openshift.io "myapp" deleted
    service "myapp" deleted
    ```
@@ -111,16 +111,16 @@ In this lab you will:
    delete also the two pods.
 
    ```console
-   > oc delete deployment/myapp buildconfig/myapp
+   $ oc delete deployment/myapp buildconfig/myapp
    deployment.apps "myapp" deleted
    buildconfig.build.openshift.io "myapp" deleted
 
-   > oc get pods
+   $ oc get pods
    NAME                     READY   STATUS        RESTARTS   AGE
    myapp-1-build            0/1     Completed     0          20m
    myapp-7687d69fdf-9n9jt   0/1     Terminating   0          18m
 
-   > oc get pods
+   $ oc get pods
    No resources found in testdeploy namespace.
    ```
 
@@ -128,7 +128,7 @@ In this lab you will:
    to the ```oc new-app``` command:
 
    ```console
-   > oc new-app --docker-image=nginxinc/nginx-unprivileged --name=nginx
+   $ oc new-app --docker-image=nginxinc/nginx-unprivileged --name=nginx
    --> Found container image 9715b46 (2 weeks old) from Docker Hub for "nginxinc/nginx-unprivileged"
    ...
    --> Success
@@ -153,10 +153,10 @@ In this lab you will:
 7. As before, expose the application by using the Service name:
 
    ```console
-   > oc expose service nginx
+   $ oc expose service nginx
    route.route.openshift.io/nginx exposed
 
-   > oc get routes
+   $ oc get routes
    NAME    HOST/PORT                           PATH   SERVICES   PORT       TERMINATION   WILDCARD
    nginx   nginx-testdeploy.apps-crc.testing          nginx      8080-tcp                 None
    ```
@@ -164,7 +164,7 @@ In this lab you will:
    Then curl the provided host to check the app:
 
    ```console
-   > curl http://nginx-testdeploy.apps-crc.testing
+   $ curl http://nginx-testdeploy.apps-crc.testing
    ...
    <h1>Welcome to nginx!</h1>
    ...
@@ -173,7 +173,7 @@ In this lab you will:
 8. Clean the route and services:
 
    ```console
-   > oc delete route/nginx service/nginx
+   $ oc delete route/nginx service/nginx
    route.route.openshift.io "nginx" deleted
    service "nginx" deleted
    ```
@@ -181,16 +181,16 @@ In this lab you will:
    This time you can just delete the Deployment, it will also delete the pod:
 
    ```console
-   > oc delete deployment nginx
+   $ oc delete deployment nginx
    deployment.apps "nginx" deleted
 
-   > oc get pods
+   $ oc get pods
    NAME                   READY   STATUS        RESTARTS   AGE
    nginx-54bcd565-mx9zq   0/1     Terminating   0          4m39s
 
-   > oc get pods
+   $ oc get pods
    No resources found in testdeploy namespace.
 
-   > oc delete project testdeploy
+   $ oc delete project testdeploy
    project.project.openshift.io "testdeploy" deleted
    ```

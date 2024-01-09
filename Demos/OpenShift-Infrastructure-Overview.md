@@ -219,36 +219,36 @@ Contents of the DNS zone:
 ```console
 [root@ocp-haproxy ~]# cat /etc/named/test.kiratech.local.zone
 $TTL 1W
-@	IN	SOA	ns1.test.kiratech.local.	root (
-			2021061000	; serial
-			3H		; refresh (3 hours)
-			30M		; retry (30 minutes)
-			2W		; expiry (2 weeks)
-			1W )		; minimum (1 week)
-	IN	NS	ns1.test.kiratech.local.
-	IN	MX 10	smtp.test.kiratech.local.
+@    IN    SOA    ns1.test.kiratech.local.    root (
+            2021061000    ; serial
+            3H        ; refresh (3 hours)
+            30M        ; retry (30 minutes)
+            2W        ; expiry (2 weeks)
+            1W )        ; minimum (1 week)
+    IN    NS    ns1.test.kiratech.local.
+    IN    MX 10    smtp.test.kiratech.local.
 ;
 ;
-ns1		IN	A	192.168.122.8
-smtp		IN	A	192.168.122.8
+ns1        IN    A    192.168.122.8
+smtp        IN    A    192.168.122.8
 ; The api identifies the IP of your load balancer.
-api		IN	A	192.168.122.8
-api-int		IN	A	192.168.122.8
-ocp-haproxy	IN	A	192.168.122.8
+api        IN    A    192.168.122.8
+api-int        IN    A    192.168.122.8
+ocp-haproxy    IN    A    192.168.122.8
 ;
 ; The wildcard also identifies the load balancer.
-*.apps		IN	A	192.168.122.8
+*.apps        IN    A    192.168.122.8
 ;
 ; Bastion host.
-ocp-bastion	IN	A	192.168.122.9
+ocp-bastion    IN    A    192.168.122.9
 ;
 ; Create an entry for the bootstrap host.
-bootstrap	IN	A	192.168.122.10
+bootstrap    IN    A    192.168.122.10
 ;
 ; Create entries for the master hosts.
-ocp-lab-1	IN	A	192.168.122.11
-ocp-lab-2	IN	A	192.168.122.12
-ocp-lab-3	IN	A	192.168.122.13
+ocp-lab-1    IN    A    192.168.122.11
+ocp-lab-2    IN    A    192.168.122.12
+ocp-lab-3    IN    A    192.168.122.13
 ;
 ;EOF
 ```

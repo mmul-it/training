@@ -8,12 +8,9 @@ In this lab you will:
 
 ## Solution
 
-1. Create a yaml file with the Persistent Volume named 'pv001' definition:
+1. Create a `pv-test.yml` yaml file with the Persistent Volume named 'pv001'
+   definition:
 
-   ```console
-   > cat pv-test.yml
-   ```
-   
    ```yaml
    apiVersion: v1
    kind: PersistentVolume
@@ -32,10 +29,10 @@ In this lab you will:
    Create the resource by using `kubectl create -f pv001.yaml` command:
 
    ```console
-   > kubectl create -f pv-test.yml
+   $ kubectl create -f pv-test.yml
    persistentvolume/pv0001 created
 
-   > kubectl get pv
+   $ kubectl get pv
    NAME     CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   REASON   AGE
    pv0001   5Gi        RWO            Retain           Available           localpv                 108s
    ```
@@ -43,15 +40,11 @@ In this lab you will:
 2. Create the namespace:
 
    ```console
-   >  kubectl create namespace volumes-test
+   $  kubectl create namespace volumes-test
    namespace/volumes-test created
    ```
 
    Then create a yaml file named `pvc-test.yml` with a claim of 1G:
-
-   ```console
-   > cat pvc-test.yml
-   ```
 
    ```yaml
    kind: PersistentVolumeClaim
@@ -71,10 +64,10 @@ In this lab you will:
    Create and check the claim:
 
    ```console
-   >  kubectl create -f pvc-test.yml
+   $  kubectl create -f pvc-test.yml
    persistentvolumeclaim/myclaim created
 
-   > kubectl -n volumes-test get pvc
+   $ kubectl -n volumes-test get pvc
    NAMESPACE      NAME      STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
    volumes-test   myclaim   Bound    pv0001   5Gi        RWO            localpv        7s
    ```
@@ -82,27 +75,27 @@ In this lab you will:
 3. The status can be seen with `kubectl describe`:
 
    ```console
-   >  kubectl describe pv pv0001
+   $  kubectl describe pv pv0001
    Name:            pv0001
    Labels:          <none>
    Annotations:     <none>
    Finalizers:      [kubernetes.io/pv-protection]
    StorageClass:    localpv
    Status:          Available
-   Claim:           
+   Claim:
    Reclaim Policy:  Retain
    Access Modes:    RWO
    VolumeMode:      Filesystem
    Capacity:        5Gi
    Node Affinity:   <none>
-   Message:         
+   Message:
    Source:
        Type:          HostPath (bare host directory volume)
        Path:          /data/
-       HostPathType:  
+       HostPathType:
    Events:            <none>
 
-   > kubectl -n volumes-test describe pvc myclaim 
+   $ kubectl -n volumes-test describe pvc myclaim
    Name:          myclaim
    Namespace:     volumes-test
    StorageClass:  localpv

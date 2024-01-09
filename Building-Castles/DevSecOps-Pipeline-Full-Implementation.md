@@ -1,183 +1,191 @@
 # Lab | Block the DevSecOps pipeline in case of problems
 
-1. Let's push a faulty source code to our repo:
+## Simulate faulty source code
 
-   ```java
-   package org.example;
+Let's push a faulty source code to our repo:
 
-   public class Example {
-       public static void main(String[] args) {
-           int x = 5;
-           int y = 0;
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           logger.log("Result: " + result);
-       }
-   }
-   ```
+```java
+package org.example;
 
-   In this example, the code attempts multiple times to divide the variable `x`
-   by `y`, which is initialized to 0. This division by zero operation will
-   result in an exception at runtime, causing the program to crash or behave
-   unexpectedly and the code repetition is obviously wrong.
+public class Example {
+    public static void main(String[] args) {
+        int x = 5;
+        int y = 0;
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        logger.log("Result: " + result);
+    }
+}
+```
 
-   SonarQube can identify the issues and raise a warning or error, indicating a
-   potential bug or vulnerability in the code.
+In this example, the code attempts multiple times to divide the variable `x`
+by `y`, which is initialized to 0. This division by zero operation will
+result in an exception at runtime, causing the program to crash or behave
+unexpectedly and the code repetition is obviously wrong.
 
-   SonarQube is designed to analyze source code for various issues such as bugs,
-   code smells, security vulnerabilities, and maintainability problems.
-   It applies a set of predefined rules and checks to identify potential issues
-   and provide feedback to developers, enabling them to improve the quality of
-   their code.
+SonarQube can identify the issues and raise a warning or error, indicating a
+potential bug or vulnerability in the code.
 
-   Let's push it on the repo:
+SonarQube is designed to analyze source code for various issues such as bugs,
+code smells, security vulnerabilities, and maintainability problems.
+It applies a set of predefined rules and checks to identify potential issues
+and provide feedback to developers, enabling them to improve the quality of
+their code.
 
-   ```
-   > mkdir -p src/org/example
+Let's push it on the repo:
 
-   > cat <<EOF > src/org/example/Example.java
-   package org.example;
+```console
+> mkdir -p src/org/example
 
-   public class Example {
-       public static void main(String[] args) {
-           int x = 5;
-           int y = 0;
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
-           int result = x / y; // Division by zero error
+> cat <<EOF > src/org/example/Example.java
+package org.example;
 
-           logger.log("Result: " + result);
-       }
-   }
-   EOF
+public class Example {
+    public static void main(String[] args) {
+        int x = 5;
+        int y = 0;
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
+        int result = x / y; // Division by zero error
 
-   > git add . && git commit -m "Simulate a faulty code"
-   [main 81a9f2c6f04b] Simulate a faulty code
-    1 file changed, 9 insertions(+)
-    create mode 100644 src/org/example/Example.java
+        logger.log("Result: " + result);
+    }
+}
+EOF
 
-   > git push
-   ```
+> git add . && git commit -m "Simulate a faulty code"
+[main 81a9f2c6f04b] Simulate a faulty code
+ 1 file changed, 9 insertions(+)
+ create mode 100644 src/org/example/Example.java
 
-2. First thing to note, if the [DevSecOps-Pipeline-GitLab-SAST.md](DevSecOps-Pipeline-GitLab-SAST.md)
-   was correctly completed, the pipeline will be automatically integrated with
-   the `semgrep-sast` test stage, which means that GitLab discovered the `.java`
-   file and processed it with the ideal tester:
+> git push
+```
 
-   ![DevSecOps-Pipeline-Simulate-Code-Problem-GitLab-CI.png](images/DevSecOps-Pipeline-Simulate-Code-Problem-GitLab-CI.png)
+## Check pipeline status
 
-   Second thing to note is that, unexpectedly, the pipeline will complete with
-   no errors. The SonarQube stage completes as follows:
+First thing to note, if the [DevSecOps-Pipeline-GitLab-SAST.md](DevSecOps-Pipeline-GitLab-SAST.md)
+was correctly completed, the pipeline will be automatically integrated with
+the `semgrep-sast` test stage, which means that GitLab discovered the `.java`
+file and processed it with the ideal tester:
 
-   ```
-   ...
-   INFO: ------------------------------------------------------------------------
-   INFO: EXECUTION SUCCESS
-   INFO: ------------------------------------------------------------------------
-   INFO: Total time: 5.942s
-   INFO: Final Memory: 22M/114M
-   INFO: ------------------------------------------------------------------------
-   Job succeeded
-   ```
+![DevSecOps-Pipeline-Simulate-Code-Problem-GitLab-CI.png](images/DevSecOps-Pipeline-Simulate-Code-Problem-GitLab-CI.png)
 
-   But by looking into the project details we will find a Failed status:
+Second thing to note is that, unexpectedly, the pipeline will complete with
+no errors. The SonarQube stage completes as follows:
 
-   ![DevSecOps-Pipeline-Simulate-Code-Problem-Sonarqube-Code-Failure.png](images/DevSecOps-Pipeline-Simulate-Code-Problem-Sonarqube-Code-Failure.png)
+```console
+...
+INFO: ------------------------------------------------------------------------
+INFO: EXECUTION SUCCESS
+INFO: ------------------------------------------------------------------------
+INFO: Total time: 5.942s
+INFO: Final Memory: 22M/114M
+INFO: ------------------------------------------------------------------------
+Job succeeded
+```
 
-   This happens because we don't have a blocker for the pipeline.
+But by looking into the project details we will find a Failed status:
 
-3. It is possible to make `sonar-scanner` use the quality gate functionality,
-   that will ensure that the correct result is returned from SonarQube before
-   moving on.
+![DevSecOps-Pipeline-Simulate-Code-Problem-Sonarqube-Code-Failure.png](images/DevSecOps-Pipeline-Simulate-Code-Problem-Sonarqube-Code-Failure.png)
 
-   This can be implemented by changing the `sonarqube_job` stage, adding the
-   `sonar.qualitygate.wait=true` option into the `.gitlab-ci.yml` file:
+This happens because we don't have a blocker for the pipeline.
 
-   ```yaml
-   sonarqube_job:
-     stage: sonarqube
-     image: sonarsource/sonar-scanner-cli:latest
-     script:
-       - sonar-scanner
-         -Dsonar.host.url=${SONAR_HOST_URL}
-         -Dsonar.token=${SONAR_TOKEN}
-         -Dsonar.projectKey=myproject
-         -Dsonar.qualitygate.wait=true
-     only:
-       - main
-   ```
+## Configure the quality gate
 
-   By pushing the change:
+It is possible to make `sonar-scanner` use the quality gate functionality,
+that will ensure that the correct result is returned from SonarQube before
+moving on.
 
-   ```
-   > git add .gitlab-ci.yml && git commit -m "Add quality gate"
-   [main 12af23884239] Add quality gate
-    1 file changed, 1 insertion(+)
+This can be implemented by changing the `sonarqube_job` stage, adding the
+`sonar.qualitygate.wait=true` option into the `.gitlab-ci.yml` file:
 
-   > git push
-   ```
+```yaml
+sonarqube_job:
+  stage: sonarqube
+  image: sonarsource/sonar-scanner-cli:latest
+  script:
+    - sonar-scanner
+      -Dsonar.host.url=${SONAR_HOST_URL}
+      -Dsonar.token=${SONAR_TOKEN}
+      -Dsonar.projectKey=myproject
+      -Dsonar.qualitygate.wait=true
+  only:
+    - main
+```
 
-   A new pipeline will be started, and this should fail with a message like
-   this:
+By pushing the change:
 
-   ```console
-   INFO: Analysis report uploaded in 13ms
-   INFO: ------------- Check Quality Gate status
-   INFO: Waiting for the analysis report to be processed (max 300s)
-   INFO: ------------------------------------------------------------------------
-   INFO: EXECUTION FAILURE
-   INFO: ------------------------------------------------------------------------
-   INFO: Total time: 10.559s
-   INFO: Final Memory: 21M/114M
-   INFO: ------------------------------------------------------------------------
-   ERROR: Error during SonarScanner execution
-   ERROR: QUALITY GATE STATUS: FAILED - View details on http://172.16.99.1:9000/dashboard?id=myproject
-   ERROR:
-   ERROR: Re-run SonarScanner using the -X switch to enable full debug logging.
-   ERROR: Job failed: exit code 1
-   ```
+```console
+> git add .gitlab-ci.yml && git commit -m "Add quality gate"
+[main 12af23884239] Add quality gate
+ 1 file changed, 1 insertion(+)
 
-4. To close the activity, let's fix our code, by removing the problems. The new
-   code should be something like this:
+> git push
+```
 
-   ```java
-   package org.example;
+A new pipeline will be started, and this should fail with a message like
+this:
 
-   public class Example {
-       public static void main(String[] args) {
-           int x = 5;
-           int y = 1;
-           int result = x / y;
+```console
+INFO: Analysis report uploaded in 13ms
+INFO: ------------- Check Quality Gate status
+INFO: Waiting for the analysis report to be processed (max 300s)
+INFO: ------------------------------------------------------------------------
+INFO: EXECUTION FAILURE
+INFO: ------------------------------------------------------------------------
+INFO: Total time: 10.559s
+INFO: Final Memory: 21M/114M
+INFO: ------------------------------------------------------------------------
+ERROR: Error during SonarScanner execution
+ERROR: QUALITY GATE STATUS: FAILED - View details on http://172.16.99.1:9000/dashboard?id=myproject
+ERROR:
+ERROR: Re-run SonarScanner using the -X switch to enable full debug logging.
+ERROR: Job failed: exit code 1
+```
 
-           logger.log("Result: " + result);
-       }
-   }
-   ```
+## Fix the code
 
-   By pushing it, we can see if the quality gate gets fixed:
+To close the activity, let's fix our code, by removing the problems. The new
+code should be something like this:
 
-   ```console
-   > git add . && git commit -m "Fix faulty code"
-   [main 146483ea9a74] Fix faulty code
-    1 file changed, 2 insertions(+), 2 deletions(-)
+```java
+package org.example;
 
-   > git push
-   ```
+public class Example {
+    public static void main(String[] args) {
+        int x = 5;
+        int y = 1;
+        int result = x / y;
 
-   The original error is not there anymore, and the pipeline should now be
-   green.
+        logger.log("Result: " + result);
+    }
+}
+```
+
+By pushing it, we can see if the quality gate gets fixed:
+
+```console
+> git add . && git commit -m "Fix faulty code"
+[main 146483ea9a74] Fix faulty code
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+> git push
+```
+
+The original error is not there anymore, and the pipeline should now be
+green.

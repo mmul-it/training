@@ -30,6 +30,7 @@ command will be more than useful, so it needs to be installed:
 
 ```bash
 $ yum -y install make
+...
 ```
 
 The test operator that will be implemented will use Ansible, and so there are
@@ -45,7 +46,7 @@ pull and push the `docker login` command is helpful:
 
 ```console
 [kirater@training-kfs-minikube ~]$ docker login quay.io -u mmul+kiraop
-Password: 
+Password:
 WARNING! Your password will be stored unencrypted in /home/kirater/.docker/config.json.
 Configure a credential helper to remove this warning. See
 https://docs.docker.com/engine/reference/commandline/login/#credentials-store

@@ -7,7 +7,7 @@ In this lab you will:
 2. From "container1" try to ping "container2" and see if it works.
 3. Stop and remove the containers.
 4. Create a custom network named "test" with the subnet "172.16.99.0/24".
-5. In two different shells, create two interactive containers named 
+5. In two different shells, create two interactive containers named
    "container1" and "container2" from the image alpine:latest and inside the
    newly created "test" network.
 6. From "container1" try to ping "container2" and see if it works.
@@ -23,7 +23,7 @@ In this lab you will:
    docker run --name=container1 --rm -it alpine /bin/sh
    / #
 
-   > docker run --name=container2 --rm -it alpine /bin/sh
+   $ docker run --name=container2 --rm -it alpine /bin/sh
    / #
    ```
 
@@ -43,17 +43,17 @@ In this lab you will:
 4. Using `docker network create` create the `test` subnet:
 
    ```console
-   > docker network create test --subnet "172.16.99.0/24"
+   $ docker network create test --subnet "172.16.99.0/24"
    1cb5ca8888a1b4f577bd1bcbb1babb72015b816d031015b1a6f5a07613d58dc2
    ```
 
 5. Re-run the two containers:
 
    ```console
-   > docker run --name=container1 --network=test --rm -it alpine /bin/sh
+   $ docker run --name=container1 --network=test --rm -it alpine /bin/sh
    / #
 
-   > docker run --name=container2 --network=test --rm -it alpine /bin/sh
+   $ docker run --name=container2 --network=test --rm -it alpine /bin/sh
    / #
    ```
 
@@ -101,6 +101,6 @@ In this lab you will:
    On the host:
 
    ```console
-   > docker network remove test
+   $ docker network remove test
    test
    ```

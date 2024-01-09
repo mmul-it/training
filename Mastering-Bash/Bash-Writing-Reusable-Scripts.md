@@ -2,28 +2,21 @@
 
 In this lab you will:
 
-1. Log into the machine with the credentials you own.
-2. Write a script named `parameters.sh` to print:
+1. Write a script named `parameters.sh` to print:
 
    - The number of parameters.
    - All the parameters as a string.
 
-3. Write `second.sh` to print just the second parameter three times.
-4. Write `between.sh` to use first two arguments as min and max for random
+2. Write `second.sh` to print just the second parameter three times.
+3. Write `between.sh` to use first two arguments as min and max for random
    number generation.
-5. Write `grep_passwd.sh`, that search argument 1 into `/etc/passwd` and print
+4. Write `grep_passwd.sh`, that search argument 1 into `/etc/passwd` and print
    only the exit code. A `0` means found, a `1` means not found.
    In the script, redirect the standard output of `grep` to `/dev/null`;
 
 ## Solution
 
-1. Suppose your user is `kirater` and your machine is `machine`:
-
-   ```console
-   > ssh kirater@machine
-   ```
-
-2. The script will look like this:
+1. The script will look like this:
 
    ```bash
    #!/bin/bash
@@ -34,14 +27,15 @@ In this lab you will:
    Remember that every script should be executable:
 
    ```console
-   [kirater@localhost ~]$ chmod +x ./parameters.sh
+   $ chmod +x ./parameters.sh
+   (no output)
 
-   [kirater@localhost ~]$ ./parameters.sh Hello, World!
+   $ ./parameters.sh Hello, World!
    2
    Hello, World!
    ```
 
-3. The 'second.sh' will print the second parameter three times:
+2. The `second.sh` script will print the second parameter three times:
 
    ```bash
    #!/bin/bash
@@ -53,15 +47,16 @@ In this lab you will:
    Output will be:
 
    ```console
-   [kirater@localhost ~]$ chmod +x ./second.sh
+   $ chmod +x ./second.sh
+   (no output)
 
-   [kirater@localhost ~]$ ./second.sh Hello, World!
+   $ ./second.sh Hello, World!
    World!
    World!
    World!
    ```
 
-4. The `between.sh` script will look like this:
+3. The `between.sh` script will look like this:
 
    ```bash
    #!/bin/bash
@@ -78,19 +73,20 @@ In this lab you will:
    Once launched these will be the results:
 
    ```console
-   [kirater@localhost ~]$ chmod +x ./between.sh
+   $ chmod +x ./between.sh
+   (no output)
 
-   [kirater@localhost ~]$ ./between.sh 1 10
+   $ ./between.sh 1 10
    2
 
-   [kirater@localhost ~]$ ./between.sh 20 30
+   $ ./between.sh 20 30
    29
 
-   [kirater@localhost ~]$ ./between.sh 500 503
+   $ ./between.sh 500 503
    502
    ```
 
-5. The script `grep_passwd.sh` will look like this:
+4. The script `grep_passwd.sh` will look like this:
 
    ```bash
    #!/bin/bash
@@ -101,11 +97,12 @@ In this lab you will:
    Once launched these will be the results:
 
    ```console
-   [kirater@localhost ~]$ chmod +x ./grep_passwd.sh
+   $ chmod +x ./grep_passwd.sh
+   (no output)
 
-   [kirater@localhost ~]$ ./grep_passwd.sh kirater
+   $ ./grep_passwd.sh kirater
    0
 
-   [kirater@localhost ~]$ ./grep_passwd.sh notpresent
+   $ ./grep_passwd.sh notpresent
    1
    ```

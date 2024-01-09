@@ -1,0 +1,15 @@
+image:
+  name: ghcr.io/mmul-it/kpa
+  entrypoint: [""]
+
+variables:
+  KPA_PROJECT: kiratech
+
+stages:
+  - lint
+
+lint:
+  stage: lint
+  script:
+    # Markdown check
+    - mdl -c /kpa/.mdlrc */*.md
