@@ -1,8 +1,9 @@
-# Demonstration 000 - Forcing the namespace PID of your container
+# Demonstration | Force the namespace PID of your container
 
-1) Spot the difference between:
+Spot the difference between:
 
-> docker run --pid=host -it alpine ps -ef
+```console
+$ docker run --pid=host -it alpine ps -ef
 PID   USER     TIME  COMMAND
     1 root      0:06 {systemd} /sbin/init
     2 root      0:00 [kthreadd]
@@ -12,12 +13,15 @@ PID   USER     TIME  COMMAND
     8 root      0:07 [rcu_sched]
 ...
 ...
+```
 
 And
 
-> docker run -it alpine ps -ef
+```console
+$ docker run -it alpine ps -ef
 PID   USER     TIME  COMMAND
     1 root      0:00 ps -ef
+```
 
 The second container run is limited to its process namespace, the first one is
-using the same one as the system, so be careful about using --pid option!
+using the same one as the system, so be careful about using `--pid` option!

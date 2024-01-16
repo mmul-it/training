@@ -1,6 +1,4 @@
-# Demonstration 006 - Understanding out-of-the-box OpenShift authentication
-
----
+# Demonstration | OpenShift: understand out-of-the-box authentication
 
 By default the only user configured inside fresh new OpenShift installation is
 just kubeadmin:
@@ -23,7 +21,7 @@ metadata:
 ...
 ```
 
-The password is base64 formatted, so to decode it you can use the base64 command:
+The password is base64 formatted, to decode it you can use the `base64` command:
 
 ```
 [root@ocp-bastion ~]# echo JDJhJDEwJC52bE03SU16VmNhWG4zREdFaUpQMi4zbi5tajZsbHV1QjFhMWN4R2h3eVYzbGtsMGZTMVg2 | base64 --decode
@@ -33,7 +31,7 @@ $2a$10$.vlM7IMzVcaXn3DGEiJP2.3n.mj6lluuB1a1cxGhwyV3lkl0fS1X6
 As you can see, this is an hash, so you can't get to know the password from
 here.
 The OCP 4.7 installer leaves a file named kubeadmin-password in the install
-dir:
+directory:
 
 ```console
 [root@ocp-bastion ~]# ls -1 /var/www/html/openshift-install-dir/auth
@@ -44,8 +42,9 @@ kubeconfig
 So there are two choices for logging into an existing cluster:
 
 1. Via password:
+
    ``` console
-   [root@ocp-bastion ~]# oc login https://api.test.sourcesense.local:6443 --insecure-skip-tls-verify=true -u kubeadmin -p IJhIR-Je7bW-H63Hi-Zo2LZ
+   [root@ocp-bastion ~]# oc login https://api.test.kiratech.local:6443 --insecure-skip-tls-verify=true -u kubeadmin -p IJhIR-Je7bW-H63Hi-Zo2LZ
    Login successful.
 
    You have access to 62 projects, the list has been suppressed. You can list all projects with 'oc projects'
@@ -53,7 +52,7 @@ So there are two choices for logging into an existing cluster:
    Using project "default".
 
    [root@ocp-bastion ~]# oc status
-   In project default on server https://api.test.sourcesense.local:6443
+   In project default on server https://api.test.kiratech.local:6443
 
    svc/openshift - kubernetes.default.svc.cluster.local
    svc/kubernetes - 172.30.0.1:443 -> 6443
@@ -61,15 +60,16 @@ So there are two choices for logging into an existing cluster:
    View details with 'oc describe <resource>/<name>' or list resources with 'oc get all'.
 
    [root@ocp-bastion ~]# oc logout
-   Logged "kube:admin" out on "https://api.test.sourcesense.local:6443"
+   Logged "kube:admin" out on "https://api.test.kiratech.local:6443"
    ```
 
 2. Via kubeconfig:
+
    ```console
    [root@ocp-bastion ~]# export KUBECONFIG=/var/www/html/openshift-install-dir/auth/kubeconfig
 
    [root@ocp-bastion ~]# oc status
-   In project default on server https://api.test.sourcesense.local:6443
+   In project default on server https://api.test.kiratech.local:6443
 
    svc/openshift - kubernetes.default.svc.cluster.local
    svc/kubernetes - 172.30.0.1:443 -> 6443
