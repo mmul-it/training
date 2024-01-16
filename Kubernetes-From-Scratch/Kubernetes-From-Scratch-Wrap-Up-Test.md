@@ -3,10 +3,11 @@
 ## Install minikube
 
 Following the [official instructions](https://minikube.sigs.k8s.io/docs/start/)
-or the [Kubernetes-Install-Minikube.md](Kubernetes-Install-Minikube.md) install
-Minikube in your local environment.
+or the [Kubernetes-Install-Minikube.md](../Common/Kubernetes-Install-Minikube.md)
+install Minikube in your local environment.
 
-In Linux, this should be as simple as:
+In a Linux system, with a proper Docker installation, this should be as simple
+as:
 
 ```sh
 $ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
@@ -15,26 +16,25 @@ $ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linu
 $ sudo install minikube-linux-amd64 /usr/local/bin/minikube
 (no output)
 
-$ minikube delete
-🔥  Deleting "minikube" in docker ...
-🔥  Deleting container "minikube" ...
-🔥  Removing /home/rasca/.minikube/machines/minikube ...
-💀  Removed all traces of the "minikube" cluster.
-rasca@lens:~$ minikube start
-😄  minikube v1.28.0 on Ubuntu 20.04 (kvm/amd64)
-✨  Automatically selected the docker driver
+$ minikube start
+😄  minikube v1.32.0 on Almalinux 8.8 (kvm/amd64)
+    ▪ KUBECONFIG=/home/kirater/training-kfs-kubelab/admin.conf
+✨  Automatically selected the docker driver. Other choices: none, ssh
 📌  Using Docker driver with root privileges
 👍  Starting control plane node minikube in cluster minikube
 🚜  Pulling base image ...
-🔥  Creating docker container (CPUs=2, Memory=2200MB) ...
-🐳  Preparing Kubernetes v1.25.3 on Docker 20.10.20 ...
+💾  Downloading Kubernetes v1.28.3 preload ...
+    > gcr.io/k8s-minikube/kicbase...:  453.90 MiB / 453.90 MiB  100.00% 38.88 M
+    > preloaded-images-k8s-v18-v1...:  403.35 MiB / 403.35 MiB  100.00% 30.82 M
+🔥  Creating docker container (CPUs=2, Memory=4000MB) ...
+🐳  Preparing Kubernetes v1.28.3 on Docker 24.0.7 ...
     ▪ Generating certificates and keys ...
     ▪ Booting up control plane ...
     ▪ Configuring RBAC rules ...
-🔎  Verifying Kubernetes components...
+🔗  Configuring bridge CNI (Container Networking Interface) ...
     ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+🔎  Verifying Kubernetes components...
 🌟  Enabled addons: default-storageclass, storage-provisioner
-💡  kubectl not found. If you need it, try: 'minikube kubectl -- get pods -A'
 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 
 $ alias kubectl="minikube kubectl --"
@@ -92,6 +92,15 @@ the `192.168.49.2` IP address.
 
 Locally download the [Wrap up exercise yaml file](Kubernetes-From-Scratch-Wrap-Up-Test.yaml).
 
+In Linux this should be as simple as:
+
+```console
+$ curl -O https://raw.githubusercontent.com/mmul-it/training/master/Kubernetes-From-Scratch/Kubernetes-From-Scratch-Wrap-Up-Test.yaml
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  1316  100  1316    0     0   5600      0 --:--:-- --:--:-- --:--:--  5600
+```
+
 ## Change the host address of the ingress element
 
 Inside the downloaded file change the `spec:` -> `rules:` -> `host:` value to
@@ -100,7 +109,7 @@ the address defined above.
 You can automate this operation, in Linux, by doing:
 
 ```sh
-$ sed -i -e 's/host: .*/host: 192.168.49.2.nip.io/g' Exercise.Wrap-up.yaml
+$ sed -i -e 's/host: .*/host: 192.168.49.2.nip.io/g' Kubernetes-From-Scratch-Wrap-Up-Test.yaml
 (no output)
 ```
 
@@ -109,7 +118,7 @@ $ sed -i -e 's/host: .*/host: 192.168.49.2.nip.io/g' Exercise.Wrap-up.yaml
 Using `kubectl` load the downloaded yaml into the Minikube Kubernetes cluser:
 
 ```sh
-$ kubectl create -f Exercise.Wrap-up.yaml
+$ kubectl create -f Kubernetes-From-Scratch-Wrap-Up-Test.yaml
 namespace/myingress-test created
 configmap/docroot created
 pod/mywebserver created
