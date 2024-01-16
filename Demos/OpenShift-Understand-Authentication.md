@@ -5,7 +5,11 @@ just kubeadmin:
 
 ```console
 [root@ocp-bastion ~]# oc get secret -A | grep kubeadmin
+<<<<<<< HEAD
 kube-system                                        kubeadmin                                                    Opaque                                1      39d
+=======
+kube-system               kubeadmin                 Opaque           1      39d
+>>>>>>> 08f7b1d7451b (Add Demos for various courses)
 ```
 
 Which can be viewed as a yaml:
@@ -23,7 +27,11 @@ metadata:
 
 The password is base64 formatted, to decode it you can use the `base64` command:
 
+<<<<<<< HEAD
 ```
+=======
+```console
+>>>>>>> 08f7b1d7451b (Add Demos for various courses)
 [root@ocp-bastion ~]# echo JDJhJDEwJC52bE03SU16VmNhWG4zREdFaUpQMi4zbi5tajZsbHV1QjFhMWN4R2h3eVYzbGtsMGZTMVg2 | base64 --decode
 $2a$10$.vlM7IMzVcaXn3DGEiJP2.3n.mj6lluuB1a1cxGhwyV3lkl0fS1X6
 ```

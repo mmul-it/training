@@ -67,6 +67,10 @@ deployment. Official OpenShift MySQL images provides a command named
 
 ```console
 $ oc edit dc/mysql-master
+<<<<<<< HEAD
+=======
+(vim terminal opens)
+>>>>>>> 08f7b1d7451b (Add Demos for various courses)
 ```
 
 Inside 'spec:template:spec:containers:' add
@@ -100,6 +104,10 @@ named `run-mysqld-slave`:
 
 ```console
 $ oc edit dc/mysql-slave
+<<<<<<< HEAD
+=======
+(vim terminal opens)
+>>>>>>> 08f7b1d7451b (Add Demos for various courses)
 ```
 
 Inside `spec:template:spec:containers:` add:

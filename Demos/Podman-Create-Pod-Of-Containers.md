@@ -54,4 +54,8 @@ this means that a pod can be associated entirely to `localhost`.
 
 ```console
 $ podman run -d --pod new:mypod -e MARIADB_ROOT_PASSWORD=password mariadb:latest
+<<<<<<< HEAD
+=======
+1bdwdeedwedwdewwe342323238129ce7a8998b8a62fef77047bc2b30a6623f4f
+>>>>>>> 08f7b1d7451b (Add Demos for various courses)
 ```
