@@ -68,7 +68,7 @@ In this lab you will:
    frontend   1/1     Running   0          6s
    ```
 
-4. Insall the `lynx` tool:
+4. Install the `lynx` tool, using for Debian based systems:
 
    ```console
    $ sudo apt-get install -y lynx
@@ -78,21 +78,37 @@ In this lab you will:
    ...
    ```
 
-5. Open the port-forward and use `lynx` to see the problem:
+   And for RHEL based systems:
+
+   ```console
+   $ sudo yum install yum-utils
+   ...
+
+   $ sudo yum config-manager --set-enabled powertools
+   (no output)
+
+   $ sudo yum -y install lynx
+   ...
+   ```
+
+5. Open the `8080` port using `kubectl port-forward`:
 
    ```console
    $ kubectl -n fe-be-test port-forward frontend 8080:80
    Forwarding from 127.0.0.1:8080 -> 80
    Forwarding from [::1]:8080 -> 80
+   ```
 
-   $ sudo apt-get install -y lynx
+   And froma another terminal use `lynx` to catch the problem:
+
+   ```console
    $ lynx localhost:8080 -dump
    Error establishing a database connection
    ```
 
-   The problem is that Wordpress can't contact the `backend` pod, even if it is
-   up and running. So pods within the same namespace can't contact each other by
-   name, we need a service.
+   Wordpress can't contact the `backend` pod, even if it is up and running.
+   So pods within the same namespace can't contact each other by name, we need
+   a service.
 
 6. We are going to do three different actions:
    - Create a service named `backed` that expose the tcp 3306 port targeting the
