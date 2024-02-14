@@ -127,7 +127,9 @@ In this lab you will:
 
       Continue
    ```
+
 8. Expose a pod (and not only) in a quick and easy way.
+
    ```console
    $ kubectl expose pod nginx \
        --name=frontend \
@@ -138,6 +140,7 @@ In this lab you will:
 
    $ kubectl create -f svc_frontend.yaml
    ```
+
    Note that we could have exposed the service directly, but it's not a best practise. 
 
 9. You can then safely remove the namespace:
