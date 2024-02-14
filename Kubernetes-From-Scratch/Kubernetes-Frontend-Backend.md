@@ -23,7 +23,8 @@ In this lab you will:
    set the selector for the service.
 7. Check that now the web page shows the initial Wordpress configuration page
    correctly (and so it connects to the DB).
-8. Delete `fe-be-test` namespace.
+8. Expose a pod quickly and easily.
+9. Delete `fe-be-test` namespace.
 
 ## Solution
 
@@ -126,8 +127,20 @@ In this lab you will:
 
       Continue
    ```
+8. Expose a pod (and not only) in a quick and easy way.
+   ```console
+   $ kubectl expose pod nginx \
+       --name=frontend \
+       --port=80 \
+       --selector="name=frontend" \
+       --dry-run=client \
+       -o yaml > svc_frontend.yaml
 
-8. You can then safely remove the namespace:
+   $ kubectl create -f svc_frontend.yaml
+   ```
+   Note that we could have exposed the service directly, but it's not a best practise. 
+
+9. You can then safely remove the namespace:
 
    ```console
    $ kubectl delete namespace fe-be-test
