@@ -157,7 +157,7 @@ In this lab you will:
    $ kubectl create -f svc_frontend.yaml
    ```
 
-   Note that we could have exposed the service directly, but it's not a best practise. 
+   Note that we could have exposed the service directly, but it's not a best practise.
 
 9. You can then safely remove the namespace:
 
