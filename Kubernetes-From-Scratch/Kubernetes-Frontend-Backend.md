@@ -19,11 +19,11 @@ In this lab you will:
 5. Using `kubectl -n fe-be-test port-forward frontend 8080:80` expose locally
    the port of the frontend and check the status of wordpress with lynx: what is
    the problem? Why it is not working?
-6. Fix the problems by creating a service for the backend, labeling the pod and
-   set the selector for the service.
+6. Fix the problems by creating a label for the pod and a service for the
+   backend.
 7. Check that now the web page shows the initial Wordpress configuration page
    correctly (and so it connects to the DB).
-8. Create a service for the frontend using the `expose` command.
+8. Delete the `backend` service and create it from a yaml file.
 9. Delete `fe-be-test` namespace.
 
 ## Solution
@@ -39,7 +39,13 @@ In this lab you will:
    variable:
 
    ```console
-   $ kubectl run -n fe-be-test --image mariadb --env MYSQL_DATABASE=mywpdb --env MYSQL_USER=mywpuser --env MYSQL_PASSWORD=mywppass --env MYSQL_RANDOM_ROOT_PASSWORD='1' backend
+   $ kubectl -n fe-be-test run \
+       --image mariadb \
+       --env MYSQL_DATABASE=mywpdb \
+       --env MYSQL_USER=mywpuser \
+       --env MYSQL_PASSWORD=mywppass \
+       --env MYSQL_RANDOM_ROOT_PASSWORD='1' \
+       backend
    pod/backend created
 
    $ kubectl -n fe-be-test get pods
@@ -54,7 +60,13 @@ In this lab you will:
 3. Do the same for the frontend:
 
    ```console
-   $ kubectl run -n fe-be-test --image wordpress:latest --env WORDPRESS_DB_HOST=backend --env WORDPRESS_DB_USER=mywpuser --env WORDPRESS_DB_PASSWORD=mywppass --env WORDPRESS_DB_NAME=mywpdb frontend
+   $ kubectl -n fe-be-test run \
+       --image wordpress:latest \
+       --env WORDPRESS_DB_HOST=backend \
+       --env WORDPRESS_DB_USER=mywpuser \
+       --env WORDPRESS_DB_PASSWORD=mywppass \
+       --env WORDPRESS_DB_NAME=mywpdb \
+       frontend
    pod/frontend created
 
    $ kubectl -n fe-be-test get pods
@@ -81,7 +93,7 @@ In this lab you will:
    And for RHEL based systems:
 
    ```console
-   $ sudo yum install yum-utils
+   $ sudo yum -y install yum-utils
    ...
 
    $ sudo yum config-manager --set-enabled powertools
@@ -110,29 +122,45 @@ In this lab you will:
    So pods within the same namespace can't contact each other by name, we need
    a service.
 
-6. We are going to do three different actions:
-   - Create a service named `backed` that expose the tcp 3306 port targeting the
-     `3306` port:
+6. Service will rely on the pod label for the `selector`, so we need to use an
+   existing one (check by using `kubectl -n fe-be-test describe pod backend`) or
+   creating a new one:
 
-     ```console
-     $ kubectl -n fe-be-test create service clusterip backend --tcp=3306:3306
-     service/backend created
-     ```
+   ```console
+   $ kubectl -n fe-be-test label pod backend name=backend
+   pod/backend labeled
+   ```
 
-   - Label the existing `backend` pod with a label named `name` with value
-     `backend`:
+   Then it is time to create the service, and this can be done by creating a
+   service object named `backend` that expose the tcp 3306 port targeting the
+   `3306` port and applying its selector to the label named `name` with value
+   `backend`:
 
-     ```console
-     $ kubectl -n fe-be-test label pod backend name=backend
-     pod/backend labeled
-     ```
+   ```console
+   $ kubectl -n fe-be-test create service clusterip backend --tcp=3306:3306
+   service/backend created
 
-   - Set the selector over the previously created label in the service:
+   $ kubectl -n fe-be-test set selector service backend 'name=backend'
+   service/backend selector updated
+   ```
 
-     ```console
-     $ kubectl -n fe-be-test set selector service backend 'name=backend'
-     service/backend selector updated
-     ```
+   Alternatively, the `kubectl expose` command can be used as follows:
+
+   ```console
+   $ kubectl -n fe-be-test expose pod backend \
+       --name=backend \
+       --port=3306 \
+       --selector="name=backend"
+   service/frontend exposed
+   ```
+
+   In either cases the result will be something like this:
+
+   ```console
+   $ kubectl -n fe-be-test get service backend
+   NAME      TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
+   backend   ClusterIP   10.96.16.80   <none>        3306/TCP   26s
+   ```
 
 7. With the solution in place we can see the expected output:
 
@@ -144,32 +172,53 @@ In this lab you will:
       Continue
    ```
 
-8. Expose the frontend pod in a easy way using the `expose` command.
+8. To manually create the service it is possible to use `kubectl expose` to
+   generate the yaml and use with `kubectl create`:
 
    ```console
-   $ kubectl expose pod frontend \
-       --name=frontend \
-       --port=80 \
-       --selector="name=frontend" \
+   $ kubectl -n fe-be-test delete service backend
+   service "backend" deleted
+
+   $ kubectl -n fe-be-test expose pod backend \
+       --name=backend \
+       --port=3306 \
+       --selector="name=backend" \
        --dry-run=client \
-       -o yaml > svc_frontend.yaml
-   $ cat svc_frontend.yaml
+       -o yaml > svc_backend.yaml
+
+   $ cat svc_backend.yaml
    apiVersion: v1
    kind: Service
    metadata:
-      name: frontend
+     creationTimestamp: null
+     labels:
+       name: backend
+       run: backend
+     name: backend
+     namespace: fe-be-test
    spec:
-      selector:
-         name: frontend
-      ports:
-         - protocol: TCP
-           port: 80
-           targetPort: 80
-   $ kubectl create -f svc_frontend.yaml
+     ports:
+     - port: 3306
+       protocol: TCP
+       targetPort: 3306
+     selector:
+       name: backend
+   status:
+     loadBalancer: {}
+
+   $ kubectl create -f svc_backend.yaml
+   service/backend created
+
+   $ lynx localhost:8080 -dump
+      WordPress
+      Select a default language [English (United States)__________]
+
+      Continue
    ```
 
-   Note that we could have exposed the service directly without passing
-   through the yaml file ouput generation, but it's not a best practise.
+   The main difference in this approach is that we can put the yaml file under
+   version control to track any modification, using a real **Infrastructure as Code**
+   approach.
 
 9. You can then safely remove the namespace:
 
