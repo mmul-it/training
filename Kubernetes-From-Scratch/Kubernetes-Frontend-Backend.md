@@ -71,13 +71,13 @@ In this lab you will:
 
    $ kubectl -n fe-be-test get pods
    NAME       READY   STATUS              RESTARTS   AGE
-   backend    1/1     Running             0          102s
+   backend    1/1     Running             0          100s
    frontend   0/1     ContainerCreating   0          6s
 
    $ kubectl -n fe-be-test get pods -w
    NAME       READY   STATUS    RESTARTS   AGE
-   backend    1/1     Running   0          14s
-   frontend   1/1     Running   0          6s
+   backend    1/1     Running   0          102s
+   frontend   1/1     Running   0          8s
    ```
 
 4. Install the `lynx` tool, using for Debian based systems:
@@ -173,7 +173,7 @@ In this lab you will:
    ```
 
 8. To manually create the service it is possible to use `kubectl expose` to
-   generate the yaml and use with `kubectl create`:
+   generate the yaml and use it with `kubectl create`:
 
    ```console
    $ kubectl -n fe-be-test delete service backend
