@@ -3,9 +3,10 @@
 In this lab you will:
 
 1. Initialize a Git repository and perform an initial commit.
-2. Inspect the `.git/hooks` folder, activate the `pre-commit` Git hook, and test it.
+2. Inspect the `.git/hooks` folder, activate the `pre-commit` Git
+   hook, and test it.
 3. Disable the `pre-commit` hook.
-4. Your organization adopts [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/), write a Git hook that accepts
+4. Your organization adopts conventional commits, write a Git hook that accepts
    only commits that have a commit message starting with `feat:` or `fix:`.
 5. Test the newly created Git hook.
 6. Perform a commit skipping the Git hook execution.
@@ -28,7 +29,8 @@ In this lab you will:
     create mode 100644 example_file
    ```
 
-2. Inspect the `.git/hooks` folder, activate the `pre-commit` Git hook, and test it:
+2. Inspect the `.git/hooks` folder, activate the `pre-commit` Git
+   hook, and test it:
 
    ```console
    $ ls -1 .git/hooks
@@ -98,7 +100,6 @@ In this lab you will:
    $ git commit -m "feat: Adding a new line"
    [master f28d768] feat: Adding a new line
     1 file changed, 2 insertions(+)
-
    ```
 
 6. Perform a commit skipping the Git hook execution:
@@ -120,5 +121,5 @@ In this lab you will:
 
    ```console
    $ cd .. && rm -r repo
+   (no output)
    ```
-
