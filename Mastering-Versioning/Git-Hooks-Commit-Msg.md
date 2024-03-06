@@ -4,9 +4,9 @@ In this lab you will:
 
 1. Initialize a Git repository and perform an initial commit.
 2. Inspect the `.git/hooks` folder, activate the `pre-commit` Git hook, and test it.
-3. Disable the `pre-commit` script.
+3. Disable the `pre-commit` hook.
 4. Your organization adopts [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/), write a Git hook that accepts
-   only commits that have as commit message starting with `feat:` or `fix:`.
+   only commits that have a commit message starting with `feat:` or `fix:`.
 5. Test the newly created Git hook.
 6. Perform a commit skipping the Git hook execution.
 7. Delete the repository.
@@ -69,8 +69,9 @@ In this lab you will:
    ```
 
 4. Create a bash script to detect if the commit message starts with
-   `feat:` or `fix:`. Throw an error and prevent from committing if
-   requirements are not met. The Git hook to use is `commit-msg`:
+   `feat:` or `fix:`, throwing an error and preventing from committing if
+   requirements are not met. In order to do that we make use of the
+   `commit-msg` Git hook:
 
    ```console
    $ ERR_MEX='[ERROR] Conventional commits policy is not met!'
@@ -108,6 +109,11 @@ In this lab you will:
    $ git commit --no-verify -m "Third commit"
    [master 0f55c5d] Third commit
     1 file changed, 1 insertion(+)
+   $ git shortlog
+   Your Name (3):
+         Initial commit
+         feat: Adding a new line
+         Third commit
    ```
 
 7. Delete the repository:
