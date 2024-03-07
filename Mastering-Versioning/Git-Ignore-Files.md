@@ -7,7 +7,7 @@ In this lab you will:
    | File name      | Content                           |
    |----------------|-----------------------------------|
    | `Password.txt` | `mypassword`                      |
-   | `Fifth.txt`    | `Contents of the Fifth file.`     |
+   | `Fourth.txt`   | `Contents of the Fourth file.`    |
    | `cache.tmp`    | `This file should not be tracked` |
    `Branch myfeature modification for the Fourth.txt commit.`.
 3. Check with `git status` which files will be staged.
@@ -15,8 +15,8 @@ In this lab you will:
    - `*.tmp`
    - `Password.txt`
 5. Check again with `git status` which files will now be staged.
-6. Create two separate commits, one for `.gitignore` and one for the `Fifth.txt`
-   file with the message `Fifth.txt commit`.
+6. Create two separate commits, one for `.gitignore` and one for the `Fourth.txt`
+   file with the message `Fourth.txt commit`.
 
 ## Solution
 
@@ -37,7 +37,7 @@ In this lab you will:
    ```console
    ~/myrepo $ echo mypassword > Password.txt
 
-   ~/myrepo $ echo "Contents of the Fifth file." > Fifth.txt
+   ~/myrepo $ echo "Contents of the Fourth file." > Fourth.txt
 
    ~/myrepo $ echo "This file should not be tracked" > cache.tmp
    ```
@@ -49,7 +49,7 @@ In this lab you will:
    On branch main
    Untracked files:
      (use "git add <file>..." to include in what will be committed)
-        Fifth.txt
+        Fourth.txt
         Password.txt
         cache.tmp
 
@@ -78,12 +78,12 @@ In this lab you will:
    Untracked files:
      (use "git add <file>..." to include in what will be committed)
         .gitignore
-        Fifth.txt
+        Fourth.txt
 
    nothing added to commit but untracked files present (use "git add" to track)
    ```
 
-   Just two files are tracked: `Fifth.txt` and the newly created `.gitignore`.
+   Just two files are tracked: `Fourth.txt` and the newly created `.gitignore`.
 
 6. As a best practice it is better to separate in two distinct commits the two
    files, one dedicated to the ignore part and the other with the effective
@@ -98,22 +98,17 @@ In this lab you will:
     1 file changed, 2 insertions(+)
     create mode 100644 .gitignore
 
-   ~/myrepo $ git add Fifth.txt
+   ~/myrepo $ git add Fourth.txt
    (no output)
 
-   ~/myrepo $ git commit -m "Fifth.txt commit" -m "This is the description of the Fifth commit."
-   [main acce6eb] Fifth.txt commit
+   ~/myrepo $ git commit -m "Fourth.txt commit" -m "This is the description of the Fourth commit."
+   [main acce6eb] Fourth.txt commit
     1 file changed, 1 insertion(+)
-    create mode 100644 Fifth.txt
+    create mode 100644 Fourth.txt
 
    ~/myrepo $ git log --oneline --graph 
-   * acce6eb (HEAD -> main) Fifth.txt commit
+   * acce6eb (HEAD -> main) Fourth.txt commit
    * d523228 Adding .gitignore
-   *   38fceae Merge branch 'myfeature'
-   |\  
-   | * 7f002cd (myfeature) Fourth.txt myfeature commit
-   * | 408ed5d Fourth.txt commit
-   |/  
    * cb10f6d Third commit
    * ecef636 Second commit
    * 7966140 First commit

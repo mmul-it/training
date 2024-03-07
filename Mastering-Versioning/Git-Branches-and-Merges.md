@@ -4,12 +4,12 @@ In this lab you will:
 
 1. Use the `myrepo` repository as the working directory.
 2. Create a new branch named `myfeature` and switch into it.
-3. Create a file named `Fourth.txt` with content
-   `Branch myfeature modification for the Fourth.txt commit.`.
-4. Commit the file with the message `Fourth.txt myfeature commit`.
-5. Switch back to branch `main` and create a file named `Fourth.txt` with content
-   `Branch main modification for the Fourth.txt commit.`.
-6. Commit the file with the message `Fourth.txt commit`.
+3. Create a file named `Fifth.txt` with content
+   `Branch myfeature modification for the Fifth.txt commit.`.
+4. Commit the file with the message `Fifth.txt myfeature commit`.
+5. Switch back to branch `main` and create a file named `Fifth.txt` with content
+   `Branch main modification for the Fifth.txt commit.`.
+6. Commit the file with the message `Fifth.txt commit`.
 7. Merge branch `myfeature` into `main`, by resolving the conflicts.
 
 ## Solution
@@ -41,23 +41,25 @@ In this lab you will:
 3. To prepare the file to be committed:
 
    ```console
-   $ echo "Branch myfeature modification for the Fourth.txt commit." > Fourth.txt
+   $ echo "Branch myfeature modification for the Fifth.txt commit." > Fifth.txt
    (no output)
    ```
 
 4. To commit the file in the branch:
 
    ```console
-   $ git add Fourth.txt
+   $ git add Fifth.txt
 
-   $ git commit -m "Fourth.txt myfeature commit" -m "This is the description of the myfeature Fourth commit."
-   [myfeature 7f002cd] Fourth.txt myfeature commit
+   $ git commit -m "Fifth.txt myfeature commit" -m "This is the description of the myfeature Fifth commit."
+   [myfeature 7f002cd] Fifth.txt myfeature commit
     1 file changed, 1 insertion(+)
-    create mode 100644 Fourth.txt
+    create mode 100644 Fifth.txt
 
    $ git log --oneline
-   7f002cd (HEAD -> myfeature) Fourth.txt myfeature commit
-   cb10f6d (main) Third commit
+   7f002cd (HEAD -> myfeature) Fifth.txt myfeature commit
+   acce6eb (main) Fourth.txt commit
+   d523228 Adding .gitignore
+   cb10f6d Third commit
    ecef636 Second commit
    7966140 First commit
    ```
@@ -68,26 +70,26 @@ In this lab you will:
    $ git switch main
    Switched to branch 'main'
 
-   $ echo "Branch main modification for the Fourth.txt commit." > Fourth.txt
+   $ echo "Branch main modification for the Fifth.txt commit." > Fifth.txt
    ```
 
 6. To commit the file into branch `main`:
 
    ```console
-   $ git add Fourth.txt
+   $ git add Fifth.txt
 
-   $ git commit -m "Fourth.txt commit" -m "This is the description of the Fourth commit."
-   [main 408ed5d] Fourth.txt commit
+   $ git commit -m "Fifth.txt commit" -m "This is the description of the Fifth commit."
+   [main 408ed5d] Fifth.txt commit
     1 file changed, 1 insertion(+)
-    create mode 100644 Fourth.txt
+    create mode 100644 Fifth.txt
    ```
 
 7. It is time to merge, but a conflict will appear:
 
    ```console
    $ git merge myfeature
-   Auto-merging Fourth.txt
-   CONFLICT (add/add): Merge conflict in Fourth.txt
+   Auto-merging Fifth.txt
+   CONFLICT (add/add): Merge conflict in Fifth.txt
    Automatic merge failed; fix conflicts and then commit the result.
    ```
 
@@ -102,29 +104,29 @@ In this lab you will:
 
    Unmerged paths:
      (use "git add <file>..." to mark resolution)
-        both added:      Fourth.txt
+        both added:      Fifth.txt
 
    no changes added to commit (use "git add" and/or "git commit -a")
 
-   $ cat Fourth.txt
+   $ cat Fifth.txt
    <<<<<<< HEAD
-   Branch main modification for the Fourth.txt commit.
+   Branch main modification for the Fifth.txt commit.
    =======
-   Branch myfeature modification for the Fourth.txt commit.
+   Branch myfeature modification for the Fifth.txt commit.
    >>>>>>> myfeature
    ```
 
    To solve the conflict it will be sufficient to edit the file by leaving the modifications we care about:
 
    ```console
-   $ echo "Branch main and myfeature modifications for the Fourth.txt commit." > Fourth.txt
+   $ echo "Branch main and myfeature modifications for the Fifth.txt commit." > Fifth.txt
    (no output)
    ```
 
    And then add the file to the staged ones:
 
    ```console
-   $ git add Fourth.txt
+   $ git add Fifth.txt
 
    $ git merge --continue
    (vim editor opens)
@@ -136,7 +138,7 @@ In this lab you will:
    Merge branch 'myfeature'
 
    # Conflicts:
-   #       Fourth.txt
+   #       Fifth.txt
    #
    # It looks like you may be committing a merge.
    # If this is not correct, please run
@@ -151,7 +153,7 @@ In this lab you will:
    # All conflicts fixed but you are still merging.
    #
    # Changes to be committed:
-   #       modified:   Fourth.txt
+   #       modified:   Fifth.txt
    #
    ```
 
@@ -163,8 +165,10 @@ In this lab you will:
 
    $  git log --oneline
    38fceae (HEAD -> main) Merge branch 'myfeature'
-   408ed5d Fourth.txt commit
-   7f002cd (myfeature) Fourth.txt myfeature commit
+   408ed5d Fifth.txt commit
+   7f002cd (myfeature) Fifth.txt myfeature commit
+   acce6eb Fourth.txt commit
+   d523228 Adding .gitignore
    cb10f6d Third commit
    ecef636 Second commit
    7966140 First commit
@@ -172,9 +176,11 @@ In this lab you will:
    $ git log --oneline --graph
    *   38fceae (HEAD -> main) Merge branch 'myfeature'
    |\
-   | * 7f002cd (myfeature) Fourth.txt myfeature commit
-   * | 408ed5d Fourth.txt commit
+   | * 7f002cd (myfeature) Fifth.txt myfeature commit
+   * | 408ed5d Fifth.txt commit
    |/
+   * acce6eb Fourth.txt commit
+   * d523228 Adding .gitignore
    * cb10f6d Third commit
    * ecef636 Second commit
    * 7966140 First commit
