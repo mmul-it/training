@@ -18,10 +18,10 @@ In this lab you will:
    just use `cd`:
 
    ```console
-   $ cd myrepo
+   ~ $ cd myrepo
    (no output)
 
-   $ git status
+   ~/myrepo $ git status
    On branch main
    nothing to commit, working tree clean
    ```
@@ -29,10 +29,10 @@ In this lab you will:
 2. To create a new branch simply use `git branch` and `git switch`:
 
    ```console
-   $ git branch myfeature
+   ~/myrepo $ git branch myfeature
    (no output)
 
-   $ git switch myfeature
+   ~/myrepo $ git switch myfeature
    Switched to branch 'myfeature'
    ```
 
@@ -41,21 +41,21 @@ In this lab you will:
 3. To prepare the file to be committed:
 
    ```console
-   $ echo "Branch myfeature modification for the Fifth.txt commit." > Fifth.txt
+   ~/myrepo $ echo "Branch myfeature modification for the Fifth.txt commit." > Fifth.txt
    (no output)
    ```
 
 4. To commit the file in the branch:
 
    ```console
-   $ git add Fifth.txt
+   ~/myrepo $ git add Fifth.txt
 
-   $ git commit -m "Fifth.txt myfeature commit" -m "This is the description of the myfeature Fifth commit."
+   ~/myrepo $ git commit -m "Fifth.txt myfeature commit" -m "This is the description of the myfeature Fifth commit."
    [myfeature 7f002cd] Fifth.txt myfeature commit
     1 file changed, 1 insertion(+)
     create mode 100644 Fifth.txt
 
-   $ git log --oneline
+   ~/myrepo $ git log --oneline
    7f002cd (HEAD -> myfeature) Fifth.txt myfeature commit
    acce6eb (main) Fourth.txt commit
    d523228 Adding .gitignore
@@ -67,18 +67,18 @@ In this lab you will:
 5. To switch back to branch `main` and prepare a new file to be committed:
 
    ```console
-   $ git switch main
+   ~/myrepo $ git switch main
    Switched to branch 'main'
 
-   $ echo "Branch main modification for the Fifth.txt commit." > Fifth.txt
+   ~/myrepo $ echo "Branch main modification for the Fifth.txt commit." > Fifth.txt
    ```
 
 6. To commit the file into branch `main`:
 
    ```console
-   $ git add Fifth.txt
+   ~/myrepo $ git add Fifth.txt
 
-   $ git commit -m "Fifth.txt commit" -m "This is the description of the Fifth commit."
+   ~/myrepo $ git commit -m "Fifth.txt commit" -m "This is the description of the Fifth commit."
    [main 408ed5d] Fifth.txt commit
     1 file changed, 1 insertion(+)
     create mode 100644 Fifth.txt
@@ -87,7 +87,7 @@ In this lab you will:
 7. It is time to merge, but a conflict will appear:
 
    ```console
-   $ git merge myfeature
+   ~/myrepo $ git merge myfeature
    Auto-merging Fifth.txt
    CONFLICT (add/add): Merge conflict in Fifth.txt
    Automatic merge failed; fix conflicts and then commit the result.
@@ -96,7 +96,7 @@ In this lab you will:
    The status tells clearly where is the problem:
 
    ```console
-   $ git status
+   ~/myrepo $ git status
    On branch main
    You have unmerged paths.
      (fix conflicts and run "git commit")
@@ -108,7 +108,7 @@ In this lab you will:
 
    no changes added to commit (use "git add" and/or "git commit -a")
 
-   $ cat Fifth.txt
+   ~/myrepo $ cat Fifth.txt
    <<<<<<< HEAD
    Branch main modification for the Fifth.txt commit.
    =======
@@ -119,16 +119,16 @@ In this lab you will:
    To solve the conflict it will be sufficient to edit the file by leaving the modifications we care about:
 
    ```console
-   $ echo "Branch main and myfeature modifications for the Fifth.txt commit." > Fifth.txt
+   ~/myrepo $ echo "Branch main and myfeature modifications for the Fifth.txt commit." > Fifth.txt
    (no output)
    ```
 
    And then add the file to the staged ones:
 
    ```console
-   $ git add Fifth.txt
+   ~/myrepo $ git add Fifth.txt
 
-   $ git merge --continue
+   ~/myrepo $ git merge --continue
    (vim editor opens)
    ```
 
@@ -160,10 +160,10 @@ In this lab you will:
    By saving it (with `:wq`) the merge will be completed:
 
    ```console
-   $ git merge --continue
+   ~/myrepo $ git merge --continue
    [main 38fceae] Merge branch 'myfeature'
 
-   $  git log --oneline
+   ~/myrepo $ git log --oneline
    38fceae (HEAD -> main) Merge branch 'myfeature'
    408ed5d Fifth.txt commit
    7f002cd (myfeature) Fifth.txt myfeature commit
@@ -173,7 +173,7 @@ In this lab you will:
    ecef636 Second commit
    7966140 First commit
 
-   $ git log --oneline --graph
+   ~/myrepo $ git log --oneline --graph
    *   38fceae (HEAD -> main) Merge branch 'myfeature'
    |\
    | * 7f002cd (myfeature) Fifth.txt myfeature commit

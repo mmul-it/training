@@ -30,20 +30,20 @@ In this lab you will:
    with the main branch specification, as in `-b main`:
 
    ```console
-   $ mkdir -v myrepo
+   ~ $ mkdir -v myrepo
    mkdir: created directory 'myrepo'
 
-   $ cd myrepo
+   ~ $ cd myrepo
    (no output)
 
-   $ git init --initial-branch main
+   ~/myrepo $ git init --initial-branch main
    Initialized empty Git repository in /git/myrepo/.git/
    ```
 
 3. To check the structure use `tree`
 
    ```console
-   $ tree -a
+   ~/myrepo $ tree -a
    .
    └── .git
        ├── branches
@@ -79,20 +79,23 @@ In this lab you will:
 4. To create a bare repository the `--bare` option is needed:
 
    ```console
-   $ mkdir -v myrepo-bare
-   mkdir: created directory 'myrepo'
-
-   $ cd myrepo-bare/
+   ~/myrepo $ cd ..
    (no output)
 
-   $ git init --bare --initial-branch main
+   ~ $ mkdir -v myrepo-bare
+   mkdir: created directory 'myrepo'
+
+   ~ $ cd myrepo-bare/
+   (no output)
+
+   ~/myrepo-bare $ git init --bare --initial-branch main
    Initialized empty Git repository in /git/myrepo-bare/
    ```
 
 5. Checking again the directory structure will show the differences:
 
    ```console
-   $ tree -a
+   ~/myrepo-bare $ tree -a
    .
    ├── HEAD
    ├── branches

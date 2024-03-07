@@ -22,9 +22,9 @@ In this lab you will:
    `myrepo` folder. To use it as a workdir just use `cd`:
 
    ```console
-   $ cd myrepo
+   ~ $ cd myrepo
 
-   $ git status
+   ~/myrepo $ git status
    On branch main
 
    No commits yet
@@ -35,10 +35,10 @@ In this lab you will:
 2. To make sure Git knows about yourself (for commit metadata):
 
    ```console
-   $ git config --global user.name "Kirater Dev"
+   ~/myrepo $ git config --global user.name "Kirater Dev"
    (no output)
 
-   $ git config --global user.email "kirater@kiratech.it"
+   ~/myrepo $ git config --global user.email "kirater@kiratech.it"
    (no output)
    ```
 
@@ -46,7 +46,7 @@ In this lab you will:
    set user because inside the `.git/config` file the metadata are stored:
 
    ```console
-   $ cat .git/config
+   ~/myrepo $ cat .git/config
    [core]
         repositoryformatversion = 0
         filemode = true
@@ -60,7 +60,7 @@ In this lab you will:
 4. This can be easily achieved with a bash loop:
 
    ```console
-   $ for FILEn in First Second Third; \
+   ~/myrepo $ for FILEn in First Second Third; \
        do echo "Contents of the $FILEn file." > $FILEn\.txt; \
        git add $FILEn\.txt; \
        git commit -m "$FILEn commit" -m "This is the description of the $FILEn commit."; \
@@ -79,7 +79,7 @@ In this lab you will:
    And created commits can be checked with `git log`:
 
    ```console
-   $ git log
+   ~/myrepo $ git log
    commit 663a198976973892e39f732eb38fdf82890440b3 (HEAD -> main)
    Author: Kirater Dev <kirater@kiratech.it>
    Date:   Tue Mar 5 14:39:03 2024 +0000
@@ -108,14 +108,14 @@ In this lab you will:
 5. To create the `Fourth.txt` file use:
 
    ```console
-   $ echo "Contents of the Fourth file." > Fourth.txt
+   ~/myrepo $ echo "Contents of the Fourth file." > Fourth.txt
    (no output)
    ```
 
    And check its status, ending in adding it with `git add`:
 
    ```console
-   $ git status
+   ~/myrepo $ git status
    On branch main
 
    No commits yet
@@ -126,9 +126,9 @@ In this lab you will:
 
    nothing added to commit but untracked files present (use "git add" to track)
 
-   $ git add Fourth.txt
+   ~/myrepo $ git add Fourth.txt
 
-   $ git status
+   ~/myrepo $ git status
    On branch main
 
    No commits yet
@@ -141,9 +141,9 @@ In this lab you will:
    Now use `git reset` to move it out from the staged file list:
 
    ```console
-   $ git reset Fourth.txt
+   ~/myrepo $ git reset Fourth.txt
 
-   $ git status
+   ~/myrepo $ git status
    On branch main
 
    No commits yet
@@ -158,16 +158,16 @@ In this lab you will:
    Remove the file to cleanup:
 
    ```console
-   $ rm -v Fourth.txt
+   ~/myrepo $ rm -v Fourth.txt
    removed 'Fourth.txt'
    ```
 
 6. Modify `First.txt` and check diffs:
 
    ```console
-   $ echo "My new content" > First.txt
+   ~/myrepo $ echo "My new content" > First.txt
 
-   $ git diff First.txt
+   ~/myrepo $ git diff First.txt
    diff --git a/First.txt b/First.txt
    index 049230b..6d5e86c 100644
    --- a/First.txt
@@ -180,13 +180,13 @@ In this lab you will:
    Finally restore the file by using `git checkout`:
 
    ```console
-   $ git checkout First.txt
+   ~/myrepo $ git checkout First.txt
    Updated 1 path from the index
 
-   $ git status
+   ~/myrepo $ git status
    On branch main
    nothing to commit, working tree clean
 
-   $ cat First.txt
+   ~/myrepo $ cat First.txt
    Contents of the First file.
    ```
