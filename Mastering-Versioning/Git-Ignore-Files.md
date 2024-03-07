@@ -1,4 +1,4 @@
-# Lab | Play between tracked and ignored files.
+# Lab | Play between tracked and ignored files
 
 In this lab you will:
 
@@ -106,7 +106,7 @@ In this lab you will:
     1 file changed, 1 insertion(+)
     create mode 100644 Fourth.txt
 
-   ~/myrepo $ git log --oneline --graph 
+   ~/myrepo $ git log --oneline --graph
    * acce6eb (HEAD -> main) Fourth.txt commit
    * d523228 Adding .gitignore
    * cb10f6d Third commit

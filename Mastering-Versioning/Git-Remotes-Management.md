@@ -36,15 +36,15 @@ In this lab you will:
 
    ```console
    ~/myrepo-bare $ cd ../myrepo
-   
+
    ~/myrepo $ git remote add origin /git/myrepo-bare/
-   
-   ~/myrepo $ git remote 
+
+   ~/myrepo $ git remote
    origin
-   
+
    ~/myrepo $ git remote -v
-   origin	/git/myrepo-bare/ (fetch)
-   origin	/git/myrepo-bare/ (push)
+   origin     /git/myrepo-bare/ (fetch)
+   origin     /git/myrepo-bare/ (push)
    ```
 
 3. Now to push everything on the remote, let's use `git push`:
@@ -53,17 +53,16 @@ In this lab you will:
    ~/myrepo $ git push --all
    fatal: The current branch main has no upstream branch.
    To push the current branch and set the remote as upstream, use
-   
+
        git push --set-upstream origin main
-   
+
    To have this happen automatically for branches without a tracking
    upstream, see 'push.autoSetupRemote' in 'git help config'.
    ```
-   
+
    The message shows where is the problem, `git` don't know where to push.
    A solution could be to use the suggested commaand:
 
-   
    ```console
    ~/myrepo $ git push --set-upstream origin main
    Enumerating objects: 24, done.
@@ -94,19 +93,19 @@ In this lab you will:
    ```console
    ~/myrepo $ cd ..
    (no output)
-   
+
    ~ $ mkdir myotherrepo
    (no output)
-   
+
    ~ $ cd myotherrepo/
    (no output)
-   
+
    ~/myotherrepo $ git init --initial-branch=main
    Initialized empty Git repository in /git/myotherrepo/.git/
-   
+
    ~/myotherrepo $ git remote add origin /git/myrepo-bare/
    (no output)
-   
+
    ~/myotherrepo $ git pull
    remote: Enumerating objects: 24, done.
    remote: Counting objects: 100% (24/24), done.
@@ -118,11 +117,11 @@ In this lab you will:
    There is no tracking information for the current branch.
    Please specify which branch you want to merge with.
    See git-pull(1) for details.
-   
+
        git pull <remote> <branch>
-   
+
    If you wish to set tracking information for this branch you can do so with:
-   
+
        git branch --set-upstream-to=origin/<branch> main
    ```
 
@@ -133,13 +132,13 @@ In this lab you will:
    ~/myotherrepo $ git pull origin main
    From /git/myrepo-bare
     * branch            main       -> FETCH_HEAD
-   
+
    ~/myotherrepo $ git log --oneline --graph
    *   38fceae (HEAD -> main, origin/main) Merge branch 'myfeature'
-   |\  
+   |\
    | * 7f002cd Fifith.txt myfeature commit
    * | 408ed5d Fifth.txt commit
-   |/  
+   |/
    * acce6eb Fourth.txt commit
    * d523228 Adding .gitignore
    * cb10f6d Third commit
@@ -151,7 +150,7 @@ In this lab you will:
 
 5. In terms of branches we don't have at the moment anything apart from `main`:
 
-   ```console 
+   ```console
    ~/myotherrepo $ git branch
    * main
    ```
