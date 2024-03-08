@@ -43,19 +43,18 @@ In this lab you will:
    ```
 
 3. From now all the commits by default will be associated with the previously
-   set user because inside the `.git/config` file the metadata are stored:
+   set user because inside the `~/.gitconfig` file the metadata are stored:
 
    ```console
-   ~/myrepo $ cat .git/config
-   [core]
-        repositoryformatversion = 0
-        filemode = true
-        bare = false
-        logallrefupdates = true
+   ~/myrepo $ cat ~/.gitconfig
    [user]
         name = Kirater Dev
         email = kirater@kiratech.it
    ```
+
+   Note that this file lives in the home directory of the user, because we
+   added the `--global` option to the `git config` command. Without it, it
+   would have been added just to the repository, inside the `.git/config` file.
 
 4. This can be easily achieved with a bash loop:
 
