@@ -9,7 +9,8 @@ In this lab you will:
 4. Create a new repository named `myotherrepo`, configure `myrepo-core` as
    `origin`, pull its contents and verify that now we have the entire set of
    modifications coming from `myrepo`.
-5. Use `git fetch` to get also the additional branches.
+5. Use `git fetch` to make additional remote branches available to the local
+   repository.
 
 ## Solution
 
@@ -50,7 +51,7 @@ In this lab you will:
 3. Now to push everything on the remote, let's use `git push`:
 
    ```console
-   ~/myrepo $ git push --all
+   ~/myrepo $ git push
    fatal: The current branch main has no upstream branch.
    To push the current branch and set the remote as upstream, use
 
@@ -88,14 +89,15 @@ In this lab you will:
     * [new branch]      myfeature -> myfeature
    ```
 
-4. The creation of the new repository will follow the usual process:
+4. The creation of the new repository with the relative remote will follow the
+   usual process:
 
    ```console
    ~/myrepo $ cd ..
    (no output)
 
-   ~ $ mkdir myotherrepo
-   (no output)
+   ~ $ mkdir -v myotherrepo
+   created directory: 'myotherrepo'
 
    ~ $ cd myotherrepo/
    (no output)
@@ -105,34 +107,26 @@ In this lab you will:
 
    ~/myotherrepo $ git remote add origin /git/myrepo-bare/
    (no output)
+   ```
 
-   ~/myotherrepo $ git pull
+   As before we need to indicate to `git` which upstream are we relying on, in
+   this case `main`, coming from `origin`:
+
+   ```console
+   ~/myotherrepo $ git pull origin main
    remote: Enumerating objects: 24, done.
    remote: Counting objects: 100% (24/24), done.
    remote: Compressing objects: 100% (18/18), done.
    remote: Total 24 (delta 8), reused 0 (delta 0), pack-reused 0
-   Unpacking objects: 100% (24/24), 2.05 KiB | 525.00 KiB/s, done.
-   From /git/myrepo-bare
-    * [new branch]      main       -> origin/main
-   There is no tracking information for the current branch.
-   Please specify which branch you want to merge with.
-   See git-pull(1) for details.
-
-       git pull <remote> <branch>
-
-   If you wish to set tracking information for this branch you can do so with:
-
-       git branch --set-upstream-to=origin/<branch> main
-   ```
-
-   As before we need to indicate to `git` which upstream are we relying on, and
-   so it will be wise to follow the suggestion:
-
-   ```console
-   ~/myotherrepo $ git pull origin main
+   Unpacking objects: 100% (24/24), 2.05 KiB | 526.00 KiB/s, done.
    From /git/myrepo-bare
     * branch            main       -> FETCH_HEAD
+    * [new branch]      main       -> origin/main
+   ```
 
+   The repository is now a perfectly working directory:
+
+   ```console
    ~/myotherrepo $ git log --oneline --graph
    *   38fceae (HEAD -> main, origin/main) Merge branch 'myfeature'
    |\
@@ -146,8 +140,6 @@ In this lab you will:
    * 7966140 First commit
    ```
 
-   The repository is now a perfect working directory.
-
 5. In terms of branches we don't have at the moment anything apart from `main`:
 
    ```console
@@ -155,7 +147,8 @@ In this lab you will:
    * main
    ```
 
-   To replicate also the remote branches we can rely on `git fetch` as follows:
+   To make the repository aware of the remote branches and their commits we can
+   rely on `git fetch` as follows:
 
    ```console
    ~/myotherrepo $ git fetch --all
@@ -165,4 +158,4 @@ In this lab you will:
 
    Note that it is wise to launch the fetch command everytime you expect some
    remotes modifications, because otherwise new changes coming from the remote
-   will not be loaded locally.
+   will not be available locally.
