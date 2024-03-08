@@ -1,39 +1,37 @@
-# Lab | Git hooks
+# Lab | Implement and test the pre commit Git hook
 
 In this lab you will:
 
-1. Initialize a Git repository and perform an initial commit.
+1. Use the `myrepo` repository as the working directory.
 2. Inspect the `.git/hooks` folder, activate the `pre-commit` Git
    hook, and test it.
 3. Disable the `pre-commit` hook.
-4. Your organization adopts conventional commits, write a Git hook that accepts
-   only commits that have a commit message starting with `feat:` or `fix:`.
+4. Write a Git hook that accepts only commits that have a commit message
+   starting with `feat:` or `fix:`.
 5. Test the newly created Git hook.
-6. Perform a commit skipping the Git hook execution.
-7. Delete the repository.
+6. Perform the commit skipping the Git hook execution.
+7. Remove the hook.
 
 ## Solution
 
-1. Initialize a Git repository and perform an initial commit:
+1. Repository should be available in the `myrepo` folder. To use it as a workdir
+   just use `cd`:
 
    ```console
-   $ git init repo && cd repo
-   Initialized empty Git repository in /home/repo/.git/
-   $ touch example_file
+   ~ $ cd myrepo
    (no output)
-   $ git add example_file
-   (no output)
-   $ git commit -m "Initial commit"
-   [master (root-commit) 46dc6d4] Initial commit
-    1 file changed, 0 insertions(+), 0 deletions(-)
-    create mode 100644 example_file
+
+   ~/myrepo $ git status
+   On branch main
+   Your branch is up to date with 'origin/main'.
+
+   nothing to commit, working tree clean
    ```
 
-2. Inspect the `.git/hooks` folder, activate the `pre-commit` Git
-   hook, and test it:
+2. The `.git/hooks` folder is populated my `.sample` files:
 
    ```console
-   $ ls -1 .git/hooks
+   ~/myrepo $ ls -1 .git/hooks
    applypatch-msg.sample
    commit-msg.sample
    fsmonitor-watchman.sample
@@ -47,79 +45,103 @@ In this lab you will:
    prepare-commit-msg.sample
    push-to-checkout.sample
    update.sample
-   $ mv .git/hooks/pre-commit.sample .git/hooks/pre-commit
+   ```
+
+   To activate the `pre-commit` Git hook it will be sufficient to rename the
+   `pre-commit.sample` into `pre-commit`:
+
+   ```console
+   ~/myrepo $ mv -v .git/hooks/pre-commit.sample .git/hooks/pre-commit
+   '.git/hooks/pre-commit.sample' -> '.git/hooks/pre-commit'
+   ```
+
+   By default, the pre-commit hook will check also for trailing white spaces,
+   so to verify it is working let's create a sample commit with a trailing
+   space:
+
+   ```console
+   $ echo "A line with a trailing whitespace " >> First.txt
    (no output)
-   $ echo "A line with a trailing whitespace " > example_file
+
+   $ git add First.txt
    (no output)
-   $ git add example_file
-   (no output)
+
    $ git commit -m "Trying to commit a file with a trailing whitespace"
-   example_file:1: trailing whitespace.
+   First.txt:2: trailing whitespace.
    +A line with a trailing whitespace
-   $ git log
-   commit 46dc6d493a96718a2a5547de3048b1f8a61233ab (HEAD -> master)
-   Author: Your Name <you@example.com>
-   Date:   Tue Mar 5 17:24:10 2024 +0000
-
-       Initial commit
    ```
 
-3. Disable the `pre-commit` script:
+   The commit is not permitted, because of the hook.
+
+3. Reset the file and disable the `pre-commit` script by moving it back:
 
    ```console
-   mv .git/hooks/pre-commit .git/hooks/pre-commit.sample
+   ~/myrepo $ git reset First.txt
+   Unstaged changes after reset:
+   M     First.txt
+
+   ~/myrepo $ git checkout First.txt
+   Updated 1 path from the index
+
+   ~/myrepo $ mv -v .git/hooks/pre-commit .git/hooks/pre-commit.sample
+   '.git/hooks/pre-commit' -> '.git/hooks/pre-commit.sample'
    ```
 
-4. Create a bash script to detect if the commit message starts with
-   `feat:` or `fix:`, throwing an error and preventing from committing if
-   requirements are not met. In order to do that we make use of the
-   `commit-msg` Git hook:
+4. Since a Git hook is essentially a script, let's create a bash script that
+   detects if the commit message starts with `feat:` or `fix:`, throwing an
+   error and preventing from committing if requirements are not met.
+
+   In order to do that we make use of the `commit-msg` Git hook:
 
    ```console
-   $ ERR_MEX='[ERROR] Conventional commits policy is not met!'
-   (no output)
-   $ echo "grep -q '^feat: \|^bug: ' \$1 || { echo >&2 $ERR_MEX; exit 1; }" > .git/hooks/commit-msg.sample
-   (no output)
-   $ mv .git/hooks/commit-msg.sample .git/hooks/commit-msg
-   (no output)
+   ~/myrepo $ cat <<EOF > .git/hooks/commit-msg
+   grep -q '^feat: \|^bug: ' \$1 &> /dev/null
+   if [ \$? -ne 0 ]
+    then
+     echo "[ERROR] Commit must start with 'feat:' or 'bug:!'"
+     exit 1
+   fi
+   EOF
+   ```
+
+   And make it executable:
+
+   ```console
+   ~/myrepo $ chmod -v +x .git/hooks/commit-msg
+   mode of '.git/hooks/commit-msg' changed to 0755 (rwxr-xr-x)
    ```
 
 5. Test the newly created `commit-msg` Git hook:
 
    ```console
-   $ echo "Adding a new line" >> example_file && git add example_file
+   ~/myrepo $ echo "A test for the commit-msg hook" >> First.txt
    (no output)
-   $ git commit -m "Second commit"
-   [ERROR] Conventional commits policy is not met!
-   $ git log
-   commit 46dc6d493a96718a2a5547de3048b1f8a61233ab (HEAD -> master)
-   Author: Your Name <you@example.com>
-   Date:   Tue Mar 5 17:24:10 2024 +0000
 
-       Initial commit
-   $ git commit -m "feat: Adding a new line"
-   [master f28d768] feat: Adding a new line
-    1 file changed, 2 insertions(+)
+   ~/myrepo $ git add First.txt
+   (no output)
+
+   ~/myrepo $ git commit -m "Test commit-msg hook" -m "Extended description of the commit"
+   [ERROR] Commit must start with 'feat:' or 'bug:!'
    ```
 
-6. Perform a commit skipping the Git hook execution:
+6. To commit in any case, skipping the Git hook execution, the `--no-verify`
+   option must be passed:
 
    ```console
-   $ echo "Adding the third line" >> example_file && git add example_file
-   (no output)
-   $ git commit --no-verify -m "Third commit"
-   [master 0f55c5d] Third commit
+   ~/myrepo $ git commit --no-verify -m "Test commit-msg hook bypass" -m "This is a sample commit to bypass the commit-msg"
+   [main 451c30c] Test commit-msg hook bypass
     1 file changed, 1 insertion(+)
-   $ git shortlog
-   Your Name (3):
-         Initial commit
-         feat: Adding a new line
-         Third commit
+
+   ~/myrepo $ git log --oneline --graph
+   * 451c30c (HEAD -> main) Test commit-msg hook bypass
+   * 525b121 (origin/main) Nineth commit
+   ...
+   ...
    ```
 
-7. Delete the repository:
+7. To remove the hook it will be sufficient to remove `.git/hooks/commit-msg`:
 
    ```console
-   $ cd .. && rm -r repo
-   (no output)
+   $ rm -v .git/hooks/commit-msg
+   removed '.git/hooks/commit-msg'
    ```
