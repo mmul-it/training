@@ -45,7 +45,7 @@ In this lab you will:
 5. After viewing the changes, who is responsible for the master branch (ourself,
    in this example case) can approve the pull request, merging the feature
    branch into the `master`.
-   
+
    ![](images/Git-Public-Providers-Git-Merged-PR.png)
 
 6. In the same way we opened a pull request in our repository, we can do the
