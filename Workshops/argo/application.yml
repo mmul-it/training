@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rasca
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: index-php
+  namespace: rasca
+data:
+  index.php: |
+    Application info:<br />
+    Node name: <b><?=getenv('NODE_NAME', true);?></b><br />
+    Node IP: <b><?=getenv('NODE_IP', true);?></b><br />
+    Pod namespace: <b><?=getenv('POD_NAMESPACE', true);?></b><br />
+    Pod name: <b><?=getenv('POD_NAME', true);?></b><br />
+    Pod IP: <b><?=getenv('POD_IP', true);?></b><br />
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: webserver
+  template:
+    metadata:
+      labels:
+        app: webserver
+    spec:
+      containers:
+        - name: webserver
+          image: php:apache
+          env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: NODE_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          volumeMounts:
+          - name: docroot
+            mountPath: /var/www/html
+      volumes:
+        - name: docroot
+          configMap:
+            name: index-php
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webserver
+  namespace: rasca
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: webserver
