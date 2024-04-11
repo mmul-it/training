@@ -1,6 +1,18 @@
 # Argo CD Workshop - Stage 2
 
-## Configure MetalLB to expose ArgoCD server
+A number of services will be exposed inside the Kind default subnet,
+specifically:
+
+- The Argo CD interface on the `kind-argo` cluster, with the `172.18.0.100` IP.
+- The deployment on the `kind-test` cluster, with the `172.18.0.120` IP.
+- The deployment on the `kind-prod` cluster, with the `172.18.0.140` IP.
+
+Each cluster will expose an IP for the services using [MetalLB](https://metallb.universe.tf/).
+
+## Configure MetalLB on kind-argocd
+
+Installing MetalLB is a pretty straightforward process (note that `StrictARP`
+must be enabled on the `kube-proxy` ConfigMap), starting from `kind-argo`:
 
 ```console
 $ kubectl config use-context kind-argo
@@ -15,7 +27,12 @@ namespace/metallb-system created
 ...
 ...
 validatingwebhookconfiguration.admissionregistration.k8s.io/metallb-webhook-configuration created
+```
 
+To define the IP range that the MetalLB load balancer will assign two Kubernetes
+resources should be created, the `IPAddressPool` and the `L2Advertisement`:
+
+```console
 $ cat <<EOF > kind-argo-metallb-pools.yml
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
@@ -41,6 +58,12 @@ ipaddresspool.metallb.io/mypool created
 l2advertisement.metallb.io/mypool created
 ```
 
+In this case `kind-argocd` will allocate IPs from `172.18.0.100` to `172.18.0.110`.
+
+## Configure MetalLB on kind-test
+
+Same exact process as before will enable MetalLB on `kind-test` cluster:
+
 ```console
 $ kubectl config use-context kind-test
 Switched to context "kind-test".
@@ -54,7 +77,11 @@ namespace/metallb-system created
 ...
 ...
 validatingwebhookconfiguration.admissionregistration.k8s.io/metallb-webhook-configuration created
+```
 
+This time the load balancer IP range will be from `172.18.0.120` to `172.18.0.130`:
+
+```console
 $ cat <<EOF > kind-test-metallb-pools.yml 
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
@@ -80,6 +107,10 @@ ipaddresspool.metallb.io/mypool created
 l2advertisement.metallb.io/mypool created
 ```
 
+## Configure MetalLB on kind-prod
+
+The last cluster is `kind-prod`:
+
 ```console
 $ kubectl config use-context kind-prod 
 Switched to context "kind-prod".
@@ -93,7 +124,11 @@ namespace/metallb-system created
 ...
 ...
 validatingwebhookconfiguration.admissionregistration.k8s.io/metallb-webhook-configuration created
+```
 
+This time the IP range will be from `172.18.0.140` to `172.18.0.150`:
+
+```console
 $ cat <<EOF > kind-prod-metallb-pools.yml 
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
@@ -118,3 +153,5 @@ $ kubectl apply -f kind-prod-metallb-pools.yml
 ipaddresspool.metallb.io/mypool created
 l2advertisement.metallb.io/mypool created
 ```
+
+It is finally possible to proceed with [Stage 3](Stage-3-Argo-CD-Installation.md).

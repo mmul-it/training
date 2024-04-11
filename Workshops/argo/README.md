@@ -18,11 +18,8 @@ Software requirements for the main machine are essentially just the Docker servi
 The structure of the workshop will be based on stages:
 
 - Stage 1: [Kubernetes clusters installation](Stage-1-K8S-Installation.md).
-
-- Stage 2: [MetalLb installation and configuration](Stage-2-MetalLB-Installation.md).
-
+- Stage 2: [MetalLB installation and configuration](Stage-2-MetalLB-Installation.md).
 - Stage 3: [Argo-CD installation and configuration](Stage-3-Argo-CD-Installation.md).
-
 - Stage 4: [Argo-CD application tests](Stage-4-Argo-CD-Application-Test.md).
 
 ## References
@@ -30,11 +27,8 @@ The structure of the workshop will be based on stages:
 There are several technologies covered in this workshop, the main ones are listed here:
 
 - [Kubernetes](https://kubernetes.io/) also known as K8s, is an open-source system for automating deployment, scaling, and management of containerized applications.
-
 - [Kind](https://kind.sigs.k8s.io/) a tool for running local Kubernetes clusters using Docker container "nodes".
-
 - [MetalLB](https://metallb.universe.tf/) a bare metal load balancer for Kubernetes.
-
 - [Argo CD](https://argo-cd.readthedocs.io/) a declarative GitOps CD for Kubernetes.
 
 ## Author
