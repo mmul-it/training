@@ -29,6 +29,15 @@ namespace/metallb-system created
 validatingwebhookconfiguration.admissionregistration.k8s.io/metallb-webhook-configuration created
 ```
 
+MetalLB installation will take a while to complete, so before proceeding it is
+good to wait until it completes:
+
+```console
+$ kubectl wait --namespace metallb-system --for=condition=ready pod --selector=app=metallb --timeout=90s
+pod/controller-756c6b677-nrxgz condition met
+pod/speaker-62ws5 condition met
+```
+
 To define the IP range that the MetalLB load balancer will assign two Kubernetes
 resources should be created, the `IPAddressPool` and the `L2Advertisement`:
 
@@ -77,6 +86,10 @@ namespace/metallb-system created
 ...
 ...
 validatingwebhookconfiguration.admissionregistration.k8s.io/metallb-webhook-configuration created
+
+$ kubectl wait --namespace metallb-system --for=condition=ready pod --selector=app=metallb --timeout=90s
+pod/controller-756c6b677-vbr8m condition met
+pod/speaker-wtmgf condition met
 ```
 
 This time the load balancer IP range will be from `172.18.0.120` to `172.18.0.130`:
@@ -124,6 +137,10 @@ namespace/metallb-system created
 ...
 ...
 validatingwebhookconfiguration.admissionregistration.k8s.io/metallb-webhook-configuration created
+
+$ kubectl wait --namespace metallb-system --for=condition=ready pod --selector=app=metallb --timeout=90s
+pod/controller-756c6b677-znd5z condition met
+pod/speaker-gjznh condition met
 ```
 
 This time the IP range will be from `172.18.0.140` to `172.18.0.150`:

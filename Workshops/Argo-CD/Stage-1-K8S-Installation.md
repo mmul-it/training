@@ -65,6 +65,9 @@ apiVersion: kind.x-k8s.io/v1alpha4
 networking:
   apiServerAddress: "172.18.0.1"
   apiServerPort: 6443
+nodes:
+- role: control-plane
+  image: kindest/node:v1.29.2@sha256:51a1434a5397193442f0be2a297b488b6c919ce8a3931be0ce822606ea5ca245
 EOF
 
 $ kind create cluster --name argo --config kind-argo-config.yml
@@ -92,6 +95,9 @@ apiVersion: kind.x-k8s.io/v1alpha4
 networking:
   apiServerAddress: "172.18.0.1"
   apiServerPort: 7443
+nodes:
+- role: control-plane
+  image: kindest/node:v1.29.2@sha256:51a1434a5397193442f0be2a297b488b6c919ce8a3931be0ce822606ea5ca245
 EOF
 
 $ kind create cluster --name test --config kind-test-config.yml
@@ -119,6 +125,9 @@ apiVersion: kind.x-k8s.io/v1alpha4
 networking:
   apiServerAddress: "172.18.0.1"
   apiServerPort: 8443
+nodes:
+- role: control-plane
+  image: kindest/node:v1.29.2@sha256:51a1434a5397193442f0be2a297b488b6c919ce8a3931be0ce822606ea5ca245
 EOF
 
 $ kind create cluster --name prod --config kind-prod-config.yml
