@@ -39,7 +39,8 @@ pod/speaker-62ws5 condition met
 ```
 
 To define the IP range that the MetalLB load balancer will assign two Kubernetes
-resources should be created, the `IPAddressPool` and the `L2Advertisement`:
+resources should be created, the `IPAddressPool` and the `L2Advertisement`
+(check [kind-argo-metallb-pools.yml](kind-argo-metallb-pools.yml)):
 
 ```console
 $ cat <<EOF > kind-argo-metallb-pools.yml
@@ -92,10 +93,11 @@ pod/controller-756c6b677-vbr8m condition met
 pod/speaker-wtmgf condition met
 ```
 
-This time the load balancer IP range will be from `172.18.0.120` to `172.18.0.130`:
+This time the load balancer IP range will be from `172.18.0.120` to `172.18.0.130`
+(check [kind-test-metallb-pools.yml](kind-test-metallb-pools.yml)):
 
 ```console
-$ cat <<EOF > kind-test-metallb-pools.yml 
+$ cat <<EOF > kind-test-metallb-pools.yml
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -115,7 +117,7 @@ spec:
   - mypool
 EOF
 
-$ kubectl apply -f kind-test-metallb-pools.yml 
+$ kubectl apply -f kind-test-metallb-pools.yml
 ipaddresspool.metallb.io/mypool created
 l2advertisement.metallb.io/mypool created
 ```
@@ -125,7 +127,7 @@ l2advertisement.metallb.io/mypool created
 The last cluster is `kind-prod`:
 
 ```console
-$ kubectl config use-context kind-prod 
+$ kubectl config use-context kind-prod
 Switched to context "kind-prod".
 
 $ kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e "s/strictARP: false/strictARP: true/" | kubectl apply -f - -n kube-system
@@ -143,10 +145,11 @@ pod/controller-756c6b677-znd5z condition met
 pod/speaker-gjznh condition met
 ```
 
-This time the IP range will be from `172.18.0.140` to `172.18.0.150`:
+This time the IP range will be from `172.18.0.140` to `172.18.0.150`
+(check [kind-prod-metallb-pools.yml](kind-prod-metallb-pools.yml)):
 
 ```console
-$ cat <<EOF > kind-prod-metallb-pools.yml 
+$ cat <<EOF > kind-prod-metallb-pools.yml
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:

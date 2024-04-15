@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: webserver
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: test
+        url: https://172.18.0.1:7443
+        branch: test
+      - cluster: prod
+        url: https://172.18.0.1:8443
+        branch: main
+  template:
+    metadata:
+      name: '{{cluster}}-webserver'
+    spec:
+      project: default
+      source:
+        repoURL: kirater@172.18.0.1:kirater-repo
+        targetRevision: '{{branch}}'
+        path: .
+      destination:
+        server: '{{url}}'
+      syncPolicy:
+        automated: {}

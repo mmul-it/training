@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: rasca
+  name: kiraterns
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: index-php
-  namespace: rasca
+  namespace: kiraterns
 data:
   index.php: |
     Application info:<br />
@@ -21,6 +21,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: webserver
+  namespace: kiraterns
 spec:
   replicas: 1
   selector:
@@ -67,7 +68,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: webserver
-  namespace: rasca
+  namespace: kiraterns
 spec:
   type: LoadBalancer
   ports:

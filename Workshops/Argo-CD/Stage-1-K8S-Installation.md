@@ -56,7 +56,7 @@ port:
 To do so, a specific configuration file should be created for each instance,
 and passed to the `kind create cluster` command.
 
-For the `kind-argo` cluster:
+For the `kind-argo` cluster (check [kind-argo-config.yml](kind-argo-config.yml)):
 
 ```console
 $ cat <<EOF > kind-argo-config.yml
@@ -73,11 +73,11 @@ EOF
 $ kind create cluster --name argo --config kind-argo-config.yml
 Creating cluster "argo" ...
  ✓ Ensuring node image (kindest/node:v1.29.2) 🖼
- ✓ Preparing nodes 📦  
- ✓ Writing configuration 📜 
- ✓ Starting control-plane 🕹️ 
- ✓ Installing CNI 🔌 
- ✓ Installing StorageClass 💾 
+ ✓ Preparing nodes 📦
+ ✓ Writing configuration 📜
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+ ✓ Installing StorageClass 💾
 Set kubectl context to "kind-argo"
 You can now use your cluster with:
 
@@ -86,7 +86,7 @@ kubectl cluster-info --context kind-argo
 Thanks for using kind! 😊
 ```
 
-For the `kind-test` cluster:
+For the `kind-test` cluster (check [kind-test-config.yml](kind-test-config.yml)):
 
 ```console
 $ cat <<EOF > kind-test-config.yml
@@ -103,11 +103,11 @@ EOF
 $ kind create cluster --name test --config kind-test-config.yml
 Creating cluster "test" ...
  ✓ Ensuring node image (kindest/node:v1.29.2) 🖼
- ✓ Preparing nodes 📦  
- ✓ Writing configuration 📜 
- ✓ Starting control-plane 🕹️ 
- ✓ Installing CNI 🔌 
- ✓ Installing StorageClass 💾 
+ ✓ Preparing nodes 📦
+ ✓ Writing configuration 📜
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+ ✓ Installing StorageClass 💾
 Set kubectl context to "kind-test"
 You can now use your cluster with:
 
@@ -116,7 +116,7 @@ kubectl cluster-info --context kind-test
 Have a nice day! 👋
 ```
 
-For the `kind-prod` cluster:
+For the `kind-prod` cluster (check [kind-prod-config.yml](kind-prod-config.yml)):
 
 ```console
 $ cat <<EOF > kind-prod-config.yml
@@ -133,11 +133,11 @@ EOF
 $ kind create cluster --name prod --config kind-prod-config.yml
 Creating cluster "prod" ...
  ✓ Ensuring node image (kindest/node:v1.29.2) 🖼
- ✓ Preparing nodes 📦  
- ✓ Writing configuration 📜 
- ✓ Starting control-plane 🕹️ 
- ✓ Installing CNI 🔌 
- ✓ Installing StorageClass 💾 
+ ✓ Preparing nodes 📦
+ ✓ Writing configuration 📜
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+ ✓ Installing StorageClass 💾
 Set kubectl context to "kind-prod"
 You can now use your cluster with:
 

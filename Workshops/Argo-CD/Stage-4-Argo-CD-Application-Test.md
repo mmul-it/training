@@ -14,11 +14,11 @@ what is called an **Application Set**.
 To prepare the local repository a SSH key pair will be generated, and enabled:
 
 ```console
-$ ssh-keygen 
+$ ssh-keygen
 Generating public/private rsa key pair.
-Enter file in which to save the key (/home/kirater/.ssh/id_rsa): 
-Enter passphrase (empty for no passphrase): 
-Enter same passphrase again: 
+Enter file in which to save the key (/home/kirater/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
 Your identification has been saved in /home/kirater/.ssh/id_rsa
 Your public key has been saved in /home/kirater/.ssh/id_rsa.pub
 The key fingerprint is:
@@ -44,7 +44,8 @@ $ ssh kirater@172.18.0.1 uptime
 ```
 
 To manage the local repository `git` must be installed and the local directory
-created and populated with an `application.yml` file containing a deployment:
+created and populated with an `application.yml` file containing a deployment
+(check [application.yml](application.yml)):
 
 ```console
 $ sudo yum -y install git
@@ -86,6 +87,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: webserver
+  namespace: kiraterns
 spec:
   replicas: 1
   selector:
@@ -166,7 +168,7 @@ deployment.
 ## Configure the Git repository in Argo CD
 
 To make Argo CD able to access the SSH Git repository, the SSH key and
-repository must be enabled in Argo CD:
+repository must be enabled in Argo CD (check [ssh-repo-secret.yml](ssh-repo-secret.yml)):
 
 ```console
 $ cat <<EOF > ssh-repo-secret.yml
@@ -176,19 +178,19 @@ metadata:
   name: kirater-repo
   namespace: argocd
   labels:
-    argocd.argoproj.io/secret-type: repo-cred
+    argocd.argoproj.io/secret-type: repo-creds
 stringData:
   type: git
-  url: kirater@172.18.0.1:/home/kirater/kirater-repo
+  url: kirater@172.18.0.1:kirater-repo
   sshPrivateKey: |
 $(cat ~/.ssh/id_rsa | sed 's/^/    /g')
 EOF
 
-$ kubectl apply -f ssh-repo-secret.yml 
+$ kubectl apply -f ssh-repo-secret.yml
 secret/kirater-repo configured
 
-$ argocd repo add kirater@172.18.0.1:/home/kirater/kirater-repo --name kirater-repo --insecure-skip-server-verification 
-Repository 'kirater@172.18.0.1:/home/kirater/kirater-repo' added
+$ argocd repo add kirater@172.18.0.1:kirater-repo --name kirater-repo --insecure-ignore-host-key
+Repository 'kirater@172.18.0.1:kirater-repo' added
 ```
 
 ## Enable the application in Argo CD
@@ -197,22 +199,22 @@ To check that everything is working as expected, a first application will be
 created:
 
 ```console
-$ argocd app create webserver-prod --repo kirater@172.18.0.1:/home/kirater/kirater-repo --dest-server https://172.18.0.1:8443 --path . --sync-policy auto
+$ argocd app create webserver-prod --repo kirater@172.18.0.1:kirater-repo --dest-server https://172.18.0.1:8443 --path . --sync-policy auto
 application 'webserver-prod' created
 
 $ argocd app list
-NAME                   CLUSTER                  NAMESPACE  PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                                           PATH  TARGET
-argocd/webserver-prod  https://172.18.0.1:8443             default  Synced  Healthy  Auto        <none>      kirater@172.18.0.1:/home/kirater/kirater-repo  .
+NAME                   CLUSTER                  NAMESPACE  PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                             PATH  TARGET
+argocd/webserver-prod  https://172.18.0.1:8443             default  Synced  Healthy  Auto        <none>      kirater@172.18.0.1:kirater-repo  .
 ```
 
 Note that in the Argo CD cluster list the `kind-prod` cluster status is now
 `Successful`:
 
 ```console
-$ argocd cluster list 
+$ argocd cluster list
 SERVER                          NAME        VERSION  STATUS      MESSAGE                                                  PROJECT
-https://172.18.0.1:8443         kind-prod   1.29     Successful                                                           
-https://172.18.0.1:7443         kind-test            Unknown     Cluster has no applications and is not being monitored.  
+https://172.18.0.1:8443         kind-prod   1.29     Successful
+https://172.18.0.1:7443         kind-test            Unknown     Cluster has no applications and is not being monitored.
 https://kubernetes.default.svc  in-cluster           Unknown     Cluster has no applications and is not being monitored.
 ```
 
@@ -279,7 +281,7 @@ of the repository will be taken.
 Variables in Application Set are expressed between `{{` and `}}` as in `{{cluster}}`,
 and in this specific case the `{{branch}}` variable will be used to define the
 `targetRevision` of the source, so the branch from where to take the contents of
-the repository:
+the repository (check [argo-appset.yml](argo-appset.yml)):
 
 ```console
 $ cat <<EOF > argo-appset.yml
@@ -303,7 +305,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: kirater@172.18.0.1:/home/kirater/kirater-repo
+        repoURL: kirater@172.18.0.1:kirater-repo
         targetRevision: '{{branch}}'
         path: .
       destination:
@@ -312,7 +314,7 @@ spec:
         automated: {}
 EOF
 
-$ argocd appset create argo-appset.yml 
+$ argocd appset create argo-appset.yml
 ApplicationSet 'webserver' created
 ```
 
@@ -320,10 +322,10 @@ The app status will reveal a different situation between the `kind-prod` cluster
 and the `kind-test` one:
 
 ```console
-$ argocd app list 
-NAME                   CLUSTER                  NAMESPACE  PROJECT  STATUS   HEALTH   SYNCPOLICY  CONDITIONS       REPO                                           PATH  TARGET
-argocd/prod-webserver  https://172.18.0.1:8443             default  Synced   Healthy  Auto        <none>           kirater@172.18.0.1:/home/kirater/kirater-repo  .     main
-argocd/test-webserver  https://172.18.0.1:7443             default  Unknown  Healthy  Auto        ComparisonError  kirater@172.18.0.1:/home/kirater/kirater-repo  .     test
+$ argocd app list
+NAME                   CLUSTER                  NAMESPACE  PROJECT  STATUS   HEALTH   SYNCPOLICY  CONDITIONS       REPO                             PATH  TARGET
+argocd/prod-webserver  https://172.18.0.1:8443             default  Synced   Healthy  Auto        <none>           kirater@172.18.0.1:kirater-repo  .     main
+argocd/test-webserver  https://172.18.0.1:7443             default  Unknown  Healthy  Auto        ComparisonError  kirater@172.18.0.1:kirater-repo  .     test
 ```
 
 The production (targeting `main` branch) is `Synced` but to make also the
@@ -359,14 +361,14 @@ fully synced status:
 
 ```console
 $ argocd app list
-NAME                   CLUSTER                  NAMESPACE  PROJECT  STATUS   HEALTH   SYNCPOLICY  CONDITIONS       REPO                                           PATH  TARGET
-argocd/prod-webserver  https://172.18.0.1:8443             default  Synced   Healthy  Auto        <none>           kirater@172.18.0.1:/home/kirater/kirater-repo  .     main
-argocd/test-webserver  https://172.18.0.1:7443             default  Unknown  Healthy  Auto        ComparisonError  kirater@172.18.0.1:/home/kirater/kirater-repo  .     test
+NAME                   CLUSTER                  NAMESPACE  PROJECT  STATUS   HEALTH   SYNCPOLICY  CONDITIONS       REPO                             PATH  TARGET
+argocd/prod-webserver  https://172.18.0.1:8443             default  Synced   Healthy  Auto        <none>           kirater@172.18.0.1:kirater-repo  .     main
+argocd/test-webserver  https://172.18.0.1:7443             default  Unknown  Healthy  Auto        ComparisonError  kirater@172.18.0.1:kirater-repo  .     test
 
 $ argocd app list
-NAME                   CLUSTER                  NAMESPACE  PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                                           PATH  TARGET
-argocd/prod-webserver  https://172.18.0.1:8443             default  Synced  Healthy  Auto        <none>      kirater@172.18.0.1:/home/kirater/kirater-repo  .     main
-argocd/test-webserver  https://172.18.0.1:7443             default  Synced  Healthy  Auto        <none>      kirater@172.18.0.1:/home/kirater/kirater-repo  .     test
+NAME                   CLUSTER                  NAMESPACE  PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                             PATH  TARGET
+argocd/prod-webserver  https://172.18.0.1:8443             default  Synced  Healthy  Auto        <none>      kirater@172.18.0.1:kirater-repo  .     main
+argocd/test-webserver  https://172.18.0.1:7443             default  Synced  Healthy  Auto        <none>      kirater@172.18.0.1:kirater-repo  .     test
 ```
 
 With everything in place a general verification can be made:

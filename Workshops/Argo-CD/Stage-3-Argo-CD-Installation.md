@@ -10,7 +10,7 @@ Argo CD needs a dedicated namespace and can be installed by its yaml file, the
 same way as MetalLB:
 
 ```console
-$ kubectl config use-context kind-argo 
+$ kubectl config use-context kind-argo
 Switched to context "kind-argo".
 
 $ kubectl create namespace argocd
@@ -35,7 +35,7 @@ line tool named `argocd`, that can be installed the same way as `kubectl`:
 $ curl -sLo argocd https://github.com/argoproj/argo-cd/releases/download/v2.10.6/argocd-linux-amd64
 (no output)
 
-$ chmod -v +x argocd 
+$ chmod -v +x argocd
 mode of 'argocd' changed from 0664 (rw-rw-r--) to 0775 (rwxrwxr-x)
 
 $ sudo mv -v argocd /usr/local/bin/
@@ -120,7 +120,7 @@ Then, with `argocd login` the connection with the service will be available:
 ```console
 $ argocd login --insecure 172.18.0.100
 Username: admin
-Password: 
+Password:
 'admin:login' logged in successfully
 Context '172.18.0.100' updated
 ```
@@ -158,7 +158,7 @@ INFO[0001] ClusterRoleBinding "argocd-manager-role-binding" created
 INFO[0006] Created bearer token secret for ServiceAccount "argocd-manager"
 Cluster 'https://172.18.0.1:8443' added
 
-$ argocd cluster list 
+$ argocd cluster list
 SERVER                          NAME        VERSION  STATUS      MESSAGE                                                  PROJECT
 https://172.18.0.1:8443         kind-prod            Unknown     Cluster has no applications and is not being monitored.
 https://172.18.0.1:7443         kind-test            Unknown     Cluster has no applications and is not being monitored.
