@@ -3,8 +3,8 @@
 In this lab you will:
 
 1. Pull and run the "nginx" container image with the name "environment-var-test" passing the environment variable MESSAGE with the value of "Test content".
-2. Log into the container and check that the content of the MESSAGE variable is what you set during the launch.
-3. Exit the shell and enter again the shell, this time overriding the MESSAGE variable with a new value, say "Modified test content".
+2. Log into the container and check that the content of the MESSAGE environment variable is what you set during the launch.
+3. Exit the shell and enter again the shell, this time overriding the MESSAGE variable with a new value, let's say "Modified test content".
 4. Exit again the shell and log once again without overriding the variable, checking the content of the variable.
 5. Was the value changed? What does this mean?
 
@@ -22,7 +22,7 @@ In this lab you will:
 2. Use a shell to log into the container and check the content of the variable:
 
    ```console
-   docker@minikube:~$ docker exec -it  environment-var-test /bin/bash
+   docker@minikube:~$ docker exec -it environment-var-test /bin/bash
    root@7c1f15079d3c:/# echo $MESSAGE
    Test content
 
@@ -58,4 +58,4 @@ In this lab you will:
 5. No, the value is still the original. This means that the override produced by
    the exec counts just from there on, it is not retroactive. Which means that
    the only way to reset the environment variable is to stop and start the
-   container once again with a new -e option specified.
+   container once again with a new `-e` option specified.
