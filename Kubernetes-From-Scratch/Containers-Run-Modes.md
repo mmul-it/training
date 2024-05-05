@@ -5,7 +5,7 @@ In this lab you will:
 1. Pull the image "hello-world" from the docker registry.
 2. Pull the image "nginx" form the docker registry.
 3. Run in one-time mode the "hello-world" container and observe its behavior.
-4. Run in one time mode the "nginx" container and observe its behavior.
+4. Run in one-time mode the "nginx" container and observe its behavior.
 5. What are the differences?
 6. Run in daemon mode the "hello-world" container.
 7. Run in daemon mode the "nginx" container.
@@ -13,7 +13,7 @@ In this lab you will:
 
 ## Solution
 
-1. Log into minikube and pull hello world image:
+1. Log into minikube and pull the hello-world image:
 
    ```console
    $ minikube ssh
@@ -109,21 +109,21 @@ In this lab you will:
 
 5. The main difference is that to exit from the nginx one you need to Ctrl+C or stop the container from another terminal.
 
-6. Using `--detach` as option re-run the firt container:
+6. Using `--detach` as option re-running the first container:
 
    ```console
    docker@minikube:~$ docker run --rm --detach hello-world
    996327f18193cc1c65909271f2e427fb243fb56662c9c768e1b6205dfbf57243
    ```
 
-7. And the second one:
+7. Do the same with the second one:
 
    ```console
    docker@minikube:~$ docker run --rm --detach nginx
    3de0f47598d1e6836769380e24414b3fe0036028b25f363d659ff4210d718414
    ```
 
-8. Running `docker ps` will show *just* the nginx container, because the first one even if it was launched with --detach is meant just for a one time execution (showing the message you see while running ine foreground):
+8. Running `docker ps` will show *just* the nginx container, because the first one even if it was launched with `--detach` is meant just for a one time execution (showing the message you see while running in foreground):
 
    ```console
    docker@minikube:~$ docker ps | grep hello-world
