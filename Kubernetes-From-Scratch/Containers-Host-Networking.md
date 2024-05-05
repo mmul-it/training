@@ -5,12 +5,12 @@ In this lab you will:
 1. Pull and run the "nginx" container image with the name "network-host-test" using the host networking.
 2. Check that the service will be reachable on localhost on the port exposed by the container.
 3. Stop the "network-host-test" container.
-4. Pull and run the "nginx" container image with the name "network-host-test" using the host networking and publishing the container 80 port to the 8888 port on the host.
+4. Run the "nginx" container image with the name "network-host-test" using the host networking and publishing the container 80 port to the 8888 port on the host.
 5. Is it possible? What happens?
 
 ## Solution
 
-1. Log into minikube and launch the container with `--network host` option:
+1. Log into minikube and launch the container with the `--network host` option:
 
    ``` console
    $ minikube ssh
@@ -49,4 +49,4 @@ In this lab you will:
    bb499f166a75865d0617c322e78f90724e857b1f404976a3c4a19f946347ba03
    ```
 
-   the publication of ports while using the host mode is impossible, there's a WARNING and is just ignored.
+   the publication of ports while using the host mode is impossible, there's a WARNING and it is just ignored.
