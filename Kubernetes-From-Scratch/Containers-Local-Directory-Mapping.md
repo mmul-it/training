@@ -3,11 +3,11 @@
 In this lab you will:
 
 1. Create a folder on your homedir named "local-dir" and enable the correct SELinux context for the directory if you are on CentOS/Red Hat.
-2. Run a nginx container image named "local-dir-mapping-test", exposing on localhost the 8080 port mapping also the newly created volume into the container directory /usr/share/nginx/html.
-3. Check the status of the local-dir on the host, what is changed?
-4. Create in local-dir a file named index.html containing "Local dir test" text and verify that the web page now answers accordingly.
+2. Run a nginx container image named "local-dir-mapping-test", exposing on localhost the 8080 port mapping also the newly created volume into the container directory `/usr/share/nginx/html`.
+3. Check the status of the local-dir on the host, what has changed?
+4. Create in local-dir a file named `index.html` containing "Local dir test" text and verify that the web page now displays it accordingly.
 5. Stop the container.
-6. Start a new container with the name "local-dir-mapping-test-relaunch" and the mapping of the local directory and check that the page still shows our modified message despite from the fact that the container was created again from scratch.
+6. Start a new container with the name "local-dir-mapping-test-relaunch" and the mapping of the local directory and check that the page still shows our modified message despite the fact that the container was created again from scratch.
 
 ## Solution
 
@@ -47,7 +47,7 @@ In this lab you will:
    </html>
    ```
 
-4. Create a file named `index.html` inside the `local-dir` and check via again curl:
+4. Create a file named `index.html` inside the `local-dir` and check again via `curl`:
 
    ```console
    docker@minikube:~$ echo "Local dir test" > local-dir/index.html
