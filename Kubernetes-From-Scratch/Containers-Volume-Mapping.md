@@ -1,15 +1,15 @@
 # Lab | Containers Volume Mapping
 
-In this lab you will
+In this lab you will:
 
 1. Create an empty volume named "test-volume".
 2. Check the contents of the newly created volume on the filesystem. Where it will be placed?
-3. Run a nginx container image named "volume-mapping-test", exposing on localhost the 8080 port mapping also the newly created volume into the container directory /usr/share/nginx/html.
-4. Check again the status of the volume on the host, what is changed?
-5. Change the content of the index.html to be just "Volume test" and verify that on the web page now answers with the new text.
+3. Run a nginx container image named "volume-mapping-test", exposing on localhost the 8080 port and also mapping the newly created volume into the container directory `/usr/share/nginx/html`.
+4. Check again the status of the volume on the host. What has changed?
+5. Change the content of the index.html to be just "Volume test" and verify that the web page now displays the new text.
 6. Stop the container.
 7. Check again the status of the volume on the host.
-8. Start a new container with the name "volume-mapping-test-relaunch" and the mapping of the previous volume and check that the page still shows our modified message despite from the fact that the container was created again from scratch.
+8. Start a new container with the name "volume-mapping-test-relaunch" mapping the previous volume, and check that the page still shows our modified message despite the fact that the container was created again from scratch.
 
 ## Solution
 
@@ -30,7 +30,7 @@ In this lab you will
     12986866      4 drwxr-xr-x   2 root     root         4096 Dec  2 14:58 /var/lib/docker/volumes/test-volume/_data
    ```
 
-3. Execute container with `-v` option:
+3. Execute the container with the `-v` option:
 
    ```console
    docker@minikube:~$ docker run -d --name volume-mapping-test --rm --publish 8080:80 --volume test-volume:/usr/share/nginx/html nginx
