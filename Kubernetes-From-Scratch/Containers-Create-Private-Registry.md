@@ -6,6 +6,10 @@
    `registry` to the `/var/lib/registry` and will publish the container port
    `5000` to the localhost port `5000`. Apply the restart policy `always` and
    name it `registry`.
+3. Run the container in detach mode, mapping the local directory `registry` to
+   the `/var/lib/registry` path in the container, and publishing the container's
+   port `5000` to the localhost port `5000`. Apply the `always` restart policy
+   and name the container `registry`.
 4. Check the contents of the local `registry` directory, is it empty?
 5. Pull the `nginx:latest` image and tag the image so that it could be pushed
    into the newly created registry.
@@ -43,8 +47,8 @@
    (no output)
    ```
 
-3. Run the container by using `--publish` to map the port `--volume` to map the
-   local directory and `--restart` to set the restart policy:
+3. Run the container using `--publish` to map the port, `--volume` to map the
+   local directory, and `--restart` to set the restart policy:
 
    ```console
    $ docker run --detach --publish 5000:5000 \
@@ -95,7 +99,7 @@
    latest: digest: sha256:7f797701ded5055676d656f11071f84e2888548a2e7ed12a4977c28ef6114b17 size: 1570
    ```
 
-   Now it should be possible to check the status using one of the various ways
+   Now it should be possible to verify its contents using one of the various ways
    to check a registry:
 
    ```console
