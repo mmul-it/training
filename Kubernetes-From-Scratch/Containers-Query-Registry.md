@@ -5,9 +5,9 @@ In this lab you will:
 1. Given this registry:
    - Host: `https://www.mmul.it:5000`
    - User: `dockertraining`
-   - Pass: `l3tstr41n`
+   - Pass: `l3tstr41n`\
    Use `curl` to extract the list of the available images.
-2. Do the same by using [the python script registry.py](https://github.com/andrey-pohilko/registry-cli/).
+2. Do the same using [the python script registry.py](https://github.com/andrey-pohilko/registry-cli/).
 
 ## Solution
 
@@ -39,8 +39,8 @@ In this lab you will:
    }
    ```
 
-2. It is possible to use also tools and script like [the python script registry.py](https://github.com/andrey-pohilko/registry-cli/)
-   that is also available as a container, and can be invoked as follows:
+2. It's also possible to use tools and scripts like [the python script registry.py](https://github.com/andrey-pohilko/registry-cli/)
+   that is also available as a container, which can be invoked as follows:
 
    ```console
    $ docker run --rm anoxis/registry-cli -r https://www.mmul.it:5000 -l dockertraining:l3tstr41n
