@@ -26,7 +26,10 @@ In this lab you will:
    Run the container by using the `--log-driver journald` option:
 
    ```console
-   $ docker run --detach --name broken-nginx --publish 8080:80 --log-driver journald www.mmul.it:5000/broken-nginx
+   $ docker run --detach --name broken-nginx \
+	--publish 8080:80 \
+	--log-driver journald \
+	www.mmul.it:5000/broken-nginx
    Unable to find image 'www.mmul.it:5000/broken-nginx:latest' locally
    latest: Pulling from broken-nginx
    63b65145d645: Already exists
@@ -97,7 +100,10 @@ In this lab you will:
    there are clues about something:
 
    ```console
-   $ docker run -it --name broken-nginx --log-driver journald --publish 8080:80 www.mmul.it:5000/broken-nginx /bin/sh
+   $ docker run -it --name broken-nginx \
+	--publish 8080:80 \
+	--log-driver journald \
+	www.mmul.it:5000/broken-nginx /bin/sh
    / # ls -1 /etc/nginx/
    conf.d
    fastcgi.conf
@@ -109,7 +115,7 @@ In this lab you will:
    uwsgi_params
    ```
 
-   So by moving the `nginx.conf.FIXME` file into `nginx.conf` the contents of
+   So by renaming the `nginx.conf.FIXME` file into `nginx.conf` the contents of
    *this* container will be fine:
 
    ```console
@@ -135,7 +141,10 @@ In this lab you will:
    And launch the new `fixed-nginx` image:
 
    ```console
-   $ docker run --detach --name fixed-nginx --log-driver journald --publish 8080:80 fixed-nginx
+   $ docker run --detach --name fixed-nginx \
+	--publish 8080:80 \
+	--log-driver journald \
+	fixed-nginx
    d72b13a9118355b95e0e061c9e98b31458df22fb49a335d8376dfa50b25d79a9
 
    $ curl localhost:8080
