@@ -3,13 +3,13 @@
 In this lab you will:
 
 1. In two different shells, create two interactive containers named
-   "container1" and "container2" from the image alpine:latest.
+   "container1" and "container2" from the image `alpine:latest`.
 2. From "container1" try to ping "container2" and see if it works.
 3. Stop and remove the containers.
 4. Create a custom network named "test" with the subnet "172.16.99.0/24".
 5. In two different shells, create two interactive containers named
-   "container1" and "container2" from the image alpine:latest and inside the
-   newly created "test" network.
+   "container1" and "container2" from the image alpine:latest that
+   make use of the newly created "test" network.
 6. From "container1" try to ping "container2" and see if it works.
 7. Listen on the 8888 port on "container1" and try to reach it from
    "container2" to check if everything works.
@@ -20,14 +20,14 @@ In this lab you will:
 1. Run the two containers simoultanously in two differen terminals:
 
    ```console
-   docker run --name=container1 --rm -it alpine /bin/sh
+   $ docker run --name=container1 --rm -it alpine /bin/sh
    / #
 
    $ docker run --name=container2 --rm -it alpine /bin/sh
    / #
    ```
 
-2. Try the ping:
+2. Try to ping `container2` from `container1`:
 
    ```console
    / # ping container2
@@ -70,7 +70,7 @@ In this lab you will:
    round-trip min/avg/max = 0.070/0.077/0.085 ms
    ```
 
-7. On `container1` use `nc -v -l -p 8888` to listen on tcp port `8888`:
+7. On `container1` use `nc -v -l -p 8888` to listen on TCP port `8888`:
 
    ```console
    / # nc -v -l -p 8888
