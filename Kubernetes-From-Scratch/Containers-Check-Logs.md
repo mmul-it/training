@@ -27,9 +27,9 @@ In this lab you will:
 
    ```console
    $ docker run --detach --name broken-nginx \
-	--publish 8080:80 \
-	--log-driver journald \
-	www.mmul.it:5000/broken-nginx
+        --publish 8080:80 \
+        --log-driver journald \
+        www.mmul.it:5000/broken-nginx
    Unable to find image 'www.mmul.it:5000/broken-nginx:latest' locally
    latest: Pulling from broken-nginx
    63b65145d645: Already exists
@@ -101,9 +101,9 @@ In this lab you will:
 
    ```console
    $ docker run -it --name broken-nginx \
-	--publish 8080:80 \
-	--log-driver journald \
-	www.mmul.it:5000/broken-nginx /bin/sh
+        --publish 8080:80 \
+        --log-driver journald \
+        www.mmul.it:5000/broken-nginx /bin/sh
    / # ls -1 /etc/nginx/
    conf.d
    fastcgi.conf
@@ -142,9 +142,9 @@ In this lab you will:
 
    ```console
    $ docker run --detach --name fixed-nginx \
-	--publish 8080:80 \
-	--log-driver journald \
-	fixed-nginx
+        --publish 8080:80 \
+        --log-driver journald \
+        fixed-nginx
    d72b13a9118355b95e0e061c9e98b31458df22fb49a335d8376dfa50b25d79a9
 
    $ curl localhost:8080
