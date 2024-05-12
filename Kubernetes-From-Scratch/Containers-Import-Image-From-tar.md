@@ -4,7 +4,7 @@ In this lab you will:
 
 1. Download and uncompress the tar image named
    [Containers-Import-Image-From-tar.nginx-saved-container.tar.xz](https://github.com/mmul-it/training/raw/master/Kubernetes-From-Scratch/Containers-Import-Image-From-tar.nginx-saved-container.tar.xz).
-2. *Load* the saved image into the docker registry.
+2. *Load* the saved image into the local docker image archive.
 3. Run a container starting from this image and exposing port `8080`. Note what is different from a usual nginx.
 4. Download and uncompress now the tar named
    [Containers-Import-Image-From-tar.nginx-exported-container.tar.xz](https://github.com/mmul-it/training/raw/master/Kubernetes-From-Scratch/Containers-Import-Image-From-tar.nginx-exported-container.tar.xz).
@@ -73,6 +73,11 @@ In this lab you will:
    To use this image take note of the first 12 chars of the image id on the
    previous output (in this case `14d03acca58`), and tag the image as
    `nginx-exported-container`.
+
+   ```console
+   $ docker image tag 14d03acca58 nginx-exported-container
+   (no output)
+   ```
 
 7. But the problem is now `docker run`, that will not work:
 
