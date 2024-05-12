@@ -4,7 +4,7 @@ In this lab you will:
 
 1. Create an empty directory in which you will store your `Dockerfile`.
 2. Compose a Dockerfile so that:
-   - Starts with `FROM ubuntu:latest`.
+   - Starts with `FROM alpine:latest`.
    - Use these three environment variables:
      - `NCAT_MESSAGE` with value `Container test`.
      - `NCAT_HEADER` with value `HTTP/1.1 200 OK`.
