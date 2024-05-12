@@ -7,8 +7,8 @@ In this lab you will:
 3. Run in one-time mode the "hello-world" container and observe its behavior.
 4. Run in one-time mode the "nginx" container and observe its behavior.
 5. What are the differences?
-6. Run in daemon mode the "hello-world" container.
-7. Run in daemon mode the "nginx" container.
+6. Run in detached mode the "hello-world" container.
+7. Run in detached mode the "nginx" container.
 8. What are the differences?
 
 ## Solution
