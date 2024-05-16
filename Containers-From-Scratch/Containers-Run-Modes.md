@@ -13,12 +13,10 @@ In this lab you will:
 
 ## Solution
 
-1. Log into minikube and pull the hello-world image:
+1. Pull the hello-world image:
 
    ```console
-   $ minikube ssh
-
-   docker@minikube:~$ docker pull hello-world
+   $ docker pull hello-world
    Using default tag: latest
    latest: Pulling from library/hello-world
    2db29710123e: Pull complete
@@ -30,7 +28,7 @@ In this lab you will:
 2. Do the same for nginx:
 
    ```console
-   docker@minikube:~$ docker pull nginx
+   $ docker pull nginx
    Using default tag: latest
    latest: Pulling from library/nginx
    a603fa5e3b41: Pull complete
@@ -47,7 +45,7 @@ In this lab you will:
 3. Run the first container with `docker run`:
 
    ```console
-   docker@minikube:~$ docker run --rm hello-world
+   $ docker run --rm hello-world
 
    Hello from Docker!
    This message shows that your installation appears to be working correctly.
@@ -74,7 +72,7 @@ In this lab you will:
 4. Run the second as well:
 
    ```console
-   docker@minikube:~$ docker run --rm nginx
+   $ docker run --rm nginx
    /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
    /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
    /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
@@ -112,22 +110,22 @@ In this lab you will:
 6. Using `--detach` as option re-running the first container:
 
    ```console
-   docker@minikube:~$ docker run --rm --detach hello-world
+   $ docker run --rm --detach hello-world
    996327f18193cc1c65909271f2e427fb243fb56662c9c768e1b6205dfbf57243
    ```
 
 7. Do the same with the second one:
 
    ```console
-   docker@minikube:~$ docker run --rm --detach nginx
+   $ docker run --rm --detach nginx
    3de0f47598d1e6836769380e24414b3fe0036028b25f363d659ff4210d718414
    ```
 
 8. Running `docker ps` will show *just* the nginx container, because the first one even if it was launched with `--detach` is meant just for a one time execution (showing the message you see while running in foreground):
 
    ```console
-   docker@minikube:~$ docker ps | grep hello-world
+   $ docker ps | grep hello-world
 
-   docker@minikube:~$ docker ps | grep nginx
+   $ docker ps | grep nginx
    3de0f47598d1   nginx                  "/docker-entrypoint.…"   45 seconds ago   Up 44 seconds   80/tcp    reverent_shamir
    ```

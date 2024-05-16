@@ -10,19 +10,17 @@ In this lab you will:
 
 ## Solution
 
-1. Log into minikube and launch the container with the `--network host` option:
+1. Launch the container with the `--network host` option:
 
    ``` console
-   $ minikube ssh
-
-   docker@minikube:~$ docker run -d --name network-host-test --rm --network host nginx
+   $ docker run -d --name network-host-test --rm --network host nginx
    5ef2cfd4d6aff9d675a299ef9100d0e00e79383dae8cccac4f144e003673b457
    ```
 
 2. Use `curl` to check the port:
 
    ``` console
-   docker@minikube:~$ curl -s http://localhost | grep Welcome
+   $ curl -s http://localhost | grep Welcome
    <title>Welcome to nginx!</title>
    <h1>Welcome to nginx!</h1>
    ```
@@ -30,14 +28,14 @@ In this lab you will:
 3. Stop the container:
 
    ``` console
-   docker@minikube:~$ docker stop network-host-test
+   $ docker stop network-host-test
    network-host-test
    ```
 
 4. Use both `--network host` and `-p 8888:80` to check whether it is possible to publish the port:
 
    ``` console
-   docker@minikube:~$ docker run -d --name network-host-test --rm --network host -p 8888:80 nginx
+   $ docker run -d --name network-host-test --rm --network host -p 8888:80 nginx
    WARNING: Published ports are discarded when using host network mode
    e5c600cf3eab15ef23cb6b79870d7bba8ac4a2fabda7ae7e2a8ba24fbddd5925
    ```
