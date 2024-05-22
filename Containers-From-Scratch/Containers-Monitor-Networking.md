@@ -46,14 +46,25 @@ In this lab you will:
    **290813**
    ```
 
-3. Install `tcpdump` and execute `nsenter`:
+3. Install `tcpdump`, using for Debian based systems:
 
    ```console
    $ sudo apt-get update
    ...
-
    $ sudo apt-get install -y tcpdump
    ...
+   ```
+
+   And for RHEL based systems:
+
+   ```console
+   $ sudo yum update
+   ...
+   $ sudo yum -y install tcpdump
+   ...
+   ```
+
+   And execute `nsenter`:
 
    $ sudo nsenter -t 290813 -n tcpdump -i eth0 -vvv
    tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
