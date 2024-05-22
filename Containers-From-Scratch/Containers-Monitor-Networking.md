@@ -51,6 +51,7 @@ In this lab you will:
    ```console
    $ sudo apt-get update
    ...
+
    $ sudo apt-get install -y tcpdump
    ...
    ```
@@ -60,12 +61,14 @@ In this lab you will:
    ```console
    $ sudo yum update
    ...
+
    $ sudo yum -y install tcpdump
    ...
    ```
 
    And execute `nsenter`:
 
+   ```console
    $ sudo nsenter -t 290813 -n tcpdump -i eth0 -vvv
    tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
    ```
