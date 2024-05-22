@@ -6,11 +6,12 @@ In this lab you will:
    [Containers-Import-Image-From-tar.nginx-saved-container.tar.xz](https://github.com/mmul-it/training/raw/master/Kubernetes-From-Scratch/Containers-Import-Image-From-tar.nginx-saved-container.tar.xz).
 2. *Load* the saved image into the local docker image archive.
 3. Run a container starting from this image and exposing port `8080`. Note what is different from a usual nginx.
-4. Download and uncompress now the tar named
+4. Download and uncompress the tar named
    [Containers-Import-Image-From-tar.nginx-exported-container.tar.xz](https://github.com/mmul-it/training/raw/master/Kubernetes-From-Scratch/Containers-Import-Image-From-tar.nginx-exported-container.tar.xz).
 5. *Load* the image, what happens?
 6. Now try to *import* the image, what happens?
 7. Finally try to run a container based on this image, is this possible? Can you tell why?
+8. Stop the container.
 
 ## Solution
 
@@ -90,3 +91,10 @@ In this lab you will:
    The export that was originally made on this image does not contain any metadata
    useful to docker to run the base container, because of this `docker run`
    fails.
+
+8. Stop the container:
+
+   ```console
+   $ docker stop nginx-saved-container
+   nginx-saved-container
+   ```

@@ -8,8 +8,9 @@ In this lab you will:
 4. Run in one-time mode the "nginx" container and observe its behavior.
 5. What are the differences?
 6. Run in detached mode the "hello-world" container.
-7. Run in detached mode the "nginx" container.
+7. Run in detached mode the "nginx" container, naming it `nginx-detached`.
 8. What are the differences?
+9. Stop the `nginx-detached` container.
 
 ## Solution
 
@@ -117,7 +118,7 @@ In this lab you will:
 7. Do the same with the second one:
 
    ```console
-   $ docker run --rm --detach nginx
+   $ docker run --rm --detach --name nginx-detached nginx
    3de0f47598d1e6836769380e24414b3fe0036028b25f363d659ff4210d718414
    ```
 
@@ -127,5 +128,12 @@ In this lab you will:
    $ docker ps | grep hello-world
 
    $ docker ps | grep nginx
-   3de0f47598d1   nginx                  "/docker-entrypoint.…"   45 seconds ago   Up 44 seconds   80/tcp    reverent_shamir
+   3de0f47598d1   nginx                  "/docker-entrypoint.…"   45 seconds ago   Up 44 seconds   80/tcp    nginx-detached
+   ```
+
+9. Stop the `nginx-detached` container:
+
+   ```console
+   $ docker stop nginx-detached
+   nginx-detached
    ```

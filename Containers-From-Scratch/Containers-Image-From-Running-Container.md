@@ -13,6 +13,7 @@ In this lab you will:
 5. Stop the original container.
 6. Create a new container starting from the newly created image, and check that
    the modifications made are available.
+7. Stop the `my-new-shiny-nginx` container.
 
 ## Solution
 
@@ -75,4 +76,11 @@ In this lab you will:
 
    $ curl localhost:8888
    My new shiny Nginx container image
+   ```
+
+7. Stop the `my-new-shiny-nginx` container:
+
+   ```console
+   $ docker stop my-new-shiny-nginx
+   my-new-shiny-nginx
    ```

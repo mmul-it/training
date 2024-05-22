@@ -2,10 +2,11 @@
 
 In this lab you will:
 
-1. Pull and run the "mysql" container image with the name "network-test", exposing the 3306 port to the 3306 on the host.
+1. Pull and run the `mysql` container image with the name `network-test`, exposing the 3306 port to the 3306 on the host.
 2. Obtain the PID of the container process on the host.
 3. Use the `nsenter` command (to execute a command in another namespace) on this PID so that you can launch a `tcpdump` (to be installed) on the container's network interface.
 4. From another console, connect to the exposed port and generate some traffic, monitoring what happens on the `tcpdump`.
+5. Stop the `network-test` container.
 
 ## Solution
 
@@ -81,6 +82,13 @@ In this lab you will:
    ...
    ```
 
+5. Stop the `network-test` container:
+
+   ```console
+   $ docker stop network-test
+   network-test
+   ```
+
 ---
 
 ## Alternative method to get access to the network namespace
@@ -89,8 +97,10 @@ Create the namespace directory `/var/run/netns` and link the system namespace as
 
 ```console
 $ sudo mkdir /var/run/netns
+(no output)
 
 $ sudo ln -s /proc/290813/ns/net /var/run/netns/network-test
+(no output)
 ```
 
 The namespace should become visible via `ip netns show`, and in addition it should be possible to exec commands within it.
@@ -99,4 +109,5 @@ Execute `tcpdump` on this namespace so that you will be able to see all the traf
 
 ```console
 $ sudo ip netns exec network-test tcpdump -i eth0 -vvv
+...
 ```

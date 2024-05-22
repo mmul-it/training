@@ -8,6 +8,7 @@ In this lab you will:
 2. Check if the container is running (it should not).
 3. Try to find out what's wrong with this image.
 4. Fix the problem on this image and create a new and usable one.
+5. Stop and remove the newly created running container.
 
 ## Solution
 
@@ -100,7 +101,7 @@ In this lab you will:
    there are clues about something:
 
    ```console
-   $ docker run -it --name broken-nginx \
+   $ docker run -it --rm --name broken-nginx \
         --publish 8080:80 \
         --log-driver journald \
         www.mmul.it:5000/broken-nginx /bin/sh
@@ -174,3 +175,12 @@ In this lab you will:
    ```
 
    The result is the default NGINX page, which is correct.
+
+5. We didn't launch the container with the `--rm` option, so stop and remove the fixed-nginx container:
+
+   ```console
+   $ docker stop fixed-nginx
+   fixed-nginx
+   $ docker rm fixed-nginx
+   fixed-nginx
+   ```

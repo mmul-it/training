@@ -2,18 +2,19 @@
 
 In this lab you will:
 
-1. Pull and run the "nginx" container image with the name "environment-var-test" passing the environment variable MESSAGE with the value of "Test content".
+1. Pull and run the `nginx` container image with the name `environment-var-test` passing the environment variable MESSAGE with the value of "Test content".
 2. Log into the container and check that the content of the MESSAGE environment variable is what you set during the launch.
 3. Exit the shell and enter again the shell, this time overriding the MESSAGE variable with a new value, let's say "Modified test content".
 4. Exit again the shell and log once again without overriding the variable, checking the content of the variable.
 5. Was the value changed? What does this mean?
+6. Stop the `environment-var-test` container.
 
 ## Solution
 
 1. Run the "nginx" container:
 
    ```console
-   $ docker run -d -e MESSAGE="Test content" --name environment-var-test nginx
+   $ docker run --rm -d -e MESSAGE="Test content" --name environment-var-test nginx
    7c1f15079d3ca1e851af947d8cb673cfb80177421da21be3da3c35ab2c4609d6
    ```
 
@@ -57,3 +58,10 @@ In this lab you will:
    the exec counts just from there on, it is not retroactive. Which means that
    the only way to reset the environment variable is to stop and start the
    container once again with a new `-e` option specified.
+
+6. Stop the `nginx` container:
+
+   ```console
+   $ docker stop environment-var-test
+   environment-var-test
+   ```

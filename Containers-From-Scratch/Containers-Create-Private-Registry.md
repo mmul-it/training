@@ -10,6 +10,7 @@
 5. Pull the `nginx:latest` image and tag the image so that it could be pushed
    into the newly created registry.
 6. Push the image and verify that the remote registry now contains the image.
+7. Stop the `registry` container.
 
 ## Solution
 
@@ -47,7 +48,7 @@
    local directory, and `--restart` to set the restart policy:
 
    ```console
-   $ docker run --detach --publish 5000:5000 \
+   $ docker run --rm --detach --publish 5000:5000 \
        --name registry --restart=always \
        --volume $PWD/registry:/var/lib/registry registry
    28c991c8bf63a5df758c40e04314a4e836d232735b6b19d713038fb77762054b
@@ -141,4 +142,11 @@
    ---------------------------------
    Image: nginx
      tag: latest
+   ```
+
+7. Stopping the `registry` container it will be automatically removed (because of the `--rm` used in the `docker run` command):
+
+   ```console
+   $ docker stop registry
+   registry
    ```
