@@ -34,22 +34,22 @@
 
    ```console
    $ mkdir -v $PWD/registry
-   mkdir: created directory '/home/rasca/registry'
+   mkdir: created directory '/home/kirater/registry'
    ```
 
    In case you're running CentOS with SELinux enabled:
 
    ```console
-   $ chcon -R -t container_file_t /home/<youruser>/registry
+   $ chcon -R -t container_file_t $PWD/registry
    (no output)
    ```
 
 3. Run the container using `--publish` to map the port, `--volume` to map the
-   local directory, and `--restart` to set the restart policy:
+   local directory, and `--rm` to remove the container after it will be stopped:
 
    ```console
-   $ docker run --rm --detach --publish 5000:5000 \
-       --name registry --restart=always \
+   $ docker run --detach --publish 5000:5000 \
+       --name registry --rm \
        --volume $PWD/registry:/var/lib/registry registry
    28c991c8bf63a5df758c40e04314a4e836d232735b6b19d713038fb77762054b
    ```
@@ -96,32 +96,32 @@
    latest: digest: sha256:7f797701ded5055676d656f11071f84e2888548a2e7ed12a4977c28ef6114b17 size: 1570
    ```
 
-   Now it should be possible to verify its contents using one of the various ways
-   to check a registry:
+   Now it should be possible to verify its contents using one of the various
+   ways to check a registry:
 
    ```console
    $ find $PWD/registry
-   /home/rasca/registry
-   /home/rasca/registry/docker
-   /home/rasca/registry/docker/registry
-   /home/rasca/registry/docker/registry/v2
-   /home/rasca/registry/docker/registry/v2/blobs
-   /home/rasca/registry/docker/registry/v2/blobs/sha256
+   /home/kirater/registry
+   /home/kirater/registry/docker
+   /home/kirater/registry/docker/registry
+   /home/kirater/registry/docker/registry/v2
+   /home/kirater/registry/docker/registry/v2/blobs
+   /home/kirater/registry/docker/registry/v2/blobs/sha256
    ...
    ...
-   /home/rasca/registry/docker/registry/v2/repositories/nginx
-   /home/rasca/registry/docker/registry/v2/repositories/nginx/_manifests
-   /home/rasca/registry/docker/registry/v2/repositories/nginx/_manifests/revisions
-   /home/rasca/registry/docker/registry/v2/repositories/nginx/_manifests/revisions/sha256
-   /home/rasca/registry/docker/registry/v2/repositories/nginx/_manifests/revisions/sha256/7f797701ded5055676d656f11071f84e2888548a2e7ed12a4977c28ef6114b17
-   /home/rasca/registry/docker/registry/v2/repositories/nginx/_manifests/revisions/sha256/7f797701ded5055676d656f11071f84e2888548a2e7ed12a4977c28ef6114b17/link
-   /home/rasca/registry/docker/registry/v2/repositories/nginx/_manifests/tags
-   /home/rasca/registry/docker/registry/v2/repositories/nginx/_manifests/tags/latest
-   /home/rasca/registry/docker/registry/v2/repositories/nginx/_manifests/tags/latest/index
-   /home/rasca/registry/docker/registry/v2/repositories/nginx/_manifests/tags/latest/index/sha256
+   /home/kirater/registry/docker/registry/v2/repositories/nginx
+   /home/kirater/registry/docker/registry/v2/repositories/nginx/_manifests
+   /home/kirater/registry/docker/registry/v2/repositories/nginx/_manifests/revisions
+   /home/kirater/registry/docker/registry/v2/repositories/nginx/_manifests/revisions/sha256
+   /home/kirater/registry/docker/registry/v2/repositories/nginx/_manifests/revisions/sha256/7f797701ded5055676d656f11071f84e2888548a2e7ed12a4977c28ef6114b17
+   /home/kirater/registry/docker/registry/v2/repositories/nginx/_manifests/revisions/sha256/7f797701ded5055676d656f11071f84e2888548a2e7ed12a4977c28ef6114b17/link
+   /home/kirater/registry/docker/registry/v2/repositories/nginx/_manifests/tags
+   /home/kirater/registry/docker/registry/v2/repositories/nginx/_manifests/tags/latest
+   /home/kirater/registry/docker/registry/v2/repositories/nginx/_manifests/tags/latest/index
+   /home/kirater/registry/docker/registry/v2/repositories/nginx/_manifests/tags/latest/index/sha256
    ...
    ...
-   /home/rasca/registry/docker/registry/v2/repositories/nginx/_uploads
+   /home/kirater/registry/docker/registry/v2/repositories/nginx/_uploads
 
    $ curl -s http://localhost:5000/v2/_catalog | jq
    {
@@ -138,7 +138,9 @@
      ]
    }
 
-   $ ./registry.py -r http://localhost:5000
+   $ docker run --rm \
+       --network host \
+       anoxis/registry-cli -r http://localhost:5000 -i nginx
    ---------------------------------
    Image: nginx
      tag: latest
