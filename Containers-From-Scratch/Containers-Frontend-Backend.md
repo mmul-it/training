@@ -65,7 +65,7 @@ In this lab you will:
    and set privileges:
 
    ```console
-   $ docker exec -it backend mysql -uroot -p
+   $ docker exec -it backend mariadb -uroot -p
    Enter password:
    Welcome to the MariaDB monitor.  Commands end with ; or \g.
    ...
