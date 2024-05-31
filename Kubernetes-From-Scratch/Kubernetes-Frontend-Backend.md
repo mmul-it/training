@@ -111,7 +111,7 @@ In this lab you will:
    Forwarding from [::1]:8080 -> 80
    ```
 
-   And froma another terminal use `lynx` to catch the problem:
+   And from another terminal use `lynx` to catch the problem:
 
    ```console
    $ lynx localhost:8080 -dump
