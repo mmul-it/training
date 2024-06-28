@@ -72,7 +72,8 @@ In this lab you will:
    output:
 
    ```console
-   $ docker run --detach --name nginx --rm --publish 8888:80 my-new-shiny-nginx
+   $ docker run --detach --name my-new-shiny-nginx --rm --publish 8888:80 my-new-shiny-nginx
+   eee76f1d96d305bbf3e71a1a6a6be9019cf7929f685aaa2da26d0f3aab749b7a
 
    $ curl localhost:8888
    My new shiny Nginx container image
