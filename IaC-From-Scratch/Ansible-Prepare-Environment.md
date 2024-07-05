@@ -18,9 +18,6 @@ In this lab you will:
 
    $ source ansible-venv/bin/activate
    (no output)
-
-   (ansible-venv) $ uptime
-   15:07:20 up 21 days,  4:04,  1 user,  load average: 0.65, 0.55, 0.51
    ```
 
 2. Inside the Virtual Environment the `pip` command can be used to install
@@ -80,9 +77,6 @@ In this lab you will:
 
    (ansible-venv) $ cat .ssh/id_rsa.pub >> .ssh/authorized_keys
    (no output)
-
-   (ansible-venv) $ ssh kirater@172.18.0.1 uptime
-    12:15:23 up  1:24,  1 user,  load average: 0.65, 1.06, 1.08
 
    (ansible-venv) $ ssh localhost uptime
    The authenticity of host 'localhost (::1)' can't be established.
