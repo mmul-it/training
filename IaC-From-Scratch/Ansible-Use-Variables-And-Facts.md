@@ -17,7 +17,7 @@ In this lab you will:
    ```yaml
    ---
    - hosts: localhost
-     gather_facts: yes
+     gather_facts: true
    ```
 
 2. The IP address can be obtained by the `ansible_default_ipv4.address` fact, so
@@ -50,7 +50,7 @@ In this lab you will:
    ```yaml
    ---
    - hosts: localhost
-     gather_facts: yes
+     gather_facts: true
      vars:
        myvar: "This is the default of my variable"
      tasks:

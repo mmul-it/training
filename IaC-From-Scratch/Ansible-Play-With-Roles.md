@@ -40,7 +40,7 @@ In this lab you will:
    ```yaml
    ---
    - hosts: localhost
-     gather_facts: yes
+     gather_facts: true
      vars:
        myvar: "This is the default of my variable"
      roles:
@@ -90,13 +90,13 @@ In this lab you will:
    ```
 
 5. The role can be included the same way as the custom one, but an additional
-   `become: yes` directive should be declared in the playbook, because the role
+   `become: true` directive should be declared in the playbook, because the role
    will need permissions to install software, so to become `root`:
 
    ```yaml
    ---
    - hosts: localhost
-     gather_facts: yes
+     gather_facts: true
      vars:
        myvar: "This is the default of my variable"
      roles:
