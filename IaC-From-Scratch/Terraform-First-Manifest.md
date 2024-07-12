@@ -77,7 +77,7 @@ In this lab you will:
    The third one is the `docker_image` resource:
 
    ```hcl
-   resource "docker_image" "nginx" {
+   resource "docker_image" "webserver" {
      name = "nginx:latest"
    }
    ```
@@ -85,9 +85,9 @@ In this lab you will:
    The last one the container itself:
 
    ```hcl
-   resource "docker_container" "nginx" {
-     image = docker_image.nginx.name
-     name = "nginx_container"
+   resource "docker_container" "webserver" {
+     image = docker_image.webserver.name
+     name = "webserver_container"
      ports {
        internal = 80
        external = 8080
@@ -108,13 +108,13 @@ In this lab you will:
 
    provider "docker" {}
 
-   resource "docker_image" "nginx" {
+   resource "docker_image" "webserver" {
      name = "nginx:latest"
    }
 
-   resource "docker_container" "nginx" {
-     image = docker_image.nginx.name
-     name = "nginx_container"
+   resource "docker_container" "webserver" {
+     image = docker_image.webserver.name
+     name = "webserver_container"
      ports {
        internal = 80
        external = 8080
@@ -167,12 +167,12 @@ In this lab you will:
 
    Terraform will perform the following actions:
 
-     # docker_container.nginx will be created
-     + resource "docker_container" "nginx" {
+     # docker_container.webserver will be created
+     + resource "docker_container" "webserver" {
    ...
    ...
-     # docker_image.nginx will be created
-     + resource "docker_image" "nginx" {
+     # docker_image.webserver will be created
+     + resource "docker_image" "webserver" {
    ...
    ...
    Plan: 2 to add, 0 to change, 0 to destroy.
@@ -192,19 +192,19 @@ In this lab you will:
 
    Terraform will perform the following actions:
 
-     # docker_container.nginx will be created
-     + resource "docker_container" "nginx" {
+     # docker_container.webserver will be created
+     + resource "docker_container" "webserver" {
    ...
    ...
-     # docker_image.nginx will be created
-     + resource "docker_image" "nginx" {
+     # docker_image.webserver will be created
+     + resource "docker_image" "webserver" {
    ...
    ...
    Plan: 2 to add, 0 to change, 0 to destroy.
-   docker_image.nginx: Creating...
-   docker_image.nginx: Creation complete after 4s [id=sha256:fffffc90d343cbcb01a5032edac86db5998c536cd0a366514121a45c6723765cnginx:latest]
-   docker_container.nginx: Creating...
-   docker_container.nginx: Creation complete after 0s [id=50d56a4aa6ca8f1bca478be9300367fcd27461afd0a29d0c15dbf5a6df098f47]
+   docker_image.webserver: Creating...
+   docker_image.webserver: Creation complete after 4s [id=sha256:fffffc90d343cbcb01a5032edac86db5998c536cd0a366514121a45c6723765cnginx:latest]
+   docker_container.webserver: Creating...
+   docker_container.webserver: Creation complete after 0s [id=50d56a4aa6ca8f1bca478be9300367fcd27461afd0a29d0c15dbf5a6df098f47]
 
    Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
    ```
@@ -214,7 +214,7 @@ In this lab you will:
    ```console
    $ docker ps
    CONTAINER ID   IMAGE          COMMAND                  CREATED              STATUS              PORTS                  NAMES
-   50d56a4aa6ca   nginx:latest   "/docker-entrypoint.…"   About a minute ago   Up About a minute   0.0.0.0:8080->80/tcp   nginx_container
+   50d56a4aa6ca   nginx:latest   "/docker-entrypoint.…"   About a minute ago   Up About a minute   0.0.0.0:8080->80/tcp   webserver_container
 
    $ curl localhost:8080
    <!DOCTYPE html>
@@ -246,23 +246,23 @@ In this lab you will:
 
    ```console
    $ terraform destroy -auto-approve
-   docker_image.nginx: Refreshing state... [id=sha256:fffffc90d343cbcb01a5032edac86db5998c536cd0a366514121a45c6723765cnginx:latest]
-   docker_container.nginx: Refreshing state... [id=50d56a4aa6ca8f1bca478be9300367fcd27461afd0a29d0c15dbf5a6df098f47]
+   docker_image.webserver: Refreshing state... [id=sha256:fffffc90d343cbcb01a5032edac86db5998c536cd0a366514121a45c6723765cnginx:latest]
+   docker_container.webserver: Refreshing state... [id=50d56a4aa6ca8f1bca478be9300367fcd27461afd0a29d0c15dbf5a6df098f47]
 
    Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
      - destroy
 
    Terraform will perform the following actions:
 
-     # docker_container.nginx will be destroyed
-     - resource "docker_container" "nginx" {
+     # docker_container.webserver will be destroyed
+     - resource "docker_container" "webserver" {
    ...
    ...
    Plan: 0 to add, 0 to change, 2 to destroy.
-   docker_container.nginx: Destroying... [id=50d56a4aa6ca8f1bca478be9300367fcd27461afd0a29d0c15dbf5a6df098f47]
-   docker_container.nginx: Destruction complete after 0s
-   docker_image.nginx: Destroying... [id=sha256:fffffc90d343cbcb01a5032edac86db5998c536cd0a366514121a45c6723765cnginx:latest]
-   docker_image.nginx: Destruction complete after 0s
+   docker_container.webserver: Destroying... [id=50d56a4aa6ca8f1bca478be9300367fcd27461afd0a29d0c15dbf5a6df098f47]
+   docker_container.webserver: Destruction complete after 0s
+   docker_image.webserver: Destroying... [id=sha256:fffffc90d343cbcb01a5032edac86db5998c536cd0a366514121a45c6723765cnginx:latest]
+   docker_image.webserver: Destruction complete after 0s
 
    Destroy complete! Resources: 2 destroyed.
 
