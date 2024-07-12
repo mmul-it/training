@@ -17,7 +17,7 @@ In this lab you will:
    configurations without any variable passed at command line.
 4. Test the deployment and destroy it.
 5. Apply again the manifests by passing the value `httpd:latest` as `image_name`
-   and `9090 ` as  `host_port`.
+   and `9090` as `host_port`.
 6. Test the deployment and destroy it.
 
 ## Solution
