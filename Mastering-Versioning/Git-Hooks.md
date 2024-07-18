@@ -98,7 +98,7 @@ In this lab you will:
    grep -q '^feat: \|^bug: ' \$1 &> /dev/null
    if [ \$? -ne 0 ]
     then
-     echo "[ERROR] Commit must start with 'feat:' or 'bug:!'"
+     echo "[ERROR] Commit must start with 'feat:' or 'bug:'!"
      exit 1
    fi
    EOF
@@ -121,7 +121,7 @@ In this lab you will:
    (no output)
 
    ~/myrepo $ git commit -m "Test commit-msg hook" -m "Extended description of the commit"
-   [ERROR] Commit must start with 'feat:' or 'bug:!'
+   [ERROR] Commit must start with 'feat:' or 'bug:'!
    ```
 
 6. To commit in any case, skipping the Git hook execution, the `--no-verify`
