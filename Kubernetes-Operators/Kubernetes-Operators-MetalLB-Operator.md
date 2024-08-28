@@ -3,12 +3,31 @@
 In this lab you will install, configure and create the custom resources from
 the MetalLB operator.
 
+## Operator's requirements
+
+To enable the Kubernetes cluster properly support MetalLB, the `ipvs`
+configuration of the `KubeProxyConfiguration` resource needs to have the
+`strictARP` setting to true (check the [MetalLB offical documentation](https://metallb.universe.tf/installation/#preparation)).
+
+This is a one command operation:
+
+```console
+$ kubectl get configmap kube-proxy -n kube-system -o yaml | \
+sed -e "s/strictARP: false/strictARP: true/" | \
+kubectl apply -f - -n kube-system
+configmap/kube-proxy configured
+```
+
+It is now time to install the operator.
+
 ## Operator's initialization
 
 Installation can be made directly by pointing to the GitHub's yaml:
 
 ```console
-$ kubectl create -f https://raw.githubusercontent.com/metallb/metallb-operator/main/bin/metallb-operator.yaml
+$ export METALLB_VERSION='v0.13.11'
+
+$ kubectl create -f https://raw.githubusercontent.com/metallb/metallb-operator/${METALLB_VERSION}/bin/metallb-operator.yaml
 namespace/metallb-system created
 ...
 clusterrolebinding.rbac.authorization.k8s.io/metallb-system:speaker created
@@ -112,6 +131,7 @@ metadata:
 spec:
   ipAddressPools:
   - mypool1
+EOF
 ```
 
 This will enable the configured pool to be advertised inside the destination
