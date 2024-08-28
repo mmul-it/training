@@ -9,10 +9,20 @@ steps to install the `operator-sdk` tool are as simple as:
 
 ```console
 $ export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
+(no output)
+
 $ export OS=$(uname | awk '{print tolower($0)}')
+(no output)
+
 $ export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/v1.32.0
+(no output)
+
 $ curl -LO ${OPERATOR_SDK_DL_URL}/operator-sdk_${OS}_${ARCH}
-$ sudo chmod +x operator-sdk_${OS}_${ARCH}
+...
+
+$ sudo chmod -v +x operator-sdk_${OS}_${ARCH}
+mode of 'operator-sdk_linux_amd64' changed from 0644 (rw-r--r--) to 0755 (rwxr-xr-x)
+
 $ sudo mv operator-sdk_${OS}_${ARCH} /usr/local/bin/operator-sdk
 renamed 'operator-sdk_linux_amd64' -> '/usr/local/bin/operator-sdk'
 ```
@@ -31,16 +41,17 @@ To automate some of the processes around the Operators installation the `make`
 command will be more than useful, so it needs to be installed:
 
 ```bash
-$ yum -y install make
+$ sudo yum -y install make
 ...
 ```
 
 The test operator that will be implemented will use Ansible, and so there are
 some [additional packages](https://sdk.operatorframework.io/docs/building-operators/ansible/installation/)
 to install to fully cover the requirements, like `docker` and `python` which
-should be already available on the test environment.
+should be already available on the test environment, but can be easily installed
+by following the [Lab | Install Docker](https://github.com/mmul-it/training/blob/master/Common/Containers-Install-Docker.md).
 
-Last but not least every operator rely on a container image which should be
+Last but not least every operator relies on a container image which should be
 accessible from any environment in which the operator will be installed.
 
 In this lab the Quay public repo will be used, and to check the ability to
@@ -61,3 +72,7 @@ pushed on the Quay registry.
 
 Info about how to create an account and enable permission on it can be found
 looking at the [Quay website tutorial](https://quay.io/tutorial/).
+
+The credentials to access the lab repo will be given by the instructor, who will
+access the [Credentials for mmul+kiraop](https://quay.io/repository/mmul/kiraop?tab=settings)
+and retrieve "the Username & Robot Account".
