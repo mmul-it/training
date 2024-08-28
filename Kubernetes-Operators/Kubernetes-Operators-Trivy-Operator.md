@@ -9,7 +9,7 @@ on your Kubernetes cluster. To get one check [DevSecOps-Pipeline-Requirements.md
 As simple as:
 
 ```console
-$ export TRIVY_OPERATOR_VERSION=v0.17.1
+$ export TRIVY_OPERATOR_VERSION=v0.22.0
 
 $ kubectl apply -f https://raw.githubusercontent.com/aquasecurity/trivy-operator/$TRIVY_OPERATOR_VERSION/deploy/static/trivy-operator.yaml
 customresourcedefinition.apiextensions.k8s.io/clustercompliancereports.aquasecurity.github.io configured
@@ -239,7 +239,7 @@ Events:              <none>
 
 ## Activate useful utilities with kubectl
 
-- Install krew:
+- Install krew (note the `git` package is a requirement):
 
 ```console
 $ curl -LO https://github.com/kubernetes-sigs/krew/releases/download/v0.4.4/krew-linux_amd64.tar.gz
@@ -326,4 +326,13 @@ trivy-system  │ ├─Pod/trivy-operator-5cd7878587-vgxtg                     
 trivy-system  │ ├─SbomReport/replicaset-trivy-operator-5cd7878587-trivy-operator           -              116m
 trivy-system  │ └─VulnerabilityReport/replicaset-trivy-operator-5cd7878587-trivy-operator  -              116m
 trivy-system  └─ReplicaSet/trivy-operator-bcdbc766f                                        -              118m
+```
+
+## Cleanup the namespace
+
+To remove the previously created namespace just use `kubectl delete`:
+
+```console
+$ kubectl delete namespace myns
+namespace "myns" deleted
 ```
