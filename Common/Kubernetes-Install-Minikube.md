@@ -132,10 +132,10 @@ Make it available in your shell:
 $ find .minikube/ -name kubectl
 .minikube/cache/linux/amd64/v1.25.3/kubectl
 
-$ echo 'PATH=.minikube/cache/linux/amd64/v1.25.3/:$PATH' >> ~/.bash_profile
+$ echo 'PATH=.minikube/cache/linux/amd64/v1.30.0/:$PATH' >> ~/.bash_profile
 (no output)
 
-$ source ~/.bash_profile
+$ export PATH=.minikube/cache/linux/amd64/v1.30.0/:$PATH
 (no output)
 
 $ kubectl get po -A
@@ -173,7 +173,7 @@ $ kubectl completion bash > ~/.kubectl-completion
 $ echo "source ~/.kubectl-completion" >> ~/.bash_profile
 (no output)
 
-$ source ~/.bash_profile
+$ source ~/.kubectl-completion
 (no output)
 
 $ kubectl <PRESS TAB>
