@@ -132,7 +132,7 @@ service/mariadb-0 exposed
 And check the status with `kubectl get service mariadb-0`:
 
 ```console
-$ kubectl -n mariadb-test get service mariadb-0 
+$ kubectl -n mariadb-test get service mariadb-0
 NAME        TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)          AGE
 mariadb-0   LoadBalancer   10.96.129.190   192.168.99.222   3306:32128/TCP   28s
 ```

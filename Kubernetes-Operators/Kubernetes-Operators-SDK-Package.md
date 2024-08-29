@@ -246,7 +246,7 @@ terminated:
 NAME                                             READY   STATUS        RESTARTS   AGE
 pod/kiraop-controller-manager-67647ddd67-b4nfd   2/2     Running       0          33s
 pod/kiraop-controller-manager-74c5b64f64-d658z   2/2     Terminating   0          28m
-
+```
 
 To verify everything is working force a custom resource creation as follows:
 

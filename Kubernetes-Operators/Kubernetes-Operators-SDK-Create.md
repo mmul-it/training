@@ -221,7 +221,7 @@ docker build -t quay.io/mmul/kiraop:v0.0.1 .
  => [internal] load build definition from Dockerfile
 ...
 ...
-docker push quay.io/mmul/kiraop:v0.0.1 
+docker push quay.io/mmul/kiraop:v0.0.1
 The push refers to repository [quay.io/mmul/kiraop]
 v0.0.1: digest: sha256:46771d9b5bc5c92e6cbaa8d6d36c907c25566db8ab45c8c98742a0472d61dde8 size: 3452
 ```
