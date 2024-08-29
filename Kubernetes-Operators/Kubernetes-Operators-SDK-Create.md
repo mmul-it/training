@@ -183,6 +183,7 @@ rules:
       - deployments
       - services
       - secrets
+      - configmaps
       - pods
       - pods/exec
       - pods/log
@@ -192,32 +193,8 @@ rules:
 
 ## Operator's container image build
 
-With everything in place it is time to build the operator container. Since the
-container will be pushed somewhere in a public registry, a specific name needs
-to be set.
-
-The `IMAGE_TAG_BASE` and `IMG` should not change during the life cycle of the
-operator, so can be hard-coded inside the `Makefile`:
-
-```console
-$ sed -i -e 's/^IMAGE_TAG_BASE ?= .*/IMAGE_TAG_BASE ?= quay.io\/mmul\/kiraop/g' Makefile
-(no output)
-
-$ grep ^IMAGE_TAG_BASE Makefile
-IMAGE_TAG_BASE ?= quay.io/mmul/kiraop
-
-$ sed -i -e 's/^IMG ?= .*/IMG ?= $(IMAGE_TAG_BASE):$(VERSION)/g' Makefile
-(no output)
-
-$ grep ^IMG Makefile
-IMG ?= $(IMAGE_TAG_BASE):$(VERSION)
-```
-
-This will make us able to pass just the `VERSION` parameter in the next
-commands.
-
-It is mandatory to have login powers to the destination registry, and this can
-be achieved by using `docker login`:
+Since we will push a generated container image inside a remote repository, we
+will need to authenticate on it. This can be achieved by using `docker login`:
 
 ```console
 $ docker login quay.io -u 'mmul+kiraop'
@@ -229,41 +206,32 @@ https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 Login Succeeded
 ```
 
+With everything in place it is time to build the operator container. Since the
+container will be pushed somewhere in a public registry, a specific name needs
+to be set.
+
+The best approach is to pass the correct `IMG` value so that it will be
+processed by the `Makefile`:
 Not it is time to effectively build and push the operator container image:
 
 ```console
-$ VERSION=v0.0.1 make docker-build docker-push
-docker build -t quay.io/mmul/kiraop:0.0.1 .
+$ IMG=quay.io/mmul/kiraop:v0.0.1 make docker-build docker-push
+docker build -t quay.io/mmul/kiraop:v0.0.1 .
 [+] Building 0.8s (11/11) FINISHED                                                        docker:default
  => [internal] load build definition from Dockerfile
 ...
 ...
-docker push quay.io/mmul/kiraop:0.0.1
+docker push quay.io/mmul/kiraop:v0.0.1 
 The push refers to repository [quay.io/mmul/kiraop]
-40112080b803: Pushed
-3ef22fa65bd4: Pushed
-ad3524b33cdd: Pushed
-8a4ecb6fa7a9: Pushed
-e643d0a73d6f: Pushed
-d558eb29f828: Mounted from operator-framework/ansible-operator
-5f70bf18a086: Mounted from operator-framework/ansible-operator
-b2280ff3b4f1: Mounted from operator-framework/ansible-operator
-35f39bef42b5: Mounted from operator-framework/ansible-operator
-e52bf27270ec: Mounted from operator-framework/ansible-operator
-816eef7f4aac: Mounted from operator-framework/ansible-operator
-18e82a61fc56: Mounted from operator-framework/ansible-operator
-fe69b5b7445f: Mounted from operator-framework/ansible-operator
-00e0d697268b: Mounted from operator-framework/ansible-operator
-815ca85c5fa5: Mounted from operator-framework/ansible-operator
-0.0.1: digest: sha256:5faf62fc61e1d27289184aadc4413b4cbaa0482dcf0a2506d8ae5d90a64c43c3 size: 3452
+v0.0.1: digest: sha256:46771d9b5bc5c92e6cbaa8d6d36c907c25566db8ab45c8c98742a0472d61dde8 size: 3452
 ```
 
-Since the image is available the operator can be installed by using
+Now that the image is available, the operator can be installed by using
 `make deploy`. This will try to install everything inside the default Kubernetes
 cluster accessible via `kubectl`:
 
 ```console
-$ VERSION=v0.0.1 make deploy
+$ IMG=quay.io/mmul/kiraop:v0.0.1 make deploy
 cd config/manager && /home/kirater/kiraop/bin/kustomize edit set image controller=quay.io/mmul/kiraop:v0.0.1
 /home/kirater/kiraop/bin/kustomize build config/default | kubectl apply -f -
 namespace/kiraop-system created
@@ -310,7 +278,7 @@ akits.kiratech.it                                      2024-08-28T15:13:54Z
 Testing the operator is possible by creating its CRD:
 
 ```console
-[kirater@training-kfs-minikube kiraop]$ cat << EOF | kubectl apply -f -
+$ cat << EOF | kubectl apply -f -
 apiVersion: kiratech.it/v1alpha1
 kind: Akit
 metadata:
@@ -325,29 +293,29 @@ akit.cache.kiratech.it/akit-sample created
 And monitor everything:
 
 ```console
-[kirater@training-kfs-minikube kiraop]$ kubectl get akit
+$ kubectl get akit
 NAME          AGE
 akit-sample   16s
 
-[kirater@training-kfs-minikube kiraop]$ kubectl -n mions get all
+$ kubectl -n mions get all
 NAME                        READY   STATUS    RESTARTS   AGE
-pod/akit-768dbfc955-xcpcg   1/1     Running   0          16s
+pod/akit-5cf7b8469-srbc4   1/1     Running   0          16s
 
 NAME              TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)        AGE
-service/akit      ClusterIP      10.100.144.58   <none>           80/TCP         13s
-service/akit-lb   LoadBalancer   10.102.202.28   192.168.99.101   80:31147/TCP   11s
+service/akit      ClusterIP      10.96.180.87    <none>           80/TCP         14s
+service/akit-lb   LoadBalancer   10.111.247.71   192.168.99.220   80:30908/TCP   12s
 
 NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/akit   1/1     1            1           16s
 
-NAME                              DESIRED   CURRENT   READY   AGE
-replicaset.apps/akit-768dbfc955   1         1         1       16s
+NAME                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/akit-5cf7b8469   1         1         1       16s
 ```
 
 And, just for fun:
 
 ```console
-[kirater@training-kfs-minikube kiraop]$ curl -s 192.168.99.101 | grep Welcome
+$ curl -s 192.168.99.220 | grep Welcome
 <title>Welcome to nginx!</title>
 <h1>Welcome to nginx!</h1>
 ```
@@ -378,29 +346,3 @@ FIELDS:
 
 The content of this was generated by the SDK and can be customized by editing
 the `config/crd/bases/kiratech.it_akits.yaml` file.
-
-## Deploying a specific operator's version
-
-It is important to note how specific operator versions can be created or
-deployed by using the `VERSION` environmental variable.
-
-To build and push a new version of the operator:
-
-```console
-$ VERSION=0.0.2 make docker-build docker-push
-...
-...
-```
-
-This will produce an image named `quay.io/mmul/kiraop:0.0.2` and to deploy it:
-
-```console
-$ VERSION=0.0.2 make deploy
-cd config/manager && /home/kirater/operators/kiraop/bin/kustomize edit set image controller=quay.io/mmul/kiraop:0.0.3
-/home/kirater/operators/kiraop/bin/kustomize build config/default | kubectl apply -f -
-...
-...
-```
-
-It is useful to remember the role of the `latest` tag, which represents the
-latest deployed image.
