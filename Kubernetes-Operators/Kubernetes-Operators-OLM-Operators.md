@@ -11,50 +11,33 @@ command:
 ```console
 $ operator-sdk olm install
 INFO[0000] Fetching CRDs for version "latest"
-INFO[0000] Fetching resources for resolved version "latest"
-INFO[0001] Creating CRDs and resources
-INFO[0001]   Creating CustomResourceDefinition "catalogsources.operators.coreos.com"
-INFO[0001]   CustomResourceDefinition "catalogsources.operators.coreos.com" created
-INFO[0001]   Creating CustomResourceDefinition "clusterserviceversions.operators.coreos.com"
-INFO[0001]   CustomResourceDefinition "clusterserviceversions.operators.coreos.com" created
-INFO[0001]   Creating CustomResourceDefinition "installplans.operators.coreos.com"
-INFO[0001]   CustomResourceDefinition "installplans.operators.coreos.com" created
-INFO[0001]   Creating CustomResourceDefinition "olmconfigs.operators.coreos.com"
-INFO[0001]   CustomResourceDefinition "olmconfigs.operators.coreos.com" created
-INFO[0001]   Creating CustomResourceDefinition "operatorconditions.operators.coreos.com"
-INFO[0001]   CustomResourceDefinition "operatorconditions.operators.coreos.com" created
-INFO[0001]   Creating CustomResourceDefinition "operatorgroups.operators.coreos.com"
-INFO[0001]   CustomResourceDefinition "operatorgroups.operators.coreos.com" created
-INFO[0001]   Creating CustomResourceDefinition "operators.operators.coreos.com"
-INFO[0001]   CustomResourceDefinition "operators.operators.coreos.com" created
-INFO[0001]   Creating CustomResourceDefinition "subscriptions.operators.coreos.com"
-INFO[0002]   CustomResourceDefinition "subscriptions.operators.coreos.com" created
-INFO[0002]   Creating Namespace "olm"
-INFO[0002]   Namespace "olm" created
-INFO[0002]   Creating Namespace "operators"
-INFO[0002]   Namespace "operators" created
-INFO[0002]   Creating ServiceAccount "olm/olm-operator-serviceaccount"
-INFO[0002]   ServiceAccount "olm/olm-operator-serviceaccount" created
-INFO[0002]   Creating ClusterRole "system:controller:operator-lifecycle-manager"
-INFO[0002]   ClusterRole "system:controller:operator-lifecycle-manager" created
-INFO[0002]   Creating ClusterRoleBinding "olm-operator-binding-olm"
-INFO[0002]   ClusterRoleBinding "olm-operator-binding-olm" created
-INFO[0002]   Creating OLMConfig "cluster"
-INFO[0004]   OLMConfig "cluster" created
-INFO[0004]   Creating Deployment "olm/olm-operator"
-INFO[0004]   Deployment "olm/olm-operator" created
-INFO[0004]   Creating Deployment "olm/catalog-operator"
-INFO[0004]   Deployment "olm/catalog-operator" created
-INFO[0004]   Creating ClusterRole "aggregate-olm-edit"
-INFO[0004]   ClusterRole "aggregate-olm-edit" created
-INFO[0004]   Creating ClusterRole "aggregate-olm-view"
-INFO[0004]   ClusterRole "aggregate-olm-view" created
-INFO[0004]   Creating OperatorGroup "operators/global-operators"
-INFO[0004]   OperatorGroup "operators/global-operators" created
-INFO[0004]   Creating OperatorGroup "olm/olm-operators"
-INFO[0004]   OperatorGroup "olm/olm-operators" created
-INFO[0004]   Creating ClusterServiceVersion "olm/packageserver"
-INFO[0004]   ClusterServiceVersion "olm/packageserver" created
+...
+...
+INFO[0029] Successfully installed OLM version "latest"  
+
+NAME                                            NAMESPACE    KIND                        STATUS
+catalogsources.operators.coreos.com                          CustomResourceDefinition    Installed
+clusterserviceversions.operators.coreos.com                  CustomResourceDefinition    Installed
+installplans.operators.coreos.com                            CustomResourceDefinition    Installed
+olmconfigs.operators.coreos.com                              CustomResourceDefinition    Installed
+operatorconditions.operators.coreos.com                      CustomResourceDefinition    Installed
+operatorgroups.operators.coreos.com                          CustomResourceDefinition    Installed
+operators.operators.coreos.com                               CustomResourceDefinition    Installed
+subscriptions.operators.coreos.com                           CustomResourceDefinition    Installed
+olm                                                          Namespace                   Installed
+operators                                                    Namespace                   Installed
+olm-operator-serviceaccount                     olm          ServiceAccount              Installed
+system:controller:operator-lifecycle-manager                 ClusterRole                 Installed
+olm-operator-binding-olm                                     ClusterRoleBinding          Installed
+cluster                                                      OLMConfig                   Installed
+olm-operator                                    olm          Deployment                  Installed
+catalog-operator                                olm          Deployment                  Installed
+aggregate-olm-edit                                           ClusterRole                 Installed
+aggregate-olm-view                                           ClusterRole                 Installed
+global-operators                                operators    OperatorGroup               Installed
+olm-operators                                   olm          OperatorGroup               Installed
+packageserver                                   olm          ClusterServiceVersion       Installed
+operatorhubio-catalog                           olm          CatalogSource               Installed
 ```
 
 After the command completion the system will be ready to support all the OLM
@@ -102,20 +85,29 @@ successful installation.
 ### Remove any previous installation of the Trivy operator
 
 Since the Trivy operator might have been already installed in the systemd, to
-cleanup the system, a manual uninstallation should be performed:
+cleanup the system, this command sequence could be performed:
 
 ```console
-$ export TRIVY_OPERATOR_VERSION=v0.17.1
-
-$ kubectl delete -f https://raw.githubusercontent.com/aquasecurity/trivy-operator/$TRIVY_OPERATOR_VERSION/deploy/static/trivy-operator.yaml
-customresourcedefinition.apiextensions.k8s.io "clustercompliancereports.aquasecurity.github.io" deleted
-customresourcedefinition.apiextensions.k8s.io "clusterconfigauditreports.aquasecurity.github.io" deleted
-customresourcedefinition.apiextensions.k8s.io "clusterinfraassessmentreports.aquasecurity.github.io" deleted
-...
+kubectl -n trivy-system delete subscription trivy-operator-subscription
+kubectl -n trivy-system delete clusterserviceversion trivy-operator.v0.22.0
+kubectl -n trivy-system delete operatorgroup trivy-operator-group
+kubectl delete ns trivy-system
+kubectl delete crd vulnerabilityreports.aquasecurity.github.io
+kubectl delete crd exposedsecretreports.aquasecurity.github.io
+kubectl delete crd configauditreports.aquasecurity.github.io
+kubectl delete crd clusterconfigauditreports.aquasecurity.github.io
+kubectl delete crd rbacassessmentreports.aquasecurity.github.io
+kubectl delete crd infraassessmentreports.aquasecurity.github.io
+kubectl delete crd clusterrbacassessmentreports.aquasecurity.github.io
+kubectl delete crd clustercompliancereports.aquasecurity.github.io
+kubectl delete crd clusterinfraassessmentreports.aquasecurity.github.io
+kubectl delete crd clusterconfigauditreports.aquasecurity.github.io
+kubectl delete crd sbomreports.aquasecurity.github.io
+kubectl delete crd clustersbomreports.aquasecurity.github.io
+kubectl delete crd clustervulnerabilityreports.aquasecurity.github.io
 ```
 
-Lastly the `trivy-system` namespace where the OLM resources will be placed
-needs to be created:
+So, to start again, the `trivy-system` namespace will be created:
 
 ```console
 $ kubectl create namespace trivy-system
@@ -151,45 +143,70 @@ spec:
   name: trivy-operator
   source: operatorhubio-catalog
   sourceNamespace: olm
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
+  #startingCSV: trivy-operator.v0.22.0
+  startingCSV: trivy-operator.v0.17.1
   config:
     env:
     - name: OPERATOR_EXCLUDE_NAMESPACES
-      value: "kube-system,trivy-system"
+      value: "kube-system"
 EOF
 subscription.operators.coreos.com/trivy-operator-subscription created
 ```
 
-The operator will be installed in the `trivy-system` namespace and will select
-all namespaces, except `kube-system` and `trivy-system`.
+Since we choose a specific `startingCSV` version with `Manual` as
+`installPlanApproval`, the install plan will be in a `pending` status:
 
-After install, watch the operator come up using the following command:
+```console
+$ kubectl -n trivy-system get operatorgroup,subscriptions,installplans
+NAME                                                      AGE
+operatorgroup.operators.coreos.com/trivy-operator-group   19s
 
-```bash
-$ kubectl get clusterserviceversions -n trivy-system
-NAME                     DISPLAY          VERSION   REPLACES                 PHASE
-trivy-operator.v0.16.3   Trivy Operator   0.16.3    trivy-operator.v0.16.2   InstallReady
-...
-trivy-operator.v0.16.3   Trivy Operator   0.16.3    trivy-operator.v0.16.2   Installing
-...
-trivy-operator.v0.16.3   Trivy Operator   0.16.3    trivy-operator.v0.16.2   Succeeded
+NAME                                                            PACKAGE          SOURCE                  CHANNEL
+subscription.operators.coreos.com/trivy-operator-subscription   trivy-operator   operatorhubio-catalog   alpha
+
+NAME                                             CSV                      APPROVAL   APPROVED
+installplan.operators.coreos.com/install-wtqp9   trivy-operator.v0.17.1   Manual     false
 ```
 
-When the above command succeeds and the `ClusterServiceVersion` has transitioned
-from `Installing` to `Succeeded` phase you will also find the operator's
-Deployment in the same namespace where the Subscription is:
+To approve the deployment patch the `installplan` resource:
+
+```console
+$ kubectl -n trivy-system patch installplan install-wtqp9 --type merge -p '{"spec": {"approved":true}}'
+installplan.operators.coreos.com/install-wtqp9 patched
+```
+
+This will unlock things, creating also the `ClusterServiceVersion` resource:
+
+```console
+$ kubectl -n trivy-system get operatorgroup,subscriptions,installplans,csv
+NAME                                                      AGE
+operatorgroup.operators.coreos.com/trivy-operator-group   112s
+
+NAME                                                            PACKAGE          SOURCE                  CHANNEL
+subscription.operators.coreos.com/trivy-operator-subscription   trivy-operator   operatorhubio-catalog   alpha
+
+NAME                                             CSV                      APPROVAL   APPROVED
+installplan.operators.coreos.com/install-wtqp9   trivy-operator.v0.17.1   Manual     true
+installplan.operators.coreos.com/install-ztclm   trivy-operator.v0.18.0   Manual     false
+
+NAME                                                                DISPLAY          VERSION   REPLACES                 PHASE
+clusterserviceversion.operators.coreos.com/trivy-operator.v0.17.1   Trivy Operator   0.17.1    trivy-operator.v0.17.0   Succeeded
+```
+
+The operator will be installed in the `trivy-system` namespace and will select
+all namespaces, except `kube-system`:
 
 ```bash
-$ kubectl get deployments -n trivy-system
+$ kubectl -n trivy-system get deployments
 NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
 trivy-operator   1/1     1            1           11m
 ```
 
-If for some reason it's not ready yet, check the logs of the Deployment for
-errors:
+Startup problems can be debugged by looking into the deployment's logs:
 
 ```bash
-$ kubectl logs deployment/trivy-operator -n trivy-system
+$ kubectl -n trivy-system logs deployment/trivy-operator
 ...
 ```
 

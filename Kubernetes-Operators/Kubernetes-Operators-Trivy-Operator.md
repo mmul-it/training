@@ -11,7 +11,7 @@ As simple as:
 ```console
 $ export TRIVY_OPERATOR_VERSION=v0.22.0
 
-$ kubectl apply -f https://raw.githubusercontent.com/aquasecurity/trivy-operator/$TRIVY_OPERATOR_VERSION/deploy/static/trivy-operator.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/aquasecurity/trivy-operator/${TRIVY_OPERATOR_VERSION}/deploy/static/trivy-operator.yaml
 customresourcedefinition.apiextensions.k8s.io/clustercompliancereports.aquasecurity.github.io configured
 customresourcedefinition.apiextensions.k8s.io/clusterconfigauditreports.aquasecurity.github.io configured
 customresourcedefinition.apiextensions.k8s.io/clusterinfraassessmentreports.aquasecurity.github.io configured
