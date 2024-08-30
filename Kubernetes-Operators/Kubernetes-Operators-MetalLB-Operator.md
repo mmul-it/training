@@ -69,6 +69,37 @@ replicaset.apps/metallb-operator-controller-manager-7c46d89759   1         1    
 replicaset.apps/metallb-operator-webhook-server-7ccc476797       1         1         1       15m
 ```
 
+### Recent MetalLB versions and node labels
+
+A change applied in the `0.14.*` versions of MetalLB checks for the presence (or
+not) of a specific label named `exclude-from-external-load-balancers` on the
+nodes, and if it is present IP advertisment (and so the load balancer itself)
+will not work.
+
+To check if the label is present on the nodes use `kubectl`:
+
+```console
+$ kubectl get nodes --selector=node.kubernetes.io/exclude-from-external-load-balancers
+NAME              STATUS   ROLES           AGE   VERSION
+training-kfs-01   Ready    control-plane   55m   v1.30.4
+training-kfs-02   Ready    control-plane   55m   v1.30.4
+training-kfs-03   Ready    control-plane   54m   v1.30.4
+```
+
+Since this lab is an hyperconverged one, where nodes act both as control-plane
+and workers, it is safe to remove that label to make MetalLB work properly:
+
+```console
+$ for node in $(kubectl get nodes --selector=node.kubernetes.io/exclude-from-external-load-balancers -o name); do \
+    kubectl label $node node.kubernetes.io/exclude-from-external-load-balancers-; \
+  done
+node/training-kfs-01 unlabeled
+node/training-kfs-02 unlabeled
+node/training-kfs-03 unlabeled
+```
+
+For more details about this, check [this GitHub issue in the MetalLB project](https://github.com/metallb/metallb-operator/issues/490).
+
 ## Activate MetalLB instance
 
 To activate MetalLB functionalities a `MetalLB` Custom resource must be created:
