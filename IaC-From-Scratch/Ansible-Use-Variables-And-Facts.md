@@ -67,6 +67,9 @@ In this lab you will:
    `ansible-playbook`:
 
    ```console
+   $ source ansible-venv/bin/activate
+   (no output)
+
    (ansible-venv) $ ansible-playbook playbook.yaml
    [WARNING]: No inventory was parsed, only implicit localhost is available
    [WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'
@@ -110,7 +113,7 @@ In this lab you will:
 
    TASK [Print the value of myvar] *************************************************************************************
    ok: [localhost] => {
-       "msg": "Value of myvar: My"
+       "msg": "Value of myvar: My custom value"
    }
 
    PLAY RECAP **********************************************************************************************************

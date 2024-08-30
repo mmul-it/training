@@ -49,7 +49,7 @@ In this lab you will:
    command:
 
    ```console
-   $ $ mkdir -vp custom-module/{modules/mydocker,production,staging} && cd custom-module
+   $ cd $HOME && mkdir -vp custom-module/{modules/mydocker,production,staging} && cd custom-module
    mkdir: created directory 'custom-module'
    mkdir: created directory 'custom-module/modules'
    mkdir: created directory 'custom-module/modules/mydocker'
@@ -107,7 +107,7 @@ In this lab you will:
    }
    ```
 
-   Finally `outputs.tf` will contain:
+   Finally `modules/mydocker/outputs.tf` will contain:
 
    ```console
    output "container_id" {

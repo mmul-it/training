@@ -32,6 +32,9 @@ In this lab you will:
                                     Dload  Upload   Total   Spent    Left  Speed
    100 25.7M  100 25.7M    0     0  82.5M      0 --:--:-- --:--:-- --:--:-- 82.5M
 
+   $ unzip terraform_${TF_VERSION}_${TF_ARCH}.zip
+   ...
+
    $ sudo mv -v terraform /usr/local/bin/
    renamed 'terraform' -> '/usr/local/bin/terraform'
    ```
@@ -207,6 +210,39 @@ In this lab you will:
    docker_container.webserver: Creation complete after 0s [id=50d56a4aa6ca8f1bca478be9300367fcd27461afd0a29d0c15dbf5a6df098f47]
 
    Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
+   ```
+
+   Note that every time you will launch the `terraform apply` command, a new
+   container will be created, because the module does not record the ID. This
+   can be avoided by using the `ignore_changes` option inside the resource
+   declaration, as in:
+
+   ```hcl
+   resource "docker_container" "webserver" {
+     image = docker_image.webserver.name
+     name = "webserver_container"
+     ports {
+       internal = 80
+       external = 8080
+     }
+     lifecycle {
+       ignore_changes = all
+     }
+   }
+   ```
+
+   With this applied the next `apply` will output:
+
+   ```console
+   $ terraform apply -auto-approve
+   docker_image.webserver: Refreshing state... [id=sha256:5ef79149e0ec84a7a9f9284c3f91aa3c20608f8391f5445eabe92ef07dbda03cnginx:latest]
+   docker_container.webserver: Refreshing state... [id=eaf6f3eb2b946379018352b120b7bf09ddebf96b0be44b439a4a48eb328cf9a6]
+
+   No changes. Your infrastructure matches the configuration.
+
+   Terraform has compared your real infrastructure against your configuration and found no differences, so no changes are needed.
+
+   Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
    ```
 
 5. All the tests can be made from the hosts:

@@ -30,6 +30,9 @@
 2. Trying to launch the playbook will fail:
 
    ```console
+   $ source ansible-venv/bin/activate
+   (no output)
+
    (ansible-venv) $ ansible-playbook error_playbook.yml
    [WARNING]: No inventory was parsed, only implicit localhost is available
    [WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'

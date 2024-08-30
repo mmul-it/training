@@ -16,6 +16,9 @@ In this lab you will:
    `--init-path` to specify the destination path:
 
    ```console
+   $ source ansible-venv/bin/activate
+   (no output)
+
    (ansible-venv) $ mkdir -v roles
    mkdir: created directory 'roles'
 
