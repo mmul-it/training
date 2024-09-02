@@ -141,8 +141,8 @@ $ kubectl who-can list pods
 No subjects found with permissions to list pods assigned through RoleBindings
 
 CLUSTERROLEBINDING                             SUBJECT                         TYPE            SA-NAMESPACE
-cluster-admin                                  system:masters                  Group           
-kubeadm:cluster-admins                         kubeadm:cluster-admins          Group           
+cluster-admin                                  system:masters                  Group
+kubeadm:cluster-admins                         kubeadm:cluster-admins          Group
 system:controller:attachdetach-controller      attachdetach-controller         ServiceAccount  kube-system
 system:controller:cronjob-controller           cronjob-controller              ServiceAccount  kube-system
 system:controller:daemon-set-controller        daemon-set-controller           ServiceAccount  kube-system
@@ -163,8 +163,8 @@ system:controller:replication-controller       replication-controller          S
 system:controller:resourcequota-controller     resourcequota-controller        ServiceAccount  kube-system
 system:controller:statefulset-controller       statefulset-controller          ServiceAccount  kube-system
 system:coredns                                 coredns                         ServiceAccount  kube-system
-system:kube-controller-manager                 system:kube-controller-manager  User            
-system:kube-scheduler                          system:kube-scheduler           User            
+system:kube-controller-manager                 system:kube-controller-manager  User
+system:kube-scheduler                          system:kube-scheduler           User
 trivy-operator                                 trivy-operator                  ServiceAccount  trivy-system
 ```
 

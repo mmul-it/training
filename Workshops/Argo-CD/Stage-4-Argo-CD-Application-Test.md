@@ -161,9 +161,9 @@ The yaml will produce:
 
 - A `ConfigMap` that defines an `index.php` file that prints some env variables.
 - A `Deployment` named `webserver` with an Apache webserver with PHP that will
-expose the `index.php` file.
+  expose the `index.php` file.
 - A `Service` with type `LoadBalancer` that will expose the `80` port of the
-deployment.
+  deployment.
 
 ## Configure the Git repository in Argo CD
 

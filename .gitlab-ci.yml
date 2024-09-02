@@ -12,4 +12,4 @@ lint:
   stage: lint
   script:
     # Markdown check
-    - mdl -c /kpa/.mdlrc */*.md
+    - mdl -c /kpa/.mdlrc $(find . -name '*.md')

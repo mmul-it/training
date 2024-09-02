@@ -36,16 +36,16 @@ There are several technologies covered in this workshop, the main ones are
 listed here:
 
 - [Kubernetes](https://kubernetes.io/) also known as K8s, is an open-source
-system for automating deployment, scaling, and management of containerized
-applications.
+  system for automating deployment, scaling, and management of containerized
+  applications.
 - [Kind](https://kind.sigs.k8s.io/) a tool for running local Kubernetes
-clusters using Docker container "nodes".
+  clusters using Docker container "nodes".
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) the
-Kubernetes command-line tool.
+  Kubernetes command-line tool.
 - [MetalLB](https://metallb.universe.tf/) a bare metal load balancer for
-Kubernetes.
+  Kubernetes.
 - [Argo CD](https://argo-cd.readthedocs.io/) a declarative GitOps CD for
-Kubernetes.
+  Kubernetes.
 
 ## Author
 
