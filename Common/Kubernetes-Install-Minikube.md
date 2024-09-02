@@ -149,36 +149,7 @@ kube-system   kube-scheduler-minikube            1/1     Running   0            
 kube-system   storage-provisioner                1/1     Running   2 (6m ago)   6m13s
 ```
 
-### Enable kubectl command completion
+## Extend kubectl functionalities
 
-The `kubectl` command can be used to produce a bash completion file to be
-included in your shell.
-
-The `bash-completion` package is mandatory:
-
-```console
-$ sudo yum -y install bash-completion
-...
-
-$ source /etc/profile.d/bash_completion.sh
-(no output)
-```
-
-And then the completion can be activated:
-
-```console
-$ kubectl completion bash > ~/.kubectl-completion
-(no output)
-
-$ echo "source ~/.kubectl-completion" >> ~/.bash_profile
-(no output)
-
-$ source ~/.kubectl-completion
-(no output)
-
-$ kubectl <PRESS TAB>
-annotate       attach         cluster-info   cordon         describe       exec           kustomize      patch          replace        set            version
-api-resources  auth           completion     cp             diff           explain        label          plugin         rollout        taint          wait
-api-versions   autoscale      config         create         drain          expose         logs           port-forward   run            top
-apply          certificate    convert        delete         edit           get            options        proxy          scale          uncordon
-```
+There are plenty of ways to extend `kubectl` functionalies, follow [Kubernetes-Kubectl-Improvements.md](Kubernetes-Kubectl-Improvements.md)
+to activate some of them.
