@@ -12,9 +12,7 @@ configuration of the `KubeProxyConfiguration` resource needs to have the
 This is a one command operation:
 
 ```console
-$ kubectl get configmap kube-proxy -n kube-system -o yaml | \
-sed -e "s/strictARP: false/strictARP: true/" | \
-kubectl apply -f - -n kube-system
+$ kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e "s/strictARP: false/strictARP: true/" | kubectl apply -f - -n kube-system
 configmap/kube-proxy configured
 ```
 

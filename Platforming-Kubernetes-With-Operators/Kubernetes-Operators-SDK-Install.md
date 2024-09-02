@@ -38,10 +38,19 @@ operator-sdk version: "v1.32.0", commit: "...", kubernetes version: "1.26.0", go
 ## Filling all the prerequisites
 
 To automate some of the processes around the Operators installation the `make`
-command will be more than useful, so it needs to be installed:
+command will be more than useful, so it needs to be installed.
+
+If you use a Red Hat based system:
 
 ```bash
 $ sudo yum -y install make
+...
+```
+
+If you use a Debian based system:
+
+```bash
+$ sudo apt -y install make
 ...
 ```
 

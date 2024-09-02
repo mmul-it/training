@@ -160,8 +160,6 @@ And change the deployment to mount the configmap:
             containers:
               - name: akit
                 image: "{{ akit_container }}"
-                ports:
-                  - containerPort: 80
                 volumeMounts:
                 - name: docroot
                   mountPath: /usr/share/nginx/html
@@ -202,6 +200,7 @@ $ bin/kustomize build config/manifests --output v0.0.2.yaml
 And commit everything as before:
 
 ```console$ git status
+$ git status
 On branch main
 Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)

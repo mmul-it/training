@@ -144,7 +144,6 @@ spec:
   source: operatorhubio-catalog
   sourceNamespace: olm
   installPlanApproval: Manual
-  #startingCSV: trivy-operator.v0.22.0
   startingCSV: trivy-operator.v0.17.1
   config:
     env:

@@ -237,67 +237,11 @@ al with resource contention.
 Events:              <none>
 ```
 
-## Activate useful utilities with kubectl
+## Final checks
 
-- Install krew (note the `git` package is a requirement):
-
-```console
-$ curl -LO https://github.com/kubernetes-sigs/krew/releases/download/v0.4.4/krew-linux_amd64.tar.gz
-...
-
-$ tar -xzvf krew-linux_amd64.tar.gz
-...
-
-$ sudo mv krew-linux_amd64 /usr/local/bin/krew
-
-$ krew install krew
-Adding "default" plugin index from https://github.com/kubernetes-sigs/krew-index.git.
-Updated the local copy of plugin index.
-Installing plugin: krew
-Installed plugin: krew
-\
- | Use this plugin:
- |     kubectl krew
- | Documentation:
- |     https://krew.sigs.k8s.io/
- | Caveats:
- | \
- |  | krew is now installed! To start using kubectl plugins, you need to add
- |  | krew's installation directory to your PATH:
- |  |
- |  |   * macOS/Linux:
- |  |     - Add the following to your ~/.bashrc or ~/.zshrc:
- |  |         export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
- |  |     - Restart your shell.
- |  |
- |  |   * Windows: Add %USERPROFILE%\.krew\bin to your PATH environment variable
- |  |
- |  | To list krew commands and to get help, run:
- |  |   $ kubectl krew
- |  | For a full list of available plugins, run:
- |  |   $ kubectl krew search
- |  |
- |  | You can find documentation at
- |  |   https://krew.sigs.k8s.io/docs/user-guide/quickstart/.
- | /
-/
-
-$ echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> .bash_profile
-
-$ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-```
-
-Install `who-can` and `tree` kubectl plugins:
-
-```console
-$ kubectl krew install who-can
-...
-
-$ kubectl krew install tree
-...
-```
-
-List who can list `vulnerabilityreports`:
+As a last check, use the `kubectl` plugins installed following
+[Lab | Kubernetes kubectl improvements](https://github.com/mmul-it/training/blob/master/Common/Kubernetes-Kubectl-Improvements.md).
+it is possible to list who can list `vulnerabilityreports`:
 
 ```console
 $ kubectl who-can list vulnerabilityreports
@@ -313,7 +257,7 @@ system:kube-controller-manager               system:kube-controller-manager  Use
 trivy-operator                               trivy-operator                  ServiceAccount  trivy-system
 ```
 
-Display the tree view of the `trivy-operator` deployment:
+And display the tree view of the `trivy-operator` deployment:
 
 ```console
 $ kubectl tree -n trivy-system deployment trivy-operator

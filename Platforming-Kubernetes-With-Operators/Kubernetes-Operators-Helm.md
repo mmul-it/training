@@ -137,8 +137,9 @@ NAME        TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)          AGE
 mariadb-0   LoadBalancer   10.96.129.190   192.168.99.222   3306:32128/TCP   28s
 ```
 
-The service is exposed and accessible, by installing the mariadb package (`yum
--y install mariadb`) and then invoke:
+The service is exposed and accessible, by installing the mariadb package (`sudo
+yum -y install mariadb` for Red Hat based systems and `sudo apt install -y
+mariadb` for Debian based systems) and then invoke:
 
 ```console
 $ mysql -h 192.168.99.222 -u root -pmariadb
