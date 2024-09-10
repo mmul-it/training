@@ -46,9 +46,12 @@ their code.
 Let's push it on the repo:
 
 ```console
-> mkdir -p src/org/example
+$ mkdir -vp src/org/example
+mkdir: created directory 'src'
+mkdir: created directory 'src/org'
+mkdir: created directory 'src/org/example'
 
-> cat <<EOF > src/org/example/Example.java
+$ cat <<EOF > src/org/example/Example.java
 package org.example;
 
 public class Example {
@@ -71,12 +74,20 @@ public class Example {
 }
 EOF
 
-> git add . && git commit -m "Simulate a faulty code"
+$ git add . && git commit -m "Simulate a faulty code"
 [main 81a9f2c6f04b] Simulate a faulty code
  1 file changed, 9 insertions(+)
  create mode 100644 src/org/example/Example.java
 
-> git push
+$ git push
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (6/6), 562 bytes | 562.00 KiB/s, done.
+Total 6 (delta 1), reused 0 (delta 0), pack-reused 0
+To ssh://172.16.99.1:2222/devsecops/myproject.git
+   113b719..3bb171d  main -> main
 ```
 
 ## Check pipeline status
@@ -134,11 +145,19 @@ sonarqube_job:
 By pushing the change:
 
 ```console
-> git add .gitlab-ci.yml && git commit -m "Add quality gate"
+$ git add .gitlab-ci.yml && git commit -m "Add quality gate"
 [main 12af23884239] Add quality gate
  1 file changed, 1 insertion(+)
 
-> git push
+$ git push
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 322 bytes | 322.00 KiB/s, done.
+Total 3 (delta 2), reused 0 (delta 0), pack-reused 0
+To ssh://172.16.99.1:2222/devsecops/myproject.git
+   3bb171d..d582dcf  main -> main
 ```
 
 A new pipeline will be started, and this should fail with a message like
@@ -183,12 +202,24 @@ public class Example {
 By pushing it, we can see if the quality gate gets fixed:
 
 ```console
-> git add . && git commit -m "Fix faulty code"
+$ git add . && git commit -m "Fix faulty code"
 [main 146483ea9a74] Fix faulty code
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-> git push
+$ git push
+Enumerating objects: 11, done.
+Counting objects: 100% (11/11), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (6/6), 426 bytes | 426.00 KiB/s, done.
+Total 6 (delta 2), reused 0 (delta 0), pack-reused 0
+To ssh://172.16.99.1:2222/devsecops/myproject.git
+   d582dcf..00f0947  main -> main
 ```
 
 The original error is not there anymore, and the pipeline should now be
 green.
+
+**NOTE**: if Sonarqube fails again, check the quality gates, and create a custom
+quality gate associated to the project that will have `Conditions on New Code`
+-> `Coverage` set to zero.

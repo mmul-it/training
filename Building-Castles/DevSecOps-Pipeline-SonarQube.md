@@ -11,9 +11,7 @@ exposing these ports (Host/Container):
 - 9000:9000
 
 ```console
-> cd ~
-
-> docker run --detach \
+$ cd && docker run --detach \
   --name sonarqube \
   --publish 9000:9000 \
   sonarqube:lts
@@ -22,7 +20,7 @@ exposing these ports (Host/Container):
 Check the progresses, until the web interface comes up:
 
 ```console
-> docker logs -f sonarqube
+$ docker logs -f sonarqube
 2023.06.20 14:36:58 INFO  app[][o.s.a.AppFileSystem] Cleaning or creating temp directory /opt/sonarqube/temp
 2023.06.20 14:36:58 INFO  app[][o.s.a.es.EsSettings] Elasticsearch listening on [HTTP: 127.0.0.1:9001, TCP: 127.0.0.1:38019]
 ...
@@ -85,12 +83,20 @@ sonarqube_job:
 Commit and push the change:
 
 ```console
-> git add . && git commit -m "Add SonarQube stage to CI"
+$ git add . && git commit -m "Add SonarQube stage to CI"
 [main 682a9b482669] Add SonarQube stage to CI
  1 file changed, 12 insertions(+)
  create mode 100644 .gitlab-ci.yml
 
-> git push
+$ git push
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 452 bytes | 452.00 KiB/s, done.
+Total 3 (delta 2), reused 0 (delta 0), pack-reused 0
+To ssh://172.16.99.1:2222/devsecops/myproject.git
+   d9638d7..855bfab  main -> main
 ```
 
 And then follow the progress from the GitLab interface, under the CI

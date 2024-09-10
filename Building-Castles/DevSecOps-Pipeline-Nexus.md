@@ -9,11 +9,11 @@ Prepare the environment on which the Nexus container will run, by creating
 and assigning to the user `nexus` (with uid `200`) the `nexus` directory:
 
 ```console
-> cd ~
+> cd && mkdir -v nexus
+mkdir: created directory 'nexus'
 
-> mkdir nexus
-
-> sudo chown 200:200 nexus
+> sudo chown -v 200:200 nexus
+changed ownership of 'nexus' from kirater:docker to 200:200
 ```
 
 Then it will be possible to launch the Nexus instance using the
@@ -24,7 +24,7 @@ Then it will be possible to launch the Nexus instance using the
 - 5000:5000
 
 ```console
-> docker run --detach \
+$ docker run --detach \
   --name nexus \
   --publish 8081:8081 \
   --publish 9443:9443 \
@@ -48,11 +48,11 @@ Status: Downloaded newer image for sonatype/nexus3:latest
 Check the progress until the service is `Started`:
 
 ```console
-> docker logs -f nexus
+$ docker logs -f nexus
 ...
 -------------------------------------------------
 
-Started Sonatype Nexus OSS 3.56.0-01
+Started Sonatype Nexus OSS 3.72.0-04
 
 -------------------------------------------------
 ```
@@ -61,15 +61,16 @@ Now that the working directory was populated by the initial Nexus run, the
 container must be stopped:
 
 ```console
-> docker stop nexus
+$ docker stop nexus
+nexus
 ```
 
 So that it will be possible to edit the `nexus/nexus3/etc/nexus.properties`
-to enable `https` (you will need sudo because files are owned by a user with
-uid `200`):
+to enable `https` (you will need to use something like `sudo vim nexus/nexus3/etc/nexus.properties`)
+because files are owned by a user by the uid `200`):
 
 ```console
-> cat nexus/nexus3/etc/nexus.properties
+$ cat nexus/nexus3/etc/nexus.properties
 application-port-ssl=9443
 nexus-args=${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-https.xml,${jetty.etc}/jetty-requestlog.xml
 ssl.etc=${karaf.data}/etc/ssl
@@ -78,9 +79,10 @@ ssl.etc=${karaf.data}/etc/ssl
 Create the certificate:
 
 ```console
-> sudo mkdir nexus/nexus3/etc/ssl
+$ sudo mkdir -v nexus/nexus3/etc/ssl
+mkdir: created directory 'nexus/nexus3/etc/ssl'
 
-> docker run -it --rm -v $PWD/nexus/nexus3/etc/ssl:/ssl joostdecock/keytool \
+$ docker run -it --rm -v $PWD/nexus/nexus3/etc/ssl:/ssl joostdecock/keytool \
   -genkeypair \
   -keystore /ssl/keystore.jks \
   -storepass password \
@@ -90,20 +92,23 @@ Create the certificate:
   -keypass password \
   -dname 'CN=172.16.99.1' \
   -ext 'SAN=IP:172.16.99.1'
+...
 
-> sudo chown -R 200:200 nexus/nexus3/etc/ssl/keystore.jks
+$ sudo chown -v -R 200:200 nexus/nexus3/etc/ssl/keystore.jks
+changed ownership of 'nexus/nexus3/etc/ssl/keystore.jks' from root:root to 200:200
 ```
 
 And then start again the container:
 
 ```console
-> docker start nexus
+$ docker start nexus
+nexus
 ```
 
 After the start (check logs as before), get the installation password:
 
 ```console
-> sudo cat nexus/nexus3/admin.password
+$ sudo cat nexus/nexus3/admin.password
 f76d718e-a75c-4a62-8c0a-09ca57e8a6b9
 ```
 
@@ -145,7 +150,7 @@ so that it becomes part of the `Active` group.
 Test credentials:
 
 ```console
-> docker login -u admin 172.16.99.1:5000
+$ docker login -u admin 172.16.99.1:5000
 Password:
 WARNING! Your password will be stored unencrypted in /home/rasca/.docker/config.json.
 Configure a credential helper to remove this warning. See
@@ -230,12 +235,25 @@ publish_job:
 Commit and push the changes:
 
 ```console
-> git add . && git commit -m "Add container build and push"
-[main bf304ec35aa8] Add container build and push
- 1 file changed, 35 insertions(+), 13 deletions(-)
- rewrite .gitlab-ci.yml (98%)
+$ git add . && git commit -m "Add container build and push"
+[main 113b719] Add container build and push
+ 2 files changed, 31 insertions(+)
+ create mode 100644 Dockerfile
 
-> git push
+$ git push
+Enumerating objects: 6, done.
+Counting objects: 100% (6/6), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (4/4), 874 bytes | 874.00 KiB/s, done.
+Total 4 (delta 1), reused 0 (delta 0), pack-reused 0
+To ssh://172.16.99.1:2222/devsecops/myproject.git
+   855bfab..113b719  main -> main
+[kirater@training-adm myproject]$ git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
 ```
 
 And then follow the progress from the GitLab interface:

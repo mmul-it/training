@@ -25,7 +25,8 @@ virtual machine with 4 CPUs and 8 Gigabytes of RAM.
 
 The structure of the workshop will be based on stages:
 
-- Stage 1: [Requirements](../../Building-Castles/DevSecOps-Pipeline-Requirements.md).
+- Stage 1: [Requirements](../../Building-Castles/DevSecOps-Pipeline-Requirements.md)
+  (ignore the Minikube parts, since we're not going to cover Kubernetes).
 - Stage 2: [GitLab](../../Building-Castles/DevSecOps-Pipeline-GitLab.md).
 - Stage 3: [GitLab SAST](../../Building-Castles/DevSecOps-Pipeline-GitLab-SAST.md).
 - Stage 4: [Sonarqube](../../Building-Castles/DevSecOps-Pipeline-SonarQube.md).

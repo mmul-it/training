@@ -11,12 +11,13 @@ functionalities, so we will create two kind of sources.
 A faulty Kubernetes Pod manifest:
 
 ```console
-> pwd
+$ pwd
 /home/kirater/myproject
 
-> mkdir manifests
+$ mkdir -v manifests
+mkdir: created directory 'manifests'
 
-> cat <<EOF > manifests/Pod.yml
+$ cat <<EOF > manifests/Pod.yml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -33,9 +34,10 @@ EOF
 A faulty php source code:
 
 ```console
-> mkdir php
+$ mkdir -v php
+mkdir: created directory 'php'
 
-> cat <<EOF > php/faulty.php
+$ cat <<EOF > php/faulty.php
 <?php
 // This code contains a security vulnerability
 
@@ -64,7 +66,7 @@ sufficient to create a file named `.gitlab-ci.yml` inside the root directory
 of your project with these contents:
 
 ```console
-> cat <<EOF > .gitlab-ci.yml
+$ cat <<EOF > .gitlab-ci.yml
 include:
   - template: Jobs/SAST.gitlab-ci.yml
 
@@ -93,14 +95,22 @@ To make everything running, it will be enough to create a commit with all the
 newly created files:
 
 ```console
-> git add . && git commit -m "Activate CI"
+$ git add . && git commit -m "Activate CI"
 [main 91d522538048] Activate CI
  3 files changed, 43 insertions(+)
  create mode 100644 .gitlab-ci.yml
  create mode 100644 manifests/Pod.yml
  create mode 100644 php/faulty.php
 
-> git push
+$ git push
+Enumerating objects: 8, done.
+Counting objects: 100% (8/8), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (5/5), done.
+Writing objects: 100% (7/7), 1.02 KiB | 1.02 MiB/s, done.
+Total 7 (delta 0), reused 0 (delta 0), pack-reused 0
+To ssh://172.16.99.1:2222/devsecops/myproject.git
+   aebe4fd..5506ff0  main -> main
 ```
 
 ## Check results
@@ -226,11 +236,19 @@ sast-analysis-kubesec:
 Committing the code and pushing the changes:
 
 ```console
-> git add . && git commit -m "Add blocker for Critical vulnerabilities"
+$ git add . && git commit -m "Add blocker for Critical vulnerabilities"
 [main 43c5361cc999] Add blocker for Critical vulnerabilities
  1 file changed, 21 insertions(+)
 
-> git push
+$ git push
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 733 bytes | 733.00 KiB/s, done.
+Total 3 (delta 1), reused 0 (delta 0), pack-reused 0
+To ssh://172.16.99.1:2222/devsecops/myproject.git
+   e9778bd..12e7259  main -> main
 ```
 
 Should result in an additional pipeline run, with the two additional stages:
@@ -267,11 +285,19 @@ spec:
 And pushed back to the repo:
 
 ```console
-> git add . && git commit -m "Fix Pod manifest"
+$ git add . && git commit -m "Fix Pod manifest"
 [main fdf21ac12104] Fix Pod manifest
  1 file changed, 2 deletions(-)
 
-> git push
+$ git push
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (4/4), 417 bytes | 417.00 KiB/s, done.
+Total 4 (delta 1), reused 0 (delta 0), pack-reused 0
+To ssh://172.16.99.1:2222/devsecops/myproject.git
+   12e7259..d9638d7  main -> main
 ```
 
 Finally, after some time, the pipeline should be all green:

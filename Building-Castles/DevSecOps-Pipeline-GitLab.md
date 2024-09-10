@@ -12,20 +12,21 @@ exposing these ports (Host/Container):
 - 2222:22
 
 ```console
-> docker run --detach \
+$ docker run --detach \
   --name gitlab \
   --publish 8080:80 \
   --publish 8443:443 \
   --publish 2222:22 \
-  gitlab/gitlab-ce:latest
+  gitlab/gitlab-ce:16.11.8-ce.0
+...
 ```
 
 Check the progresses, until the web interface comes up:
 
 ```console
-> docker logs -f gitlab
+$ docker logs -f gitlab
 Thank you for using GitLab Docker Image!
-Current version: gitlab-ce=16.0.5-ce.0
+Current version: gitlab-ce=16.11.8-ce.0
 ...
 ```
 
@@ -34,7 +35,7 @@ Current version: gitlab-ce=16.0.5-ce.0
 Get the root user password:
 
 ```console
-> docker exec gitlab cat /etc/gitlab/initial_root_password
+$ docker exec gitlab cat /etc/gitlab/initial_root_password
 # WARNING: This value is valid only in the following conditions
 #          1. If provided manually (either via `GITLAB_ROOT_PASSWORD` environment variable or via `gitlab_rails['initial_root_password']` setting in `gitlab.rb`, it was provided before database was seeded for the first time (usually, the first reconfigure run).
 #          2. Password hasn't been changed manually, either via UI or via command line.
@@ -61,8 +62,11 @@ And press "Create user".
 Create an SSH keypair:
 
 ```console
-> ssh-keygen
-> cat ~/.ssh/id_rsa.pub
+$ ssh-keygen
+...
+
+$ cat ~/.ssh/id_rsa.pub
+...
 ```
 
 And then add the key by Impersonating the newly created user:
@@ -81,7 +85,7 @@ top right container.
 Test the credentials:
 
 ```console
-> ssh -p 2222 git@172.16.99.1
+$ ssh -p 2222 git@172.16.99.1
 The authenticity of host '[172.16.99.1]:2222 ([172.16.99.1]:2222)' can't be established.
 ECDSA key fingerprint is SHA256:cUOv255bj/4Jj5UFUXTItk53CA+/85YnQoKaD1bAjHo.
 Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
@@ -94,25 +98,32 @@ Connection to 172.16.99.1 closed.
 Create a project with an initial push:
 
 ```console
-> git config --global user.email "devsecops@example.com"
+$ git config --global user.email "devsecops@example.com"
+(no output)
 
-> git config --global user.name "devsecops"
+$ git config --global user.name "devsecops"
+(no output)
 
-> git config --global init.defaultBranch main
+$ git config --global init.defaultBranch main
+(no output)
 
-> mkdir myproject
+$ mkdir -v myproject && cd myproject
+mkdir: created directory 'myproject'
 
-> cd myproject
+$ git init --initial-branch=main
+Initialized empty Git repository in /home/kirater/myproject/.git/
 
-> git init
+$ echo 'My DevSecOps repo' > README.md
+(no output)
 
-> echo 'My DevSecOps repo' > README.md
+$ git add . && git commit -m "Initial commit"
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
 
-> git add . && git commit -m "Initial commit"
+$ git remote add origin ssh://git@172.16.99.1:2222/devsecops/myproject.git
+(no output)
 
-> git remote add origin ssh://git@172.16.99.1:2222/devsecops/myproject.git
-
-> git push -u origin main
+$ git push -u origin main
 Enumerating objects: 3, done.
 Counting objects: 100% (3/3), done.
 Writing objects: 100% (3/3), 232 bytes | 232.00 KiB/s, done.
@@ -162,21 +173,23 @@ project runner` and finally copying the token, which will be something like
 Set up the runner by launching its container:
 
 ```console
-> mkdir gitlab-runner
+$ cd && mkdir -v gitlab-runner
+mkdir: created directory 'gitlab-runner'
 
-> docker run --detach \
+$ docker run --detach \
   --name gitlab-runner \
   --privileged \
   --volume /var/run/docker.sock:/var/run/docker.sock \
   --volume $PWD/gitlab-runner:/etc/gitlab-runner \
-  gitlab/gitlab-runner:latest
+  gitlab/gitlab-runner:v16.11.3
+...
 ```
 
 Register the runner inside GitLab (note the `--url` option pointing to the
 docker host IP):
 
 ```console
-> docker exec -it gitlab-runner gitlab-runner register -n \
+$ docker exec -it gitlab-runner gitlab-runner register -n \
   --url http://172.16.99.1:8080 \
   --registration-token GR1348941uHeDhAB5DDA8r_5xvxsm \
   --executor docker \
