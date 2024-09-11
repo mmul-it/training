@@ -40,7 +40,7 @@ There are several technologies covered in this workshop, the main ones are
 listed here:
 
 - [GitLab](https://gitlab.com/) a complete DevSecOps platform to manage code.
-- [Sonarqube](hhttps://www.sonarsource.com/products/sonarqube) an on-premise
+- [Sonarqube](https://www.sonarsource.com/products/sonarqube) an on-premise
   analysis tool designed to detect coding issues
 - [Nexus](https://www.sonatype.com/products/sonatype-nexus-repository) artifact
   repository manager.
