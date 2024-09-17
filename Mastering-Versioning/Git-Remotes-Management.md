@@ -3,10 +3,10 @@
 In this lab you will:
 
 1. Use the `myrepo` repository as the working directory, and the previously
-   created `myrepo-core` as a remote.
-2. Configure `myrepo-core` as the `origin` remote for `myrepo`.
-3. Push all the contents of `myrepo` into `myrepo-core`.
-4. Create a new repository named `myotherrepo`, configure `myrepo-core` as
+   created `myrepo-bare` as a remote.
+2. Configure `myrepo-bare` as the `origin` remote for `myrepo`.
+3. Push all the contents of `myrepo` into `myrepo-bare`.
+4. Create a new repository named `myotherrepo`, configure `myrepo-bare` as
    `origin`, pull its contents and verify that now we have the entire set of
    modifications coming from `myrepo`.
 5. Use `git fetch` to make additional remote branches available to the local
