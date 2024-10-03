@@ -103,7 +103,7 @@ For more details about this, check [this GitHub issue in the MetalLB project](ht
 To activate MetalLB functionalities a `MetalLB` Custom resource must be created:
 
 ```console
-$ cat << EOF | kubectl apply -f -
+$ cat <<EOF | kubectl apply -f -
 apiVersion: metallb.io/v1beta1
 kind: MetalLB
 metadata:
@@ -132,7 +132,7 @@ To specify the pool of IP addresses that can be allocated to LoadBalancer
 services an `IPAddressPool` resource needs to be created:
 
 ```console
-$ cat << EOF | kubectl apply -f -
+$ cat <<EOF | kubectl apply -f -
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -151,7 +151,7 @@ capabilities of the LoadBalancer service, and can be achieved by creating an
 `L2Advertisement` Custom Resource:
 
 ```console
-$ cat << EOF | kubectl apply -f -
+$ cat <<EOF | kubectl apply -f -
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:

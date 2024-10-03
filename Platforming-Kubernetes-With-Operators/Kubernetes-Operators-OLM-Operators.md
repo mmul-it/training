@@ -119,7 +119,7 @@ namespace/trivy-system created
 We will now use OLM to install the Trivy operator, by creating `OperatorGroup`:
 
 ```bash
-$ cat << EOF | kubectl apply -f -
+$ cat <<EOF | kubectl apply -f -
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
@@ -132,7 +132,7 @@ operatorgroup.operators.coreos.com/trivy-operator-group created
 Install the operator by creating the Subscription:
 
 ```bash
-$ cat << EOF | kubectl apply -f -
+$ cat <<EOF | kubectl apply -f -
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:

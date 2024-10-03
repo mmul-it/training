@@ -9,7 +9,6 @@ In this lab you will:
    | `Password.txt` | `mypassword`                      |
    | `Fourth.txt`   | `Contents of the Fourth file.`    |
    | `cache.tmp`    | `This file should not be tracked` |
-   `Branch myfeature modification for the Fourth.txt commit.`.
 3. Check with `git status` which files will be staged.
 4. Create a `.gitignore` file to make git ignore these files:
    - `*.tmp`

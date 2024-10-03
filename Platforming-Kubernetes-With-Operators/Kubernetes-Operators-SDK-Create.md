@@ -278,7 +278,7 @@ akits.kiratech.it                                      2024-08-28T15:13:54Z
 Testing the operator is possible by creating its CRD:
 
 ```console
-$ cat << EOF | kubectl apply -f -
+$ cat <<EOF | kubectl apply -f -
 apiVersion: kiratech.it/v1alpha1
 kind: Akit
 metadata:
@@ -326,7 +326,7 @@ A user that wants to get details about the operator's Custom Resource will
 use `kubectl explain` as follows:
 
 ```console
-[kirater@training-kfs-minikube kiraop]$ kubectl explain akits.kiratech.it
+$ kubectl explain akits.kiratech.it
 GROUP:      kiratech.it
 KIND:       Akit
 VERSION:    v1alpha1

@@ -250,7 +250,7 @@ pod/kiraop-controller-manager-74c5b64f64-d658z   2/2     Terminating   0        
 To verify everything is working force a custom resource creation as follows:
 
 ```console
-$ cat << EOF | kubectl apply -f -
+$ cat <<EOF | kubectl apply -f -
 apiVersion: kiratech.it/v1alpha1
 kind: Akit
 metadata:

@@ -42,10 +42,10 @@ namespace/mariadb-system created
 ```
 
 This namespace will run the operator itself. Since there's no need to customize
-anything, the operator can be installed like:
+anything, the `0.32.0` version of the operator can be installed as follows:
 
 ```bash
-$ helm -n mariadb-system install mariadb-operator mariadb-operator/mariadb-operator
+$ helm -n mariadb-system install mariadb-operator mariadb-operator/mariadb-operator --version 0.32.0
 NAME: mariadb-operator
 LAST DEPLOYED: Thu Oct 26 12:20:43 2023
 NAMESPACE: mariadb-system
@@ -63,8 +63,8 @@ And from now on the application will be manageable via Helm:
 
 ```bash
 $ helm -n mariadb-system list
-NAME                    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
-mariadb-operator        default         1               2023-10-26 12:29:52.351187045 +0000 UTC deployed        mariadb-operator-0.22.0 v0.0.22
+NAME              NAMESPACE       REVISION  UPDATED                                   STATUS    CHART                    APP VERSION
+mariadb-operator  mariadb-system  1         2024-10-03 11:54:01.457240836 +0200 CEST  deployed  mariadb-operator-0.32.0  v0.0.32
 ```
 
 ## Test the operator
@@ -87,7 +87,7 @@ secret/mariadb created
 Once everything is in place, the `mariadb` can effectively be created:
 
 ```bash
-$ kubectl apply -f - <<EOF
+$ cat <<EOF | kubectl apply -f -
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: MariaDB
 metadata:

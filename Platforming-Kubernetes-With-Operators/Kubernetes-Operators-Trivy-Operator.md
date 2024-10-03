@@ -76,7 +76,7 @@ To begin the test create a deployment with a container affected with knwon
 CRITICAL issues, like `nginx:1.18`:
 
 ```console
-$ kubectl -n myns create deployment nginx --image public.ecr.aws/nginx/nginx:1.18
+$ kubectl -n myns create deployment nginx --image nginx:1.18
 deployment.apps/nginx created
 ```
 
