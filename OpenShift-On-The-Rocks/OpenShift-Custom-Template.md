@@ -8,7 +8,7 @@ In this lab you will:
 3. Customize the `simple-nginx.yml` template definition by:
    - Replacing all occurrence of `nginx-example` with `simple-nginx`
    - Create a new parameter named `REPLICAS` that will manage the number of
-     replicas inside the `DeploymentConfig` specs.
+     replicas inside the `Deployment` specs.
 4. Create the template on the cluster.
 5. Deploy a new app from this template.
 
@@ -48,7 +48,7 @@ In this lab you will:
        name: REPLICAS
      ```
 
-   - Replace the static replicas value in the DeploymentConfig specs with the
+   - Replace the static replicas value in the Deployment specs with the
      parameter:
 
      ```yaml
@@ -78,7 +78,7 @@ In this lab you will:
    Now using project "template-test" on server "https://api.crc.testing:6443".
    ...
 
-   $ oc new-app -p REPLICAS=2 simple-nginx
+   $ oc new-app -p REPLICAS=2 -p NGINX_VERSION=1.20-ubi9 simple-nginx
    --> Deploying template "openshift/simple-nginx" to project openshift
    ...
    --> Success
@@ -103,7 +103,7 @@ In this lab you will:
    ...
    http://simple-nginx-openshift.apps-crc.testing (svc/simple-nginx)
      dc/simple-nginx deploys istag/simple-nginx:latest <-
-         bc/simple-nginx source builds https://github.com/sclorg/nginx-ex.git on istag/nginx:1.16-el8
+         bc/simple-nginx source builds https://github.com/sclorg/nginx-ex.git on istag/nginx:1.20-ubi9
          deployment #1 deployed 38 seconds ago - 2 pods
    ```
 

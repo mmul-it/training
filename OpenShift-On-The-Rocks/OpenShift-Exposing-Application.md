@@ -125,24 +125,22 @@ In this lab you will:
    done via oc expose:
 
    ```console
-   $ oc expose service mariadb --type=NodePort --target-port=3306 --generator=service/v2 --name=mariadbnp
+   $ oc expose deployment mariadb --type=NodePort --target-port=3306 --name=mariadbnp
    service/mariadbnodeport exposed
 
    $ oc get svc
-   NAME              TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
-   mariadb           ClusterIP   10.217.5.79    <none>        3306/TCP         8m5s
-   mariadbnodeport   NodePort    10.217.4.190   <none>        3306:31384/TCP   3s
-   tomcat            ClusterIP   10.217.5.9     <none>        8080/TCP         7m57s
+   NAME        TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+   mariadb     ClusterIP   10.217.5.79    <none>        3306/TCP         8m5s
+   mariadbnp   NodePort    10.217.4.190   <none>        3306:31384/TCP   3s
+   tomcat      ClusterIP   10.217.5.9     <none>        8080/TCP         7m57s
    ```
 
    This will expose the upper port 31384 on all the OpenShift nodes, in this
    case only one, the crc host.
 
-   **IMPORTANT NOTE!** depending on the OpenShift release you are using a
-   different version of generator (like `service/v1`) might be used. You will
-   need to rely on the output of the command to know it.
-
-   The crc ip can be obtained by using the `crc ip` command:
+   The crc ip can be obtained by using the `crc ip` command, and the `mysql`
+   client is part of the `mariab` package (`sudo yum -y install mariadb` on RHEL
+   based systems or `sudo apt install -y mariadb-client-core`):
 
    ```console
    $ mysql --host=$(crc ip) --port=31384 --user=user --password=pass --database=testdb

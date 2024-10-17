@@ -128,7 +128,7 @@ In this lab you will:
    to the ```oc new-app``` command:
 
    ```console
-   $ oc new-app --docker-image=nginxinc/nginx-unprivileged --name=nginx
+   $ oc new-app --image=nginxinc/nginx-unprivileged --name=nginx
    --> Found container image 9715b46 (2 weeks old) from Docker Hub for "nginxinc/nginx-unprivileged"
    ...
    --> Success

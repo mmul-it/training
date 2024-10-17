@@ -32,7 +32,7 @@ In this lab you will:
 
 ## Solution
 
-1. Login as developer and create the 'my-second-project':
+1. Login as developer and create the 'my-first-project':
 
    ```console
    $ oc login -u developer
@@ -42,8 +42,8 @@ In this lab you will:
 
        oc new-project <projectname>
 
-   $ oc new-project my-second-project
-   Now using project "my-second-project" on server "https://api.crc.testing:6443".
+   $ oc new-project my-first-project
+   Now using project "my-first-project" on server "https://api.crc.testing:6443".
 
    You can add applications to this project with the 'new-app' command. For example, try:
 
@@ -97,7 +97,7 @@ In this lab you will:
    ```console
    $ oc describe deployment mariadb
    Name:                   mariadb
-   Namespace:              my-second-project
+   Namespace:              my-first-project
    CreationTimestamp:      Wed, 14 Jul 2021 17:10:00 +0200
    Labels:                 app=mariadb
                            app.kubernetes.io/component=mariadb
@@ -142,11 +142,11 @@ In this lab you will:
    replicaset.apps "mariadb-64bcf6dd4c" deleted
 
    $ oc status
-   In project my-second-project on server https://api.crc.testing:6443
+   In project my-first-project on server https://api.crc.testing:6443
 
    You have no services, deployment configs, or build configs.
    Run 'oc new-app' to create an application.
 
-   $ oc delete project my-second-project
-   project.project.openshift.io "my-second-project" deleted
+   $ oc delete project my-first-project
+   project.project.openshift.io "my-first-project" deleted
    ```
