@@ -1,15 +1,15 @@
 # Lab | Set the requirements
 
-This lab defines the requirements for the entire lab that will be used during
-the Building Castles course.
+The following setup outlines the requirements for the entire lab that will be
+developed during the Building Castles course.
 
 ## Docker
 
-Docker is a requirement for all the exercises and the entire DevSecOps
-environment configuration, so depending on the operating system the `docker`
-packages need to be installed, [you can follow these instructions](../Common/Containers-Install-Docker.md).
+Docker is a requirement for all the labs and the entire DevSecOps environment
+configuration, so depending on the operating system in use the `docker` packages
+need to be installed. [You can follow these instructions](../Common/Containers-Install-Docker.md).
 
-The docker daemon must be in execution, check it by:
+The docker daemon must be in execution, check it by executing:
 
 ```console
 $ sudo systemctl status docker
@@ -25,7 +25,7 @@ TriggeredBy: ● docker.socket
 ...
 ```
 
-And you should be able to launch containers:
+Now, you should be able to launch containers:
 
 ```console
 $ docker run --rm hello-world
@@ -59,31 +59,34 @@ For more examples and ideas, visit:
 
 ## IP address
 
-All the services deployed in this lab will run as containers on a host.
-This means that each service port will be published on the docker host, by
-using `--publish` option, that will make the port listen on `localhost` and
-any other interface on the host.
-To make services reachable between containers it is mandatory to use an IP
-different from `localhost` (`127.0.0.1`).
-Since everything will run on the same host, best way to achieve overall
-reachableness is by creating an IP associated with `lo` interface, like
-`172.16.99.1`.
+All services deployed throughout the labs operate as containers on a host. This
+means that each service's port will be exposed on the Docker host using the
+`--publish` option, allowing the port to listen on localhost as well
+as any other interface on the host.
+
+To ensure that services can communicate between containers, it is essential
+to use an IP address other than `localhost` (`127.0.0.1`).
+Since everything will run on the same host, the best approach to enable
+communication between containers is creating an IP associated with the `lo`
+interface, like `172.16.99.1`.
 
 ```console
-> sudo ip address add 172.16.99.1 dev lo
+$ sudo ip address add 172.16.99.1 dev lo
+(no output)
 ```
 
 The IP `172.16.99.1` must be used as a reference for the services
 configurations.
 
-NOTE: you might want to chose a different IP or a different device. It is
-possible to list all the machine IP using the `ip address show` command.
+NOTE: you might want to choose a different IP or a different device. It is possible
+to list all the machine's IP addresses using the `ip address show` command.
 
 ## Insecure registries
 
-We will configure a registry by using `Nexus` via SSL, by using a self signed
-certificate. To make the repository accepted by the docker client, it must be
-added (as `root`) to the `/etc/docker/daemon.json` file, with this content:
+We will set up a registry using `Nexus` with SSL, employing a self-signed
+certificate. To ensure that the repository is recognized by the Docker client, it
+must be added (as `root`) to the `/etc/docker/daemon.json` file, containing the
+following content:
 
 ```json
 {
@@ -94,22 +97,21 @@ added (as `root`) to the `/etc/docker/daemon.json` file, with this content:
 The docker daemon must be restarted after this change:
 
 ```console
-> sudo systemctl restart docker
+$ sudo systemctl restart docker
+(no output)
 ```
 
 ## Minikube
 
-Once the pipeline will be complete, there will be a registry available at the
-`172.16.99.1:5000` address, usable also by Kubernetes.
+Once the pipeline is complete, a registry will be available at the
+`172.16.99.1:5000` address, which can also be utilized by Kubernetes.
 
-Since we will work on self-signed certificate and will manage Kubernetes
-using Minikube, this must be started with the proper `--insecure-registries`
-option.
-As follows:
+Since we will rely on a self-signed certificate and manage Kubernetes using
+Minikube, it must be started with the proper `--insecure-registry` option.
+
+Therefore, after installing Minikube (following the [Install Minikube](../Common/Kubernetes-Install-Minikube.md) lab) we must start it in the following way:
 
 ```console
-> minikube start --insecure-registry=172.16.99.1:5000
+$ minikube start --insecure-registry=172.16.99.1:5000
+...
 ```
-
-Check the [Enable a specific insecure registry](https://gitlab.com/kiratech/labs/-/blob/gitlab-workshop/Common/Kubernetes-Install-Minikube.md#enable-a-specific-insecure-registry)
-chapter of the [Install Minikube](https://gitlab.com/kiratech/labs/-/blob/gitlab-workshop/Common/Kubernetes-Install-Minikube.md) lab.
