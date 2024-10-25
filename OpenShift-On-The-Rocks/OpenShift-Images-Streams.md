@@ -1,4 +1,4 @@
-# Lab | Use ImageStreams to perform updates and rollback of a DeploymentConfig
+# Lab | Use ImageStreams to perform updates and rollback of a Deployment
 
 In this lab you will:
 
