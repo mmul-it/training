@@ -4,44 +4,186 @@ Checkout all the components for each machine.
 
 ## The main host
 
+These are the VMs involved in the OpenShift On The Rocks lab:
+
 ```console
-[root@CentOS-83-64-minimal vms]# virsh list
- Id   Name                                   State
-------------------------------------------------------
- 83   ocp-lab-3.test.kiratech.local       running
- 84   ocp-lab-1.test.kiratech.local       running
- 87   ocp-lab-2.test.kiratech.local       running
- 88   ocp-haproxy.test.kiratech.local     running
- 89   ocp-bastion.test.kiratech.local     running
- 90   ocp-bootstrap.test.kiratech.local   running
+$ virsh list
+ Id    Name                      State
+------------------------------------------
+ 543   training-adm              running
+ 556   training-ootr-01          running
+ 557   training-ootr-02          running
+ 558   training-ootr-03          running
+ 559   training-ootr-crc         running
+ -     training-ootr-bootstrap   shut off
 ```
 
-## The bastion vm
+- `training-adm` is the machine where all the infrastructure services run, and
+  from where the `openshift-install` command is launched.
+- `training-ootr-0*` are the OpenShift nodes.
+- `training-ootr-crc` is the machine where *Code Ready Containers* will be
+  installed.
+- `training-ootr-bootstrap` is the bootstrap used to initialize the OpenShift
+  cluster, and after the installation it has been shut down.
+
+## The training-adm vm
 
 Open ports:
 
 ```console
-[root@ocp-bastion ~]# ss -ntlp
-State  Recv-Q  Send-Q    Local Address:Port   Peer Address:Port
-LISTEN 0       128             0.0.0.0:22          0.0.0.0:*     users:(("sshd",pid=815,fd=5))
-LISTEN 0       128                   *:80                *:*     users:(("httpd",pid=10356,fd=4),("httpd",pid=10355,fd=4),("httpd",pid=10354,fd=4),("httpd",pid=10352,fd=4))
-LISTEN 0       128                [::]:22             [::]:*     users:(("sshd",pid=815,fd=7))
+[kirater@training-adm ~]$ sudo ss -nltp
+State  Recv-Q Send-Q  Local Address:Port    Peer Address:Port Process
+LISTEN 0      3000          0.0.0.0:443          0.0.0.0:*     users:(("haproxy",pid=11419,fd=9))
+LISTEN 0      3000          0.0.0.0:6443         0.0.0.0:*     users:(("haproxy",pid=11419,fd=7))
+LISTEN 0      4096        127.0.0.1:953          0.0.0.0:*     users:(("named",pid=9822,fd=31))
+LISTEN 0      128           0.0.0.0:22           0.0.0.0:*     users:(("sshd",pid=896,fd=3))
+LISTEN 0      3000          0.0.0.0:22623        0.0.0.0:*     users:(("haproxy",pid=11419,fd=8))
+LISTEN 0      3000          0.0.0.0:80           0.0.0.0:*     users:(("haproxy",pid=11419,fd=10))
+LISTEN 0      4096          0.0.0.0:111          0.0.0.0:*     users:(("rpcbind",pid=635,fd=4),("systemd",pid=1,fd=110))
+LISTEN 0      10            0.0.0.0:1936         0.0.0.0:*     users:(("haproxy",pid=11419,fd=6))
+LISTEN 0      10          127.0.0.1:53           0.0.0.0:*     users:(("named",pid=9822,fd=36))
+LISTEN 0      10          127.0.0.1:53           0.0.0.0:*     users:(("named",pid=9822,fd=34))
+LISTEN 0      10      192.168.99.10:53           0.0.0.0:*     users:(("named",pid=9822,fd=41))
+LISTEN 0      10      192.168.99.10:53           0.0.0.0:*     users:(("named",pid=9822,fd=40))
+LISTEN 0      4096            [::1]:953             [::]:*     users:(("named",pid=9822,fd=46))
+LISTEN 0      128              [::]:22              [::]:*     users:(("sshd",pid=896,fd=4))
+LISTEN 0      4096             [::]:111             [::]:*     users:(("rpcbind",pid=635,fd=6),("systemd",pid=1,fd=113))
+LISTEN 0      511                 *:8080               *:*     users:(("httpd",pid=96459,fd=4),("httpd",pid=96458,fd=4), ...
+LISTEN 0      10              [::1]:53              [::]:*     users:(("named",pid=9822,fd=44))
+LISTEN 0      10              [::1]:53              [::]:*     users:(("named",pid=9822,fd=45))
 ```
 
-Enabled services and ports:
+Contents of the haproxy configuration file `/etc/haproxy/haproxy.cfg`:
 
 ```console
-[root@ocp-bastion ~]# firewall-cmd --list-services
-cockpit dhcpv6-client ssh
+global
+  log         127.0.0.1 local2
+  pidfile     /var/run/haproxy.pid
+  maxconn     4000
+  daemon
+defaults
+  mode                    http
+  log                     global
+  option                  dontlognull
+  option http-server-close
+  option                  redispatch
+  retries                 3
+  timeout http-request    10s
+  timeout queue           1m
+  timeout connect         10s
+  timeout client          1m
+  timeout server          1m
+  timeout http-keep-alive 10s
+  timeout check           10s
+  maxconn                 3000
+frontend stats
+  bind *:1936
+  mode            http
+  log             global
+  maxconn 10
+  stats enable
+  stats hide-version
+  stats refresh 30s
+  stats show-node
+  stats show-desc Stats for cluster
+  stats auth admin:ocp4
+  stats uri /stats
+listen api-server-6443
+  bind *:6443
+  mode tcp
+  server bootstrap training-ootr-bootstrap.ocp.kiralab.local:6443 check inter 1s backup
+  server control-plane-01 training-ootr-01.ocp.kiralab.local:6443 check inter 1s
+  server control-plane-02 training-ootr-02.ocp.kiralab.local:6443 check inter 1s
+  server control-plane-03 training-ootr-03.ocp.kiralab.local:6443 check inter 1s
+listen machine-config-server-22623
+  bind *:22623
+  mode tcp
+  server bootstrap training-ootr-bootstrap.ocp.kiralab.local:22623 check inter 1s backup
+  server control-plane-01 training-ootr-01.ocp.kiralab.local:22623 check inter 1s
+  server control-plane-02 training-ootr-02.ocp.kiralab.local:22623 check inter 1s
+  server control-plane-03 training-ootr-03.ocp.kiralab.local:22623 check inter 1s
+listen ingress-router-443
+  bind *:443
+  mode tcp
+  balance source
+  server control-plane-01 training-ootr-01.ocp.kiralab.local:443 check inter 1s
+  server control-plane-02 training-ootr-02.ocp.kiralab.local:443 check inter 1s
+  server control-plane-03 training-ootr-03.ocp.kiralab.local:443 check inter 1s
+listen ingress-router-80
+  bind *:80
+  mode tcp
+  balance source
+  server control-plane-01 training-ootr-01.ocp.kiralab.local:80 check inter 1s
+  server control-plane-02 training-ootr-02.ocp.kiralab.local:80 check inter 1s
+  server control-plane-03 training-ootr-03.ocp.kiralab.local:80 check inter 1s
+```
 
-[root@ocp-bastion ~]# firewall-cmd --list-ports
-80/tcp
+Contents of the DNS zone `/var/named/kiralab.local.zone`:
+
+```dns
+$TTL 1W
+@    IN    SOA    ns1.kiralab.local.    root (
+                  2024101700      ; serial
+                  3H              ; refresh (3 hours)
+                  30M             ; retry (30 minutes)
+                  2W              ; expiry (2 weeks)
+                  1W )            ; minimum (1 week)
+    IN    NS      ns1.kiralab.local.
+    IN    MX 10   smtp.kiralab.local.
+
+; Lab
+training-adm.kiralab.local.                   IN    A    192.168.99.10
+ns1.kiralab.local.                            IN    A    192.168.99.10
+smtp.kiralab.local.                           IN    A    192.168.99.10
+helper.kiralab.local.                         IN    A    192.168.99.10
+
+; OpenShift On The Rocks
+api.ocp.kiralab.local.                        IN    A    192.168.99.10
+api-int.ocp.kiralab.local.                    IN    A    192.168.99.10
+*.apps.ocp.kiralab.local.                     IN    A    192.168.99.10
+training-ootr-bootstrap.ocp.kiralab.local.    IN    A    192.168.99.20
+training-ootr-01.ocp.kiralab.local.           IN    A    192.168.99.21
+training-ootr-02.ocp.kiralab.local.           IN    A    192.168.99.22
+training-ootr-03.ocp.kiralab.local.           IN    A    192.168.99.23
+training-ootr-crc.kiralab.local.              IN    A    192.168.99.40
+
+; Kubernetes From Scratch
+training-kfs-01.kiralab.local.                IN    A    192.168.99.31
+training-kfs-02.kiralab.local.                IN    A    192.168.99.32
+training-kfs-03.kiralab.local.                IN    A    192.168.99.33
+```
+
+Contents of the DNS zone `/var/named/99.168.192.zone`:
+
+```dns
+$ORIGIN 99.168.192.in-addr.arpa.
+$TTL 86400
+@     IN     SOA    ns1.kiralab.local.     hostmaster.kiralab.local. (
+                    2024101700 ; serial
+                    21600      ; refresh after 6 hours
+                    3600       ; retry after 1 hour
+                    604800     ; expire after 1 week
+                    86400 )    ; minimum TTL of 1 day
+
+      IN     NS     ns1.kiralab.local.
+
+10    IN     PTR    training-adm.kiralab.local.
+10    IN     PTR    api.ocp.kiralab.local.
+10    IN     PTR    api-int.ocp.kiralab.local.
+20    IN     PTR    training-ootr-bootstrap.ocp.kiralab.local.
+21    IN     PTR    training-ootr-01.ocp.kiralab.local.
+22    IN     PTR    training-ootr-02.ocp.kiralab.local.
+23    IN     PTR    training-ootr-03.ocp.kiralab.local.
+31    IN     PTR    training-kfs-01.kiralab.local.
+32    IN     PTR    training-kfs-02.kiralab.local.
+33    IN     PTR    training-kfs-03.kiralab.local.
+40    IN     PTR    training-ootr-crc.kiralab.local.
 ```
 
 Installation directory (generated by `openshift-installer`):
 
 ```console
-[root@ocp-bastion ~]# ls -1 /var/www/html/openshift-install-dir
+[root@ocp-bastion ~]# ls -1 /var/www/html/
 auth
 bootstrap.ign
 master.ign
@@ -52,21 +194,23 @@ worker.ign
 OpenShift and Kubernetes status:
 
 ```console
-[root@ocp-bastion ~]# kubectl config get-contexts
+$ export KUBECONFIG=/var/www/html/auth/kubeconfig
+
+$ kubectl config get-contexts
 CURRENT   NAME    CLUSTER   AUTHINFO   NAMESPACE
-*         admin   test      admin
+*         admin   ocp       admin
 
-[root@ocp-bastion ~]# oc config get-contexts
+$ oc config get-contexts
 CURRENT   NAME    CLUSTER   AUTHINFO   NAMESPACE
-*         admin   test      admin
+*         admin   ocp       admin
 
-[root@ocp-bastion ~]# oc get nodes
-NAME                               STATUS   ROLES           AGE   VERSION
-ocp-lab-1.test.kiratech.local   Ready    master,worker   34d   v1.20.0+df9c838
-ocp-lab-2.test.kiratech.local   Ready    master,worker   33d   v1.20.0+df9c838
-ocp-lab-3.test.kiratech.local   Ready    master,worker   34d   v1.20.0+df9c838
+$ oc get nodes
+NAME               STATUS   ROLES                         AGE   VERSION
+training-ootr-01   Ready    control-plane,master,worker   13d   v1.30.4
+training-ootr-02   Ready    control-plane,master,worker   13d   v1.30.4
+training-ootr-03   Ready    control-plane,master,worker   13d   v1.30.4
 
-[root@ocp-bastion ~]# oc projects
+$ oc projects
 You have access to the following projects and can switch between them with ' project <projectname>':
 
   * default
@@ -79,7 +223,7 @@ You have access to the following projects and can switch between them with ' pro
 ...
 ...
 
-[root@ocp-bastion ~]# oc project openshift-etcd
+$ oc project openshift-etcd
 Now using project "openshift-etcd" on server "https://api.test.kiratech.local:6443".
 [root@ocp-bastion ~]# oc get pods
 NAME                                                 READY   STATUS      RESTARTS   AGE
@@ -94,234 +238,74 @@ installer-2-ocp-lab-1.test.kiratech.local         0/1     Completed   0         
 ...
 ```
 
-## The haproxy vm
-
-Listening ports:
-
-```console
-[root@ocp-haproxy ~]# ss -ntlp
-State        Recv-Q  Send-Q  Local Address:Port    Peer Address:Port
-LISTEN       0       128           0.0.0.0:80           0.0.0.0:*      users:(("haproxy",pid=2406,fd=10))
-LISTEN       0       128           0.0.0.0:8404         0.0.0.0:*      users:(("haproxy",pid=2406,fd=12))
-LISTEN       0       10      192.168.122.8:53           0.0.0.0:*      users:(("named",pid=1693,fd=23))
-LISTEN       0       10          127.0.0.1:53           0.0.0.0:*      users:(("named",pid=1693,fd=22))
-LISTEN       0       128           0.0.0.0:22           0.0.0.0:*      users:(("sshd",pid=810,fd=5))
-LISTEN       0       128         127.0.0.1:953          0.0.0.0:*      users:(("named",pid=1693,fd=24))
-LISTEN       0       128           0.0.0.0:443          0.0.0.0:*      users:(("haproxy",pid=2406,fd=11))
-LISTEN       0       128           0.0.0.0:22623        0.0.0.0:*      users:(("haproxy",pid=2406,fd=9))
-LISTEN       0       128           0.0.0.0:6443         0.0.0.0:*      users:(("haproxy",pid=2406,fd=7))
-LISTEN       0       10               [::]:53              [::]:*      users:(("named",pid=1693,fd=21))
-LISTEN       0       128              [::]:22              [::]:*      users:(("sshd",pid=810,fd=7))
-LISTEN       0       128             [::1]:953             [::]:*      users:(("named",pid=1693,fd=25))
-```
-
-Enabled services and ports:
-
-```console
-[root@ocp-haproxy ~]# firewall-cmd --list-services
-cockpit dhcpv6-client dns ssh
-
-[root@ocp-haproxy ~]# firewall-cmd --list-ports
-80/tcp 443/tcp 6443/tcp 22623/tcp
-```
-
-Contents of the haproxy configuration file:
-
-```console
-[root@ocp-haproxy ~]# cat /etc/haproxy/haproxy.cfg
-global
-    # to have these messages end up in /var/log/haproxy.log you will
-    # need to:
-    #
-    # 1) configure syslog to accept network log events.  This is done
-    #    by adding the '-r' option to the SYSLOGD_OPTIONS in
-    #    /etc/sysconfig/syslog
-    #
-    # 2) configure local2 events to go to the /var/log/haproxy.log
-    #   file. A line like the following can be added to
-    #   /etc/sysconfig/syslog
-    #
-    #    local2.*                       /var/log/haproxy.log
-    #
-    log         127.0.0.1 local2
-
-    chroot      /var/lib/haproxy
-    pidfile     /var/run/haproxy.pid
-    maxconn     4000
-    user        haproxy
-    group       haproxy
-    daemon
-
-    # turn on stats unix socket
-    stats socket /var/lib/haproxy/stats
-
-#---------------------------------------------------------------------
-# common defaults that all the 'listen' and 'backend' sections will
-# use if not designated in their block
-#---------------------------------------------------------------------
-defaults
-    mode                    tcp
-    log                     global
-    option                  dontlognull
-    option                  redispatch
-    retries                 3
-    timeout queue           1m
-    timeout connect         10s
-    timeout client          1m
-    timeout server          1m
-    timeout check           10s
-    maxconn                 3000
-
-frontend ocp_api
-    bind *:6443
-    default_backend ocp_api
-
-frontend ocp_bootstrap
-    bind *:22623
-    default_backend ocp_bootstrap
-
-frontend ocp_http
-    bind *:80
-    default_backend ocp_http
-
-frontend ocp_https
-     bind *:443
-    default_backend ocp_https
-
-backend ocp_bootstrap
-    balance roundrobin
-    server bootstrap1 192.168.122.10:22623 check
-    server master1 192.168.122.11:22623 check
-    server master2 192.168.122.12:22623 check
-    server master3 192.168.122.13:22623 check
-
-backend ocp_http
-    balance roundrobin
-    server master-woker1 192.168.122.11:80 check
-    server master-woker2 192.168.122.12:80 check
-    server master-woker3 192.168.122.13:80 check
-
-backend ocp_https
-    balance roundrobin
-    server master-woker1 192.168.122.11:443 check
-    server master-woker2 192.168.122.12:443 check
-    server master-woker3 192.168.122.13:443 check
-
-frontend stats
-    bind *:8404
-    stats enable
-    stats uri /stats
-    stats refresh 10s
-```
-
-Contents of the DNS zone:
-
-```console
-[root@ocp-haproxy ~]# cat /etc/named/test.kiratech.local.zone
-$TTL 1W
-@    IN    SOA    ns1.test.kiratech.local.    root (
-            2021061000    ; serial
-            3H        ; refresh (3 hours)
-            30M        ; retry (30 minutes)
-            2W        ; expiry (2 weeks)
-            1W )        ; minimum (1 week)
-    IN    NS    ns1.test.kiratech.local.
-    IN    MX 10    smtp.test.kiratech.local.
-;
-;
-ns1        IN    A    192.168.122.8
-smtp        IN    A    192.168.122.8
-; The api identifies the IP of your load balancer.
-api        IN    A    192.168.122.8
-api-int        IN    A    192.168.122.8
-ocp-haproxy    IN    A    192.168.122.8
-;
-; The wildcard also identifies the load balancer.
-*.apps        IN    A    192.168.122.8
-;
-; Bastion host.
-ocp-bastion    IN    A    192.168.122.9
-;
-; Create an entry for the bootstrap host.
-bootstrap    IN    A    192.168.122.10
-;
-; Create entries for the master hosts.
-ocp-lab-1    IN    A    192.168.122.11
-ocp-lab-2    IN    A    192.168.122.12
-ocp-lab-3    IN    A    192.168.122.13
-;
-;EOF
-```
-
-## The bootstrap vm
-
-It can be useful to follow the suggested journalctl log listing:
-
-```console
-[root@CentOS-83-64-minimal vms]# ssh core@bootstrap
-Red Hat Enterprise Linux CoreOS 47.83.202103251640-0
-  Part of OpenShift 4.7, RHCOS is a Kubernetes native operating system
-  managed by the Machine Config Operator (`clusteroperator/machine-config`).
-
-WARNING: Direct SSH access to machines is not recommended; instead,
-make configuration changes via `machineconfig` objects:
-  https://docs.openshift.com/container-platform/4.7/architecture/architecture-rhcos.html
-
----
-This is the bootstrap node; it will be destroyed when the master is fully up.
-
-The primary services are release-image.service followed by bootkube.service. To watch their status, run e.g.
-
-  journalctl -b -f -u release-image.service -u bootkube.service
-```
-
-But as discussed, the bootstrap machine can be shut down after the installation.
-
-**NOTE 1**: why the bootstrap machine have so high requirements? Becuase it is
-basically a Kubernetes instance itself, made by operators that install
-OpenShift. Remember TripleO/OpenStack On OpenStack?
-
-## The OCP vms
+## The OCP VMs
 
 These are the OCP VMs:
 
 ```console
-[root@CentOS-83-64-minimal vms]# ssh core@ocp-lab-1
-Red Hat Enterprise Linux CoreOS 47.83.202105220305-0
-  Part of OpenShift 4.7, RHCOS is a Kubernetes native operating system
+$ ssh core@training-ootr-01.ocp.kiralab.local
+Warning: Permanently added 'training-ootr-01.ocp.kiralab.local' (ED25519) to the list of known hosts.
+Red Hat Enterprise Linux CoreOS 417.94.202409121747-0
+  Part of OpenShift 4.17, RHCOS is a Kubernetes-native operating system
   managed by the Machine Config Operator (`clusteroperator/machine-config`).
 
 WARNING: Direct SSH access to machines is not recommended; instead,
 make configuration changes via `machineconfig` objects:
-  https://docs.openshift.com/container-platform/4.7/architecture/architecture-rhcos.html
+  https://docs.openshift.com/container-platform/4.17/architecture/architecture-rhcos.html
 
-[core@ocp-lab-1 ~]$ lscpu
-Architecture:        x86_64
-CPU op-mode(s):      32-bit, 64-bit
-Byte Order:          Little Endian
-CPU(s):              4
-On-line CPU(s) list: 0-3
-Thread(s) per core:  1
-Core(s) per socket:  1
-Socket(s):           4
-NUMA node(s):        1
-Vendor ID:           AuthenticAMD
-CPU family:          23
-Model:               49
-Model name:          AMD EPYC-Rome Processor
-Stepping:            0
-CPU MHz:             3593.248
-BogoMIPS:            7186.49
-Hypervisor vendor:   KVM
-Virtualization type: full
-L1d cache:           32K
-L1i cache:           32K
-L2 cache:            512K
-L3 cache:            16384K
-NUMA node0 CPU(s):   0-3
-Flags:               fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm rep_good nopl cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd ibpb stibp vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves clzero xsaveerptr wbnoinvd arat umip rdpid arch_capabilities
+---
+Last login: Wed Oct 23 09:47:59 2024 from 192.168.99.10
 
-[core@ocp-lab-1 ~]$ free -m
-              total        used        free      shared  buff/cache   available
-Mem:          16034        7006         334          64        8693        9467
+[core@training-ootr-01 ~]$ lscpu
+Architecture:            x86_64
+  CPU op-mode(s):        32-bit, 64-bit
+  Address sizes:         39 bits physical, 48 bits virtual
+  Byte Order:            Little Endian
+CPU(s):                  4
+  On-line CPU(s) list:   0-3
+Vendor ID:               GenuineIntel
+  Model name:            Intel(R) Xeon(R) CPU E3-1275 v6 @ 3.80GHz
+    CPU family:          6
+    Model:               158
+    Thread(s) per core:  1
+    Core(s) per socket:  1
+    Socket(s):           4
+    Stepping:            9
+    BogoMIPS:            7584.02
+    Flags:               fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss syscall nx pdpe1gb rdtscp lm constant_tsc ar
+                         ch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline
+                         _timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault pti ssbd ibrs ibpb stibp tpr_shadow flexpriority ept vpid ept_a
+                         d fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx rdseed adx smap clflushopt xsaveopt xsavec xgetbv1 xsaves arat vnmi umip md_clear arch
+                         _capabilities
+Virtualization features:
+  Virtualization:        VT-x
+  Hypervisor vendor:     KVM
+  Virtualization type:   full
+Caches (sum of all):
+  L1d:                   128 KiB (4 instances)
+  L1i:                   128 KiB (4 instances)
+  L2:                    16 MiB (4 instances)
+  L3:                    64 MiB (4 instances)
+NUMA:
+  NUMA node(s):          1
+  NUMA node0 CPU(s):     0-3
+Vulnerabilities:
+  Gather data sampling:  Unknown: Dependent on hypervisor status
+  Itlb multihit:         Not affected
+  L1tf:                  Mitigation; PTE Inversion; VMX flush not necessary, SMT disabled
+  Mds:                   Mitigation; Clear CPU buffers; SMT Host state unknown
+  Meltdown:              Mitigation; PTI
+  Mmio stale data:       Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown
+  Retbleed:              Mitigation; IBRS
+  Spec rstack overflow:  Not affected
+  Spec store bypass:     Mitigation; Speculative Store Bypass disabled via prctl
+  Spectre v1:            Mitigation; usercopy/swapgs barriers and __user pointer sanitization
+  Spectre v2:            Mitigation; IBRS, IBPB conditional, STIBP disabled, RSB filling, PBRSB-eIBRS Not affected
+  Srbds:                 Unknown: Dependent on hypervisor status
+  Tsx async abort:       Not affected
+
+[core@training-ootr-01 ~]$ free -m
+               total        used        free      shared  buff/cache   available
+Mem:           15993        8407         396          96        7624        7585
+Swap:              0           0           0
 ```

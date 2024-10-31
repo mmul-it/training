@@ -5,15 +5,15 @@ accordingly to cluster environment.
 After this it is possible to launch the coreos installation:
 
 ```console
-$ sudo coreos-installer install --copy-network --ignition-url=http://ocp-bastion.test.kiratech.local/openshift-install-dir/worker.ign /dev/sda --insecure-ignition
+$ sudo coreos-installer install --copy-network --ignition-url=http://training-adm:8080/worker.ign /dev/sda --insecure-ignition
 ...
 ```
 
-On the bastion machine after some time a request for a 'bootstrapper'
+On the `training-adm` machine after some time a request for a 'bootstrapper'
 certificate approval will appear:
 
 ```console
-[root@ocp-bastion ~]# oc get csr
+$ oc get csr
 NAME        AGE   SIGNERNAME                                    REQUESTOR
 csr-vgncl   21s   kubernetes.io/kube-apiserver-client-kubelet   system:serviceaccount:openshift-machine-config-operator:node-bootstrapper   Pending
 ```
@@ -21,7 +21,7 @@ csr-vgncl   21s   kubernetes.io/kube-apiserver-client-kubelet   system:serviceac
 Certificate must then be approved:
 
 ```console
-[root@ocp-bastion ~]# oc adm certificate approve csr-vgncl
+$ oc adm certificate approve csr-vgncl
 certificatesigningrequest.certificates.k8s.io/csr-vgncl approved
 ```
 
@@ -29,46 +29,46 @@ At this point a second request of approval, related to the specific node will
 appear:
 
 ```console
-[root@ocp-bastion ~]# oc get csr
+$ oc get csr
 NAME        AGE   SIGNERNAME                                    REQUESTOR                                                                    CONDITION
-csr-b29t9   0s    kubernetes.io/kubelet-serving                 system:node:ocp-lab-4.test.kiratech.local                                 Pending
+csr-b29t9   0s    kubernetes.io/kubelet-serving                 system:node:training-ootr-04                                                 Pending
 csr-vgncl   52s   kubernetes.io/kube-apiserver-client-kubelet   system:serviceaccount:openshift-machine-config-operator:node-bootstrapper    Approved,Issued
 ```
 
 Also this one will need to be approved:
 
 ```console
-[root@ocp-bastion ~]# oc adm certificate approve csr-b29t9
+$ oc adm certificate approve csr-b29t9
 certificatesigningrequest.certificates.k8s.io/csr-b29t9 approved
 ```
 
 So once all the certificates are approved:
 
 ```console
-[root@ocp-bastion ~]# oc get csr
+$ oc get csr
 NAME        AGE   SIGNERNAME                                    REQUESTOR                                                                   CONDITION
-csr-b29t9   10s   kubernetes.io/kubelet-serving                 system:node:ocp-lab-4.test.kiratech.local                                Approved,Issued
+csr-b29t9   10s   kubernetes.io/kubelet-serving                 system:node:training-ootr-04                                                Approved,Issued
 csr-vgncl   62s   kubernetes.io/kube-apiserver-client-kubelet   system:serviceaccount:openshift-machine-config-operator:node-bootstrapper   Approved,Issued
 ```
 
 Node will appear in the nodes list, initially as "NotReady":
 
 ```console
-[root@ocp-bastion ~]# oc get nodes
-NAME                            STATUS     ROLES           AGE   VERSION
-ocp-lab-1.test.kiratech.local   Ready      master,worker   34d   v1.20.0+df9c838
-ocp-lab-2.test.kiratech.local   Ready      master,worker   34d   v1.20.0+df9c838
-ocp-lab-3.test.kiratech.local   Ready      master,worker   34d   v1.20.0+df9c838
-ocp-lab-4.test.kiratech.local   NotReady   worker          25s   v1.20.0+df9c838
+$ oc get nodes
+NAME               STATUS     ROLES           AGE   VERSION
+training-ootr-01   Ready      control-plane,master,worker   34d   v1.30.4
+training-ootr-02   Ready      control-plane,master,worker   34d   v1.30.4
+training-ootr-03   Ready      control-plane,master,worker   34d   v1.30.4
+training-ootr-04   NotReady   worker          25s   v1.30.4
 ```
 
 And after some time, it will be fully part of the cluster, 'Ready':
 
 ```console
-[root@ocp-bastion ~]# oc get nodes
-NAME                            STATUS     ROLES           AGE   VERSION
-ocp-lab-1.test.kiratech.local   Ready      master,worker   34d   v1.20.0+df9c838
-ocp-lab-2.test.kiratech.local   Ready      master,worker   34d   v1.20.0+df9c838
-ocp-lab-3.test.kiratech.local   Ready      master,worker   34d   v1.20.0+df9c838
-ocp-lab-4.test.kiratech.local   Ready      worker          61m   v1.20.0+df9c838
+$ oc get nodes
+NAME               STATUS     ROLES           AGE   VERSION
+training-ootr-01   Ready      control-plane,master,worker   34d   v1.30.4
+training-ootr-02   Ready      control-plane,master,worker   34d   v1.30.4
+training-ootr-03   Ready      control-plane,master,worker   34d   v1.30.4
+training-ootr-04   Ready      worker          61m   v1.30.4
 ```
