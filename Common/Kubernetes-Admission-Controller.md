@@ -1,7 +1,8 @@
 # Lab | Implement a Kubernetes Admission Controller using Trivy
 
 In this lab you will implement a Kubernetes Admission Controller using Trivy
-inside a Minikube cluster and then doing the same in a multi node cluster setup.
+inside a Minikube cluster, and then the same steps e will be defined for
+a multi node Kubernetes installation as well as an OpenShift cluster.
 
 ## Requirements
 
@@ -249,19 +250,42 @@ NAME                                            DESIRED   CURRENT   READY   AGE
 replicaset.apps/ncat-http-msg-port-6d4cc89ccc   1         1         1       48m
 ```
 
-## Bonus: implement everything in a multi node Kubernetes cluster
+## Activating the webhook in a Kubernetes or OpenShift cluster
 
-As we said, the service will rely on certificates, so we can use the one used
-by Kuberentes, downloading them from the server:
+As we said, the service will rely on certificates, so when deploying the webhook
+in **Kubernetes**, the certificates related to the certification authority
+should be downloaded them from the server:
 
 ```console
-$ scp kubernetes-1:ca* .
+$ scp kubernetes-1:/etc/kubernetes/pki/ca* .
 Warning: Permanently added 'kubernetes-1' (ED25519) to the list of known hosts.
 ca.crt                                             100% 1099     1.4MB/s   00:00
 ca.key                                             100% 1675     2.4MB/s   00:00
 ```
 
-We will then create the certificates for the webhook, using `openssl`:
+In **OpenShift**, the setup differs from standard Kubernetes in that it does not
+have the typical `/etc/kubernetes/pki/ca.crt` file accessible in nodes or pods.
+
+OpenShift uses a more distributed approach to certificate management, with
+multiple CAs for different purposes managed by various operators.
+
+The **Service CA** managed by the **Service CA Operator** issues certificates
+for internal cluster services (e.g., for Routes, Service-serving certificates)
+and is stored in the `openshift-service-ca` namespace, inside the
+`secrets/signing-key` secret.
+
+To download the key/cert couple just do:
+
+```console
+$ oc get secrets/signing-key -n openshift-service-ca -o template='{{index .data "tls.crt"}}' | base64 --decode > ca.crt
+(no output)
+
+$ oc get secrets/signing-key -n openshift-service-ca -o template='{{index .data "tls.key"}}' | base64 --decode > ca.key
+(no output)
+```
+
+With the certification authority certificate it will be possible to create the
+certificates for the webhook, using `openssl`:
 
 ```console
 $ openssl genrsa -out taw-webhook.key 2048
@@ -278,14 +302,76 @@ Certificate request self-signature ok
 subject=CN = trivy-admission-webhook.trivy-system.svc
 ```
 
-And then we will store them inside Kubernetes, as a `secret`:
+And then store them inside Kubernetes/OpenShift, as a `secret`:
 
 ```console
 $ kubectl -n trivy-system create secret tls trivy-admission-webhook-certs --key="taw-webhook.key" --cert="taw-webhook.crt"
 secret/trivy-admission-webhook-certs created
 ```
 
-With the secret in place, it is time to create the webhook deploynment:
+With the secret in place, it is time to create the webhook deployment. The
+deployment will differ from Minikube because it will be not using the `443`
+privileged port, instead it will use `8443`.
+
+This override can be made by passing the `TRIVY_WEBHOOK_SSL_PORT` variables to
+the deployment.
+
+This will be the updated `trivy-admission-webhook.yaml`:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: trivy-admission-webhook
+  name: trivy-admission-webhook
+  namespace: trivy-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trivy-admission-webhook
+  template:
+    metadata:
+      labels:
+        app: trivy-admission-webhook
+    spec:
+      containers:
+        - name: trivy-admission-webhook
+          image: quay.io/mmul/trivy-admission-webhook
+          env:
+            - name: "TRIVY_WEBHOOK_SSL_PORT"
+              value: "8443"
+            - name: "TRIVY_WEBHOOK_ALLOW_INSECURE_REGISTRIES"
+              value: "True"
+          volumeMounts:
+           - name: certs
+             mountPath: "/certs"
+             readOnly: true
+      volumes:
+        - name: certs
+          secret:
+            secretName: trivy-admission-webhook-certs
+            optional: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: trivy-admission-webhook
+  name: trivy-admission-webhook
+  namespace: trivy-system
+spec:
+  ports:
+    - name: 443-443
+      port: 443
+      protocol: TCP
+      targetPort: 8443
+  selector:
+    app: trivy-admission-webhook
+```
+
+With the file in place, the effective creation can be made via `kubectl`:
 
 ```console
 $ kubectl create -f trivy-admission-webhook.yaml
@@ -306,9 +392,9 @@ NAME                                                 DESIRED   CURRENT   READY  
 replicaset.apps/trivy-admission-webhook-7c888d7d86   1         1         1       73s
 ```
 
-And finally the webhook itself, patching the `validatingwebhookconfiguration`
-resource by adding the `ca.crt` certificate that has been used for the
-certificate generation:
+And finally the webhook itself can be created. This will need to be patched to
+add to the `validatingwebhookconfiguration` the `ca.crt` certificate as the
+`caBundle` variable, that has been used for the certificate generation:
 
 ```console
 $ kubectl create -f taw-validating-webhook-configuration.yaml
@@ -324,7 +410,7 @@ $ kubectl patch validatingwebhookconfigurations.admissionregistration.k8s.io tri
 validatingwebhookconfiguration.admissionregistration.k8s.io/trivy-admission-webhook.trivy-system.svc patched
 ```
 
-## Test on multi node Kubernetes cluster
+## Test on Kubernetes or OpenShift cluster
 
 Same tests can be made:
 
