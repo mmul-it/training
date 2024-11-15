@@ -1,4 +1,4 @@
-# Argo CD Workshop - Stage 6
+# Argo CD Workshop - Metrics configuration
 
 This bonus stage installs and enables Prometheus and Grafana metrics so to
 configure a specific Argo CD Grafana dashboard.

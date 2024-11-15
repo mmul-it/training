@@ -1,4 +1,4 @@
-# Argo CD Workshop - Stage 5
+# Argo CD Workshop - Webhook synchronization
 
 This bonus stage explores how to configure a Git hook to force the
 synchronization of an application.
@@ -71,7 +71,7 @@ $ kubectl rollout restart deployment argocd-server -n argocd
 deployment.apps/argocd-server restarted
 ```
 
-# Enabling the Git hook
+## Enabling the Git hook
 
 We will execute the `post-commit` hook inside the repo, so the script will be
 `~/kirater-repo/.git/hooks/post-commit`, and will have this content:
@@ -119,6 +119,8 @@ $ chmod -v +x ~/kirater-repo/.git/hooks/post-commit
 mode of '/home/kirater/kirater-repo/.git/hooks/post-commit' changed from 0644 (rw-r--r--) to 0755 (rwxr-xr-x)
 ```
 
+## Test with a commit
+
 A new commit should activate the Arco CD sync:
 
 ```console
@@ -134,7 +136,7 @@ Running post-commit hook... Done.
 Each new synch will be tracked inside the application history:
 
 ```console
-$ argocd app history argocd/test-webserver 
+$ argocd app history argocd/test-webserver
 ID  DATE                           REVISION
 2   2024-11-13 17:07:19 +0000 UTC  test (751e628)
 3   2024-11-13 17:49:19 +0000 UTC  test (1656d46)

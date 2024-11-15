@@ -29,6 +29,8 @@ The structure of the workshop will be based on stages:
 - Stage 2: [MetalLB installation and configuration](Stage-2-MetalLB-Installation.md).
 - Stage 3: [Argo-CD installation and configuration](Stage-3-Argo-CD-Installation.md).
 - Stage 4: [Argo-CD application tests](Stage-4-Argo-CD-Application-Test.md).
+- Stage bonus: [Argo-CD synchronization via webhook](Stage-Bonus-Argo-CD-Webhook-Sync.md).
+- Stage bonus: [Argo-CD metrics conifguration](Stage-Bonus-Argo-CD-Metrics.md).
 
 ## References
 
