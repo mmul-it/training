@@ -22,7 +22,10 @@ $ kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e "s/strictARP:
 Warning: resource configmaps/kube-proxy is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
 configmap/kube-proxy configured
 
-$ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.4/config/manifests/metallb-native.yaml
+$ export METALLB_VERSION='v0.14.8'
+(no output)
+
+$ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/${METALLB_VERSION}/config/manifests/metallb-native.yaml
 namespace/metallb-system created
 ...
 ...
@@ -82,7 +85,10 @@ $ kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e "s/strictARP:
 Warning: resource configmaps/kube-proxy is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
 configmap/kube-proxy configured
 
-$ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.4/config/manifests/metallb-native.yaml
+$ export METALLB_VERSION='v0.14.8'
+(no output)
+
+$ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/${METALLB_VERSION}/config/manifests/metallb-native.yaml
 namespace/metallb-system created
 ...
 ...
@@ -134,7 +140,10 @@ $ kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e "s/strictARP:
 Warning: resource configmaps/kube-proxy is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
 configmap/kube-proxy configured
 
-$ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.4/config/manifests/metallb-native.yaml
+$ export METALLB_VERSION='v0.14.8'
+(no output)
+
+$ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/${METALLB_VERSION}/config/manifests/metallb-native.yaml
 namespace/metallb-system created
 ...
 ...

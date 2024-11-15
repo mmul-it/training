@@ -24,6 +24,7 @@ Installation can be made directly by pointing to the GitHub's yaml:
 
 ```console
 $ export METALLB_VERSION='v0.13.11'
+(no output)
 
 $ kubectl create -f https://raw.githubusercontent.com/metallb/metallb-operator/${METALLB_VERSION}/bin/metallb-operator.yaml
 namespace/metallb-system created
