@@ -12,7 +12,7 @@ networking:
   apiServerPort: 6443
 nodes:
 - role: control-plane
-  image: kindest/node:v1.29.2@sha256:51a1434a5397193442f0be2a297b488b6c919ce8a3931be0ce822606ea5ca245
+  image: kindest/node:v1.31.0
 EOF
 
 cat <<EOF > kind-${TEST}-config.yml
@@ -23,7 +23,7 @@ networking:
   apiServerPort: 7443
 nodes:
 - role: control-plane
-  image: kindest/node:v1.29.2@sha256:51a1434a5397193442f0be2a297b488b6c919ce8a3931be0ce822606ea5ca245
+  image: kindest/node:v1.31.0
 EOF
 
 cat <<EOF > kind-${PROD}-config.yml
@@ -34,12 +34,12 @@ networking:
   apiServerPort: 8443
 nodes:
 - role: control-plane
-  image: kindest/node:v1.29.2@sha256:51a1434a5397193442f0be2a297b488b6c919ce8a3931be0ce822606ea5ca245
+  image: kindest/node:v1.31.0
 EOF
 
-kind create cluster --name ${CTLP} --config kind-${CTLP}-config.yml
-kind create cluster --name ${TEST} --config kind-${TEST}-config.yml
-kind create cluster --name ${PROD} --config kind-${PROD}-config.yml
+for K8S in ${CTLP} ${TEST} ${PROD}; do
+  kind create cluster --name ${K8S} --config kind-${K8S}-config.yml
+done
 
 export METALLB_VERSION='v0.14.8'
 for K8S in ${CTLP} ${TEST} ${PROD}; do
@@ -115,25 +115,84 @@ for K8S in ${CTLP} ${TEST} ${PROD}; do
 done
 
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
 
-for K8S in ${CTLP} ${TEST} ${PROD}; do
+
+# PROMETHEUS
+cat <<EOF > helm-prometheus-override.yml
+grafana:
+  enabled: false
+
+alertmanager:
+  enabled: false
+EOF
+
+for K8S in ${TEST} ${PROD}; do
   kubectl config use-context kind-${K8S}
-  helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+  # Install
+  helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace --values helm-prometheus-override.yml
   kubectl -n monitoring expose service prometheus-kube-prometheus-prometheus --name=prometheus-kube-prometheus-prometheus-lb --type=LoadBalancer
-  eval "PROMETHEUS_PROM_${K8S}=$(kubectl -n monitoring get svc prometheus-kube-prometheus-prometheus-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
-  kubectl -n monitoring expose service prometheus-kube-prometheus-alertmanager --name=prometheus-kube-prometheus-alertmanager-lb --type=LoadBalancer
-  eval "PROMETHEUS_ALERT_${K8S}=$(kubectl -n monitoring get svc prometheus-kube-prometheus-alertmanager-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
+  eval "PROMETHEUS_${K8S}=$(kubectl -n monitoring get svc prometheus-kube-prometheus-prometheus-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
 done
+
+# FEDERATION
+# https://stackoverflow.com/questions/64918491/prometheus-for-k8s-multi-clusters
+# https://prometheus.io/docs/prometheus/latest/federation/#configuring-federation
+cat <<EOF> helm-prometheus-${CTLP}.yml
+grafana:
+  enabled: false
+
+alertmanager:
+  enabled: false
+
+prometheus:
+  prometheusSpec:
+    additionalScrapeConfigs:
+      - job_name: 'federate'
+        scrape_interval: 15s
+      
+        honor_labels: true
+        metrics_path: '/federate'
+      
+        params:
+          'match[]':
+            - '{job="prometheus"}'
+            - '{__name__=~"job:.*"}'
+      
+        static_configs:
+          - targets:
+            - '$(eval "echo \${PROMETHEUS_${TEST}}")'
+            - '$(eval "echo \${PROMETHEUS_${PROD}}")'
+EOF
 
 kubectl config use-context kind-${CTLP}
-kubectl -n monitoring expose deployment prometheus-grafana --type=LoadBalancer --name=prometheus-grafana-lb
-CTLP_GRAFANA_UI=$(kubectl -n monitoring get svc prometheus-grafana-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')
+# PROMETHEUS
+helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace --values helm-prometheus-ctlplane.yml
+kubectl -n monitoring expose service prometheus-kube-prometheus-prometheus --name=prometheus-kube-prometheus-prometheus-lb --type=LoadBalancer
+eval "PROMETHEUS_${CTLP}=$(kubectl -n monitoring get svc prometheus-kube-prometheus-prometheus-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
 
-echo "Grafana web interface: ${CTLP_GRAFANA_UI}"
+#### Fix metrics expositions
+###for K8S in ${CTLP} ${TEST} ${PROD}; do
+###  # Check https://artifacthub.io/packages/helm/kube-prometheus-stack-oci/kube-prometheus-stack/14.2.0#kubeproxy
+###  kubectl -n kube-system get cm kube-proxy -o yaml | sed 's/metricsBindAddress:.*$/metricsBindAddress: 0.0.0.0:10249/' | kubectl apply -f -
+###  # Force pod recreation
+###  kubectl -n kube-system delete pod -l k8s-app=kube-proxy
+###  
+### 
+###done
+
+# GRAFANA
+helm install --namespace grafana --create-namespace grafana grafana/grafana
+kubectl -n grafana patch svc grafana -p '{"spec": {"type": "LoadBalancer"}}'
+GRAFANA_UI=$(kubectl -n grafana get svc grafana -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')
+GRAFANA_PW=$(kubectl get secret --namespace grafana grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo4 --decode)
+
+echo "(${CTLP}) Grafana web interface: ${GRAFANA_UI}"
+echo "(${CTLP}) Grafana admin password: ${GRAFANA_PW}"
 for K8S in ${CTLP} ${TEST} ${PROD}; do
-  echo -n "(${K8S}) Prometheus prometheus-kube-prometheus-prometheus-lb: "
-  eval "echo \${PROMETHEUS_PROM_${K8S}}"
-  echo -n "(${K8S}) Prometheus prometheus-kube-prometheus-alertmanager-lb: "
-  eval "echo \${PROMETHEUS_ALERT_${K8S}}"
+  echo -n "(${K8S}) Prometheus: "
+  eval "echo \${PROMETHEUS_${K8S}}"
 done
+
+# Dashboards: https://github.com/dotdc/grafana-dashboards-kubernetes
