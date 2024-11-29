@@ -150,16 +150,15 @@ prometheus:
   prometheusSpec:
     additionalScrapeConfigs:
       - job_name: 'federate'
-        scrape_interval: 15s
-      
         honor_labels: true
         metrics_path: '/federate'
-      
         params:
           'match[]':
-            - '{job="prometheus"}'
-            - '{__name__=~"job:.*"}'
-      
+            - '{__name__=~"node_.*"}'
+            - '{__name__=~"kube_.*"}'
+            - '{__name__=~"container_.*"}'
+            - '{job="kubernetes-apiservers"}'
+            - 'up'
         static_configs:
           - targets:
             - '$(eval "echo \${PROMETHEUS_${TEST}}")'
@@ -186,7 +185,7 @@ eval "PROMETHEUS_${CTLP}=$(kubectl -n monitoring get svc prometheus-kube-prometh
 helm install --namespace grafana --create-namespace grafana grafana/grafana
 kubectl -n grafana patch svc grafana -p '{"spec": {"type": "LoadBalancer"}}'
 GRAFANA_UI=$(kubectl -n grafana get svc grafana -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')
-GRAFANA_PW=$(kubectl get secret --namespace grafana grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo4 --decode)
+GRAFANA_PW=$(kubectl get secret --namespace grafana grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo)
 
 echo "(${CTLP}) Grafana web interface: ${GRAFANA_UI}"
 echo "(${CTLP}) Grafana admin password: ${GRAFANA_PW}"
