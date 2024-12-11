@@ -75,3 +75,54 @@ Press CTRL+C to quit
 Finally look call the [http://localhost:5000](http://localhost:5000) url and
 then check the Jaeger web interface at [http://localhost:16686](http://localhost:16686)
 to query the related traces.
+
+## Add Tempo to Grafana
+
+Tempo installation
+
+```console
+$ kubectl create namespace tempo-test
+
+$ cat <<EOF > helm-tempo.yml
+traces:
+  otlp:
+    http:
+      enabled: true
+    grpc:
+      enabled: true
+EOF
+
+$ helm -n tempo-test install --values helm-tempo.yml tempo grafana/tempo-distributed
+
+$ kubectl -n tempo-test expose service tempo-query-frontend --name=tempo-query-frontend-lb --type=LoadBalancer
+$ eval "TEMPO_FRONTEND_${CTLP}=$(kubectl -n tempo-test get svc tempo-query-frontend-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
+$ kubectl -n tempo-test expose service tempo-distributor --name=tempo-distributor-lb --type=LoadBalancer
+$ eval "TEMPO_DISTRIB_${CTLP}=$(kubectl -n tempo-test get svc tempo-distributor-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
+```
+
+Now Jaeger should be instructed to send traces to Tempo, to make this possible
+it's better to deploy it under Kubernetes, using Helm.
+
+Follow: [https://medium.com/@blackhorseya/deploying-opentelemetry-and-jaeger-with-helm-on-kubernetes-d86cc8ba0332]()
+
+### Test manually
+
+With `otel-cli`:
+
+```console
+$ go install github.com/equinix-labs/otel-cli@latest
+...
+
+$ export OTEL_EXPORTER_OTLP_ENDPOINT=http://172.18.0.102:4318/v1/traces
+
+$ ~/go/bin/otel-cli span \
+      --service "my-application" \
+      --name "send data to the server" \
+      --start $(date +%s.%N) \
+      --end $(date +%s.%N) \
+      --attrs "os.kernel=$(uname -r)" \
+      --tp-print --verbose
+# trace id: c21425cf2ff5b8a28bcb13822de30a4e
+#  span id: ef02a2c9e04e24a7
+TRACEPARENT=00-c21425cf2ff5b8a28bcb13822de30a4e-ef02a2c9e04e24a7-01
+```
