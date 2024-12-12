@@ -7,7 +7,8 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
 # Deprecated
 # from opentelemetry.exporter.jaeger.thrift import JaegerExporter
-from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+#from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 
 # Set APP_NAME reading file name
 APP_NAME = os.path.splitext(os.path.basename(__file__))[0]
@@ -27,7 +28,9 @@ tracer = trace.get_tracer(APP_NAME)
 #     agent_port=6831,
 # )
 jaeger_exporter = OTLPSpanExporter(
-    endpoint="http://localhost:4318/v1/traces"
+#    endpoint="http://172.18.0.105:4318/v1/traces"
+    endpoint = "172.18.0.102:4317",
+    insecure = True
 )
 trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(jaeger_exporter))
 
