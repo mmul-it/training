@@ -169,6 +169,22 @@ $ kubectl -n jaeger get svc jaeger-collector-lb -o jsonpath='{.status.loadBalanc
 172.18.0.105:9411
 ```
 
+Since, at the moment, there seems to be no way to send traces fro Jaeger to
+Tempo, then it would be a lot easier to send traces directly from the apps into
+Tempo, so that those can be further integrated with Loki.
+
+This can be achieved by changing the Python scripts to point to the Tempo url:
+
+```python
+tempo_exporter = OTLPSpanExporter(
+    endpoint = "172.17.0.2:4317",
+    insecure = True
+)
+trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(tempo_exporter))
+```
+
+Then it will be time to configure the Grafana datasource related to Tempo.
+
 ### Test manually
 
 With `otel-cli`:

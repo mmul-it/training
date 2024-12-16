@@ -25,18 +25,24 @@ trace.set_tracer_provider(
 )
 tracer = trace.get_tracer(APP_NAME)
 
+## Deprecated
 # Configure Jaeger Exporter
-# Deprecated
 # jaeger_exporter = JaegerExporter(
 #     agent_host_name="localhost",
 #     agent_port=6831,
 # )
-jaeger_exporter = OTLPSpanExporter(
+## Not working (there seems to be no way to send traces from Jager to Tempo)
+#jaeger_exporter = OTLPSpanExporter(
 #    endpoint="http://172.18.0.105:4318/v1/traces"
+#    endpoint = "172.18.0.105:4317",
+#    insecure = True
+#)
+#trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(jaeger_exporter))
+tempo_exporter = OTLPSpanExporter(
     endpoint = "172.18.0.102:4317",
     insecure = True
 )
-trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(jaeger_exporter))
+trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(tempo_exporter))
 
 # Initialize Flask App
 app = Flask(APP_NAME)
