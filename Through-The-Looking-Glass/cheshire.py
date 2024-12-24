@@ -1,4 +1,7 @@
 import os
+import logging
+import logging_loki
+import requests
 from flask import Flask
 from opentelemetry import trace
 from opentelemetry.sdk.resources import Resource
@@ -40,6 +43,16 @@ tempo_exporter = OTLPSpanExporter(
 )
 trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(tempo_exporter))
 
+# LOGS
+loki_url = "http://172.18.0.104:8080/loki/api/v1/push"
+handler = logging_loki.LokiHandler(
+    url=loki_url,
+    tags={"application": APP_NAME},
+    version="1",
+)
+logger = logging.getLogger("my-logger")
+logger.addHandler(handler)
+
 # Initialize Flask App
 app = Flask(APP_NAME)
 FlaskInstrumentor().instrument_app(app)
@@ -48,6 +61,7 @@ FlaskInstrumentor().instrument_app(app)
 @app.route("/process")
 def process_request():
     with tracer.start_as_current_span(APP_NAME):
+        logger.error("Backend: Processing request at '/process' endpoint")
         return "Processed data in Backend!"
 
 # Execute Flask app

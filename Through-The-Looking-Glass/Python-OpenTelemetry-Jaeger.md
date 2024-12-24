@@ -16,7 +16,16 @@ This lab is about Jeager Trace.
 Create the virtualenv and install requirements via `pip':
 
 ```console
-$ pip install flask opentelemetry-api opentelemetry-sdk opentelemetry-instrumentation-flask opentelemetry-instrumentation-requests opentelemetry-exporter-otlp
+$ pip install flask \
+      opentelemetry-api \
+      opentelemetry-sdk \
+      opentelemetry-instrumentation-flask \
+      opentelemetry-instrumentation-requests \
+      opentelemetry-instrumentation-logging \
+      opentelemetry-exporter-otlp \
+      opentelemetry-distro \
+      requests \
+      python-logging-loki
 ...
 ```
 
@@ -206,3 +215,137 @@ $ ~/go/bin/otel-cli span \
 #  span id: ef02a2c9e04e24a7
 TRACEPARENT=00-c21425cf2ff5b8a28bcb13822de30a4e-ef02a2c9e04e24a7-01
 ```
+
+## Logs with Loki
+
+```console
+$ cat <<EOF > helm-loki.yml
+loki:
+  replicas: 1
+  schemaConfig:
+    configs:
+      - from: 2024-04-01
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+  ingester:
+    chunk_encoding: snappy
+    lifecycler:
+      ring:
+        replication_factor: 1
+  auth_enabled: false
+
+deploymentMode: SimpleScalable
+
+limits_config:
+  index_gateway_shard_size: 1
+
+backend:
+  replicas: 1
+read:
+  replicas: 1
+write:
+  replicas: 1
+ 
+# Enable minio for storage
+minio:
+  enabled: true
+EOF
+
+$ helm install loki grafana/loki-stack --namespace loki --create-namespace --values=helm-loki.yml
+```
+
+Look for thist status:
+
+```console
+# kubectl -n loki get all
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/loki-backend-0                  2/2     Running   0          41m
+pod/loki-canary-b2zmr               1/1     Running   0          139m
+pod/loki-chunks-cache-0             2/2     Running   0          139m
+pod/loki-gateway-5565df88fc-zh4hj   1/1     Running   0          139m
+pod/loki-minio-0                    1/1     Running   0          139m
+pod/loki-read-6cb46d86dc-gfm5c      1/1     Running   0          41m
+pod/loki-results-cache-0            2/2     Running   0          139m
+pod/loki-write-0                    1/1     Running   0          41m
+
+NAME                                     TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)                         AGE
+service/loki-backend                     ClusterIP      10.96.152.242   <none>         3100/TCP,9095/TCP               139m
+service/loki-backend-headless            ClusterIP      None            <none>         3100/TCP,9095/TCP               139m
+service/loki-canary                      ClusterIP      10.96.215.164   <none>         3500/TCP                        139m
+service/loki-chunks-cache                ClusterIP      None            <none>         11211/TCP,9150/TCP              139m
+service/loki-gateway                     ClusterIP      10.96.164.54    <none>         80/TCP                          139m
+service/loki-memberlist                  ClusterIP      None            <none>         7946/TCP                        139m
+service/loki-minio                       ClusterIP      10.96.13.24     <none>         9000/TCP                        139m
+service/loki-minio-console               ClusterIP      10.96.178.25    <none>         9001/TCP                        139m
+service/loki-minio-svc                   ClusterIP      None            <none>         9000/TCP                        139m
+service/loki-query-scheduler-discovery   ClusterIP      None            <none>         3100/TCP,9095/TCP               139m
+service/loki-read                        ClusterIP      10.96.195.151   <none>         3100/TCP,9095/TCP               139m
+service/loki-read-headless               ClusterIP      None            <none>         3100/TCP,9095/TCP               139m
+service/loki-results-cache               ClusterIP      None            <none>         11211/TCP,9150/TCP              139m
+service/loki-write                       ClusterIP      10.96.253.121   <none>         3100/TCP,9095/TCP               139m
+service/loki-write-headless              ClusterIP      None            <none>         3100/TCP,9095/TCP               139m
+
+NAME                         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+daemonset.apps/loki-canary   1         1         1       1            1           <none>          139m
+
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/loki-gateway   1/1     1            1           139m
+deployment.apps/loki-read      1/1     1            1           139m
+
+NAME                                      DESIRED   CURRENT   READY   AGE
+replicaset.apps/loki-gateway-5565df88fc   1         1         1       139m
+replicaset.apps/loki-read-5675d67b5d      0         0         0       139m
+replicaset.apps/loki-read-58b96ffd75      0         0         0       84m
+replicaset.apps/loki-read-5df85bcdb6      0         0         0       86m
+replicaset.apps/loki-read-6884bbd7ff      0         0         0       94m
+replicaset.apps/loki-read-6cb46d86dc      1         1         1       41m
+replicaset.apps/loki-read-79b4f777f       0         0         0       43m
+replicaset.apps/loki-read-8fcb67966       0         0         0       42m
+replicaset.apps/loki-read-cbdd5fd86       0         0         0       59m
+
+NAME                                  READY   AGE
+statefulset.apps/loki-backend         1/1     139m
+statefulset.apps/loki-chunks-cache    1/1     139m
+statefulset.apps/loki-minio           1/1     139m
+statefulset.apps/loki-results-cache   1/1     139m
+statefulset.apps/loki-write           1/1     139m
+```
+
+And expose Loki API service:
+
+```console
+$ kubectl -n loki expose deployment loki-gateway --name=loki-gateway-lb --type=LoadBalancer
+service/loki-gateway-lb exposed
+
+$ kubectl -n loki get svc loki-gateway-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}'
+172.18.0.104:8080
+```
+
+Change Python source to include the log writing:
+
+```python
+# Configure Logging
+loki_url = "http://172.18.0.104:8080/loki/api/v1/push"
+handler = logging_loki.LokiHandler(
+    url=loki_url,
+    tags={"application": APP_NAME},
+    version="1",
+)
+logger = logging.getLogger("my-logger")
+logger.addHandler(handler)
+```
+
+And when writing is needed:
+
+```python
+        logger.error("Frontend: request at '/process' endpoint completed")
+```
+
+For further info check:
+
+- [Send lo data to Loki](https://grafana.com/docs/loki/latest/send-data/).
+- [Specfic Python example](https://pypi.org/project/python-logging-loki/).

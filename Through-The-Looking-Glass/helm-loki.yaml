@@ -1,0 +1,33 @@
+loki:
+  replicas: 1
+  schemaConfig:
+    configs:
+      - from: 2024-04-01
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+  ingester:
+    chunk_encoding: snappy
+    lifecycler:
+      ring:
+        replication_factor: 1
+  auth_enabled: false
+
+deploymentMode: SimpleScalable
+
+limits_config:
+  index_gateway_shard_size: 1
+
+backend:
+  replicas: 1
+read:
+  replicas: 1
+write:
+  replicas: 1
+ 
+# Enable minio for storage
+minio:
+  enabled: true
