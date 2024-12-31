@@ -4,10 +4,10 @@ This is part of the "**Through the looking glass**" observability course which w
 explore these topics:
 
 - Prometheus Metrics
-- Elastic Logs
-- Jeager Trace
+- Jeager and Tempo traces
+- Loki Logs
 
-This lab is about Jeager Trace.
+This lab is about Jeager and Tempo traces integrated with Loki logs.
 
 ## Prepare the environment
 
@@ -105,6 +105,7 @@ $ helm -n tempo-test install --values helm-tempo.yml tempo grafana/tempo-distrib
 
 $ kubectl -n tempo-test expose service tempo-query-frontend --name=tempo-query-frontend-lb --type=LoadBalancer
 $ eval "TEMPO_FRONTEND_${CTLP}=$(kubectl -n tempo-test get svc tempo-query-frontend-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
+
 $ kubectl -n tempo-test expose service tempo-distributor --name=tempo-distributor-lb --type=LoadBalancer
 $ eval "TEMPO_DISTRIB_${CTLP}=$(kubectl -n tempo-test get svc tempo-distributor-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
 ```
@@ -249,7 +250,7 @@ read:
   replicas: 1
 write:
   replicas: 1
- 
+
 # Enable minio for storage
 minio:
   enabled: true
@@ -261,7 +262,7 @@ $ helm install loki grafana/loki-stack --namespace loki --create-namespace --val
 Look for thist status:
 
 ```console
-# kubectl -n loki get all
+$ kubectl -n loki get all
 NAME                                READY   STATUS    RESTARTS   AGE
 pod/loki-backend-0                  2/2     Running   0          41m
 pod/loki-canary-b2zmr               1/1     Running   0          139m
@@ -340,13 +341,45 @@ logging.basicConfig(level=logging.INFO)
 logger.addHandler(handler)
 ```
 
-And when writing is needed:
+And to associate the log to the `trace_id`, add extra log info, using `tags`:
 
 ```python
-        logger.info("Frontend: request at '/process' endpoint completed")
+        trace_id = trace.get_current_span().get_span_context().trace_id
+        message = "Frontend: request at '/process' endpoint completed"
+        logger.info(f"{message}", extra={"tags": {"trace_id": f"{trace_id:032x}"}})
 ```
 
 For further info check:
 
-- [Send lo data to Loki](https://grafana.com/docs/loki/latest/send-data/).
-- [Specfic Python example](https://pypi.org/project/python-logging-loki/).
+- [Send log data to Loki](https://grafana.com/docs/loki/latest/send-data/).
+- [Specific Python example](https://pypi.org/project/python-logging-loki/).
+- [Pushing Logs to Loki Without Using Promtail](https://medium.com/geekculture/pushing-logs-to-loki-without-using-promtail-fc31dfdde3c6).
+
+### Configure Grafana to associate Loki logs and Tempo traces
+
+On the Grafana side the two data sources should be configured with the proper
+addresses, starting with Tempo
+
+![Tempo conf](images/Grafana-Tempo-Datasource.png)
+
+And continuning with Loki:
+
+![Loki conf](images/Grafana-Loki-Datasource.png)
+
+In which a `Derived fields` related to the `trace_id` will be associated to the
+tempo data source:
+
+![Loki Derived fields](images/Grafana-Loki-Datasource-Derived-fields-trace_id.png)
+
+Once the data source is available it wil be possible to `Explore` it, by
+querying the application named `alice`:
+
+![Loki Query](images/Grafana-Loki-01-query-application.png)
+
+This will show, inside the log details, the `trace_id` Tempo link:
+
+![Loki trace_id link](images/Grafana-Loki-02-trace_id-link.png)
+
+Clicking on the Tempo link will show the traces details:
+
+![Tempo traces](images/Grafana-Loki-03-traces-view.png)

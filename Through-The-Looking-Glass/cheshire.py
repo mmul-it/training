@@ -62,7 +62,9 @@ FlaskInstrumentor().instrument_app(app)
 @app.route("/process")
 def process_request():
     with tracer.start_as_current_span(APP_NAME):
-        logger.info("Backend: Processing request at '/process' endpoint")
+        trace_id = trace.get_current_span().get_span_context().trace_id
+        message = "Backend: Processing request at '/process' endpoint"
+        logger.info(f"{message}", extra={"tags": {"trace_id": f"{trace_id:032x}"}})
         return "Processed data in Backend!"
 
 # Execute Flask app

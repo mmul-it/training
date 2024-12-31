@@ -66,7 +66,9 @@ RequestsInstrumentor().instrument()  # Instrument outgoing HTTP requests
 def index():
     with tracer.start_as_current_span(APP_NAME):
         response = requests.get(BACKEND_URL)  # Call backend
-        logger.info("Frontend: request at '/process' endpoint completed")
+        trace_id = trace.get_current_span().get_span_context().trace_id
+        message = "Frontend: request at '/process' endpoint completed"
+        logger.info(f"{message}", extra={"tags": {"trace_id": f"{trace_id:032x}"}})
         return f"Frontend received: {response.text}"
 
 if __name__ == "__main__":
