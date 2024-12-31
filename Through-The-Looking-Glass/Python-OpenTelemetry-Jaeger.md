@@ -335,14 +335,15 @@ handler = logging_loki.LokiHandler(
     tags={"application": APP_NAME},
     version="1",
 )
-logger = logging.getLogger("my-logger")
+logger = logging.getLogger(APP_NAME)
+logging.basicConfig(level=logging.INFO)
 logger.addHandler(handler)
 ```
 
 And when writing is needed:
 
 ```python
-        logger.error("Frontend: request at '/process' endpoint completed")
+        logger.info("Frontend: request at '/process' endpoint completed")
 ```
 
 For further info check:

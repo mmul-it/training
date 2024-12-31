@@ -53,7 +53,8 @@ handler = logging_loki.LokiHandler(
     tags={"application": APP_NAME},
     version="1",
 )
-logger = logging.getLogger("my-logger")
+logger = logging.getLogger(APP_NAME)
+logging.basicConfig(level=logging.INFO)
 logger.addHandler(handler)
 
 # Initialize Flask App
@@ -65,7 +66,7 @@ RequestsInstrumentor().instrument()  # Instrument outgoing HTTP requests
 def index():
     with tracer.start_as_current_span(APP_NAME):
         response = requests.get(BACKEND_URL)  # Call backend
-        logger.error("Frontend: request at '/process' endpoint completed")
+        logger.info("Frontend: request at '/process' endpoint completed")
         return f"Frontend received: {response.text}"
 
 if __name__ == "__main__":

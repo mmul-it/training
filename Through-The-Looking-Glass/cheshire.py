@@ -50,7 +50,8 @@ handler = logging_loki.LokiHandler(
     tags={"application": APP_NAME},
     version="1",
 )
-logger = logging.getLogger("my-logger")
+logger = logging.getLogger(APP_NAME)
+logging.basicConfig(level=logging.INFO)
 logger.addHandler(handler)
 
 # Initialize Flask App
@@ -61,7 +62,7 @@ FlaskInstrumentor().instrument_app(app)
 @app.route("/process")
 def process_request():
     with tracer.start_as_current_span(APP_NAME):
-        logger.error("Backend: Processing request at '/process' endpoint")
+        logger.info("Backend: Processing request at '/process' endpoint")
         return "Processed data in Backend!"
 
 # Execute Flask app
