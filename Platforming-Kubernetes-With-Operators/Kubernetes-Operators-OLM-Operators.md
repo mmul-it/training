@@ -13,7 +13,7 @@ $ operator-sdk olm install
 INFO[0000] Fetching CRDs for version "latest"
 ...
 ...
-INFO[0029] Successfully installed OLM version "latest"  
+INFO[0029] Successfully installed OLM version "latest"
 
 NAME                                            NAMESPACE    KIND                        STATUS
 catalogsources.operators.coreos.com                          CustomResourceDefinition    Installed
