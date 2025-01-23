@@ -4,6 +4,24 @@ CTLP="ctlplane"
 TEST="test"
 PROD="prod"
 
+# Because of the high number of processes that will be executed, some Linux
+# system tweaks are suggested:
+if grep -q "^fs.inotify.max_user_watches=" /etc/sysctl.conf; then
+  sudo sed -i 's/^fs.inotify.max_user_watches=.*/fs.inotify.max_user_watches=655360/' /etc/sysctl.conf
+else
+  echo "fs.inotify.max_user_watches=655360" | sudo tee -a /etc/sysctl.conf
+fi
+
+if grep -q "^fs.inotify.max_user_instances=" /etc/sysctl.conf; then
+  sudo sed -i 's/^fs.inotify.max_user_instances=.*/fs.inotify.max_user_instances=1280/' /etc/sysctl.conf
+else
+  echo "fs.inotify.max_user_instances=1280" | sudo tee -a /etc/sysctl.conf
+fi
+
+# Reload sysctl to apply changes
+sudo sysctl -p
+
+# Create the kind config files
 cat <<EOF > kind-${CTLP}-config.yml
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
@@ -38,11 +56,13 @@ nodes:
 EOF
 
 for K8S in ${CTLP} ${TEST} ${PROD}; do
+  echo; echo "### Install kind cluster kind-${K8S} ###"; echo
   kind create cluster --name ${K8S} --config kind-${K8S}-config.yml
 done
 
 export METALLB_VERSION='v0.14.8'
 for K8S in ${CTLP} ${TEST} ${PROD}; do
+  echo; echo "### Install MetalLB for kind-${K8S} ###"; echo
   kubectl config use-context kind-${K8S}
   kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e "s/strictARP: false/strictARP: true/" | kubectl apply -f - -n kube-system
   kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/${METALLB_VERSION}/config/manifests/metallb-native.yaml
@@ -110,10 +130,12 @@ spec:
 EOF
 
 for K8S in ${CTLP} ${TEST} ${PROD}; do
+  echo; echo "### Configure MetalLB pools for kind-${K8S} ###"; echo
   kubectl config use-context kind-${K8S}
   kubectl apply -f kind-${K8S}-metallb-pools.yml
 done
 
+echo; echo "### Add Prometheus and Gradfana helm repositories ###"; echo
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
@@ -129,6 +151,7 @@ alertmanager:
 EOF
 
 for K8S in ${TEST} ${PROD}; do
+  echo; echo "### Install Prometheus in kind-${K8S} ###"; echo
   kubectl config use-context kind-${K8S}
   # Install
   helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace --values helm-prometheus-override.yml
@@ -165,6 +188,7 @@ prometheus:
             - '$(eval "echo \${PROMETHEUS_${PROD}}")'
 EOF
 
+echo; echo "### Install Prometheus on kind-${CTLP} ###"; echo
 kubectl config use-context kind-${CTLP}
 # PROMETHEUS
 helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace --values helm-prometheus-ctlplane.yml
@@ -181,6 +205,7 @@ eval "PROMETHEUS_${CTLP}=$(kubectl -n monitoring get svc prometheus-kube-prometh
 ### 
 ###done
 
+echo; echo "### Install Grafana on kind-${CTLP} ###"; echo
 # GRAFANA
 helm install --namespace grafana --create-namespace grafana grafana/grafana
 kubectl -n grafana patch svc grafana -p '{"spec": {"type": "LoadBalancer"}}'
