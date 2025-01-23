@@ -38,7 +38,7 @@ tracer = trace.get_tracer(APP_NAME)
 #)
 #trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(jaeger_exporter))
 tempo_exporter = OTLPSpanExporter(
-    endpoint = "172.18.0.102:4317",
+    endpoint = "172.18.0.103:4317",
     insecure = True
 )
 trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(tempo_exporter))

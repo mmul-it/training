@@ -90,7 +90,7 @@ to query the related traces.
 Tempo installation
 
 ```console
-$ kubectl create namespace tempo-test
+$ kubectl create namespace tempo-system
 
 $ cat <<EOF > helm-tempo.yml
 traces:
@@ -101,13 +101,14 @@ traces:
       enabled: true
 EOF
 
-$ helm -n tempo-test install --values helm-tempo.yml tempo grafana/tempo-distributed
+$ helm -n tempo-system install --values helm-tempo.yml tempo grafana/tempo-distributed
+...
 
-$ kubectl -n tempo-test expose service tempo-query-frontend --name=tempo-query-frontend-lb --type=LoadBalancer
-$ eval "TEMPO_FRONTEND_${CTLP}=$(kubectl -n tempo-test get svc tempo-query-frontend-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
+$ kubectl -n tempo-system expose service tempo-query-frontend --name=tempo-query-frontend-lb --type=LoadBalancer
+$ eval "TEMPO_FRONTEND_${CTLP}=$(kubectl -n tempo-system get svc tempo-query-frontend-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
 
-$ kubectl -n tempo-test expose service tempo-distributor --name=tempo-distributor-lb --type=LoadBalancer
-$ eval "TEMPO_DISTRIB_${CTLP}=$(kubectl -n tempo-test get svc tempo-distributor-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
+$ kubectl -n tempo-system expose service tempo-distributor --name=tempo-distributor-lb --type=LoadBalancer
+$ eval "TEMPO_DISTRIB_${CTLP}=$(kubectl -n tempo-system get svc tempo-distributor-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
 ```
 
 Now Jaeger should be instructed to send traces to Tempo, to make this possible
@@ -256,7 +257,8 @@ minio:
   enabled: true
 EOF
 
-$ helm install loki grafana/loki-stack --namespace loki --create-namespace --values=helm-loki.yml
+$ helm install loki grafana/loki -f helm-loki.yml --create-namespace --namespace loki
+...
 ```
 
 Look for thist status:
