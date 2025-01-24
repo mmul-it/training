@@ -22,10 +22,10 @@ def process_request():
 
     with trace_provider.start_as_current_span(variables.APP_BACKEND_NAME):
         trace_id = trace_span.get_current_span().get_span_context().trace_id
-        message = f"Backend: Processing request from '{client_ip}' endpoint"
+        message = f"Backend: Processing request from '{client_ip}' source"
         logger.info(f"{message}", extra={"tags": {"trace_id": f"{trace_id:032x}"}})
         return "Processed data in Backend!"
 
 # Execute Flask app
 if __name__ == "__main__":
-    app.run(debug=True, port=variables.APP_FRONTEND_PORT)
+    app.run(debug=True, port=variables.APP_BACKEND_PORT)
