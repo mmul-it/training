@@ -176,8 +176,7 @@ In this lab you will:
 7. Install `stress` in the `nginx` pod:
 
    ```console
-   $ kubectl -n scale-test exec -it nginx-69d7f674df-lvrzw  /bin/bash
-   kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+   $ kubectl -n scale-test exec -it nginx-69d7f674df-lvrzw -- /bin/bash
    root@nginx-69d7f674df-lvrzw:/# apt-get update
    ...
    Reading package lists... Done
