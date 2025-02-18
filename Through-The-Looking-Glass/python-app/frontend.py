@@ -26,4 +26,4 @@ def index():
         return f"Frontend received: {response.text}"
 
 if __name__ == "__main__":
-    app.run(debug=True, port=variables.APP_FRONTEND_PORT)
+    app.run(debug=True, host=variables.APP_FRONTEND_HOST, port=variables.APP_FRONTEND_PORT)

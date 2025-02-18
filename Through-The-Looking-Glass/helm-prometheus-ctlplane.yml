@@ -1,0 +1,26 @@
+grafana:
+  enabled: false
+
+alertmanager:
+  enabled: false
+
+prometheus:
+  prometheusSpec:
+    additionalScrapeConfigs:
+      - job_name: 'cheshire'
+        static_configs:
+          - targets: ['172.18.0.1:5001']
+      - job_name: 'federate'
+        honor_labels: true
+        metrics_path: '/federate'
+        params:
+          'match[]':
+            - '{__name__=~"node_.*"}'
+            - '{__name__=~"kube_.*"}'
+            - '{__name__=~"container_.*"}'
+            - '{job="kubernetes-apiservers"}'
+            - 'up'
+        static_configs:
+          - targets:
+            - '172.18.0.120:9090'
+            - '172.18.0.140:9090'
