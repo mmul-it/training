@@ -24,23 +24,25 @@ metrics.init_metrics(app)
 # Define the /process path for the application
 @app.route("/process")
 def process_request():
-    client_ip = request.remote_addr
-
-    # Track the start time
-    start_time = time.time()
 
     with trace_provider.start_as_current_span(variables.APP_BACKEND_NAME):
         trace_id = trace_span.get_current_span().get_span_context().trace_id
 
-    # Metrics simulate CPU time
-    time.sleep(random.uniform(0, 3))
-    duration = time.time() - start_time
-    metrics.record_request(f"{trace_id:032x}", duration)
-        
-    # Logs
-    message = f"Backend: Processing request from '{client_ip}' source"
-    logger.info(f"{message}", extra={"tags": {"trace_id": f"{trace_id:032x}"}})
-    return "Processed data in Backend!"
+        # Get the caller IP
+        client_ip = request.remote_addr
+    
+        # Track the start time
+        start_time = time.time()
+    
+        # Metrics simulate CPU time
+        time.sleep(random.uniform(0, 3))
+        duration = time.time() - start_time
+        metrics.record_request(f"{trace_id:032x}", duration)
+            
+        # Logs
+        message = f"Backend: Processing request from '{client_ip}' source"
+        logger.info(f"{message}", extra={"tags": {"trace_id": f"{trace_id:032x}"}})
+        return "Processed data in Backend!"
 
 # Execute Flask app
 if __name__ == "__main__":

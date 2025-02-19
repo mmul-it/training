@@ -19,8 +19,12 @@ logger = logs.init(variables.LOGS_URL, variables.APP_FRONTEND_NAME)
 @app.route("/")
 def index():
     with trace_provider.start_as_current_span(variables.APP_FRONTEND_NAME):
-        response = requests.get(variables.APP_BACKEND_URL)  # Call backend
         trace_id = trace_span.get_current_span().get_span_context().trace_id
+
+        # Call the backend
+        response = requests.get(variables.APP_BACKEND_URL)
+    
+        # Logs
         message = f"Frontend: request at '{variables.APP_BACKEND_URL}' endpoint completed"
         logger.info(f"{message}", extra={"tags": {"trace_id": f"{trace_id:032x}"}})
         return f"Frontend received: {response.text}"
