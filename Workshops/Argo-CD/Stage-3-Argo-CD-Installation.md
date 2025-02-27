@@ -1,8 +1,8 @@
 # Argo CD Workshop - Stage 3
 
 Now that each cluster is able to expose reachable IPs, it is time to install
-the [Argo CD](https://argo-cd.readthedocs.io/) environment on the `kind-argo`
-Kubernetes cluster.
+the [Argo CD](https://argo-cd.readthedocs.io/) environment on the
+`kind-ctlplane` Kubernetes cluster.
 
 ## Install Argo CD
 
@@ -10,8 +10,8 @@ Argo CD needs a dedicated namespace and can be installed by its yaml file, the
 same way as MetalLB:
 
 ```console
-$ kubectl config use-context kind-argo
-Switched to context "kind-argo".
+$ kubectl config use-context kind-ctlplane
+Switched to context "kind-ctlplane".
 
 $ kubectl create namespace argocd
 namespace/argocd created
@@ -133,7 +133,7 @@ configuration. In this case the contexts for the installed clusters are:
 
 ```console
 $ kubectl config get-contexts -o name
-kind-argo
+kind-ctlplane
 kind-prod
 kind-test
 ```
