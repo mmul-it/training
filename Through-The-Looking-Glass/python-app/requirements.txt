@@ -1,0 +1,6 @@
+opentelemetry-api==1.21.0
+opentelemetry-sdk==1.21.0
+opentelemetry-instrumentation-logging
+opentelemetry-instrumentation-flask
+opentelemetry-instrumentation-requests
+opentelemetry-exporter-otlp
