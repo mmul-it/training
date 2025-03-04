@@ -5,8 +5,14 @@ The `opentelemetry-collector` component installation can be done by using
 
 ```console
 $ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+"open-telemetry" has been added to your repositories
 
 $ helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "open-telemetry" chart repository
+...Successfully got an update from the "prometheus-community" chart repository
+...Successfully got an update from the "grafana" chart repository
+Update Complete. ⎈Happy Helming!⎈
 ```
 
 Then a values file, named `helm-opentelemetry-collector.yml`, will define the
@@ -67,13 +73,23 @@ config:
 Finally the chart can be installed:
 
 ```console
-$ helm install my-otel-collector open-telemetry/opentelemetry-collector --create-namespace -f helm-opentelemetry-collector.yml 
+$ helm install otel-collector open-telemetry/opentelemetry-collector \
+        --create-namespace \
+        --namespace otel-collector \
+        -f helm-opentelemetry-collector.yml
+NAME: my-otel-collector
+LAST DEPLOYED: Tue Mar  4 14:25:10 2025
+NAMESPACE: otel-collector
+STATUS: deployed
+REVISION: 1
+...
 ```
 
 And the service exposed:
 
 ```console
 $ kubectl -n otel-collector expose service --name otel-collector-lb --type LoadBalancer otel-collector-opentelemetry-collector
+service/otel-collector-lb exposed
 ```
 
 To get the assigned IP just query it:
