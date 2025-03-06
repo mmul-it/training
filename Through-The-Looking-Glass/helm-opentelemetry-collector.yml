@@ -9,12 +9,8 @@ config:
       protocols:
         grpc:
           endpoint: 0.0.0.0:4317
-    prometheus:
-      config:
-        scrape_configs:
-          - job_name: 'otel-collector-metrics'
-            static_configs:
-              - targets: ['prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090']  # Adjust this to the appropriate target
+        http:
+          endpoint: 0.0.0.0:4318
 
   processors:
     batch:
@@ -32,6 +28,9 @@ config:
       endpoint: "http://loki-gateway.loki.svc.cluster.local/otlp"
       tls:
         insecure: true
+    # Prometheus
+    prometheus:
+      endpoint: "0.0.0.0:9090"
 
   service:
     pipelines:
@@ -39,11 +38,26 @@ config:
         receivers: [otlp]
         processors: [batch]
         exporters: [otlp/tempo]
-#      metrics:
- #       receivers: [prometheus]
- #       processors: [batch]
- #       exporters: [otlp]  # Metrics are now being exported to OTLP for Prometheus to scrape
+      metrics:
+        receivers: [otlp]
+        processors: [batch]
+        exporters: [prometheus]  # Metrics are now being exported to OTLP for Prometheus to scrape
       logs:
         receivers: [otlp]
         processors: [batch]
         exporters: [otlphttp/loki]  # Logs are exported using OTLP HTTP to Loki
+
+ports:
+  jaeger-compact:
+    enabled: false
+  jaeger-thrift:
+    enabled: false
+  jaeger-grpc:
+    enabled: false
+  zipkin:
+    enabled: false
+  metrics:
+    enabled: true
+    containerPort: 9090
+    servicePort: 9090
+    protocol: TCP
