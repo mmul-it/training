@@ -8,7 +8,7 @@ def init(logger_url, app_name):
     loki_url = logger_url
 
     handler = logging_loki.LokiHandler(
-        url=loki_url, 
+        url=loki_url,
         tags={"application": app_name},
         version="1",
     )

@@ -31,13 +31,13 @@ def process_request():
 
         # Get the caller IP
         client_ip = request.remote_addr
-    
+
         # Metrics simulate CPU time
         start_time = time.time()
         time.sleep(random.uniform(0.1, 2.0))
         duration = time.time() - start_time
         metrics.record_request(duration, trace_id)
-            
+
         # Logs
         message = f"Backend: Processing request from '{client_ip}' source"
         logger.info(f"{message}")

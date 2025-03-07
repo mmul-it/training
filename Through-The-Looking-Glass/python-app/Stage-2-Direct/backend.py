@@ -19,7 +19,7 @@ traces.init_flask(app)
 logger = logs.init(variables.LOGS_ENDPOINT, variables.APP_BACKEND_NAME)
 
 # Set up Prometheus metrics (with /metrics endpoint)
-metrics.init_metrics(app)
+metrics.init(app, variables.APP_BACKEND_NAME)
 
 # Define the /process path for the application
 @app.route("/process")
@@ -30,15 +30,13 @@ def process_request():
 
         # Get the caller IP
         client_ip = request.remote_addr
-    
-        # Track the start time
-        start_time = time.time()
-    
+
         # Metrics simulate CPU time
+        start_time = time.time()
         time.sleep(random.uniform(0.1, 2.0))
         duration = time.time() - start_time
-        metrics.record_request(f"{trace_id:032x}", duration)
-            
+        metrics.record_request(duration, f"{trace_id:032x}")
+
         # Logs
         message = f"Backend: Processing request from '{client_ip}' source"
         logger.info(f"{message}", extra={"tags": {"trace_id": f"{trace_id:032x}"}})

@@ -15,6 +15,6 @@ while true; do
   curl -s "$ENDPOINT" > /dev/null &  # Make the request in the background
   done
 
-  # Wait a second and then restart 
+  # Wait a second and then restart
   sleep 1  # Add a small delay between requests
 done

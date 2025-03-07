@@ -1,5 +1,13 @@
 #!/bin/bash
 
+set -e
+
+# Get the stage to run
+STAGE=$1
+
+# Move in workdir
+pushd $STAGE
+
 # Prevent Python from creating __pycache__ directory
 export PYTHONDONTWRITEBYTECODE=1
 
@@ -20,3 +28,6 @@ cleanup() {
 
 # Wait for both background processes to finish
 wait $backend_pid $frontend_pid
+
+# Move out from workdir
+popd
