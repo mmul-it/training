@@ -27,8 +27,6 @@ metrics.init(variables.METRICS_ENDPOINT, variables.APP_BACKEND_NAME)
 def process_request():
 
     with trace_provider.start_as_current_span(variables.APP_BACKEND_NAME):
-        trace_id = trace_span.get_current_span().get_span_context().trace_id
-
         # Get the caller IP
         client_ip = request.remote_addr
 
@@ -36,7 +34,7 @@ def process_request():
         start_time = time.time()
         time.sleep(random.uniform(0.1, 2.0))
         duration = time.time() - start_time
-        metrics.record_request(duration, trace_id)
+        metrics.record_request(duration)
 
         # Logs
         message = f"Backend: Processing request from '{client_ip}' source"

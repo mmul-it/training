@@ -4,11 +4,16 @@ from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
 from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExporter
 from opentelemetry.sdk.resources import Resource
 
+from opentelemetry import trace
+from opentelemetry.trace import set_span_in_context
+from opentelemetry.context import attach, detach
+
 REQUEST_COUNTER = None
 REQUEST_LATENCY = None
+REQUEST_DURATION = None
 
 def init(metrics_endpoint, app_name):
-    global REQUEST_COUNTER, REQUEST_LATENCY
+    global REQUEST_COUNTER, REQUEST_LATENCY, REQUEST_DURATION
 
     # Initialize OpenTelemetry metrics
     resource = Resource.create(attributes={"service.name": app_name})
@@ -26,16 +31,23 @@ def init(metrics_endpoint, app_name):
     # Define your metrics objects
     REQUEST_COUNTER = meter.create_counter(
         f"{app_name}_requests_total",
-        description="Total number of processed backend requests",
+        description="Total number of processed requests (counter)",
         unit="1",
     )
 
     REQUEST_LATENCY = meter.create_histogram(
         f"{app_name}_request_latency_seconds",
-        description="Latency for processing backend requests",
+        description="Latency for processing requests (histogram)",
         unit="s",
     )
 
-def record_request(duration, trace_id):
+    REQUEST_DURATION = meter.create_gauge(
+        f"{app_name}_request_duration_seconds",
+        description="Duration for processing single request (gauge)",
+        unit="s",
+    )
+
+def record_request(duration):
     REQUEST_COUNTER.add(1)
-    REQUEST_LATENCY.record(duration, {"trace_id": f"{trace_id:032x}"})
+    REQUEST_LATENCY.record(duration)
+    REQUEST_DURATION.set(duration)

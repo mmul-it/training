@@ -6,6 +6,8 @@ alertmanager:
 
 prometheus:
   prometheusSpec:
+    enableFeatures:
+      - exemplar-storage
     additionalScrapeConfigs:
       # This is used to scrape from the python exposed metrics
       - job_name: 'python-app'

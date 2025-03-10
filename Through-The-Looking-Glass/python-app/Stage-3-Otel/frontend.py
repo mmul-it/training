@@ -28,13 +28,11 @@ metrics.init(variables.METRICS_ENDPOINT, variables.APP_FRONTEND_NAME)
 @app.route("/")
 def index():
     with trace_provider.start_as_current_span(variables.APP_FRONTEND_NAME):
-        trace_id = trace_span.get_current_span().get_span_context().trace_id
-
         # Metrics simulate CPU time
         start_time = time.time()
         time.sleep(random.uniform(0.1, 2.0))
         duration = time.time() - start_time
-        metrics.record_request(duration, trace_id)
+        metrics.record_request(duration)
 
         # Call the backend
         response = requests.get(variables.APP_BACKEND_URL)
