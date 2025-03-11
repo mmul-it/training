@@ -9,7 +9,7 @@ import logs
 import metrics
 import variables
 
-from flask import Flask
+from flask import Flask, request
 
 # Initialize Flask App
 app = Flask(variables.APP_FRONTEND_NAME)
@@ -27,6 +27,7 @@ metrics.init(variables.METRICS_ENDPOINT, variables.APP_FRONTEND_NAME)
 
 @app.route("/")
 def index():
+    # Start the span
     with trace_provider.start_as_current_span(variables.APP_FRONTEND_NAME):
         # Metrics simulate CPU time
         start_time = time.time()
@@ -38,7 +39,7 @@ def index():
         response = requests.get(variables.APP_BACKEND_URL)
 
         # Logs
-        message = f"Frontend: request at '{variables.APP_BACKEND_URL}' endpoint completed"
+        message = f"[Frontend] Request from {request.remote_addr} to {variables.APP_BACKEND_URL} endpoint completed"
         logger.info(f"{message}")
         return f"Frontend received: {response.text}"
 

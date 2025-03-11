@@ -25,11 +25,8 @@ metrics.init(variables.METRICS_ENDPOINT, variables.APP_BACKEND_NAME)
 # Define the /process path for the application
 @app.route("/process")
 def process_request():
-
+    # Start the span
     with trace_provider.start_as_current_span(variables.APP_BACKEND_NAME):
-        # Get the caller IP
-        client_ip = request.remote_addr
-
         # Metrics simulate CPU time
         start_time = time.time()
         time.sleep(random.uniform(0.1, 2.0))
@@ -37,7 +34,7 @@ def process_request():
         metrics.record_request(duration)
 
         # Logs
-        message = f"Backend: Processing request from '{client_ip}' source"
+        message = f"[Backend] Processing request from {request.remote_addr} source"
         logger.info(f"{message}")
         return "Processed data in Backend!"
 
