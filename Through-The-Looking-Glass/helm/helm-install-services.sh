@@ -14,9 +14,10 @@ PROD="prod"
 # https://stackoverflow.com/questions/64918491/prometheus-for-k8s-multi-clusters
 # https://prometheus.io/docs/prometheus/latest/federation/#configuring-federation
 
-echo; echo "### Add Prometheus and Gradfana helm repositories ###"; echo
+echo; echo "### Add helm repositories ###"; echo
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add grafana https://grafana.github.io/helm-charts
+helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 helm repo update
 
 for K8S in ${TEST} ${PROD}; do
@@ -122,9 +123,6 @@ echo; echo "### Install Grafana on kind-${CTLP} ###"; echo
 helm install grafana grafana/grafana \
   --namespace grafana \
   --create-namespace \
-  --set lokiUrl="$(eval "echo \${LOKI_${CTLP}}")" \
-  --set prometheusUrl="$(eval "echo \$PROMETHEUS_${CTLP}")" \
-  --set tempoUrl="$(eval "echo \$TEMPO_DISTRIB_${CTLP}")" \
   -f helm-grafana-ctlplane.yml
 # Expose
 kubectl -n grafana patch svc grafana \

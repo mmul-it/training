@@ -4,7 +4,7 @@ datasources:
       - name: loki
         type: loki
         access: proxy
-        url: "{{ .Values.lokiUrl }}"
+        url: "http://loki-gateway.loki.svc.cluster.local:80"
         uid: eeauksdnf5am8b
         jsonData:
           derivedFields:
@@ -18,7 +18,7 @@ datasources:
       - name: prometheus
         type: prometheus
         access: proxy
-        url: "{{ .Values.prometheusUrl }}"
+        url: "http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090"
         uid: eeauidosfncw0a
         isDefault: true
         jsonData:
@@ -30,7 +30,7 @@ datasources:
       - name: tempo
         type: tempo
         access: proxy
-        url: "{{ .Values.tempoUrl }}"
+        url: "http://tempo-distributor.tempo.svc.cluster.local:3100"
         uid: deauja5skyayof
         jsonData:
           tracesToLogsV2:
