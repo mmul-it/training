@@ -195,3 +195,8 @@ l2advertisement.metallb.io/mypool created
 ```
 
 Now all the three clusters will be able to expose service using their IP pools.
+
+## Automation
+
+Note that all the above steps, including the [3 clusters installation](Kubernetes-Install-3-Kind-Clusters.md)
+can be automated by launching the script [kind/kind-create-infrastructure.sh](kind/kind-create-infrastructure.sh).

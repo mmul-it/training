@@ -207,3 +207,8 @@ prod-control-plane   Ready    control-plane   28h   v1.29.2
 
 It is now a good idea to install MetalLB to expose services outside the various
 as explained in [Kubernetes-Configure-3-Kind-Clusters-MetalLB.md](Kubernetes-Configure-3-Kind-Clusters-MetalLB.md).
+
+## Automation
+
+Note that all the above steps, including the [MetalLB](Kubernetes-Configure-3-Kind-Clusters-MetalLB.md)
+configuration, can be automated by launching the script [kind/kind-create-infrastructure.sh](kind/kind-create-infrastructure.sh).
