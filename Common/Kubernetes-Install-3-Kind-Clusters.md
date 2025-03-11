@@ -9,7 +9,7 @@ The lab environment will be configured by using
 inside containers.
 
 First of all, the lab machine should have Docker installed. Instructions about
-how to install Docker are [available here](../../Common/Containers-Install-Docker.md).
+how to install Docker are [available here](Containers-Install-Docker.md).
 
 Once Docker is available, it will be possible to proceed.
 

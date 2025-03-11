@@ -1,0 +1,6 @@
+traces:
+  otlp:
+    http:
+      enabled: true
+    grpc:
+      enabled: true

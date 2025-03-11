@@ -1,0 +1,92 @@
+{
+  "id": 1,
+  "uid": "eeauidosfncw0a",
+  "orgId": 1,
+  "name": "prometheus",
+  "type": "prometheus",
+  "typeName": "Prometheus",
+  "typeLogoUrl": "public/app/plugins/datasource/prometheus/img/prometheus_logo.svg",
+  "access": "proxy",
+  "url": "http://172.18.0.100:9090",
+  "user": "",
+  "database": "",
+  "basicAuth": false,
+  "isDefault": true,
+  "jsonData": {
+    "exemplarTraceIdDestinations": [
+      {
+        "datasourceUid": "deauja5skyayof",
+        "name": "trace_id"
+      }
+    ],
+    "httpMethod": "POST"
+  },
+  "readOnly": false
+}
+{
+  "id": 2,
+  "uid": "deauja5skyayof",
+  "orgId": 1,
+  "name": "tempo",
+  "type": "tempo",
+  "typeName": "Tempo",
+  "typeLogoUrl": "public/app/plugins/datasource/tempo/img/tempo_logo.svg",
+  "access": "proxy",
+  "url": "http://172.18.0.102:3100",
+  "user": "",
+  "database": "",
+  "basicAuth": false,
+  "isDefault": false,
+  "jsonData": {
+    "tracesToLogsV2": {
+      "customQuery": false,
+      "datasourceUid": "eeauksdnf5am8b",
+      "filterByTraceID": true,
+      "tags": [
+        {
+          "key": "trace_id",
+          "value": "Trace ID"
+        }
+      ]
+    },
+    "tracesToMetrics": {
+      "datasourceUid": "eeauidosfncw0a",
+      "queries": [],
+      "tags": [
+        {
+          "key": "trace_id",
+          "value": "Trace ID"
+        }
+      ]
+    }
+  },
+  "readOnly": false
+}
+{
+  "id": 3,
+  "uid": "eeauksdnf5am8b",
+  "orgId": 1,
+  "name": "loki",
+  "type": "loki",
+  "typeName": "Loki",
+  "typeLogoUrl": "public/app/plugins/datasource/loki/img/loki_icon.svg",
+  "access": "proxy",
+  "url": "http://172.18.0.104:8080",
+  "user": "",
+  "database": "",
+  "basicAuth": false,
+  "isDefault": false,
+  "jsonData": {
+    "derivedFields": [
+      {
+        "datasourceUid": "deauja5skyayof",
+        "matcherRegex": "trace_id",
+        "matcherType": "label",
+        "name": "Trace",
+        "url": "${__value.raw}",
+        "urlDisplayLabel": "Trace"
+      }
+    ]
+  },
+  "readOnly": false
+}
