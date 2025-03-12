@@ -1,47 +1,46 @@
 datasources:
   datasources.yaml:
+    apiVersion: 1
     datasources:
       - name: loki
+        uid: dsloki
         type: loki
         access: proxy
-        url: "http://loki-gateway.loki.svc.cluster.local:80"
-        uid: eeauksdnf5am8b
+        url: http://loki-gateway.loki.svc.cluster.local:80
         jsonData:
           derivedFields:
-            - name: Trace
-              datasourceUid: deauja5skyayof
-              matcherRegex: trace_id
+            - datasourceUid: dstempo
+              matcherRegex: "trace_id"
               matcherType: label
-              url: ${__value.raw}
-              urlDisplayLabel: Trace
-
+              name: "Trace"
+              url: "${__value.raw}"
+              urlDisplayLabel: "Trace"
       - name: prometheus
+        uid: dsprometheus
         type: prometheus
         access: proxy
-        url: "http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090"
-        uid: eeauidosfncw0a
+        url: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
         isDefault: true
         jsonData:
-          httpMethod: POST
           exemplarTraceIdDestinations:
-            - name: trace_id
-              datasourceUid: deauja5skyayof
-
+            - datasourceUid: dstempo
+              name: trace_id
+          httpMethod: POST
       - name: tempo
+        uid: dstempo
         type: tempo
         access: proxy
-        url: "http://tempo-distributor.tempo.svc.cluster.local:3100"
-        uid: deauja5skyayof
+        url: http://tempo-distributor.tempo.svc.cluster.local:3100
         jsonData:
           tracesToLogsV2:
             customQuery: false
-            datasourceUid: eeauksdnf5am8b
+            datasourceUid: dsloki
             filterByTraceID: true
             tags:
               - key: trace_id
                 value: Trace ID
           tracesToMetrics:
-            datasourceUid: eeauidosfncw0a
+            datasourceUid: dsprometheus
             queries: []
             tags:
               - key: trace_id
