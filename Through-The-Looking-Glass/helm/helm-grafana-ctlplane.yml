@@ -13,7 +13,7 @@ datasources:
               matcherRegex: "trace_id"
               matcherType: label
               name: "Trace"
-              url: "${__value.raw}"
+              url: "$${__value.raw}"
               urlDisplayLabel: "Trace"
       - name: prometheus
         uid: dsprometheus
@@ -30,7 +30,7 @@ datasources:
         uid: dstempo
         type: tempo
         access: proxy
-        url: http://tempo-distributor.tempo.svc.cluster.local:3100
+        url: http://tempo-query-frontend.tempo.svc.cluster.local:3100
         jsonData:
           tracesToLogsV2:
             customQuery: false
