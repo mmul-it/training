@@ -25,7 +25,7 @@ In this lab you will:
 
    ```console
    $ oc get templates -n openshift | grep nginx
-   openshift   nginx-example                                   An example Nginx HTTP server and a reverse proxy (nginx) application that ser...   10 (3 blank)      5
+   openshift    nginx-example    An example Nginx HTTP server and a reverse proxy (nginx) application that ser...   10 (3 blank)      5
    ```
 
    From which we can generate our yml file:

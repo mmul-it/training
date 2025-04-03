@@ -45,10 +45,13 @@ oc:  141.84 MiB / 141.84 MiB [------------------] 100.00%
 Your system is correctly setup for using CRC. Use 'crc start' to start the instance
 ```
 
-The first time launching `crc start` the pull secret will be requested:
+The first time launching `crc start` the pull secret will be requested, and
+depending on the available resources it could be useful to increase the defaults
+to get better performances, such as `--disk-size` (by default 31GB) and
+`--memory` (by default 10752):
 
 ```console
-$ crc start
+$ crc start --disk-size=64 --memory=16384
 INFO Checking if running as non-root
 ...
 ...

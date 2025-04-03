@@ -2,7 +2,7 @@
 
 In this lab you will:
 
-1. As `developer` create a new `testdeploy` project.
+1. As `developer` create a new `test-deployments` project.
 2. Create a new app from the GitHub repository [https://github.com/mmul-it/docker/](https://github.com/mmul-it/docker/).
    You must specify the `s2i-php-helloworld` directory as the context dir.
 3. Check the progress of the deployment.
@@ -24,13 +24,18 @@ In this lab you will:
    Then create the new project:
 
    ```console
-   $ oc new-project testdeploy
-   Now using project "testdeploy" on server "https://api.crc.testing:6443".
+   $ oc new-project test-deployments
+   Now using project "test-deployments" on server "https://api.crc.testing:6443".
    ```
 
-2. This can be done with a single `oc new-app` command. You must specify the
-   name, the git repository and the `context-dir` where the application code
-   is available:
+2. To start operating with Git repositories the `oc` command relies on the `git`
+   command, which needs to be installed, depending on the used distribution (for
+   Debian based systems `sudo apt -y install git`, for Red Hat based systems
+   `yum -y install git`).
+
+   When the `git` command is available, the `oc new-app` command can be
+   launched. You must specify the name, the git repository and the `context-dir`
+   where the application code is available:
 
    ```console
    $ oc new-app --name=myapp https://github.com/mmul-it/docker/ --context-dir=s2i-php-helloworld
@@ -47,7 +52,7 @@ In this lab you will:
 
    ```console
    $ oc status
-   In project testdeploy on server https://api.crc.testing:6443
+   In project test-deployments on server https://api.crc.testing:6443
 
    svc/myapp - 10.217.4.73 ports 8080, 8443
      deployment/myapp deploys istag/myapp:latest <-
@@ -75,7 +80,7 @@ In this lab you will:
    ```console
    $ oc logs -f buildconfig/myapp
    ...
-   Successfully pushed image-registry.openshift-image-registry.svc:5000/testdeploy/myapp@sha256:00b94db50f561b92723a3635300a0f580762c159d665ca6262a3851539f77bf5
+   Successfully pushed image-registry.openshift-image-registry.svc:5000/test-deployments/myapp@sha256:00b94db50f561b92723a3635300a0f580762c159d665ca6262a3851539f77bf5
    Push successful
    ```
 
@@ -87,14 +92,14 @@ In this lab you will:
    route.route.openshift.io/myapp exposed
 
    $ oc get routes
-   NAME    HOST/PORT                           PATH   SERVICES   PORT       TERMINATION   WILDCARD
-   myapp   myapp-testdeploy.apps-crc.testing          myapp      8080-tcp                 None
+   NAME    HOST/PORT                                 PATH   SERVICES   PORT       TERMINATION   WILDCARD
+   myapp   myapp-test-deployments.apps-crc.testing          myapp      8080-tcp                 None
    ```
 
    And test the application:
 
    ```console
-   $ curl http://myapp-testdeploy.apps-crc.testing ; echo
+   $ curl http://myapp-test-deployments.apps-crc.testing ; echo
    Welcome in MMUL!
    ```
 
@@ -121,7 +126,7 @@ In this lab you will:
    myapp-7687d69fdf-9n9jt   0/1     Terminating   0          18m
 
    $ oc get pods
-   No resources found in testdeploy namespace.
+   No resources found in test-deployments namespace.
    ```
 
 6. Creating a new app from a Docker image it's easy as passing the image name
@@ -138,7 +143,7 @@ In this lab you will:
    Then you can check what is created:
 
    ```console
-   In project testdeploy on server https://api.crc.testing:6443
+   In project test-deployments on server https://api.crc.testing:6443
 
    svc/nginx - 10.217.4.105:8080
      deployment/nginx deploys istag/nginx:latest
@@ -157,14 +162,14 @@ In this lab you will:
    route.route.openshift.io/nginx exposed
 
    $ oc get routes
-   NAME    HOST/PORT                           PATH   SERVICES   PORT       TERMINATION   WILDCARD
-   nginx   nginx-testdeploy.apps-crc.testing          nginx      8080-tcp                 None
+   NAME    HOST/PORT                                 PATH   SERVICES   PORT       TERMINATION   WILDCARD
+   nginx   nginx-test-deployments.apps-crc.testing          nginx      8080-tcp                 None
    ```
 
    Then curl the provided host to check the app:
 
    ```console
-   $ curl http://nginx-testdeploy.apps-crc.testing
+   $ curl http://nginx-test-deployments.apps-crc.testing
    ...
    <h1>Welcome to nginx!</h1>
    ...
@@ -189,8 +194,8 @@ In this lab you will:
    nginx-54bcd565-mx9zq   0/1     Terminating   0          4m39s
 
    $ oc get pods
-   No resources found in testdeploy namespace.
+   No resources found in test-deployments namespace.
 
-   $ oc delete project testdeploy
-   project.project.openshift.io "testdeploy" deleted
+   $ oc delete project test-deployments
+   project.project.openshift.io "test-deployments" deleted
    ```

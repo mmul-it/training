@@ -205,6 +205,13 @@ In this lab you will:
    deployment.apps/nginx patched
    ```
 
+   Or by using the 'oc set serviceaccount' command like this:
+
+   ```console
+   $ oc set serviceaccount deployment nginx useroot
+   deployment.apps/nginx serviceaccount updated
+   ```
+
 7. Check the status via 'oc status':
 
    ```console
