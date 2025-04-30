@@ -53,8 +53,8 @@ The script will continue until the `Ctrl+C` key combination will be pressed.
 
 ## Look at the results
 
-All the results are part of the console's output, with group of lines similar to
-these :
+All the results are part of the console's output, with groups of lines similar
+to these:
 
 ```console
 ...

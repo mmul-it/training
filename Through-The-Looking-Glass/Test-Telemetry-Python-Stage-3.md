@@ -1,8 +1,8 @@
 # Test Telemetry with Python - Stage 3
 
 This is the third and last stage where a Python application writes and exposes
-all the telemetry data to the otel-collector that will collect everything in a
-standard way and distribute to the specific backends everything.
+all the telemetry data to the OpenTelemetry Collector that will collect
+everything in a standard way and distribute to the specific backends.
 
 ## Requirements
 
@@ -209,10 +209,10 @@ Press CTRL+C to quit
  * Debugger PIN: 197-316-231
 ```
 
-The frontend application will be as usual listening at the [http://172.18.0.1:5000](http://172.18.0.1:5000)
+The frontend application will, as usual, be listening at the [http://172.18.0.1:5000](http://172.18.0.1:5000)
 address.
 
-Not that since the scrape configuration for Prometheus on the stage 2
+Note that since the scrape configuration for Prometheus on the stage 2
 applications is still present, there will still be some `GET` actions, but this
 time the result for them will be a 404, not found, because we're not exposing
 anymore metrics this way (we're pushing them to the `otel-collector`):

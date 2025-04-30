@@ -76,7 +76,7 @@ INFO:werkzeug:WARNING: This is a development server. Do not use it in a producti
 INFO:werkzeug:Press CTRL+C to quit
 ```
 
-The frontend application will be as usual listening at the [http://172.18.0.1:5000](http://172.18.0.1:5000)
+The frontend application will, as usual, be listening at the [http://172.18.0.1:5000](http://172.18.0.1:5000)
 address.
 
 Since the beginning, without invoking it, there will be some calls directed to
@@ -121,8 +121,8 @@ be pressed.
 
 ## Look at the results
 
-All the results are part of the console's output, with group of lines similar to
-these :
+All the results are part of the console's output, with groups of lines similar
+to these:
 
 ```console
 ...

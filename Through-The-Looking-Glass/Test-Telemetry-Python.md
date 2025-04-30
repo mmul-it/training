@@ -56,14 +56,14 @@ INFO:werkzeug:Press CTRL+C to quit
 
 ## Testing the different stages
 
-There are three stages that exposes pros and cons of each implementation:
+There are three stages that expose pros and cons of each implementation:
 
 - [Test-Telemetry-Python-Stage-1.md](Test-Telemetry-Python-Stage-1.md): the
   simplest, direct output logging.
 - [Test-Telemetry-Python-Stage-2.md](Test-Telemetry-Python-Stage-2.md): an
   implementation where each telemetry data is loaded or exposed directly to the
-  backends.
-- [Test-Telemetry-Python-Stage-3.md](Test-Telemetry-Python-Stage-2.md): an
-  implementation where everything passes from the OpenTelemetry Collector, a
+  backend.
+- [Test-Telemetry-Python-Stage-3.md](Test-Telemetry-Python-Stage-3.md): an
+  implementation where everything passes through the OpenTelemetry Collector, a
   centralized entity that takes care of distributing telemetry data to all the
   backends.
