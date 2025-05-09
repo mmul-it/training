@@ -62,7 +62,22 @@ In this lab you will:
     1 file changed, 1 insertion(+)
    ```
 
-4. Git LFS can be enabled with the `git lfs install` command:
+4. Git LFS is supported by a system if the `git-lfs` package is installed. This
+   can be done on RHEL based systems with:
+
+   ```console
+   $ sudo yum -y install git-lfs
+   ...
+   ```
+
+   And on Debian based systems with:
+
+   ```console
+   $ sudo apt -y install git-lfs
+   ...
+   ```
+
+   Then Git LFS can be enabled with the `git lfs install` command:
 
    ```console
    ~/myrepo $ git lfs install
