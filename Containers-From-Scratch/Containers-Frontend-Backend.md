@@ -10,8 +10,7 @@ In this lab you will:
    - Create a user named `frontend` with password `myfrontend`.
    - Based upon the `mariadb:latest` container image.
    - Be removed once stopped.
-3. Grant all the permission to the user `frontend` on the database `frontend`.
-4. Create a frontend container named `frontend` that will:
+3. Create a frontend container named `frontend` that will:
    - Rely on the `test` network.
    - Map `/var/www/html` data directory into the local one named `frontend`.
    - Connect to the database using the previously created user `frontend`
@@ -19,12 +18,12 @@ In this lab you will:
    - Map the `80` port of the container locally.
    - Based upon the `wordpress:latest` container image.
    - Be removed once stopped.
-5. Connect to `http://localhost:8080` and make some customizations to the
+4. Connect to `http://localhost:8080` and make some customizations to the
    wordpress instance.
-6. Stop both containers.
-7. Start them again with the same commands and check if customizations were
+5. Stop both containers.
+6. Start them again with the same commands and check if customizations were
    kept.
-8. Cleanup everything.
+7. Cleanup everything.
 
 ## Solution
 
@@ -56,35 +55,12 @@ In this lab you will:
    ```console
    $ docker run --rm --name backend --network=test -v $PWD/backend:/var/lib/mysql \
           -e MYSQL_ROOT_PASSWORD=mybackend \
-          -e MYSQL_USER=frontend -e MYSQL_PASSWORD=myfrontend \
+          -e MYSQL_DATABASE=frontend -e MYSQL_USER=frontend -e MYSQL_PASSWORD=myfrontend \
           --detach mariadb:latest
    c0c63d3d6ba0df18a0f876cb3796c9a718b7781b614e94e7c4c49809649540c7
    ```
 
-3. Execute a shell on the `backend` container to create the `frontend` database
-   and set privileges:
-
-   ```console
-   $ docker exec -it backend mariadb -uroot -p
-   Enter password:
-   Welcome to the MariaDB monitor.  Commands end with ; or \g.
-   ...
-   ...
-
-   MariaDB [(none)]> CREATE DATABASE frontend;
-   Query OK, 1 row affected (0.002s)
-
-   MariaDB [(none)]> GRANT all on frontend.* TO 'frontend'@'172.16.99.%' IDENTIFIED BY 'myfrontend';
-   Query OK, 0 rows affected (0.000 sec)
-
-   MariaDB [(none)]> FLUSH PRIVILEGES;
-   Query OK, 0 rows affected (0.000 sec)
-
-   MariaDB [(none)]> exit
-   Bye
-   ```
-
-4. Check the documentation for the [wordpress container](https://hub.docker.com/_/wordpress/)
+3. Check the documentation for the [wordpress container](https://hub.docker.com/_/wordpress/)
    and create the `frontend` directory that will be used as `wordpress` storage:
 
    ```console
@@ -111,7 +87,7 @@ In this lab you will:
    6e2420f3b841bef2784cc2832f1dc8f73b8915c228d24a1933cbbffda749b92a
    ```
 
-5. Use a browser to try access to `http://localhost:8080` follow video
+4. Use a browser to try access to `http://localhost:8080` follow video
    instructions to setup Wordpress.
 
    You can also use a text browser to access the initial wordpress page:
@@ -123,7 +99,7 @@ In this lab you will:
 
    This will give you a full (mouse controlled) browser.
 
-6. Stop the containers:
+5. Stop the containers:
 
    ```console
    $ docker stop backend frontend
@@ -131,7 +107,7 @@ In this lab you will:
    frontend
    ```
 
-7. Re-run containers. For the `mariadb` container there's no need to pass env
+6. Re-run containers. For the `mariadb` container there's no need to pass env
    vars again, since it will take these settings from the persistent folder:
 
    ```console
@@ -149,7 +125,7 @@ In this lab you will:
 
    Check at `http://localhost:8080` that everything is fine;
 
-8. Cleanup:
+7. Cleanup:
 
    ```console
    $ docker stop backend frontend
