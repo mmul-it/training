@@ -131,12 +131,11 @@ In this lab you will:
    frontend
    ```
 
-7. Re-run containers with the same parameters as before:
+7. Re-run containers. For the `mariadb` container there's no need to pass env
+   vars again, since it will take these settings from the persistent folder:
 
    ```console
    $ docker run --rm --name backend --network=test -v $PWD/backend:/var/lib/mysql \
-             -e MYSQL_ROOT_PASSWORD=mybackend \
-             -e MYSQL_USER=frontend -e MYSQL_PASSWORD=myfrontend \
              --detach mariadb:latest
    2a4769381e2e5c5f12f934eb0ee4157071420a80ce86b55f3257adcde50c9dfc
 
