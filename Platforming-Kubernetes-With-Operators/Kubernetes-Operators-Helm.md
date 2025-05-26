@@ -27,11 +27,25 @@ version.BuildInfo{Version:"v3.13.2", GitCommit:"2a2fb3b98829f1e0be6fb18af2f6599e
 
 ## Install MariaDB Operator using Helm
 
-First the mariadb-operator Helm repository should be added to the available ones:
+First the mariadb-operator Helm repository should be added to the available
+ones, and the MariaDB's operator's CRDs should be installed as well:
 
 ```bash
 $ helm repo add mariadb-operator https://mariadb-operator.github.io/mariadb-operator
 "mariadb-operator" has been added to your repositories
+
+$ helm install mariadb-operator-crds mariadb-operator/mariadb-operator-crds
+NAME: mariadb-operator-crds
+LAST DEPLOYED: Thu Oct 26 12:10:43 2023
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+mariadb-operator CRDs have been successfully installed! 🦭
+To complete the mariadb-operator installation, please now proceed to install the
+mariadb-operator chart:
+https://github.com/mariadb-operator/mariadb-operator?tab=readme-ov-file#helm-installation
 ```
 
 Then a specific `namespace` will be created:
