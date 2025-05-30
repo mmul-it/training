@@ -21,7 +21,7 @@ In this lab you will:
    kubeconfig: Configured
    ```
 
-2. Launch `kubectl cluster-info` and `kubectl version --short`:
+2. Launch `kubectl cluster-info` and `kubectl version`:
 
    ```console
    $ kubectl cluster-info
@@ -30,8 +30,7 @@ In this lab you will:
 
    To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 
-   $ kubectl version --short
-   Flag --short has been deprecated, and will be removed in the future. The --short output will become the default.
+   $ kubectl version
    Client Version: v1.25.3
    Kustomize Version: v4.5.7
    Server Version: v1.25.3
