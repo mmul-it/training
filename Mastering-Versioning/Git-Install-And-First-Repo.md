@@ -85,7 +85,7 @@ In this lab you will:
    ownership of '/git/myrepo' retained as kirater:kirater
    changed ownership of '/git/myrepo-bare' from root:root to kirater:kirater
    ownership of '/git' retained as kirater:kirater
-   
+
    $ cd /git/myrepo-bare/
    (no output)
 

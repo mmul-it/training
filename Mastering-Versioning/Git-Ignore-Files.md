@@ -35,10 +35,13 @@ In this lab you will:
 
    ```console
    $ echo mypassword > Password.txt
+   (no output)
 
    $ echo "Contents of the Fourth file." > Fourth.txt
+   (no output)
 
    $ echo "This file should not be tracked" > cache.tmp
+   (no output)
    ```
 
 3. The status of the repo is:

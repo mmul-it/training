@@ -65,6 +65,7 @@ In this lab you will:
 
    ```console
    $ sudo apt update && apt install -y bash-completion
+   ...
    ```
 
    To activate it and make it loaded on every bash terminal login:
