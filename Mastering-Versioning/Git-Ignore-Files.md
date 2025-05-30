@@ -23,10 +23,10 @@ In this lab you will:
    just use `cd`:
 
    ```console
-   ~/myrepo $ cd myrepo
+   $ cd /git/myrepo
    (no output)
 
-   ~/myrepo $ git status
+   $ git status
    On branch main
    nothing to commit, working tree clean
    ```
@@ -34,17 +34,17 @@ In this lab you will:
 2. The three files can be populated in this way:
 
    ```console
-   ~/myrepo $ echo mypassword > Password.txt
+   $ echo mypassword > Password.txt
 
-   ~/myrepo $ echo "Contents of the Fourth file." > Fourth.txt
+   $ echo "Contents of the Fourth file." > Fourth.txt
 
-   ~/myrepo $ echo "This file should not be tracked" > cache.tmp
+   $ echo "This file should not be tracked" > cache.tmp
    ```
 
 3. The status of the repo is:
 
    ```console
-   ~/myrepo $ git status
+   $ git status
    On branch main
    Untracked files:
      (use "git add <file>..." to include in what will be committed)
@@ -62,9 +62,9 @@ In this lab you will:
    specific file or a group of files that relies on wildcards:
 
    ```console
-   ~/myrepo $ echo -e '*.tmp\nPassword.txt' > .gitignore
+   $ echo -e '*.tmp\nPassword.txt' > .gitignore
 
-   ~/myrepo $ cat .gitignore
+   $ cat .gitignore
    *.tmp
    Password.txt
    ```
@@ -72,7 +72,7 @@ In this lab you will:
 5. With `.gitignore` in place the status of the repo will change:
 
    ```console
-   ~/myrepo $ git status
+   $ git status
    On branch main
    Untracked files:
      (use "git add <file>..." to include in what will be committed)
@@ -89,23 +89,23 @@ In this lab you will:
    file:
 
    ```console
-   ~/myrepo $ git add .gitignore
+   $ git add .gitignore
    (no output)
 
-   ~/myrepo $ git commit -m "Adding .gitignore" -m "This commit is kept alone from the rest."
+   $ git commit -m "Adding .gitignore" -m "This commit is kept alone from the rest."
    [main d523228] Adding .gitignore
     1 file changed, 2 insertions(+)
     create mode 100644 .gitignore
 
-   ~/myrepo $ git add Fourth.txt
+   $ git add Fourth.txt
    (no output)
 
-   ~/myrepo $ git commit -m "Fourth.txt commit" -m "This is the description of the Fourth commit."
+   $ git commit -m "Fourth.txt commit" -m "This is the description of the Fourth commit."
    [main acce6eb] Fourth.txt commit
     1 file changed, 1 insertion(+)
     create mode 100644 Fourth.txt
 
-   ~/myrepo $ git log --oneline --graph
+   $ git log --oneline --graph
    * acce6eb (HEAD -> main) Fourth.txt commit
    * d523228 Adding .gitignore
    * cb10f6d Third commit

@@ -19,10 +19,10 @@ In this lab you will:
    just use `cd`:
 
    ```console
-   ~ $ cd myrepo
+   $ cd /git/myrepo
    (no output)
 
-   ~/myrepo $ git status
+   $ git status
    On branch main
    nothing to commit, working tree clean
    ```
@@ -30,10 +30,10 @@ In this lab you will:
 2. To create a new branch simply use `git branch` and `git switch`:
 
    ```console
-   ~/myrepo $ git branch mynewfeature
+   $ git branch mynewfeature
    (no output)
 
-   ~/myrepo $ git switch mynewfeature
+   $ git switch mynewfeature
    Switched to branch 'mynewfeature'
    ```
 
@@ -42,18 +42,18 @@ In this lab you will:
 3. To prepare the file to be committed:
 
    ```console
-   ~/myrepo $ echo "Branch mynewfeature modification for the Sixth.txt commit." > Sixth.txt
+   $ echo "Branch mynewfeature modification for the Sixth.txt commit." > Sixth.txt
    (no output)
    ```
 
 4. To commit the file in the branch:
 
    ```console
-   ~/myrepo $ git add Sixth.txt
+   $ git add Sixth.txt
 
-   ~/myrepo $ git commit -m "Sixth.txt mynewfeature commit" -m "This is the description of the mynewfeature Sixth commit."
+   $ git commit -m "Sixth.txt mynewfeature commit" -m "This is the description of the mynewfeature Sixth commit."
 
-   ~/myrepo $ git log --oneline
+   $ git log --oneline --graph
    * 7cb2eb8 (HEAD -> mynewfeature) Sixth.txt mynewfeature commit
    *   50594f9 (origin/main, main) Merge branch 'myfeature'
    |\
@@ -70,18 +70,18 @@ In this lab you will:
 5. To switch back to branch `main` and prepare a new file to be committed:
 
    ```console
-   ~/myrepo $ git switch main
+   $ git switch main
    Switched to branch 'main'
 
-   ~/myrepo $ echo "Branch main modification for the Sixth.txt commit." > Sixth.txt
+   $ echo "Branch main modification for the Sixth.txt commit." > Sixth.txt
    ```
 
 6. To commit the file into branch `main`:
 
    ```console
-   ~/myrepo $ git add Sixth.txt
+   $ git add Sixth.txt
 
-   ~/myrepo $ git commit -m "Sixth.txt commit" -m "This is the description of the Sixth commit."
+   $ git commit -m "Sixth.txt commit" -m "This is the description of the Sixth commit."
    [main 408ed5d] Sixth.txt commit
     1 file changed, 1 insertion(+)
     create mode 100644 Sixth.txt
@@ -92,12 +92,12 @@ In this lab you will:
    to address:
 
    ```console
-   ~/myrepo $ git status
+   $ git status
    On branch main
    Your branch is ahead of 'origin/main' by 1 commit.
      (use "git push" to publish your local commits)
 
-   ~/myrepo $ git rebase mynewfeature
+   $ git rebase mynewfeature
    Auto-merging Sixth.txt
    CONFLICT (add/add): Merge conflict in Sixth.txt
    error: could not apply e713973... Sixth.txt commit
@@ -111,7 +111,7 @@ In this lab you will:
    The status clearly tells where the problem is:
 
    ```console
-    ~/myrepo $ git status
+    $ git status
     interactive rebase in progress; onto 7cb2eb8
     Last command done (1 command done):
        pick e713973 Sixth.txt commit
@@ -128,7 +128,7 @@ In this lab you will:
 
     no changes added to commit (use "git add" and/or "git commit -a")
 
-    ~/myrepo $ cat Sixth.txt
+    $ cat Sixth.txt
     <<<<<<< HEAD
     Branch mynewfeature modification for the Sixth.txt commit.
     =======
@@ -140,17 +140,17 @@ In this lab you will:
    leaving the modifications we care about:
 
    ```console
-   ~/myrepo $ echo "Branch main and mynewfeature modifications for the Sixth.txt commit." > Sixth.txt
+   $ echo "Branch main and mynewfeature modifications for the Sixth.txt commit." > Sixth.txt
    (no output)
    ```
 
    And then add the file to the staged ones and continue the rebase:
 
    ```console
-   ~/myrepo $ git add Sixth.txt
+   $ git add Sixth.txt
    (no output)
 
-   ~/myrepo $ git rebase --continue
+   $ git rebase --continue
    (vim editor opens)
    ```
 
@@ -179,7 +179,7 @@ In this lab you will:
    By saving it (with `:wq`) the rebase will be completed:
 
    ```console
-   ~/myrepo $ git rebase --continue
+   $ git rebase --continue
    [detached HEAD c7aa82d] Sixth.txt commit
     1 file changed, 1 insertion(+), 1 deletion(-)
    Successfully rebased and updated refs/heads/main
@@ -189,7 +189,7 @@ In this lab you will:
    one, compared to the merged one:
 
    ```console
-   ~/myrepo $ git log --oneline --graph
+   $ git log --oneline --graph
    * c7aa82d (HEAD -> main) Sixth.txt commit
    * 7cb2eb8 (mynewfeature) Sixth.txt mynewfeature commit
    *   50594f9 (origin/main, main) Merge branch 'myfeature'
@@ -208,7 +208,7 @@ In this lab you will:
    on the bare repository:
 
    ```console
-   ~/myrepo $ git push
+   $ git push
    Enumerating objects: 7, done.
    Counting objects: 100% (7/7), done.
    Delta compression using up to 16 threads
@@ -218,7 +218,7 @@ In this lab you will:
    To /git/myrepo-bare/
       50594f9..c7aa82d  main -> main
 
-   ~/myrepo $ git log --oneline --graph
+   $ git log --oneline --graph
    * c7aa82d (HEAD -> main, origin/main) Sixth.txt commit
    * 7cb2eb8 (mynewfeature) Sixth.txt mynewfeature commit
    *   50594f9 Merge branch 'myfeature'

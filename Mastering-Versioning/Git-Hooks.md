@@ -18,10 +18,10 @@ In this lab you will:
    just use `cd`:
 
    ```console
-   ~ $ cd myrepo
+   $ cd /git/myrepo
    (no output)
 
-   ~/myrepo $ git status
+   $ git status
    On branch main
    Your branch is up to date with 'origin/main'.
 
@@ -31,7 +31,7 @@ In this lab you will:
 2. The `.git/hooks` folder is populated my `.sample` files:
 
    ```console
-   ~/myrepo $ ls -1 .git/hooks
+   $ ls -1 .git/hooks
    applypatch-msg.sample
    commit-msg.sample
    fsmonitor-watchman.sample
@@ -51,7 +51,7 @@ In this lab you will:
    `pre-commit.sample` into `pre-commit`:
 
    ```console
-   ~/myrepo $ mv -v .git/hooks/pre-commit.sample .git/hooks/pre-commit
+   $ mv -v .git/hooks/pre-commit.sample .git/hooks/pre-commit
    '.git/hooks/pre-commit.sample' -> '.git/hooks/pre-commit'
    ```
 
@@ -76,14 +76,14 @@ In this lab you will:
 3. Reset the file and disable the `pre-commit` script by moving it back:
 
    ```console
-   ~/myrepo $ git reset First.txt
+   $ git reset First.txt
    Unstaged changes after reset:
    M     First.txt
 
-   ~/myrepo $ git checkout First.txt
+   $ git checkout First.txt
    Updated 1 path from the index
 
-   ~/myrepo $ mv -v .git/hooks/pre-commit .git/hooks/pre-commit.sample
+   $ mv -v .git/hooks/pre-commit .git/hooks/pre-commit.sample
    '.git/hooks/pre-commit' -> '.git/hooks/pre-commit.sample'
    ```
 
@@ -94,7 +94,7 @@ In this lab you will:
    In order to do that we make use of the `commit-msg` Git hook:
 
    ```console
-   ~/myrepo $ cat <<EOF > .git/hooks/commit-msg
+   $ cat <<EOF > .git/hooks/commit-msg
    grep -q '^feat: \|^bug: ' \$1 &> /dev/null
    if [ \$? -ne 0 ]
     then
@@ -107,20 +107,20 @@ In this lab you will:
    And make it executable:
 
    ```console
-   ~/myrepo $ chmod -v +x .git/hooks/commit-msg
+   $ chmod -v +x .git/hooks/commit-msg
    mode of '.git/hooks/commit-msg' changed to 0755 (rwxr-xr-x)
    ```
 
 5. Test the newly created `commit-msg` Git hook:
 
    ```console
-   ~/myrepo $ echo "A test for the commit-msg hook" >> First.txt
+   $ echo "A test for the commit-msg hook" >> First.txt
    (no output)
 
-   ~/myrepo $ git add First.txt
+   $ git add First.txt
    (no output)
 
-   ~/myrepo $ git commit -m "Test commit-msg hook" -m "Extended description of the commit"
+   $ git commit -m "Test commit-msg hook" -m "Extended description of the commit"
    [ERROR] Commit must start with 'feat:' or 'bug:'!
    ```
 
@@ -128,11 +128,11 @@ In this lab you will:
    option must be passed:
 
    ```console
-   ~/myrepo $ git commit --no-verify -m "Test commit-msg hook bypass" -m "This is a sample commit to bypass the commit-msg"
+   $ git commit --no-verify -m "Test commit-msg hook bypass" -m "This is a sample commit to bypass the commit-msg"
    [main 451c30c] Test commit-msg hook bypass
     1 file changed, 1 insertion(+)
 
-   ~/myrepo $ git log --oneline --graph
+   $ git log --oneline --graph
    * 451c30c (HEAD -> main) Test commit-msg hook bypass
    * 525b121 (origin/main) Nineth commit
    ...

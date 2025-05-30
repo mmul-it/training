@@ -27,10 +27,10 @@ In this lab you will:
    just use `cd`:
 
    ```console
-   ~ $ cd myrepo
+   $ cd /git/myrepo
    (no output)
 
-   ~/myrepo $ git status
+   $ git status
    On branch main
    nothing to commit, working tree clean
    ```
@@ -38,10 +38,10 @@ In this lab you will:
 2. To create a new branch simply use `git branch` and `git switch`:
 
    ```console
-   ~/myrepo $ git branch learngit1
+   $ git branch learngit1
    (no output)
 
-   ~/myrepo $ git switch learngit1
+   $ git switch learngit1
    Switched to branch 'learngit1'
    ```
 
@@ -50,7 +50,7 @@ In this lab you will:
 3. This can be easily achieved with a bash loop:
 
    ```console
-   ~/myrepo $ for FILEn in Nineth Eighth Seventh; \
+   $ for FILEn in Nineth Eighth Seventh; \
        do echo "Contents of the $FILEn file." > $FILEn\.txt; \
        git add $FILEn\.txt; \
        git commit -m "$FILEn commit" -m "This is the description of the $FILEn commit."; \
@@ -69,11 +69,11 @@ In this lab you will:
 4. Let's move back to `main` and merge (there should be no conflicts):
 
    ```console
-   ~/myrepo $ git checkout main
+   $ git checkout main
    Switched to branch 'main'
    Your branch is up to date with 'origin/main'.
 
-   ~/myrepo $ git merge learngit1
+   $ git merge learngit1
    Updating c7aa82d..24f4de7
    Fast-forward
     Eighth.txt  | 1 +
@@ -84,7 +84,7 @@ In this lab you will:
     create mode 100644 Nineth.txt
     create mode 100644 Seventh.txt
 
-   ~/myrepo $ git log --oneline --graph
+   $ git log --oneline --graph
    * 24f4de7 (HEAD -> main, learngit1) Seventh commit
    * 36404de Eighth commit
    * a17a661 Nineth commit
@@ -97,10 +97,10 @@ In this lab you will:
    reverting it a new commit will be created that will remove `Nineth.txt`:
 
    ```console
-   ~/myrepo $ ls Nineth.txt
+   $ ls Nineth.txt
    Nineth.txt
 
-   ~/myrepo $ git revert a17a661
+   $ git revert a17a661
    [main 056d8a4] Revert "Nineth commit"
     1 file changed, 1 deletion(-)
     delete mode 100644 Nineth.txt
@@ -111,7 +111,7 @@ In this lab you will:
    the history appear as follows:
 
    ```console
-   ~/myrepo $ git log --oneline --graph
+   $ git log --oneline --graph
    * 056d8a4 (HEAD -> main) Revert "Nineth commit"
    * 24f4de7 (learngit1) Seventh commit
    * 36404de Eighth commit
@@ -120,7 +120,7 @@ In this lab you will:
    ...
    ...
 
-   ~/myrepo $ ls Nineth.txt
+   $ ls Nineth.txt
    ls: Nineth.txt: No such file or directory
    ```
 
@@ -134,7 +134,7 @@ In this lab you will:
    Given this list:
 
    ```console
-   ~/myrepo $ git log --oneline --graph
+   $ git log --oneline --graph
    * 056d8a4 (HEAD -> main) Revert "Nineth commit"
    * 24f4de7 (learngit1) Seventh commit
    * 36404de Eighth commit
@@ -154,7 +154,7 @@ In this lab you will:
    The history will now be:
 
    ```console
-   ~/myrepo $ git log --oneline --graph
+   $ git log --oneline --graph
    * c7aa82d (HEAD -> main, origin/main) Sixth.txt commit
    ...
    ...
@@ -167,32 +167,32 @@ In this lab you will:
    commits from the `learngit1` branch in the correct order, like in:
 
    ```console
-   ~/myrepo $ git log --oneline --graph learngit1
+   $ git log --oneline --graph learngit1
    * 24f4de7 (learngit1) Seventh commit
    * 36404de Eighth commit
    * a17a661 Nineth commit
    * c7aa82d (HEAD -> main, origin/main) Sixth.txt commit
    * 7cb2eb8 (mynewfeature) Sixth.txt mynewfeature commit
 
-   ~/myrepo $ git branch
+   $ git branch
      learngit1
    * main
      myfeature
      mynewfeature
 
-   ~/myrepo $ git cherry-pick 24f4de7
+   $ git cherry-pick 24f4de7
    [main 33ccdb9] Seventh commit
     Date: Fri Mar 8 14:28:54 2024 +0000
     1 file changed, 1 insertion(+)
     create mode 100644 Seventh.txt
 
-   ~/myrepo $ git cherry-pick 36404de
+   $ git cherry-pick 36404de
    [main 34cf4dd] Eighth commit
     Date: Fri Mar 8 14:28:54 2024 +0000
     1 file changed, 1 insertion(+)
     create mode 100644 Eighth.txt
 
-   ~/myrepo $ git cherry-pick a17a661
+   $ git cherry-pick a17a661
    [main 525b121] Nineth commit
     Date: Fri Mar 8 14:28:54 2024 +0000
     1 file changed, 1 insertion(+)
@@ -202,7 +202,7 @@ In this lab you will:
    Commit history will now be correctly ordered:
 
    ```console
-   ~/myrepo $ git log --oneline --graph
+   $ git log --oneline --graph
    * 525b121 (HEAD -> main) Nineth commit
    * 34cf4dd Eighth commit
    * 33ccdb9 Seventh commit
@@ -212,7 +212,7 @@ In this lab you will:
    And we can also align our remote:
 
    ```console
-   ~/myrepo $ git push
+   $ git push
    Enumerating objects: 10, done.
    Counting objects: 100% (10/10), done.
    Delta compression using up to 16 threads
@@ -222,7 +222,7 @@ In this lab you will:
    To /git/myrepo-bare/
       c7aa82d..525b121  main -> main
 
-   ~/myrepo $ git log --oneline --graph
+   $ git log --oneline --graph
    * 525b121 (HEAD -> main, origin/main) Nineth commit
    * 34cf4dd Eighth commit
    * 33ccdb9 Seventh commit

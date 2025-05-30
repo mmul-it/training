@@ -18,16 +18,17 @@ In this lab you will:
    just use `cd`:
 
    ```console
-   ~ $ cd myrepo
+   $ cd /git/myrepo
    (no output)
 
-   ~/myrepo $ git status
+   $ git status
    On branch main
    nothing to commit, working tree clean
 
-   ~/myrepo $ cd ../myrepo-bare/
+   $ cd /git/myrepo-bare/
+   (no output)
 
-   ~/myrepo-bare $ git status
+   $ git status
    fatal: this operation must be run in a work tree
    ```
 
@@ -36,14 +37,16 @@ In this lab you will:
 2. To make the bare repo the `origin` for `myrepo` we will use `git remote add`:
 
    ```console
-   ~/myrepo-bare $ cd ../myrepo
+   $ cd /git/myrepo
+   (no output)
 
-   ~/myrepo $ git remote add origin /git/myrepo-bare/
+   $ git remote add origin /git/myrepo-bare/
+   (no output)
 
-   ~/myrepo $ git remote
+   $ git remote
    origin
 
-   ~/myrepo $ git remote -v
+   $ git remote -v
    origin     /git/myrepo-bare/ (fetch)
    origin     /git/myrepo-bare/ (push)
    ```
@@ -51,7 +54,7 @@ In this lab you will:
 3. Now to push everything on the remote, let's use `git push`:
 
    ```console
-   ~/myrepo $ git push
+   $ git push
    fatal: The current branch main has no upstream branch.
    To push the current branch and set the remote as upstream, use
 
@@ -65,7 +68,7 @@ In this lab you will:
    A solution could be to use the suggested commaand:
 
    ```console
-   ~/myrepo $ git push --set-upstream origin main
+   $ git push --set-upstream origin main
    Enumerating objects: 24, done.
    Counting objects: 100% (24/24), done.
    Delta compression using up to 16 threads
@@ -83,7 +86,7 @@ In this lab you will:
    branches (in this case `myfeature`):
 
    ```console
-   ~/myrepo $ git push --all
+   $ git push --all
    Total 0 (delta 0), reused 0 (delta 0), pack-reused 0
    To /git/myrepo-bare/
     * [new branch]      myfeature -> myfeature
@@ -93,19 +96,19 @@ In this lab you will:
    usual process:
 
    ```console
-   ~/myrepo $ cd ..
+   $ cd ..
    (no output)
 
-   ~ $ mkdir -v myotherrepo
+   $ mkdir -v myotherrepo
    created directory: 'myotherrepo'
 
-   ~ $ cd myotherrepo/
+   $ cd myotherrepo/
    (no output)
 
-   ~/myotherrepo $ git init --initial-branch=main
+   $ git init --initial-branch=main
    Initialized empty Git repository in /git/myotherrepo/.git/
 
-   ~/myotherrepo $ git remote add origin /git/myrepo-bare/
+   $ git remote add origin /git/myrepo-bare/
    (no output)
    ```
 
@@ -113,7 +116,7 @@ In this lab you will:
    this case `main`, coming from `origin`:
 
    ```console
-   ~/myotherrepo $ git pull origin main
+   $ git pull origin main
    remote: Enumerating objects: 24, done.
    remote: Counting objects: 100% (24/24), done.
    remote: Compressing objects: 100% (18/18), done.
@@ -127,7 +130,7 @@ In this lab you will:
    The repository is now a perfectly working directory:
 
    ```console
-   ~/myotherrepo $ git log --oneline --graph
+   $ git log --oneline --graph
    *   38fceae (HEAD -> main, origin/main) Merge branch 'myfeature'
    |\
    | * 7f002cd Fifith.txt myfeature commit
@@ -143,7 +146,7 @@ In this lab you will:
 5. In terms of branches we don't have at the moment anything apart from `main`:
 
    ```console
-   ~/myotherrepo $ git branch
+   $ git branch
    * main
    ```
 
@@ -151,7 +154,7 @@ In this lab you will:
    rely on `git fetch` as follows:
 
    ```console
-   ~/myotherrepo $ git fetch --all
+   $ git fetch --all
    From /git/myrepo-bare
     * [new branch]      myfeature  -> origin/myfeature
    ```

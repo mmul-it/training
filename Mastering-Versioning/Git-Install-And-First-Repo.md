@@ -26,24 +26,25 @@ In this lab you will:
    ...
    ```
 
-2. After this a standard repository can be initialized, by using `git init`
-   with the main branch specification, as in `-b main`:
+2. After this a standard repository can be initialized creating a dedicated
+   folder `/git`, and by using `git init` with the main branch specification,
+   as in `--initial-branch main`:
 
    ```console
-   ~ $ mkdir -v myrepo
-   mkdir: created directory 'myrepo'
+   $ sudo mkdir -p -v /git/myrepo && sudo chown -R -v $USER: /git && cd /git/myrepo
+   mkdir: created directory '/git'
+   mkdir: created directory '/git/myrepo'
+   changed ownership of '/git/myrepo' from root:root to kirater:kirater
+   changed ownership of '/git' from root:root to kirater:kirater
 
-   ~ $ cd myrepo
-   (no output)
-
-   ~/myrepo $ git init --initial-branch main
+   $ git init --initial-branch main
    Initialized empty Git repository in /git/myrepo/.git/
    ```
 
 3. To check the structure use `tree`
 
    ```console
-   ~/myrepo $ tree -a
+   $ tree -a
    .
    └── .git
        ├── branches
@@ -79,23 +80,23 @@ In this lab you will:
 4. To create a bare repository the `--bare` option is needed:
 
    ```console
-   ~/myrepo $ cd ..
+   $ sudo mkdir -p -v /git/myrepo-bare && sudo chown -R -v $USER: /git
+   mkdir: created directory '/git/myrepo-bare'
+   ownership of '/git/myrepo' retained as kirater:kirater
+   changed ownership of '/git/myrepo-bare' from root:root to kirater:kirater
+   ownership of '/git' retained as kirater:kirater
+   
+   $ cd /git/myrepo-bare/
    (no output)
 
-   ~ $ mkdir -v myrepo-bare
-   mkdir: created directory 'myrepo'
-
-   ~ $ cd myrepo-bare/
-   (no output)
-
-   ~/myrepo-bare $ git init --bare --initial-branch main
+   $ git init --bare --initial-branch main
    Initialized empty Git repository in /git/myrepo-bare/
    ```
 
 5. Checking again the directory structure will show the differences:
 
    ```console
-   ~/myrepo-bare $ tree -a
+   $ tree -a
    .
    ├── HEAD
    ├── branches
