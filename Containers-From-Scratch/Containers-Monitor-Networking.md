@@ -13,7 +13,10 @@ In this lab you will:
 1. Use `docker run` to start MySQL container, passing the `MYSQL_ROOT_PASSWORD` environment variable:
 
    ```console
-   $ docker run --rm --detach --name network-test -p 3306:3306 -e MYSQL_ROOT_PASSWORD=testr00t mysql
+   $ docker run --rm --detach --name network-test \
+       --env MYSQL_ROOT_PASSWORD=testr00t \
+       --publish 3306:3306 \
+       mysql
    Unable to find image 'mysql:latest' locally
    latest: Pulling from library/mysql
    996f1bba14d6: Pull complete
@@ -59,9 +62,6 @@ In this lab you will:
    And for RHEL based systems:
 
    ```console
-   $ sudo yum update
-   ...
-
    $ sudo yum -y install tcpdump
    ...
    ```
@@ -73,7 +73,9 @@ In this lab you will:
    tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
    ```
 
-4. From another console use `nc` to reach the 3306 port:
+4. From another console use `nc` to reach the 3306 port (if you need to install
+   `nc` in RHEL use `sudo yum -y install nc` and in Debian
+   `sudo apt-get -y install nc`):
 
    ```console
    $ nc -v localhost 3306
