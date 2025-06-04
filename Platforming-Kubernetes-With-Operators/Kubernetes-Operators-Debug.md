@@ -9,7 +9,7 @@ The Operator status is represented by the status of the application, which
 corresponds to the status of the deployment:
 
 ```console
-$ kubectl -n metallb-system get all
+$ kubectl --namespace metallb-system get all
 NAME                                                       READY   STATUS    RESTARTS   AGE
 pod/controller-85d8bf7b75-v9tng                            1/1     Running   0          3d
 pod/metallb-operator-controller-manager-7c46d89759-jrbdz   1/1     Running   0          3d
@@ -48,7 +48,7 @@ The operator-controller-manager in this case
 activation of all the dependent resources, listening to Kubernetes engagements:
 
 ```console
-$ kubectl -n metallb-system logs pod/metallb-operator-controller-manager-7c46d89759-jrbdz
+$ kubectl --namespace metallb-system logs pod/metallb-operator-controller-manager-7c46d89759-jrbdz
 ...
 ...
 2023-12-01T06:27:46Z    INFO    controllers.MetalLB     updated metallb status successfully     {"metallb": {"name":"metallb","namespace":"metallb-system"}, "condition": "Available", "resource name": "metallb"}
@@ -69,7 +69,7 @@ like in the case of MetalLB, where a controller for the specific instance is
 created:
 
 ```console
-$ kubectl -n metallb-system logs pod/controller-85d8bf7b75-v9tng
+$ kubectl --namespace metallb-system logs pod/controller-85d8bf7b75-v9tng
 {"branch":"dev","caller":"main.go:162","commit":"dev","goversion":"gc / go1.20.10 / amd64","level":"info","msg":"MetalLB controller starting (commit dev,
 branch dev)","ts":"2023-11-28T10:38:41Z","version":""}
 {"caller":"k8s.go:371","level":"info","msg":"secret successfully created","op":"CreateMlSecret","ts":"2023-11-28T10:38:41Z"}
@@ -95,7 +95,7 @@ channel source: 0xc00041ae00"}
 As well as "speaker" Pods, generally in a number equal to the nodes:
 
 ```console
-$ kubectl -n metallb-system logs pod/speaker-c9ssg  | more
+$ kubectl --namespace metallb-system logs pod/speaker-c9ssg  | more
 {"branch":"dev","caller":"main.go:100","commit":"dev","goversion":"gc / go1.20.10 / amd64","level":"info","msg":"MetalLB speaker starting (commit dev, bra
 nch dev)","ts":"2023-11-28T10:38:48Z","version":""}
 {"caller":"announcer.go:125","event":"createARPResponder","interface":"eth0","level":"info","msg":"created ARP responder for interface","ts":"2023-11-28T1
@@ -113,7 +113,7 @@ Kubernetes events are related to specific namespaces, and so there can be no
 events for a specific namespace:
 
 ```console
-$ kubectl -n metallb-system get events
+$ kubectl --namespace metallb-system get events
 No resources found in metallb-system namespace.
 ```
 

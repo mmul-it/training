@@ -20,10 +20,10 @@ In this lab you will:
 1. Run the two containers simoultanously in two differen terminals:
 
    ```console
-   $ docker run --name=container1 --rm -it alpine /bin/sh
+   $ docker run --name=container1 --rm --interactive --tty alpine /bin/sh
    / #
 
-   $ docker run --name=container2 --rm -it alpine /bin/sh
+   $ docker run --name=container2 --rm --interactive --tty alpine /bin/sh
    / #
    ```
 
@@ -50,10 +50,14 @@ In this lab you will:
 5. Re-run the two containers:
 
    ```console
-   $ docker run --name=container1 --network=test --rm -it alpine /bin/sh
+   $ docker run --name=container1 --rm --interactive --tty \
+       --network=test \
+       alpine /bin/sh
    / #
 
-   $ docker run --name=container2 --network=test --rm -it alpine /bin/sh
+   $ docker run --name=container2 --rm --interactive --tty \
+       --network=test \
+       alpine /bin/sh
    / #
    ```
 

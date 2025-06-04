@@ -2,9 +2,11 @@
 
 In this lab you will:
 
-1. Check which cluster role can be assigned to `myuser` so that it will be possible for the user to view all the resources.
+1. Check which cluster role can be assigned to `myuser` so that it will be
+   possible for the user to view all the resources.
 2. Assign the discovered cluster role to the user and check whether it works.
-3. Define a new role named `deploy-creator` that will make `myuser` able to create deployments in `myns` namespace.
+3. Define a new role named `deploy-creator` that will make `myuser` able to
+   create deployments in `myns` namespace.
 4. Try to create a new deployment in `myns` namespace.
 
 ## Solution
@@ -52,7 +54,7 @@ In this lab you will:
    $ kubectl config use-context myuser@minikube
    Switched to context "myuser@minikube".
 
-   $ kubectl -n myns get all
+   $ kubectl --namespace myns get all
    No resources found in myns namespace.
 
    $ kubectl get all -A
@@ -85,7 +87,7 @@ In this lab you will:
    $ kubectl config current-context
    myuser@minikube
 
-   $ kubectl -n myns create deployment nginx --image=nginx:latest
+   $ kubectl --namespace myns create deployment nginx --image=nginx:latest
    error: failed to create deployment: deployments.apps is forbidden: User "myuser" cannot create resource "deployments" in API group "apps" in the namespace "myns"
    ```
 
@@ -95,14 +97,18 @@ In this lab you will:
    $ kubectl config use-context minikube
    Switched to context "minikube".
 
-   $ kubectl create role deploy-creator --verb=create,delete,update --resource=pods,replicaset,deployments -n myns
+   $ kubectl --namespace myns create role deploy-creator \
+       --verb=create,delete,update \
+       --resource=pods,replicaset,deployments
    role.rbac.authorization.k8s.io/deploy-creator created
    ```
 
    Bind the new role to the user:
 
    ```console
-   $ kubectl create rolebinding deploy-creator-to-myuser --role=deploy-creator --user=myuser --namespace=myns
+   $ kubectl --namespace=myns create rolebinding deploy-creator-to-myuser \
+       --role=deploy-creator \
+       --user=myuser
    rolebinding.rbac.authorization.k8s.io/deploy-creator-to-myuser created
    ```
 
@@ -112,10 +118,10 @@ In this lab you will:
    $ kubectl config use-context myuser@minikube
    Switched to context "myuser@minikube".
 
-   $ kubectl -n myns create deployment nginx --image=nginx:latest
+   $ kubectl --namespace myns create deployment nginx --image=nginx:latest
    deployment.apps/nginx created
 
-   $ kubectl -n myns get all
+   $ kubectl --namespace myns get all
    NAME                         READY   STATUS              RESTARTS   AGE
    pod/nginx-6d666844f6-8j42s   0/1     ContainerCreating   0          6s
 
@@ -125,7 +131,7 @@ In this lab you will:
    NAME                               DESIRED   CURRENT   READY   AGE
    replicaset.apps/nginx-6d666844f6   1         1         0       6s
 
-   $ kubectl -n myns get all
+   $ kubectl --namespace myns get all
    NAME                         READY   STATUS    RESTARTS   AGE
    pod/nginx-6d666844f6-8j42s   1/1     Running   0          39s
 
@@ -135,9 +141,9 @@ In this lab you will:
    NAME                               DESIRED   CURRENT   READY   AGE
    replicaset.apps/nginx-6d666844f6   1         1         1       39s
 
-   $ kubectl -n myns delete deployment nginx
+   $ kubectl --namespace myns delete deployment nginx
    deployment.apps "nginx" deleted
 
-   $ kubectl -n myns get all
+   $ kubectl --namespace myns get all
    No resources found in myns namespace.
    ```

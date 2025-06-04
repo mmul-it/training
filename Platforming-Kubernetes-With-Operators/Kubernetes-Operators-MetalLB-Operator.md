@@ -12,7 +12,8 @@ configuration of the `KubeProxyConfiguration` resource needs to have the
 This is a one command operation:
 
 ```console
-$ kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e "s/strictARP: false/strictARP: true/" | kubectl apply -f - -n kube-system
+$ kubectl --namespace kube-system get configmap kube-proxy -o yaml | \
+    sed -e "s/strictARP: false/strictARP: true/" | kubectl --namespace kube-system apply -f -
 configmap/kube-proxy configured
 ```
 
@@ -50,7 +51,7 @@ The status of the `metallb-system` namespace after the installation will be
 similar to this:
 
 ```console
-$ kubectl -n metallb-system get all
+$ kubectl --namespace metallb-system get all
 NAME                                                       READY   STATUS    RESTARTS   AGE
 pod/metallb-operator-controller-manager-7c46d89759-jrbdz   1/1     Running   0          15m
 pod/metallb-operator-webhook-server-7ccc476797-rjxdk       1/1     Running   0          15m
@@ -117,7 +118,7 @@ This will initialize the MetalLB resources that will manage all the
 functionalities:
 
 ```console
-$ kubectl -n metallb-system get pods
+$ kubectl --namespace metallb-system get pods
 NAME                                                       READY   STATUS    RESTARTS   AGE
 pod/controller-85d8bf7b75-v9tng                            1/1     Running   0          5m31s
 pod/metallb-operator-controller-manager-7c46d89759-jrbdz   1/1     Running   0          22m
@@ -175,21 +176,24 @@ MetalLB can be tested with a `namespace` with a `deployment`:
 $ kubectl create namespace myns
 namespace/myns created
 
-$ kubectl -n myns create deployment nginx --image nginx:latest --port 80
+$ kubectl --namespace myns create deployment nginx --image nginx:latest --port 80
 deployment.apps/nginx created
 ```
 
 And then by exposing the application, using the `LoadBalancer` type:
 
 ```console
-$ kubectl -n myns expose deployment nginx --name nginx --type LoadBalancer --port 80 --target-port 80
+$ kubectl --namespace myns expose deployment nginx --name nginx \
+    --type LoadBalancer \
+    --port 80 \
+    --target-port 80
 service/nginx exposed
 ```
 
 This will produce a service with an IP that will be part of the reserved pool:
 
 ```console
-$ kubectl -n myns get services
+$ kubectl --namespace myns get services
 NAME    TYPE           CLUSTER-IP       EXTERNAL-IP      PORT(S)        AGE
 nginx   LoadBalancer   10.110.130.230   192.168.99.220   80:30265/TCP   28m
 ```

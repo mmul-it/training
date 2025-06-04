@@ -40,7 +40,8 @@ Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "prometheus-community" chart repository
 Update Complete. ⎈Happy Helming!⎈
 
-$ helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+$ helm install prometheus prometheus-community/kube-prometheus-stack \
+    --namespace monitoring --create-namespace
 NAME: prometheus
 LAST DEPLOYED: Thu Nov 14 15:31:27 2024
 NAMESPACE: monitoring
@@ -56,10 +57,12 @@ Visit https://github.com/prometheus-operator/kube-prometheus for instructions on
 To expose and access the Grafana web interface a new service will be created:
 
 ```console
-$ kubectl -n monitoring expose deployment prometheus-grafana --type=LoadBalancer --name=prometheus-grafana-lb
+$ kubectl --namespace monitoring expose deployment prometheus-grafana \
+    --type=LoadBalancer \
+    --name=prometheus-grafana-lb
 service/prometheus-grafana-lb exposed
 
-$ kubectl -n monitoring get services prometheus-grafana-lb
+$ kubectl --namespace monitoring get services prometheus-grafana-lb
 NAME                    TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                                        AGE
 prometheus-grafana-lb   LoadBalancer   10.96.60.180   172.18.0.101   3000:32167/TCP,9094:30744/TCP,9094:30744/UDP   26s
 ```
@@ -68,7 +71,8 @@ The `admin` user password can be retrieved inside the `prometheus-grafana`
 secret:
 
 ```console
-$ kubectl get secret --namespace monitoring prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+$ kubectl --namespace monitoring get secret prometheus-grafana \
+    -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 prom-operator
 ```
 
@@ -234,14 +238,16 @@ To check if it's valid we need to have a look at the Prometheus metrics, by
 first exposing the web interface, as follows:
 
 ```console
-$ kubectl -n monitoring expose service prometheus-operated --type=LoadBalancer --name prometheus-operated-lb
+$ kubectl --namespace monitoring expose service prometheus-operated \
+    --type=LoadBalancer \
+    --name prometheus-operated-lb
 service/prometheus-operated-lb exposed
 ```
 
 This will produce an IP listening on the `9090` port:
 
 ```console
-$ kubectl -n monitoring get services prometheus-operated-lb
+$ kubectl --namespace monitoring get services prometheus-operated-lb
 NAME                     TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)          AGE
 prometheus-operated-lb   LoadBalancer   10.96.158.174   172.18.0.102   9090:31254/TCP   4h53m
 ```

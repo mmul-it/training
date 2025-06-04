@@ -16,7 +16,7 @@ In this lab you will:
    - `WORDPRESS_DB_PASSWORD`: mywppass
    - `WORDPRESS_DB_NAME`: mywpdb
 4. Install the `lynx` tool to check rendered http pages from command line.
-5. Using `kubectl -n fe-be-test port-forward frontend 8080:80` expose locally
+5. Using `kubectl --namespace fe-be-test port-forward frontend 8080:80` expose locally
    the port of the frontend and check the status of wordpress with lynx: what is
    the problem? Why it is not working?
 6. Fix the problems by creating a label for the pod and a service for the
@@ -39,7 +39,7 @@ In this lab you will:
    variable:
 
    ```console
-   $ kubectl -n fe-be-test run \
+   $ kubectl --namespace fe-be-test run \
        --image mariadb \
        --env MYSQL_DATABASE=mywpdb \
        --env MYSQL_USER=mywpuser \
@@ -48,11 +48,11 @@ In this lab you will:
        backend
    pod/backend created
 
-   $ kubectl -n fe-be-test get pods
+   $ kubectl --namespace fe-be-test get pods
    NAME      READY   STATUS              RESTARTS   AGE
    backend   0/1     ContainerCreating   0          19s
 
-   $ kubectl -n fe-be-test get pods
+   $ kubectl --namespace fe-be-test get pods
    NAME      READY   STATUS    RESTARTS   AGE
    backend   1/1     Running   0          42s
    ```
@@ -60,7 +60,7 @@ In this lab you will:
 3. Do the same for the frontend:
 
    ```console
-   $ kubectl -n fe-be-test run \
+   $ kubectl --namespace fe-be-test run \
        --image wordpress:latest \
        --env WORDPRESS_DB_HOST=backend \
        --env WORDPRESS_DB_USER=mywpuser \
@@ -69,12 +69,12 @@ In this lab you will:
        frontend
    pod/frontend created
 
-   $ kubectl -n fe-be-test get pods
+   $ kubectl --namespace fe-be-test get pods
    NAME       READY   STATUS              RESTARTS   AGE
    backend    1/1     Running             0          100s
    frontend   0/1     ContainerCreating   0          6s
 
-   $ kubectl -n fe-be-test get pods -w
+   $ kubectl --namespace fe-be-test get pods -w
    NAME       READY   STATUS    RESTARTS   AGE
    backend    1/1     Running   0          102s
    frontend   1/1     Running   0          8s
@@ -106,7 +106,7 @@ In this lab you will:
 5. Open the `8080` port using `kubectl port-forward`:
 
    ```console
-   $ kubectl -n fe-be-test port-forward frontend 8080:80
+   $ kubectl --namespace fe-be-test port-forward frontend 8080:80
    Forwarding from 127.0.0.1:8080 -> 80
    Forwarding from [::1]:8080 -> 80
    ```
@@ -123,11 +123,11 @@ In this lab you will:
    a service.
 
 6. Service will rely on the pod label for the `selector`, so we need to use an
-   existing one (check by using `kubectl -n fe-be-test describe pod backend`) or
+   existing one (check by using `kubectl --namespace fe-be-test describe pod backend`) or
    creating a new one:
 
    ```console
-   $ kubectl -n fe-be-test label pod backend name=backend
+   $ kubectl --namespace fe-be-test label pod backend name=backend
    pod/backend labeled
    ```
 
@@ -137,17 +137,17 @@ In this lab you will:
    `backend`:
 
    ```console
-   $ kubectl -n fe-be-test create service clusterip backend --tcp=3306:3306
+   $ kubectl --namespace fe-be-test create service clusterip backend --tcp=3306:3306
    service/backend created
 
-   $ kubectl -n fe-be-test set selector service backend 'name=backend'
+   $ kubectl --namespace fe-be-test set selector service backend 'name=backend'
    service/backend selector updated
    ```
 
    Alternatively, the `kubectl expose` command can be used as follows:
 
    ```console
-   $ kubectl -n fe-be-test expose pod backend \
+   $ kubectl --namespace fe-be-test expose pod backend \
        --name=backend \
        --port=3306 \
        --selector="name=backend"
@@ -157,7 +157,7 @@ In this lab you will:
    In either cases the result will be something like this:
 
    ```console
-   $ kubectl -n fe-be-test get service backend
+   $ kubectl --namespace fe-be-test get service backend
    NAME      TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
    backend   ClusterIP   10.96.16.80   <none>        3306/TCP   26s
    ```
@@ -176,10 +176,10 @@ In this lab you will:
    generate the yaml and use it with `kubectl create`:
 
    ```console
-   $ kubectl -n fe-be-test delete service backend
+   $ kubectl --namespace fe-be-test delete service backend
    service "backend" deleted
 
-   $ kubectl -n fe-be-test expose pod backend \
+   $ kubectl --namespace fe-be-test expose pod backend \
        --name=backend \
        --port=3306 \
        --selector="name=backend" \

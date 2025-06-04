@@ -76,7 +76,7 @@ In this lab you will:
    $  kubectl create -f pvc-test.yml
    persistentvolumeclaim/myclaim created
 
-   $ kubectl -n volumes-test get pvc
+   $ kubectl --namespace volumes-test get pvc
    NAMESPACE      NAME      STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
    volumes-test   myclaim   Bound    pv0001   5Gi        RWO            localpv        7s
    ```
@@ -104,7 +104,7 @@ In this lab you will:
        HostPathType:
    Events:            <none>
 
-   $ kubectl -n volumes-test describe pvc myclaim
+   $ kubectl --namespace volumes-test describe pvc myclaim
    Name:          myclaim
    Namespace:     volumes-test
    StorageClass:  localpv
@@ -125,10 +125,10 @@ In this lab you will:
 4. Use `kubectl run` to run the nginx deployment:
 
    ```console
-   $ kubectl -n volumes-test create deployment nginx --image=nginx:latest
+   $ kubectl --namespace volumes-test create deployment nginx --image=nginx:latest
    deployment.apps/nginx created
 
-   $ kubectl -n volumes-test get pod
+   $ kubectl --namespace volumes-test get pod
    NAME                     READY   STATUS    RESTARTS   AGE
    nginx-6d666844f6-8t28s   1/1     Running   0          10s
    ```
@@ -137,7 +137,7 @@ In this lab you will:
    sections inside the `spec`:
 
    ```console
-   kubectl -n volumes-test edit deployment nginx
+   kubectl --namespace volumes-test edit deployment nginx
    ```
 
    ```yaml
@@ -171,7 +171,7 @@ In this lab you will:
    Then check the status of the objects:
 
    ```yaml
-   $ kubectl -n volumes-test get all
+   $ kubectl --namespace volumes-test get all
    NAME                         READY   STATUS    RESTARTS   AGE
    pod/nginx-84655c5fd7-fk7sc   1/1     Running   0          19s
 
@@ -197,11 +197,11 @@ In this lab you will:
    is using the volume:
 
    ```console
-   $ kubectl -n volumes-test get pods
+   $ kubectl --namespace volumes-test get pods
    NAME                     READY   STATUS    RESTARTS   AGE
    nginx-84655c5fd7-xgm2f   1/1     Running   0          8m34s
 
-   $ kubectl -n volumes-test port-forward nginx-84655c5fd7-xgm2f 8080:80
+   $ kubectl --namespace volumes-test port-forward nginx-84655c5fd7-xgm2f 8080:80
    Forwarding from 127.0.0.1:8080 -> 80
    Forwarding from [::1]:8080 -> 80
    ```

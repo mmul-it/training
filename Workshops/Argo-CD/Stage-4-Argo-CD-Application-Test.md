@@ -223,7 +223,7 @@ synchronization will automatically produce the resources contained inside the
 yaml file previously defined inside the Git repository:
 
 ```console
-$ kubectl --context kind-prod --namespace kiraterns get all
+$ kubectl --namespace kiraterns --context kind-prod get all
 NAME                             READY   STATUS    RESTARTS   AGE
 pod/webserver-5d45bdd47f-t62p9   1/1     Running   0          4m10s
 
@@ -374,11 +374,11 @@ argocd/test-webserver  https://172.18.0.1:7443             default  Synced  Heal
 With everything in place a general verification can be made:
 
 ```console
-$ kubectl --context kind-prod --namespace kiraterns get services
+$ kubectl --namespace kiraterns --context kind-prod get services
 NAME        TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)        AGE
 webserver   LoadBalancer   10.96.132.142   172.18.0.140   80:31633/TCP   12m
 
-$ kubectl --context kind-test --namespace kiraterns get services
+$ kubectl --namespace kiraterns --context kind-test get services
 NAME        TYPE           CLUSTER-IP    EXTERNAL-IP    PORT(S)        AGE
 webserver   LoadBalancer   10.96.31.57   172.18.0.120   80:31707/TCP   2m8s
 

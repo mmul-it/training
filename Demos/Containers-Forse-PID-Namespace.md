@@ -3,7 +3,7 @@
 Spot the difference between:
 
 ```console
-$ docker run --pid=host -it alpine ps -ef
+$ docker run --pid=host --interactive --tty alpine ps -ef
 PID   USER     TIME  COMMAND
     1 root      0:06 {systemd} /sbin/init
     2 root      0:00 [kthreadd]
@@ -18,7 +18,7 @@ PID   USER     TIME  COMMAND
 And
 
 ```console
-$ docker run -it alpine ps -ef
+$ docker run --interactive --tty alpine ps -ef
 PID   USER     TIME  COMMAND
     1 root      0:00 ps -ef
 ```

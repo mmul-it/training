@@ -82,16 +82,18 @@ Create the certificate:
 $ sudo mkdir -v nexus/nexus3/etc/ssl
 mkdir: created directory 'nexus/nexus3/etc/ssl'
 
-$ docker run -it --rm -v $PWD/nexus/nexus3/etc/ssl:/ssl joostdecock/keytool \
-  -genkeypair \
-  -keystore /ssl/keystore.jks \
-  -storepass password \
-  -keyalg RSA \
-  -keysize 2048 \
-  -validity 5000 \
-  -keypass password \
-  -dname 'CN=172.16.99.1' \
-  -ext 'SAN=IP:172.16.99.1'
+$ docker run --interactive --tty --rm \
+  --volume $PWD/nexus/nexus3/etc/ssl:/ssl \
+  joostdecock/keytool \
+    -genkeypair \
+    -keystore /ssl/keystore.jks \
+    -storepass password \
+    -keyalg RSA \
+    -keysize 2048 \
+    -validity 5000 \
+    -keypass password \
+    -dname 'CN=172.16.99.1' \
+    -ext 'SAN=IP:172.16.99.1'
 ...
 
 $ sudo chown -v -R 200:200 nexus/nexus3/etc/ssl/keystore.jks

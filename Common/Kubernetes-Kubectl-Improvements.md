@@ -171,7 +171,7 @@ trivy-operator                                 trivy-operator                  S
 Or the tree structure of a deployment:
 
 ```console
-$ kubectl tree -n kube-system deployment coredns
+$ kubectl --namespace kube-system tree deployment coredns
 NAMESPACE    NAME                                                           READY  REASON  AGE
 kube-system  Deployment/coredns                                             -              36m
 kube-system  └─ReplicaSet/coredns-7db6d8ff4d                                -              35m

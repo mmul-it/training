@@ -42,7 +42,10 @@ In this lab you will:
 4. User can now be added by first creating the context:
 
    ```console
-   $ kubectl config set-context myuser@minikube --cluster=minikube --user=myuser --namespace=myns
+   $ kubectl config set-context myuser@minikube \
+       --cluster=minikube \
+       --user=myuser \
+       --namespace=myns
    Context "myuser@minikube" created.
    ```
 
@@ -63,7 +66,7 @@ In this lab you will:
    We can try to get all the resources in namespace `myns`:
 
    ```console
-   $ kubectl -n myns get all
+   $ kubectl --namespace myns get all
    Error from server (Forbidden): pods is forbidden: User "myuser" cannot list resource "pods" in API group "" in the namespace "myns"
    Error from server (Forbidden): replicationcontrollers is forbidden: User "myuser" cannot list resource "replicationcontrollers" in API group "" in the namespace "myns"
    Error from server (Forbidden): services is forbidden: User "myuser" cannot list resource "services" in API group "" in the namespace "myns"

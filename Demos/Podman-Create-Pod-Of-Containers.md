@@ -19,12 +19,14 @@ CONTAINER ID  IMAGE                 COMMAND  CREATED         STATUS   PORTS   NA
 Then it will be possible to create containers inside the pod, like this:
 
 ```console
-$ podman run -d --pod mypod --name mynginx quay.io/libpod/alpine_nginx:latest
+$ podman run --detach --pod mypod --name mynginx \
+    quay.io/libpod/alpine_nginx:latest
 07872490612e5615d4bc21f266bdbb7de28cb99fa0bd2059b29b43e0b327d3fd
 ```
 
 ```console
-$ podman run -d --pod mypod --name mymariadb -e MARIADB_ROOT_PASSWORD=mypassword mariadb:latest
+$ podman run --detach --pod mypod --name mymariadb \
+    --env MARIADB_ROOT_PASSWORD=mypassword mariadb:latest
 1bcb29fb46c24c5257998129ce7a8998b8a62fef77047bc2b30a6623f4ff928d
 ```
 
@@ -32,7 +34,7 @@ Containers whithin the same pod will share the same namespace, also the network
 one:
 
 ```console
-$ podman exec -it mynginx /bin/sh
+$ podman exec --interactive --tty mynginx /bin/sh
 # ping -c 2 mymariadb
 PING mymariadb (127.0.1.1): 56 data bytes
 64 bytes from 127.0.1.1: seq=0 ttl=64 time=0.047 ms
@@ -53,9 +55,8 @@ this means that a pod can be associated entirely to `localhost`.
 **NOTE 2**: a pod can be implicitly created by using the `--pod new:<podname>`, like:
 
 ```console
-$ podman run -d --pod new:mypod -e MARIADB_ROOT_PASSWORD=password mariadb:latest
-<<<<<<< HEAD
-=======
+$ podman run --detach --pod new:mypod \
+    --env MARIADB_ROOT_PASSWORD=password \
+    mariadb:latest
 1bdwdeedwedwdewwe342323238129ce7a8998b8a62fef77047bc2b30a6623f4f
->>>>>>> 08f7b1d7451b (Add Demos for various courses)
 ```

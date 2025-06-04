@@ -80,6 +80,7 @@
    docker.io/library/nginx:latest
 
    $ docker tag nginx:latest localhost:5000/nginx:latest
+   (no output)
    ```
 
 6. Use `docker push` to push the image into the registry:

@@ -14,7 +14,9 @@ In this lab you will:
 1. Launch the container with the `--network host` option:
 
    ``` console
-   $ docker run -d --name network-host-test --rm --network host nginx
+   $ docker run --detach --name network-host-test --rm \
+       --network host \
+       nginx
    5ef2cfd4d6aff9d675a299ef9100d0e00e79383dae8cccac4f144e003673b457
    ```
 
@@ -36,7 +38,10 @@ In this lab you will:
 4. Use both `--network host` and `-p 8888:80` to check whether it is possible to publish the port:
 
    ``` console
-   $ docker run -d --name network-host-test --rm --network host -p 8888:80 nginx
+   $ docker run --detach --name network-host-test --rm \
+       --network host \
+       --publish 8888:80 \
+       nginx
    WARNING: Published ports are discarded when using host network mode
    e5c600cf3eab15ef23cb6b79870d7bba8ac4a2fabda7ae7e2a8ba24fbddd5925
    ```

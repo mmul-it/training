@@ -16,7 +16,7 @@ Switched to context "kind-ctlplane".
 $ kubectl create namespace argocd
 namespace/argocd created
 
-$ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+$ kubectl --namespace argocd apply -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 customresourcedefinition.apiextensions.k8s.io/applications.argoproj.io created
 customresourcedefinition.apiextensions.k8s.io/applicationsets.argoproj.io created
 customresourcedefinition.apiextensions.k8s.io/appprojects.argoproj.io created
@@ -62,7 +62,7 @@ default the `argocd-server` service is a `ClusterIP`, so not reachable outside
 the Kubernetes cluster:
 
 ```console
-$ kubectl -n argocd get services
+$ kubectl --namespace argocd get services
 NAME                                      TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
 argocd-applicationset-controller          ClusterIP   10.96.179.141   <none>        7000/TCP,8080/TCP            32s
 argocd-dex-server                         ClusterIP   10.96.175.12    <none>        5556/TCP,5557/TCP,5558/TCP   32s
@@ -78,10 +78,11 @@ Exposing it, it's just a matter of patching the service to make it a
 `LoadBalancer`:
 
 ```console
-$ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+$ kubectl --namespace argocd patch svc argocd-server \
+    --patch '{"spec": {"type": "LoadBalancer"}}'
 service/argocd-server patched
 
-$ kubectl -n argocd get service
+$ kubectl --namespace argocd get service
 NAME                                      TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                      AGE
 argocd-applicationset-controller          ClusterIP      10.96.238.31     <none>          7000/TCP,8080/TCP            82m
 argocd-dex-server                         ClusterIP      10.106.242.93    <none>          5556/TCP,5557/TCP,5558/TCP   82m
@@ -102,14 +103,15 @@ Argo CD interface should now be reachable. First thing to do will be to get the
 password for the default `admin` user, with:
 
 ```console
-$ kubectl -n argocd get secrets argocd-initial-admin-secret  --template={{.data.password}} | base64 -d
+$ kubectl --namespace argocd get secrets argocd-initial-admin-secret \
+    --template={{.data.password}} | base64 -d
 thvQXxV-FujhyztN
 ```
 
 Or:
 
 ```console
-$ argocd admin initial-password -n argocd
+$ argocd admin initial-password --namespace argocd
 thvQXxV-FujhyztN
 
  This password must be only used for first time login. We strongly recommend you update the password using `argocd account update-password`.

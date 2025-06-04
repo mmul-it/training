@@ -25,7 +25,7 @@ must be enabled on the `kube-proxy` ConfigMap), starting from `kind-ctlplane`:
 $ kubectl config use-context kind-ctlplane
 Switched to context "kind-ctlplane".
 
-$ kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e "s/strictARP: false/strictARP: true/" | kubectl apply -f - -n kube-system
+$ kubectl --namespace kube-system get configmap kube-proxy -o yaml | sed -e "s/strictARP: false/strictARP: true/" | kubectl --namespace kube-system apply -f -
 Warning: resource configmaps/kube-proxy is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
 configmap/kube-proxy configured
 
@@ -43,7 +43,7 @@ MetalLB installation will take a while to complete, so before proceeding it is
 good to wait until it completes:
 
 ```console
-$ kubectl wait --namespace metallb-system --for=condition=ready pod --selector=app=metallb --timeout=90s
+$ kubectl --namespace metallb-system wait --for=condition=ready pod --selector=app=metallb --timeout=90s
 pod/controller-756c6b677-nrxgz condition met
 pod/speaker-62ws5 condition met
 ```
@@ -88,7 +88,7 @@ Same exact process as before will enable MetalLB on `kind-test` cluster:
 $ kubectl config use-context kind-test
 Switched to context "kind-test".
 
-$ kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e "s/strictARP: false/strictARP: true/" | kubectl apply -f - -n kube-system
+$ kubectl --namespace kube-system get configmap kube-proxy -o yaml | sed -e "s/strictARP: false/strictARP: true/" | kubectl --namespace kube-system apply -f -
 Warning: resource configmaps/kube-proxy is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
 configmap/kube-proxy configured
 
@@ -101,7 +101,7 @@ namespace/metallb-system created
 ...
 validatingwebhookconfiguration.admissionregistration.k8s.io/metallb-webhook-configuration created
 
-$ kubectl wait --namespace metallb-system --for=condition=ready pod --selector=app=metallb --timeout=90s
+$ kubectl --namespace metallb-system wait --for=condition=ready pod --selector=app=metallb --timeout=90s
 pod/controller-756c6b677-vbr8m condition met
 pod/speaker-wtmgf condition met
 ```
@@ -143,7 +143,7 @@ The last cluster is `kind-prod`:
 $ kubectl config use-context kind-prod
 Switched to context "kind-prod".
 
-$ kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e "s/strictARP: false/strictARP: true/" | kubectl apply -f - -n kube-system
+$ kubectl --namespace kube-system get configmap kube-proxy -o yaml | sed -e "s/strictARP: false/strictARP: true/" | kubectl --namespace kube-system apply -f -
 Warning: resource configmaps/kube-proxy is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
 configmap/kube-proxy configured
 
@@ -156,7 +156,7 @@ namespace/metallb-system created
 ...
 validatingwebhookconfiguration.admissionregistration.k8s.io/metallb-webhook-configuration created
 
-$ kubectl wait --namespace metallb-system --for=condition=ready pod --selector=app=metallb --timeout=90s
+$ kubectl --namespace metallb-system wait --for=condition=ready pod --selector=app=metallb --timeout=90s
 pod/controller-756c6b677-znd5z condition met
 pod/speaker-gjznh condition met
 ```

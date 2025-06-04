@@ -252,7 +252,7 @@ Monitoring the status of the resources inside the `kiraop-system` namespace will
 tell when the operator is ready:
 
 ```console
-$ kubectl -n kiraop-system get all
+$ kubectl --namespace kiraop-system get all
 NAME                                             READY   STATUS    RESTARTS   AGE
 pod/kiraop-controller-manager-7c7cd5dd7f-h8fkn   2/2     Running   0          26s
 
@@ -297,7 +297,7 @@ $ kubectl get akit
 NAME          AGE
 akit-sample   16s
 
-$ kubectl -n mions get all
+$ kubectl --namespace mions get all
 NAME                        READY   STATUS    RESTARTS   AGE
 pod/akit-5cf7b8469-srbc4   1/1     Running   0          16s
 

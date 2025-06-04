@@ -59,7 +59,7 @@ This namespace will run the operator itself. Since there's no need to customize
 anything, the `0.32.0` version of the operator can be installed as follows:
 
 ```bash
-$ helm -n mariadb-system install mariadb-operator mariadb-operator/mariadb-operator --version 0.32.0
+$ helm --namespace mariadb-system install mariadb-operator mariadb-operator/mariadb-operator --version 0.32.0
 NAME: mariadb-operator
 LAST DEPLOYED: Thu Oct 26 12:20:43 2023
 NAMESPACE: mariadb-system
@@ -76,7 +76,7 @@ https://github.com/mariadb-operator/mariadb-operator#quickstart
 And from now on the application will be manageable via Helm:
 
 ```bash
-$ helm -n mariadb-system list
+$ helm --namespace mariadb-system list
 NAME              NAMESPACE       REVISION  UPDATED                                   STATUS    CHART                    APP VERSION
 mariadb-operator  mariadb-system  1         2024-10-03 11:54:01.457240836 +0200 CEST  deployed  mariadb-operator-0.32.0  v0.0.32
 ```
@@ -92,7 +92,7 @@ will be created inside a specific namespace:
 $ kubectl create namespace mariadb-test
 namespace/mariadb-test created
 
-$ kubectl -n mariadb-test create secret generic mariadb --from-literal=root-password=mariadb
+$ kubectl --namespace mariadb-test create secret generic mariadb --from-literal=root-password=mariadb
 secret/mariadb created
 ```
 
@@ -122,7 +122,7 @@ mariadb.mariadb.mmontes.io/mariadb created
 Check resource status:
 
 ```console
-$ kubectl -n mariadb-test get all
+$ kubectl --namespace mariadb-test get all
 NAME            READY   STATUS    RESTARTS   AGE
 pod/mariadb-0   1/1     Running   0          93s
 
@@ -139,14 +139,14 @@ statefulset.apps/mariadb   1/1     94s
 Expose the service with:
 
 ```bash
-$ kubectl -n mariadb-test expose pod mariadb-0 --type LoadBalancer
+$ kubectl --namespace mariadb-test expose pod mariadb-0 --type LoadBalancer
 service/mariadb-0 exposed
 ```
 
 And check the status with `kubectl get service mariadb-0`:
 
 ```console
-$ kubectl -n mariadb-test get service mariadb-0
+$ kubectl --namespace mariadb-test get service mariadb-0
 NAME        TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)          AGE
 mariadb-0   LoadBalancer   10.96.129.190   192.168.99.222   3306:32128/TCP   28s
 ```

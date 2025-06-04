@@ -101,7 +101,7 @@ In this lab you will:
    there are clues about something:
 
    ```console
-   $ docker run -it --rm --name broken-nginx \
+   $ docker run --interactive --tty --rm --name broken-nginx \
         --publish 8080:80 \
         --log-driver journald \
         www.mmul.it:5000/broken-nginx /bin/sh

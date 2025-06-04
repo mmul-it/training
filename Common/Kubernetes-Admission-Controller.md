@@ -122,14 +122,14 @@ Getting CA Private Key
 The certificate will be part of a service, mounted by the webhook application:
 
 ```console
-$ kubectl -n trivy-system create secret tls trivy-admission-webhook-certs --key="webhook.key" --cert="webhook.crt"
+$ kubectl --namespace trivy-system create secret tls trivy-admission-webhook-certs --key="webhook.key" --cert="webhook.crt"
 secret/trivy-admission-webhook-certs created
 
 $ kubectl create -f trivy-admission-webhook.yaml
 deployment.apps/trivy-admission-webhook created
 service/trivy-admission-webhook created
 
-$ kubectl -n trivy-system get all -l app=trivy-admission-webhook
+$ kubectl --namespace trivy-system get all -l app=trivy-admission-webhook
 NAME                                           READY   STATUS    RESTARTS   AGE
 pod/trivy-admission-webhook-6d965d5c78-cwxnv   1/1     Running   0          13m
 
@@ -161,17 +161,17 @@ versions of nginx, one with no CRITICAL issues (`nginx:latest`) and the other
 with some of them (`nginx:1.18`):
 
 ```console
-$ kubectl -n myns create deployment nginx-latest --image public.ecr.aws/nginx/nginx:latest
+$ kubectl --namespace myns create deployment nginx-latest --image public.ecr.aws/nginx/nginx:latest
 deployment.apps/nginx-latest created
 
-$ kubectl -n myns create deployment nginx-insecure --image public.ecr.aws/nginx/nginx:1.18
+$ kubectl --namespace myns create deployment nginx-insecure --image public.ecr.aws/nginx/nginx:1.18
 deployment.apps/nginx-insecure created
 ```
 
 The result will be this, with `nginx-insecure` not deployed:
 
 ```console
-$ kubectl -n myns get all
+$ kubectl --namespace myns get all
 NAME                                READY   STATUS    RESTARTS   AGE
 pod/nginx-latest-8586ccc94b-9slg8   1/1     Running   0          103s
 
@@ -186,7 +186,7 @@ replicaset.apps/nginx-latest-8586ccc94b     1         1         1       103s
 Details about this behavior can be found inside Kubernetes events:
 
 ```console
-$ kubectl -n myns get events --sort-by='.metadata.creationTimestamp' -A
+$ kubectl --namespace myns get events --sort-by='.metadata.creationTimestamp' -A
 NAMESPACE      LAST SEEN   TYPE      REASON                    OBJECT                                          MESSAGE
 ...
 ...
@@ -222,7 +222,7 @@ webhook accept insecure registries. This means that everything should work
 with a simple:
 
 ```console
-$ kubectl -n myns create deployment ncat-http-msg-port --image 172.16.99.1:5000/ncat_http_msg_port:latest
+$ kubectl --namespace myns create deployment ncat-http-msg-port --image 172.16.99.1:5000/ncat_http_msg_port:latest
 deployment.apps/ncat-http-msg-port created
 ```
 
@@ -230,7 +230,7 @@ From the webhook application perspective, the `trivy` command was correctly
 invoked using the `--insecure` parameter:
 
 ```console
-$ kubectl -n trivy-system logs trivy-admission-webhook-6bb7c75d98-x5rfg
+$ kubectl --namespace trivy-system logs trivy-admission-webhook-6bb7c75d98-x5rfg
 ...
 Running command: trivy image -f json -s CRITICAL --exit-code 1 --insecure 172.16.99.1:5000/ncat_http_msg_port:latest
 10.244.0.1 - - [21/Sep/2023:13:44:28] "POST /validate?timeout=30s HTTP/1.1" 200 194 "" "kube-apiserver-admission"
@@ -239,7 +239,7 @@ Running command: trivy image -f json -s CRITICAL --exit-code 1 --insecure 172.16
 And the application appears to be correctly deployed:
 
 ```console
-$ kubectl -n myns get all -l app=ncat-http-msg-port
+$ kubectl --namespace myns get all -l app=ncat-http-msg-port
 NAME                                      READY   STATUS    RESTARTS   AGE
 pod/ncat-http-msg-port-6d4cc89ccc-gx8cg   1/1     Running   0          48m
 
@@ -277,10 +277,10 @@ and is stored in the `openshift-service-ca` namespace, inside the
 To download the key/cert couple just do:
 
 ```console
-$ oc get secrets/signing-key -n openshift-service-ca -o template='{{index .data "tls.crt"}}' | base64 --decode > ca.crt
+$ oc --namespace openshift-service-ca get secrets/signing-key -o template='{{index .data "tls.crt"}}' | base64 --decode > ca.crt
 (no output)
 
-$ oc get secrets/signing-key -n openshift-service-ca -o template='{{index .data "tls.key"}}' | base64 --decode > ca.key
+$ oc --namespace openshift-service-ca get secrets/signing-key -o template='{{index .data "tls.key"}}' | base64 --decode > ca.key
 (no output)
 ```
 
@@ -305,7 +305,7 @@ subject=CN = trivy-admission-webhook.trivy-system.svc
 And then store them inside Kubernetes/OpenShift, as a `secret`:
 
 ```console
-$ kubectl -n trivy-system create secret tls trivy-admission-webhook-certs --key="taw-webhook.key" --cert="taw-webhook.crt"
+$ kubectl --namespace trivy-system create secret tls trivy-admission-webhook-certs --key="taw-webhook.key" --cert="taw-webhook.crt"
 secret/trivy-admission-webhook-certs created
 ```
 
@@ -378,7 +378,7 @@ $ kubectl create -f trivy-admission-webhook.yaml
 deployment.apps/trivy-admission-webhook created
 ...
 
-$ kubectl -n trivy-system get all -l app=trivy-admission-webhook
+$ kubectl --namespace trivy-system get all -l app=trivy-admission-webhook
 NAME                                           READY   STATUS    RESTARTS   AGE
 pod/trivy-admission-webhook-7c888d7d86-jsrhh   1/1     Running   0          73s
 
@@ -415,10 +415,10 @@ validatingwebhookconfiguration.admissionregistration.k8s.io/trivy-admission-webh
 Same tests can be made:
 
 ```console
-$ kubectl -n myns create deployment nginx-latest --image public.ecr.aws/nginx/nginx:latest
+$ kubectl --namespace myns create deployment nginx-latest --image public.ecr.aws/nginx/nginx:latest
 deployment.apps/nginx-latest created
 
-$ kubectl -n myns create deployment nginx-insecure --image public.ecr.aws/nginx/nginx:1.18
+$ kubectl --namespace myns create deployment nginx-insecure --image public.ecr.aws/nginx/nginx:1.18
 deployment.apps/nginx-insecure created
 ```
 
@@ -427,7 +427,7 @@ The two used images are different because one has CRITICAL vulnerabilities
 So the events sequence will be:
 
 ```console
-$ kubectl -n myns get events --sort-by='.metadata.creationTimestamp' -A
+$ kubectl --namespace myns get events --sort-by='.metadata.creationTimestamp' -A
 NAMESPACE      LAST SEEN   TYPE      REASON              OBJECT                                          MESSAGE
 ...
 ...

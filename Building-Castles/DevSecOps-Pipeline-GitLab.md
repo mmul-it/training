@@ -189,7 +189,7 @@ Register the runner inside GitLab (note the `--url` option pointing to the
 docker host IP):
 
 ```console
-$ docker exec -it gitlab-runner gitlab-runner register -n \
+$ docker exec --interactive --tty gitlab-runner gitlab-runner register -n \
   --url http://172.16.99.1:8080 \
   --registration-token GR1348941uHeDhAB5DDA8r_5xvxsm \
   --executor docker \

@@ -16,8 +16,8 @@ This will work by using tokens, so a specific user must be created and enabled
 to manage application sets, using a token.
 
 To create a user edit the configmap `argocd-cm` by using
-`kubectl edit configmap argocd-cm -n argocd` and make the content similar to
-this:
+`kubectl --namespace argocd edit configmap argocd-cm` and make the content
+similar to this:
 
 ```yaml
 apiVersion: v1
@@ -29,8 +29,8 @@ metadata:
 ```
 
 Then to enable the permissions for the user, the `argocd-rbac-cm` config map
-should be edited via `kubectl edit configmap argocd-rbac-cm -n argocd` as
-follows:
+should be edited via `kubectl --namespace argocd edit configmap argocd-rbac-cm`
+as follows:
 
 ```yaml
 apiVersion: v1
@@ -67,7 +67,7 @@ To be 100% sure the new settings are loaded it is possible to `rollout restart`
 the `argocd-server` deployment (this is not usually needed):
 
 ```console
-$ kubectl rollout restart deployment argocd-server -n argocd
+$ kubectl --namespace argocd rollout restart deployment argocd-server
 deployment.apps/argocd-server restarted
 ```
 

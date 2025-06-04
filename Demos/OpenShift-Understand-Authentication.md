@@ -11,7 +11,7 @@ kube-system               kubeadmin                 Opaque           1      39d
 Which can be viewed as a yaml:
 
 ```console
-$ oc -n kube-system get secret kubeadmin -o yaml
+$ oc --namespace kube-system get secret kubeadmin -o yaml
 apiVersion: v1
 data:
   kubeadmin: JDJhJDEwJC52bE03SU16VmNhWG4zREdFaUpQMi4zbi5tajZsbHV1QjFhMWN4R2h3eVYzbGtsMGZTMVg2

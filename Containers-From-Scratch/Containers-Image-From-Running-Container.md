@@ -20,14 +20,16 @@ In this lab you will:
 1. Launch the container using `docker run`:
 
    ```console
-   $ docker run --detach --name nginx --rm -p 8888:80 nginx:alpine
+   $ docker run --detach --name nginx --rm \
+       --publish 8888:80 \
+       nginx:alpine
    791f3dd1b349e36991b8400ac10c1d657ac143c7d1b353e8f69f581c35cd033f
    ```
 
 2. Start an interactive shell on the running container using `docker exec`:
 
    ```console
-   $ docker exec -it nginx /bin/sh
+   $ docker exec --interactive --tty nginx /bin/sh
    / #
    ```
 
@@ -72,7 +74,9 @@ In this lab you will:
    output:
 
    ```console
-   $ docker run --detach --name my-new-shiny-nginx --rm --publish 8888:80 my-new-shiny-nginx
+   $ docker run --detach --name my-new-shiny-nginx --rm \
+       --publish 8888:80 \
+       my-new-shiny-nginx
    eee76f1d96d305bbf3e71a1a6a6be9019cf7929f685aaa2da26d0f3aab749b7a
 
    $ curl localhost:8888

@@ -60,7 +60,7 @@ olm    Active   2m57s
 You should see the OLM-related pods running in the "olm" namespace:
 
 ```bash
-$ kubectl get pods -n olm
+$ kubectl --namespace olm get pods
 NAME                                READY   STATUS    RESTARTS   AGE
 catalog-operator-67dd8d46bc-mgmzk   1/1     Running   0          53s
 olm-operator-7b9c8fd79-s29ns        1/1     Running   0          53s
@@ -72,7 +72,7 @@ packageserver-6c796b94f5-btftb      1/1     Running   0          46s
 Check the status of the OLM operator by running:
 
 ```bash
-$ kubectl get csv -n olm
+$ kubectl --namespace olm get csv
 NAME            DISPLAY          VERSION   REPLACES   PHASE
 packageserver   Package Server   0.18.3               Succeeded
 ```
@@ -88,9 +88,9 @@ Since the Trivy operator might have been already installed in the systemd, to
 cleanup the system, this command sequence could be performed:
 
 ```console
-kubectl -n trivy-system delete subscription trivy-operator-subscription
-kubectl -n trivy-system delete clusterserviceversion trivy-operator.v0.22.0
-kubectl -n trivy-system delete operatorgroup trivy-operator-group
+kubectl --namespace trivy-system delete subscription trivy-operator-subscription
+kubectl --namespace trivy-system delete clusterserviceversion trivy-operator.v0.22.0
+kubectl --namespace trivy-system delete operatorgroup trivy-operator-group
 kubectl delete ns trivy-system
 kubectl delete crd vulnerabilityreports.aquasecurity.github.io
 kubectl delete crd exposedsecretreports.aquasecurity.github.io
@@ -157,7 +157,7 @@ Since we choose a specific `startingCSV` version with `Manual` as
 `installPlanApproval`, the install plan will be in a `pending` status:
 
 ```console
-$ kubectl -n trivy-system get operatorgroup,subscriptions,installplans
+$ kubectl --namespace trivy-system get operatorgroup,subscriptions,installplans
 NAME                                                      AGE
 operatorgroup.operators.coreos.com/trivy-operator-group   19s
 
@@ -171,14 +171,14 @@ installplan.operators.coreos.com/install-wtqp9   trivy-operator.v0.17.1   Manual
 To approve the deployment patch the `installplan` resource:
 
 ```console
-$ kubectl -n trivy-system patch installplan install-wtqp9 --type merge -p '{"spec": {"approved":true}}'
+$ kubectl --namespace trivy-system patch installplan install-wtqp9 --type merge -p '{"spec": {"approved":true}}'
 installplan.operators.coreos.com/install-wtqp9 patched
 ```
 
 This will unlock things, creating also the `ClusterServiceVersion` resource:
 
 ```console
-$ kubectl -n trivy-system get operatorgroup,subscriptions,installplans,csv
+$ kubectl --namespace trivy-system get operatorgroup,subscriptions,installplans,csv
 NAME                                                      AGE
 operatorgroup.operators.coreos.com/trivy-operator-group   112s
 
@@ -197,7 +197,7 @@ The operator will be installed in the `trivy-system` namespace and will select
 all namespaces, except `kube-system`:
 
 ```bash
-$ kubectl -n trivy-system get deployments
+$ kubectl --namespace trivy-system get deployments
 NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
 trivy-operator   1/1     1            1           11m
 ```
@@ -205,7 +205,7 @@ trivy-operator   1/1     1            1           11m
 Startup problems can be debugged by looking into the deployment's logs:
 
 ```bash
-$ kubectl -n trivy-system logs deployment/trivy-operator
+$ kubectl --namespace trivy-system logs deployment/trivy-operator
 ...
 ```
 
@@ -225,7 +225,7 @@ To begin the test create a deployment with a container affected with knwon
 CRITICAL issues, like `nginx:1.18`:
 
 ```console
-$ kubectl -n myns create deployment nginx --image public.ecr.aws/nginx/nginx:1.18
+$ kubectl --namespace myns create deployment nginx --image public.ecr.aws/nginx/nginx:1.18
 deployment.apps/nginx created
 ```
 
@@ -233,7 +233,7 @@ After some time, two additional resources named `configauditreport` and
 `vulnerabilityreport` (which will take longer) should have been created:
 
 ```console
-$ kubectl -n myns get all,vulnerabilityreport,configauditreport
+$ kubectl --namespace myns get all,vulnerabilityreport,configauditreport
 NAME                         READY   STATUS    RESTARTS   AGE
 pod/nginx-7d79b97979-qvjst   1/1     Running   0          3m10s
 

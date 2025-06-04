@@ -53,10 +53,13 @@ In this lab you will:
    Run the `backend` container using the `mariadb:latest` image:
 
    ```console
-   $ docker run --rm --name backend --network=test -v $PWD/backend:/var/lib/mysql \
-          -e MYSQL_ROOT_PASSWORD=mybackend \
-          -e MYSQL_DATABASE=frontend -e MYSQL_USER=frontend -e MYSQL_PASSWORD=myfrontend \
-          --detach mariadb:latest
+   $ docker run --detach --rm --name backend --network=test \
+       --volume $PWD/backend:/var/lib/mysql \
+       --env MYSQL_ROOT_PASSWORD=mybackend \
+       --env MYSQL_DATABASE=frontend \
+       --env MYSQL_USER=frontend \
+       --env MYSQL_PASSWORD=myfrontend \
+       mariadb:latest
    c0c63d3d6ba0df18a0f876cb3796c9a718b7781b614e94e7c4c49809649540c7
    ```
 
@@ -79,11 +82,14 @@ In this lab you will:
    Run the container:
 
    ```console
-   $ docker run --rm --name frontend --network=test \
-          -e WORDPRESS_DB_HOST=backend \
-          -e WORDPRESS_DB_USER=frontend -e WORDPRESS_DB_PASSWORD=myfrontend \
-          -e WORDPRESS_DB_NAME=frontend \
-          -v $PWD/frontend:/var/www/html --detach -p 8080:80 wordpress:latest
+   $ docker run --detach --rm --name frontend --network=test \
+       --env WORDPRESS_DB_HOST=backend \
+       --env WORDPRESS_DB_USER=frontend \
+       --env WORDPRESS_DB_PASSWORD=myfrontend \
+       --env WORDPRESS_DB_NAME=frontend \
+       --volume $PWD/frontend:/var/www/html \
+       --publish 8080:80 \
+       wordpress:latest
    6e2420f3b841bef2784cc2832f1dc8f73b8915c228d24a1933cbbffda749b92a
    ```
 
@@ -111,15 +117,19 @@ In this lab you will:
    vars again, since it will take these settings from the persistent folder:
 
    ```console
-   $ docker run --rm --name backend --network=test -v $PWD/backend:/var/lib/mysql \
-             --detach mariadb:latest
+   $ docker run --detach --rm --name backend --network=test \
+       --volume $PWD/backend:/var/lib/mysql \
+       mariadb:latest
    2a4769381e2e5c5f12f934eb0ee4157071420a80ce86b55f3257adcde50c9dfc
 
-   $ docker run --rm --name frontend --network=test \
-            -e WORDPRESS_DB_HOST=backend \
-            -e WORDPRESS_DB_USER=frontend -e WORDPRESS_DB_PASSWORD=myfrontend \
-            -e WORDPRESS_DB_NAME=frontend \
-            -v $PWD/frontend:/var/www/html --detach -p 8080:80 wordpress:latest
+   $ docker run --detach --rm --name frontend --network=test \
+       --env WORDPRESS_DB_HOST=backend \
+       --env WORDPRESS_DB_USER=frontend \
+       --env WORDPRESS_DB_PASSWORD=myfrontend \
+       --env WORDPRESS_DB_NAME=frontend \
+       --volume $PWD/frontend:/var/www/html \
+       --publish 8080:80 \
+       wordpress:latest
    d0897706cec4b245f1c66bd377facd44c031915eea4f397c5f3b804988dcf8ca
    ```
 

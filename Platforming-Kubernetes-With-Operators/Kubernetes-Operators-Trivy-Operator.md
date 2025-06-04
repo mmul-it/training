@@ -46,7 +46,7 @@ is fine and ready it will be sufficient to check the status of the resources
 under the `trivy-system` namespace:
 
 ```console
-$ kubectl -n trivy-system get all
+$ kubectl --namespace trivy-system get all
 NAME                                 READY   STATUS    RESTARTS   AGE
 pod/trivy-operator-bcdbc766f-gdmfd   1/1     Running   0          5m30s
 
@@ -76,7 +76,7 @@ To begin the test create a deployment with a container affected with knwon
 CRITICAL issues, like `nginx:1.18`:
 
 ```console
-$ kubectl -n myns create deployment nginx --image nginx:1.18
+$ kubectl --namespace myns create deployment nginx --image nginx:1.18
 deployment.apps/nginx created
 ```
 
@@ -84,7 +84,7 @@ After some time, two additional resources named `configauditreport` and
 `vulnerabilityreport` (which will take longer) should have been created:
 
 ```console
-$ kubectl -n myns get all,vulnerabilityreport,configauditreport
+$ kubectl --namespace myns get all,vulnerabilityreport,configauditreport
 NAME                         READY   STATUS    RESTARTS   AGE
 pod/nginx-7d79b97979-qvjst   1/1     Running   0          3m10s
 
@@ -106,7 +106,7 @@ Details about the two reports can be shown using `kubectl describe`.
 The `vulnerabilityreport` resource will show image related informations:
 
 ```console
-$ kubectl -n myns describe vulnerabilityreports.aquasecurity.github.io replicaset-nginx-7d79b97979-nginx
+$ kubectl --namespace myns describe vulnerabilityreports.aquasecurity.github.io replicaset-nginx-7d79b97979-nginx
 Name:         replicaset-nginx-7d79b97979-nginx
 Namespace:    myns
 Labels:       resource-spec-hash=5c4c6c67f7
@@ -188,7 +188,7 @@ Report:
 The `configauditreport` resource will show audit related security checks:
 
 ```console
-$ kubectl -n myns describe configauditreport.aquasecurity.github.io/replicaset-nginx-7d79b97979
+$ kubectl --namespace myns describe configauditreport.aquasecurity.github.io/replicaset-nginx-7d79b97979
 Name:         replicaset-nginx-7d79b97979
 Namespace:    myns
 Labels:       plugin-config-hash=659b7b9c46
@@ -260,7 +260,7 @@ trivy-operator                               trivy-operator                  Ser
 And display the tree view of the `trivy-operator` deployment:
 
 ```console
-$ kubectl tree -n trivy-system deployment trivy-operator
+$ kubectl --namespace trivy-system tree deployment trivy-operator
 NAMESPACE     NAME                                                                         READY  REASON  AGE
 trivy-system  Deployment/trivy-operator                                                    -              118m
 trivy-system  ├─ReplicaSet/trivy-operator-5cd7878587                                       -              117m

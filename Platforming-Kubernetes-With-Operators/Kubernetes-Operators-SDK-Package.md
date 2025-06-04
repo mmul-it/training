@@ -260,7 +260,7 @@ spec:
   akit_expose_lb: true
 EOF
 
-$ kubectl -n mions get all
+$ kubectl --namespace mions get all
 NAME                        READY   STATUS    RESTARTS   AGE
 pod/akit-7758f87b8b-7d665   1/1     Running   0          24s
 

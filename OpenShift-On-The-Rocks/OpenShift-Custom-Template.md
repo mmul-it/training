@@ -24,14 +24,14 @@ In this lab you will:
 2. Find the template to use as a starting point:
 
    ```console
-   $ oc get templates -n openshift | grep nginx
+   $ oc --namespace openshift get templates | grep nginx
    openshift    nginx-example    An example Nginx HTTP server and a reverse proxy (nginx) application that ser...   10 (3 blank)      5
    ```
 
    From which we can generate our yml file:
 
    ```console
-   $ oc -n openshift get template nginx-example -o yaml > my-simple-nginx-template.yml
+   $ oc --namespace openshift get template nginx-example -o yaml > my-simple-nginx-template.yml
    (no output)
    ```
 

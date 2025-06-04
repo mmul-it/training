@@ -30,7 +30,10 @@ In this lab you will:
 2. Launch the container mapping the directory with `--volume`:
 
    ```console
-   $ docker run -d --name local-dir-mapping-test --rm --publish 8080:80 --volume $PWD/local-dir:/usr/share/nginx/html nginx
+   $ docker run --detach --name local-dir-mapping-test --rm \
+       --publish 8080:80 \
+       --volume $PWD/local-dir:/usr/share/nginx/html \
+       nginx
    5d06d232e6e134d7713265221b81eed4ba7e91a848113286d9400d5164252f64
    ```
 
@@ -65,7 +68,10 @@ In this lab you will:
 6. Relaunch the container and check again via curl to confirm persistency:
 
    ```console
-   $ docker run -d --name local-dir-mapping-test-relaunch --rm --publish 8080:80 --volume $PWD/local-dir:/usr/share/nginx/html nginx
+   $ docker run --detach --name local-dir-mapping-test-relaunch --rm \
+       --publish 8080:80 \
+       --volume $PWD/local-dir:/usr/share/nginx/html \
+       nginx
    a81076af88c696c9b1dd4c763feea90fc1eda9c76a262a56daf7bcfd2b5390ca
 
    $ curl localhost:8080

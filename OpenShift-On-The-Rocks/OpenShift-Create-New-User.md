@@ -46,11 +46,11 @@ In this lab you will:
 2. The secret is:
 
    ```console
-   $ oc get -n openshift-config secret htpass-secret
+   $ oc --namespace openshift-config get secret htpass-secret
    NAME            TYPE     DATA   AGE
    htpass-secret   Opaque   1      13d
 
-   $ oc get -n openshift-config secret htpass-secret -o yaml
+   $ oc --namespace openshift-config get secret htpass-secret -o yaml
    apiVersion: v1
    data:
      htpasswd: ZGV2ZWxvcGVyOiQyYSQxMCQ3ME5qeXpzN2Q4QnhyNm10VXBISTR1elRjdHpxU3BUUGxBR29kclg4S1U2cmJTTkxBY05zZQprdWJlYWRtaW46JDJhJDEwJGRmL0Vrck9uZlI3UkhRcVp0dW5Bc3VKZTd4SGc3aGhSaEZwVmRhWTNjcGJCOEl5OGZFZmw2
@@ -75,7 +75,7 @@ In this lab you will:
 3. To download the file locally you can use 'oc extract':
 
    ```console
-   $ oc -n openshift-config extract secret/htpass-secret -n openshift-config --to . --confirm
+   $ oc --namespace openshift-config extract secret/htpass-secret --to . --confirm
    htpasswd
    ```
 
@@ -114,7 +114,7 @@ In this lab you will:
    Once you're done, you can push back the new file in the secret:
 
    ```console
-   $ oc -n openshift-config set data secret/htpass-secret --from-file htpasswd=./htpasswd
+   $ oc --namespace openshift-config set data secret/htpass-secret --from-file htpasswd=./htpasswd
    secret/htpass-secret data updated
    ```
 
@@ -125,7 +125,7 @@ In this lab you will:
    to check when the `oauth-openshift` pod is deployed with the new settings:
 
    ```console
-   $ oc -n openshift-authentication get pods
+   $ oc --namespace openshift-authentication get pods
    NAME                               READY   STATUS    RESTARTS   AGE
    oauth-openshift-5d8c8857fb-c6nrq   1/1     Running   0          5s
    ```
