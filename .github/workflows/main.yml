@@ -17,4 +17,4 @@ jobs:
       - name: Create symlink to workspace
         run: ln -sf /__w/labs/labs /kpa/projects/${KPA_PROJECT}
       - name: Check markdown files for example project
-        run: mdl -c /kpa/.mdlrc $(find /kpa/projects/${KPA_PROJECT}/ -name '*.md')
+        run: mdl -c /kpa/projects/${KPA_PROJECT}/.mdlrc $(find /kpa/projects/${KPA_PROJECT}/ -name '*.md')
