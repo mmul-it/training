@@ -34,7 +34,10 @@ In this lab you will:
    $ ls myuser.csr
    myuser.csr
 
-   $ openssl x509 -req -in myuser.csr -CA .minikube/ca.crt -CAkey .minikube/ca.key -CAcreateserial -out myuser.crt -days 365
+   $ openssl x509 -req -in myuser.csr \
+       -CA .minikube/ca.crt -CAkey .minikube/ca.key -CAcreateserial \
+       -days 365 \
+       -out myuser.crt
    Certificate request self-signature ok
    subject=CN = myuser, O = myns\C3\A2\C2\80\C2\8B
    ```
@@ -52,7 +55,9 @@ In this lab you will:
    And then by adding the credentials:
 
    ```console
-   $ kubectl config set-credentials myuser --client-certificate=./myuser.crt --client-key=./myuser.key
+   $ kubectl config set-credentials myuser \
+       --client-certificate=./myuser.crt \
+       --client-key=./myuser.key
    User "myuser" set.
    ```
 
@@ -79,4 +84,6 @@ In this lab you will:
    Error from server (Forbidden): jobs.batch is forbidden: User "myuser" cannot list resource "jobs" in API group "batch" in the namespace "myns"
    ```
 
-   As you can see, there's no way (yet) to get anything, because we did'nt defined a role, but the fact that we received a `forbidden` means we were able to login with the newly created certificate.
+   As you can see, there's no way (yet) to get anything, because we didn't
+   define a role, but the fact that we received a `forbidden` means we were able
+   to login with the newly created certificate.

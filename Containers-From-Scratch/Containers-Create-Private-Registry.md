@@ -147,7 +147,8 @@
      tag: latest
    ```
 
-7. Stopping the `registry` container it will be automatically removed (because of the `--rm` used in the `docker run` command):
+7. Stopping the `registry` container it will be automatically removed (because
+   of the `--rm` used in the `docker run` command):
 
    ```console
    $ docker stop registry

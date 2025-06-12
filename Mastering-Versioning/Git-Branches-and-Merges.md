@@ -50,7 +50,7 @@ In this lab you will:
    ```console
    $ git add Fifth.txt
 
-   $ git commit -m "Fifth.txt myfeature commit" -m "This is the description of the myfeature Fifth commit."
+   $ git commit -m "Fifth.txt myfeature commit" -m "Description of the myfeature Fifth commit."
    [myfeature 7f002cd] Fifth.txt myfeature commit
     1 file changed, 1 insertion(+)
     create mode 100644 Fifth.txt
@@ -78,7 +78,7 @@ In this lab you will:
    ```console
    $ git add Fifth.txt
 
-   $ git commit -m "Fifth.txt commit" -m "This is the description of the Fifth commit."
+   $ git commit -m "Fifth.txt commit" -m "Description of the Fifth commit."
    [main 408ed5d] Fifth.txt commit
     1 file changed, 1 insertion(+)
     create mode 100644 Fifth.txt
@@ -116,7 +116,8 @@ In this lab you will:
    >>>>>>> myfeature
    ```
 
-   To solve the conflict it will be sufficient to edit the file by leaving the modifications we care about:
+   To solve the conflict it will be sufficient to edit the file by leaving the
+   modifications we care about:
 
    ```console
    $ echo "Branch main and myfeature modifications for the Fifth.txt commit." > Fifth.txt

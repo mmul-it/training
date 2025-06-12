@@ -266,8 +266,9 @@ Hitting execute and moving in the `Graph` tab will show some output:
 
 ![argo-workshop-debug-04.png](images/argo-workshop-debug-04.png)
 
-From here we can learn that the correct job name is not `argocd-applicationset-controller-metrics',
-but instead `argocd-applicationset-controller`.
+From here we can learn that the correct job name is not
+`argocd-applicationset-controller-metrics', but instead
+`argocd-applicationset-controller`.
 
 Fixing the value all over the Grafana Dashboard will make appear in short all
 the missing graphs:

@@ -132,8 +132,8 @@ This will create a namespace named `myingress-test` with some resources.
 
 **Which resources have been created?**
 
-Use `kubectl --namespace myingress-test get all,ingress` to track which resources have
-been created in the Minikube cluster.
+Use `kubectl --namespace myingress-test get all,ingress` to track which
+resources have been created in the Minikube cluster.
 
 ## Check the results #2
 

@@ -151,5 +151,6 @@ kube-system   storage-provisioner                1/1     Running   2 (6m ago)   
 
 ## Extend kubectl functionalities
 
-There are plenty of ways to extend `kubectl` functionalies, follow [Kubernetes-Kubectl-Improvements.md](Kubernetes-Kubectl-Improvements.md)
+There are plenty of ways to extend `kubectl` functionalies, follow
+[Kubernetes-Kubectl-Improvements.md](Kubernetes-Kubectl-Improvements.md)
 to activate some of them.

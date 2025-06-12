@@ -23,7 +23,8 @@ In this lab you will:
 2. Use `kubectl create deployment` to create a new deployment:
 
    ```console
-   $ kubectl --namespace my-first-project create deployment nginx --image=nginx:latest
+   $ kubectl --namespace my-first-project create deployment nginx \
+       --image=nginx:latest
    deployment.apps/nginx created
    ```
 
@@ -63,7 +64,8 @@ In this lab you will:
    nginx-6d666844f6-k9d5l   1/1     Running   0          66s
    ```
 
-   Then use ```kubectl port-forward``` to reach the 80 port of the container and map it to the localhost 8080:
+   Then use `kubectl port-forward` to reach the 80 port of the container and map
+   it to the localhost 8080:
 
    ```console
    $ kubectl --namespace my-first-project port-forward deployment/nginx 8080:80

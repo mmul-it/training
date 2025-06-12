@@ -106,7 +106,8 @@ In this lab you will:
    2022/12/02 14:18:59 [notice] 1#1: start worker process 44
    ```
 
-5. The main difference is that to exit from the nginx one you need to Ctrl+C or stop the container from another terminal.
+5. The main difference is that to exit from the nginx one you need to Ctrl+C or
+   stop the container from another terminal.
 
 6. Using `--detach` as option re-running the first container:
 
@@ -122,7 +123,9 @@ In this lab you will:
    3de0f47598d1e6836769380e24414b3fe0036028b25f363d659ff4210d718414
    ```
 
-8. Running `docker ps` will show *just* the nginx container, because the first one even if it was launched with `--detach` is meant just for a one time execution (showing the message you see while running in foreground):
+8. Running `docker ps` will show *just* the nginx container, because the first
+   one even if it was launched with `--detach` is meant just for a one time
+   execution (showing the message you see while running in foreground):
 
    ```console
    $ docker ps | grep hello-world

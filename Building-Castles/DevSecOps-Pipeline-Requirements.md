@@ -78,15 +78,16 @@ $ sudo ip address add 172.16.99.1 dev lo
 The IP `172.16.99.1` must be used as a reference for the services
 configurations.
 
-NOTE: you might want to choose a different IP or a different device. It is possible
-to list all the machine's IP addresses using the `ip address show` command.
+NOTE: you might want to choose a different IP or a different device. It is
+possible to list all the machine's IP addresses using the `ip address show`
+command.
 
 ## Insecure registries
 
 We will set up a registry using `Nexus` with SSL, employing a self-signed
-certificate. To ensure that the repository is recognized by the Docker client, it
-must be added (as `root`) to the `/etc/docker/daemon.json` file, containing the
-following content:
+certificate. To ensure that the repository is recognized by the Docker client,
+it must be added (as `root`) to the `/etc/docker/daemon.json` file, containing
+the following content:
 
 ```json
 {
@@ -109,7 +110,8 @@ Once the pipeline is complete, a registry will be available at the
 Since we will rely on a self-signed certificate and manage Kubernetes using
 Minikube, it must be started with the proper `--insecure-registry` option.
 
-Therefore, after installing Minikube (following the [Install Minikube](../Common/Kubernetes-Install-Minikube.md) lab) we must start it in the following way:
+Therefore, after installing Minikube (following the [Install Minikube](../Common/Kubernetes-Install-Minikube.md)
+lab) we must start it in the following way:
 
 ```console
 $ minikube start --insecure-registry=172.16.99.1:5000

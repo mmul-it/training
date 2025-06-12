@@ -16,7 +16,8 @@ correct for each question.
     3. Python scripts
     4. Ansible
 3. **What is idempotency in the context of IaC?**
-    1. Applying the same configuration multiple times results in different states
+    1. Applying the same configuration multiple times results in different
+       states
     2. Applying the same configuration multiple times results in the same state
     3. Applying configuration manually
     4. Ensuring configurations are never applied more than once

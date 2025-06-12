@@ -66,8 +66,9 @@ nexus
 ```
 
 So that it will be possible to edit the `nexus/nexus3/etc/nexus.properties`
-to enable `https` (you will need to use something like `sudo vim nexus/nexus3/etc/nexus.properties`)
-because files are owned by a user by the uid `200`):
+to enable `https` (you will need to use something like
+`sudo vim nexus/nexus3/etc/nexus.properties`) because files are owned by a user
+by the uid `200`):
 
 ```console
 $ cat nexus/nexus3/etc/nexus.properties
@@ -137,7 +138,8 @@ Then, create a new docker repository by selecting the wheel icon and then
 specifications:
 
 - Name: myproject
-- Select `Create an HTTPS connector at specified port. Normally used if the server is behind a secure proxy.` -> 5000
+- Select `Create an HTTPS connector at specified port. Normally used if the
+  server is behind a secure proxy.` -> 5000
 - Select `Allow anonymous docker pull ( Docker Bearer Token Realm required )`
 
 Once `Create repository` is pressed, then the docker repo will be available
@@ -179,7 +181,8 @@ Click `Expand` button of the `Variables` section and add:
 - `NEXUS_PASSWORD`: admin123
 
 The `NEXUS_HOST` refers to the IP of the docker host, check
-[DevSecOps-Pipeline-Requirements.md](DevSecOps-Pipeline-Requirements.md) to find out how to get it.
+[DevSecOps-Pipeline-Requirements.md](DevSecOps-Pipeline-Requirements.md) to
+find out how to get it.
 
 Ensure that for the `NEXUS_PASSWORD` variable the `Mask variable` option is
 selected.

@@ -51,7 +51,7 @@ In this lab you will:
    ```console
    $ git add Sixth.txt
 
-   $ git commit -m "Sixth.txt mynewfeature commit" -m "This is the description of the mynewfeature Sixth commit."
+   $ git commit -m "Sixth.txt mynewfeature commit" -m "Description of the mynewfeature Sixth commit."
 
    $ git log --oneline --graph
    * 7cb2eb8 (HEAD -> mynewfeature) Sixth.txt mynewfeature commit
@@ -81,7 +81,7 @@ In this lab you will:
    ```console
    $ git add Sixth.txt
 
-   $ git commit -m "Sixth.txt commit" -m "This is the description of the Sixth commit."
+   $ git commit -m "Sixth.txt commit" -m "Description of the Sixth commit."
    [main 408ed5d] Sixth.txt commit
     1 file changed, 1 insertion(+)
     create mode 100644 Sixth.txt
@@ -159,7 +159,7 @@ In this lab you will:
    ```console
    Sixth.txt commit
 
-   This is the description of the Sixth commit.
+   Description of the Sixth commit.
 
    # Please enter the commit message for your changes. Lines starting
    # with '#' will be ignored, and an empty message aborts the commit.

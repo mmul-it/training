@@ -82,8 +82,8 @@ In this lab you will:
 
    From now on there'll be no need to pass again `--set-upstream origin main`.
 
-   It is also possible to pass the `--all` option, to load **all** the additional
-   branches (in this case `myfeature`):
+   It is also possible to pass the `--all` option, to load **all** the
+   additional branches (in this case `myfeature`):
 
    ```console
    $ git push --all

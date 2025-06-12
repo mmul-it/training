@@ -5,11 +5,11 @@ In this lab you will:
 1. Use the `myrepo` repository as the working directory.
 2. Create a new branch named `learngit1` and swith into it.
 3. Create three sample commits each one containing a text file named:
-   | File name     | Commit message | Extended commit message                        |
-   |---------------|----------------|------------------------------------------------|
-   | `Nineth.txt`  | Nineth commit  | This is the description of the Nineth commit.  |
-   | `Eighth.txt`  | Eighth commit  | This is the description of the Eighth commit.  |
-   | `Seventh.txt` | Seventh commit | This is the description of the Seventh commit. |
+   | File name     | Commit message | Extended commit message                |
+   |---------------|----------------|----------------------------------------|
+   | `Nineth.txt`  | Nineth commit  | The description of the Nineth commit.  |
+   | `Eighth.txt`  | Eighth commit  | The description of the Eighth commit.  |
+   | `Seventh.txt` | Seventh commit | The description of the Seventh commit. |
    Note that the order of the commits should be mantained, so the sequence will
    be: `Nineth commit`, `Eighth commit`, and `Seventh commit`.
 4. Move back to `main` branch and merge the entire `learngit1` branch into
@@ -53,7 +53,7 @@ In this lab you will:
    $ for FILEn in Nineth Eighth Seventh; \
        do echo "Contents of the $FILEn file." > $FILEn\.txt; \
        git add $FILEn\.txt; \
-       git commit -m "$FILEn commit" -m "This is the description of the $FILEn commit."; \
+       git commit -m "$FILEn commit" -m "Description of the $FILEn commit."; \
        done
    [learngit1 a17a661] Nineth commit
     1 file changed, 1 insertion(+)

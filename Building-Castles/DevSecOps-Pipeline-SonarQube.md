@@ -37,7 +37,8 @@ Select the users section at [http://172.16.99.1:9000/admin/users](http://172.16.
 and under "Tokens" click in the icon.
 
 Create a token named "GitLab" leaving "30 days" as "Expires in" and take note
-of the value, which will be something like `squ_a37f1d4c60b980cb91fb5d4fb878d2b96be2ecb5`.
+of the value, which will be something like
+`squ_a37f1d4c60b980cb91fb5d4fb878d2b96be2ecb5`.
 
 ## Configure GitLab
 
@@ -51,7 +52,8 @@ Click `Expand` button of the `Variables` section, and add:
 - `SONAR_TOKEN`: `squ_a37f1d4c60b980cb91fb5d4fb878d2b96be2ecb5`
 
 The `SONAR_HOST_URL` refers to the IP of the docker host, check
-[DevSecOps-Pipeline-Requirements.md](DevSecOps-Pipeline-Requirements.md) to find out how to get it.
+[DevSecOps-Pipeline-Requirements.md](DevSecOps-Pipeline-Requirements.md)
+to find out how to get it.
 
 Ensure that for the `SONAR_TOKEN` variable the `Mask variable` option is
 selected.

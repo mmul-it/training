@@ -3,14 +3,15 @@
 In this lab you will:
 
 1. Use the `myrepo` repository as the working directory.
-2. Configure the Git user name `Kirater Dev` and the email `kirater@kiratech.it`.
+2. Configure the Git user name `Kirater Dev` and the email
+   `kirater@kiratech.it`.
 3. Verify the contents of the `.git/config` file to check the updated data.
 4. Create three sample commits each one containing a text file named:
-   | File name    | Commit message | Extended commit message                       |
-   |--------------|----------------|-----------------------------------------------|
-   | `First.txt`  | First commit   | This is the description of the First commit.  |
-   | `Second.txt` | Second commit  | This is the description of the Second commit. |
-   | `Third.txt`  | Third commit   | This is the description of the Third commit.  |
+   | File name    | Commit message | Extended commit message           |
+   |--------------|----------------|-----------------------------------|
+   | `First.txt`  | First commit   | Description of the First commit.  |
+   | `Second.txt` | Second commit  | Description of the Second commit. |
+   | `Third.txt`  | Third commit   | Description of the Third commit.  |
 5. Create a file named `Fourth.txt` with some text and check its status via
    `git status`, add it to the staged files list and the use reset to remove it.
 6. Modify the previosuly created `First.txt`, check its status using `git diff`,
@@ -62,7 +63,7 @@ In this lab you will:
    $ for FILEn in First Second Third; \
        do echo "Contents of the $FILEn file." > $FILEn\.txt; \
        git add $FILEn\.txt; \
-       git commit -m "$FILEn commit" -m "This is the description of the $FILEn commit."; \
+       git commit -m "$FILEn commit" -m "Description of the $FILEn commit."; \
        done
    [main (root-commit) b0137b3f775e] First commit
     1 file changed, 1 insertion(+)
@@ -85,7 +86,7 @@ In this lab you will:
 
        Third commit
 
-       This is the description of the Third commit.
+       Description of the Third commit.
 
    commit 183d68d0e5a61462d3827adbf2fbff3182aade16
    Author: Kirater Dev <kirater@kiratech.it>
@@ -93,7 +94,7 @@ In this lab you will:
 
        Second commit
 
-       This is the description of the Second commit.
+       Description of the Second commit.
 
    commit b0137b3f775ea21303b3766282aa89e17134abd1
    Author: Kirater Dev <kirater@kiratech.it>
@@ -101,7 +102,7 @@ In this lab you will:
 
        First commit
 
-       This is the description of the First commit.
+       Description of the First commit.
    ```
 
 5. To create the `Fourth.txt` file use:

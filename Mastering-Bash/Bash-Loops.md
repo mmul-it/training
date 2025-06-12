@@ -74,8 +74,8 @@ In this lab you will:
    done
    ```
 
-   **NOTE**: declaration (with 'declare -a') are made in two different points, that
-   in a (much) more complicated script could be very far.
+   **NOTE**: declaration (with 'declare -a') are made in two different points,
+   that in a (much) more complicated script could be very far.
    The initialization could be on a single line:
 
    ```bash
@@ -84,5 +84,5 @@ In this lab you will:
 
    but one line per item is often more readeable.
 
-   **NOTE**: the quoted list in `${tarantino[@]}` that will preserve the spaces for
-   the strings in the array.
+   **NOTE**: the quoted list in `${tarantino[@]}` that will preserve the spaces
+   for the strings in the array.

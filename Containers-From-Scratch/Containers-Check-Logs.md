@@ -176,7 +176,8 @@ In this lab you will:
 
    The result is the default NGINX page, which is correct.
 
-5. We didn't launch the container with the `--rm` option, so stop and remove the fixed-nginx container:
+5. We didn't launch the container with the `--rm` option, so stop and remove
+   the fixed-nginx container:
 
    ```console
    $ docker stop fixed-nginx

@@ -49,10 +49,11 @@ o
 5.5.5-10.5.11-MariaDB-1:10.5.11+maria~focalZ.u%ROv'��-��[u]Q\]>^<Rf,mysql_native_password
 ```
 
-**NOTE 1**: the two addresses for mynginx and mymariadb will be both `127.0.0.1`,
-this means that a pod can be associated entirely to `localhost`.
+**NOTE 1**: the two addresses for mynginx and mymariadb will be both
+`127.0.0.1`, this means that a pod can be associated entirely to `localhost`.
 
-**NOTE 2**: a pod can be implicitly created by using the `--pod new:<podname>`, like:
+**NOTE 2**: a pod can be implicitly created by using the `--pod new:<podname>`,
+like:
 
 ```console
 $ podman run --detach --pod new:mypod \

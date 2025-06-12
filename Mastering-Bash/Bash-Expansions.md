@@ -4,9 +4,9 @@ In this lab you will:
 
 1. Create a file `default_answer.sh` Adding a variable in the script and named
    `ANSWER`. Give it the value of the first positional parameter `$1`.
-2. MAke the script print: `The answer to life, the universe and everything is 42`
-   The value `42` must be written as a default value if no positional parameter
-   is passed during script execution.
+2. Make the script print: `The answer to life, the universe and everything is
+   42`. The value `42` must be written as a default value if no positional
+   parameter is passed during script execution.
 3. Using substring removal, print the name of the script you are running.
 4. Execute the script and pass a parameter, check the output. Execute the script
    again without passing a parameter, check the difference in the output.

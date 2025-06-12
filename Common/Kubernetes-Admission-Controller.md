@@ -72,7 +72,8 @@ spec:
 Note the usage of the `env:` inside the container, which will make the webhook
 accept also insecure registries like the one created in the pipeline.
 
-The webhook configuration will be in `taw-validating-webhook-configuration.yaml`:
+The webhook configuration will be a `ValidatingWebhookConfiguration` resource
+declared in `taw-validating-webhook-configuration.yaml`:
 
 ```yaml
 apiVersion: admissionregistration.k8s.io/v1
@@ -113,7 +114,10 @@ $ servicename=trivy-admission-webhook.trivy-system.svc
 $ openssl req -new -key webhook.key -out webhook.csr -subj "/CN=$servicename"
 (no output)
 
-$ openssl x509 -req -extfile <(printf "subjectAltName=DNS:$servicename") -days 3650 -in webhook.csr -CA .minikube/ca.crt -CAkey .minikube/ca.key -CAcreateserial -out webhook.crt
+$ openssl x509 -req -extfile <(printf "subjectAltName=DNS:$servicename") \
+    -days 365 \
+    -in webhook.csr -CA .minikube/ca.crt -CAkey .minikube/ca.key -CAcreateserial \
+    -out webhook.crt
 Signature ok
 subject=CN = trivy-admission-webhook.trivy-system.svc
 Getting CA Private Key
@@ -122,7 +126,9 @@ Getting CA Private Key
 The certificate will be part of a service, mounted by the webhook application:
 
 ```console
-$ kubectl --namespace trivy-system create secret tls trivy-admission-webhook-certs --key="webhook.key" --cert="webhook.crt"
+$ kubectl --namespace trivy-system create secret tls trivy-admission-webhook-certs \
+    --key="webhook.key" \
+    --cert="webhook.crt"
 secret/trivy-admission-webhook-certs created
 
 $ kubectl create -f trivy-admission-webhook.yaml
@@ -161,10 +167,12 @@ versions of nginx, one with no CRITICAL issues (`nginx:latest`) and the other
 with some of them (`nginx:1.18`):
 
 ```console
-$ kubectl --namespace myns create deployment nginx-latest --image public.ecr.aws/nginx/nginx:latest
+$ kubectl --namespace myns create deployment nginx-latest \
+    --image public.ecr.aws/nginx/nginx:latest
 deployment.apps/nginx-latest created
 
-$ kubectl --namespace myns create deployment nginx-insecure --image public.ecr.aws/nginx/nginx:1.18
+$ kubectl --namespace myns create deployment nginx-insecure \
+    --image public.ecr.aws/nginx/nginx:1.18
 deployment.apps/nginx-insecure created
 ```
 
@@ -277,10 +285,14 @@ and is stored in the `openshift-service-ca` namespace, inside the
 To download the key/cert couple just do:
 
 ```console
-$ oc --namespace openshift-service-ca get secrets/signing-key -o template='{{index .data "tls.crt"}}' | base64 --decode > ca.crt
+$ oc --namespace openshift-service-ca get secrets/signing-key \
+    -o template='{{index .data "tls.crt"}}' | \
+    base64 --decode > ca.crt
 (no output)
 
-$ oc --namespace openshift-service-ca get secrets/signing-key -o template='{{index .data "tls.key"}}' | base64 --decode > ca.key
+$ oc --namespace openshift-service-ca get secrets/signing-key \
+    -o template='{{index .data "tls.key"}}' | \
+    base64 --decode > ca.key
 (no output)
 ```
 
@@ -294,10 +306,16 @@ $ openssl genrsa -out taw-webhook.key 2048
 $ servicename=trivy-admission-webhook.trivy-system.svc
 (no output)
 
-$ openssl req -new -key taw-webhook.key -out taw-webhook.csr -subj "/CN=$servicename"
+$ openssl req -new -key taw-webhook.key \
+    -out taw-webhook.csr \
+    -subj "/CN=$servicename"
 (no output)
 
-$ openssl x509 -req -extfile <(printf "subjectAltName=DNS:$servicename") -days 3650 -in taw-webhook.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out taw-webhook.crt
+$ openssl x509 \
+     -req -extfile <(printf "subjectAltName=DNS:$servicename") \
+    -days 365 \
+    -in taw-webhook.csr -CA ca.crt -CAkey ca.key -CAcreateserial \
+    -out taw-webhook.crt
 Certificate request self-signature ok
 subject=CN = trivy-admission-webhook.trivy-system.svc
 ```
@@ -305,7 +323,9 @@ subject=CN = trivy-admission-webhook.trivy-system.svc
 And then store them inside Kubernetes/OpenShift, as a `secret`:
 
 ```console
-$ kubectl --namespace trivy-system create secret tls trivy-admission-webhook-certs --key="taw-webhook.key" --cert="taw-webhook.crt"
+$ kubectl --namespace trivy-system create secret tls trivy-admission-webhook-certs \
+    --key="taw-webhook.key" \
+    --cert="taw-webhook.crt"
 secret/trivy-admission-webhook-certs created
 ```
 
@@ -403,10 +423,12 @@ validatingwebhookconfiguration.admissionregistration.k8s.io/trivy-admission-webh
 $ export CABUNDLE=$(cat ca.crt|base64 -w 0)
 (no output)
 
-$ export JSONPATCH="{\"webhooks\":[{\"name\":\"trivy-admission-webhook.trivy-system.svc\", \"clientConfig\":{\"caBundle\":\"$CABUNDLE\"}}]}"
+$ export JSONPATCH="{\"webhooks\":[{\"name\":\"trivy-admission-webhook.trivy-system.svc\", \
+    \"clientConfig\":{\"caBundle\":\"$CABUNDLE\"}}]}"
 (no output)
 
-$ kubectl patch validatingwebhookconfigurations.admissionregistration.k8s.io trivy-admission-webhook.trivy-system.svc --patch="$JSONPATCH"
+$ kubectl patch validatingwebhookconfigurations.admissionregistration.k8s.io \
+    trivy-admission-webhook.trivy-system.svc --patch="$JSONPATCH"
 validatingwebhookconfiguration.admissionregistration.k8s.io/trivy-admission-webhook.trivy-system.svc patched
 ```
 
@@ -415,10 +437,12 @@ validatingwebhookconfiguration.admissionregistration.k8s.io/trivy-admission-webh
 Same tests can be made:
 
 ```console
-$ kubectl --namespace myns create deployment nginx-latest --image public.ecr.aws/nginx/nginx:latest
+$ kubectl --namespace myns create deployment nginx-latest \
+    --image public.ecr.aws/nginx/nginx:latest
 deployment.apps/nginx-latest created
 
-$ kubectl --namespace myns create deployment nginx-insecure --image public.ecr.aws/nginx/nginx:1.18
+$ kubectl --namespace myns create deployment nginx-insecure \
+    --image public.ecr.aws/nginx/nginx:1.18
 deployment.apps/nginx-insecure created
 ```
 

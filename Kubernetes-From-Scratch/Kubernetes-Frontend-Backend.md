@@ -16,9 +16,9 @@ In this lab you will:
    - `WORDPRESS_DB_PASSWORD`: mywppass
    - `WORDPRESS_DB_NAME`: mywpdb
 4. Install the `lynx` tool to check rendered http pages from command line.
-5. Using `kubectl --namespace fe-be-test port-forward frontend 8080:80` expose locally
-   the port of the frontend and check the status of wordpress with lynx: what is
-   the problem? Why it is not working?
+5. Using `kubectl --namespace fe-be-test port-forward frontend 8080:80` expose
+   locally the port of the frontend and check the status of wordpress with
+   `lynx`: what is the problem? Why it is not working?
 6. Fix the problems by creating a label for the pod and a service for the
    backend.
 7. Check that now the web page shows the initial Wordpress configuration page
@@ -123,7 +123,7 @@ In this lab you will:
    a service.
 
 6. Service will rely on the pod label for the `selector`, so we need to use an
-   existing one (check by using `kubectl --namespace fe-be-test describe pod backend`) or
+   existing one (check `kubectl --namespace fe-be-test describe pod backend`) or
    creating a new one:
 
    ```console
@@ -137,7 +137,8 @@ In this lab you will:
    `backend`:
 
    ```console
-   $ kubectl --namespace fe-be-test create service clusterip backend --tcp=3306:3306
+   $ kubectl --namespace fe-be-test create service clusterip backend \
+       --tcp=3306:3306
    service/backend created
 
    $ kubectl --namespace fe-be-test set selector service backend 'name=backend'
@@ -217,8 +218,8 @@ In this lab you will:
    ```
 
    The main difference in this approach is that we can put the yaml file under
-   version control to track any modification, using a real **Infrastructure as Code**
-   approach.
+   version control to track any modification, using a real **Infrastructure as
+   Code** approach.
 
 9. You can then safely remove the namespace:
 

@@ -14,8 +14,8 @@ In this lab you will:
    - `*.tmp`
    - `Password.txt`
 5. Check again with `git status` which files will now be staged.
-6. Create two separate commits, one for `.gitignore` and one for the `Fourth.txt`
-   file with the message `Fourth.txt commit`.
+6. Create two separate commits, one for `.gitignore` and one for the
+   `Fourth.txt` file with the message `Fourth.txt commit`.
 
 ## Solution
 
@@ -103,7 +103,7 @@ In this lab you will:
    $ git add Fourth.txt
    (no output)
 
-   $ git commit -m "Fourth.txt commit" -m "This is the description of the Fourth commit."
+   $ git commit -m "Fourth.txt commit" -m "Description of the Fourth commit."
    [main acce6eb] Fourth.txt commit
     1 file changed, 1 insertion(+)
     create mode 100644 Fourth.txt

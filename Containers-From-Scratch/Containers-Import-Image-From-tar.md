@@ -5,7 +5,8 @@ In this lab you will:
 1. Download and uncompress the tar image named
    [Containers-Import-Image-From-tar.nginx-saved-container.tar.xz](https://github.com/mmul-it/training/raw/master/Containers-From-Scratch/Containers-Import-Image-From-tar.nginx-saved-container.tar.xz).
 2. *Load* the saved image into the local docker image archive.
-3. Run a container starting from this image and exposing port `8080`. Note what is different from a usual nginx.
+3. Run a container starting from this image and exposing port `8080`. Note what
+   is different from a usual nginx.
 
 ## Solution
 
@@ -47,7 +48,8 @@ In this lab you will:
 1. Download and uncompress now the tar named [Containers-Import-Image-From-tar.nginx-exported-container.tar.xz](https://github.com/mmul-it/training/raw/master/Containers-From-Scratch/Containers-Import-Image-From-tar.nginx-exported-container.tar.xz).
 2. *Load* the image, what happens?
 3. Now try to *import* the image, what happens?
-4. Finally try to run a container based on this image, is this possible? Can you tell why?
+4. Finally try to run a container based on this image, is this possible? Can
+   you tell why?
 5. Stop the container.
 
 ### Solution to the bonus section
@@ -94,9 +96,9 @@ In this lab you will:
    See 'docker run --help'.
    ```
 
-   The export that was originally made on this image does not contain any metadata
-   useful to docker to run the base container, because of this `docker run`
-   fails.
+   The export that was originally made on this image does not contain any
+   metadata useful to docker to run the base container, because of this
+   `docker run` fails.
 
 5. Stop the container:
 

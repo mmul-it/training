@@ -5,10 +5,16 @@ In this lab you will:
 1. Create a namespace named `scale-test`.
 2. Deploy an `nginx` deployment inside the `scale-test` namespace.
 3. Check the ReplicaSet and see if requirements are met;
-4. Scale the application up to 3 replicas. Check changes in the ReplicaSet and in the running pods.
-5. Scale down the application to 1 replica. Check and see when the operation ends.
-6. Configure autoscaling on this application with a minumum of 1 pod, a maximum of 3 pods based on a CPU load of 50%. Then check if everything changed as expected.
-7. Install the `stress` command inside the `nginx` pod and launch it with `stress --cpu 3` to increase the CPU load. Then check if pod replicas are increased by hpa.
+4. Scale the application up to 3 replicas. Check changes in the ReplicaSet and
+   in the running pods.
+5. Scale down the application to 1 replica. Check and see when the operation
+   ends.
+6. Configure autoscaling on this application with a minumum of 1 pod, a maximum
+   of 3 pods based on a CPU load of 50%. Then check if everything changed as
+   expected.
+7. Install the `stress` command inside the `nginx` pod and launch it with
+   `stress --cpu 3` to increase the CPU load. Then check if pod replicas are
+   increased by hpa.
 8. Stop `stress` command and check that the replicas come back to 1.
 
 ## Solution
@@ -23,7 +29,7 @@ In this lab you will:
 2. Create the `nginx` deployment:
 
    ```console
-   $  kubectl --namespace scale-test create deployment nginx --image=nginx:latest
+   $ kubectl --namespace scale-test create deployment nginx --image=nginx:latest
    deployment.apps/nginx created
 
    $ kubectl --namespace scale-test get all
@@ -112,14 +118,17 @@ In this lab you will:
    replicaset.apps/nginx-6d666844f6   1         1         1       5m56s
    ```
 
-6. It is possible to configure autoscale with a single `kubectl autoscale` command:
+6. It is possible to configure autoscale with a single `kubectl autoscale`
+   command:
 
    ```console
-   $ kubectl --namespace scale-test autoscale deployment nginx --min 1 --max 3 --cpu-percent=50
+   $ kubectl --namespace scale-test autoscale deployment nginx \
+       --min 1 --max 3 --cpu-percent=50
    horizontalpodautoscaler.autoscaling/nginnx autoscaled
    ```
 
-   As you can see, on a tipically not very loaded cluster, applying autoscaling doesn't change anything:
+   As you can see, on a tipically not very loaded cluster, applying autoscaling
+   doesn't change anything:
 
    ```console
    $ kubectl --namespace scale-test get pods,rs
@@ -150,7 +159,8 @@ In this lab you will:
    ...
    ```
 
-   To make everything *effectively* work, the metrics server must be enabled in minikube, with:
+   To make everything *effectively* work, the metrics server must be enabled in
+   minikube, with:
 
    ```console
    $ minikube addons enable metrics-server
@@ -160,7 +170,9 @@ In this lab you will:
    🌟  The 'metrics-server' addon is enable
    ```
 
-   Due to [this limitation](https://github.com/kubernetes-sigs/metrics-server/issues/989#issuecomment-1313971365) to make the `<unknown>` value disappear a `request` must be added to the deployment:
+   Due to [this limitation](https://github.com/kubernetes-sigs/metrics-server/issues/989#issuecomment-1313971365)
+   to make the `<unknown>` value disappear a `request` must be added to the
+   deployment:
 
    ```console
    $ kubectl --namespace scale-test set resources deployment nginx --requests=cpu=200m
@@ -176,7 +188,9 @@ In this lab you will:
 7. Install `stress` in the `nginx` pod:
 
    ```console
-   $ kubectl --namespace scale-test exec --interactive --tty nginx-69d7f674df-lvrzw -- /bin/bash
+   $ kubectl --namespace scale-test exec \
+       --stdin --tty \
+       nginx-69d7f674df-lvrzw -- /bin/bash
    root@nginx-69d7f674df-lvrzw:/# apt-get update
    ...
    Reading package lists... Done

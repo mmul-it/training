@@ -10,11 +10,13 @@ doc.
 A number of services will be exposed inside the Kind default subnet,
 specifically:
 
-- The Argo CD interface on the `kind-ctlplane` cluster, with the `172.18.0.100` IP.
+- The Argo CD interface on the `kind-ctlplane` cluster, with the `172.18.0.100`
+  IP.
 - The deployment on the `kind-test` cluster, with the `172.18.0.120` IP.
 - The deployment on the `kind-prod` cluster, with the `172.18.0.140` IP.
 
-Each cluster will expose an IP for the services using [MetalLB](https://metallb.universe.tf/).
+Each cluster will expose an IP for the services using
+[MetalLB](https://metallb.universe.tf/).
 
 ## Configure MetalLB on kind-ctlplane
 
@@ -78,7 +80,8 @@ ipaddresspool.metallb.io/mypool created
 l2advertisement.metallb.io/mypool created
 ```
 
-In this case `kind-ctlplane` will allocate IPs from `172.18.0.100` to `172.18.0.110`.
+In this case `kind-ctlplane` will allocate IPs from `172.18.0.100` to
+`172.18.0.110`.
 
 ## Configure MetalLB on kind-test
 
@@ -106,7 +109,8 @@ pod/controller-756c6b677-vbr8m condition met
 pod/speaker-wtmgf condition met
 ```
 
-This time the load balancer IP range will be from `172.18.0.120` to `172.18.0.130`
+This time the load balancer IP range will be from `172.18.0.120` to
+`172.18.0.130`
 (check [kind-test-metallb-pools.yml](kind-test-metallb-pools.yml)):
 
 ```console

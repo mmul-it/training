@@ -4,8 +4,9 @@ In this lab you will install three different Kubernetes clusters using Kind.
 
 ## Requirements
 
-The lab environment will be configured by using [Kind](https://kind.sigs.k8s.io/),
-a tool that creates Kubernetes clusters inside containers.
+The lab environment will be configured by using
+[Kind](https://kind.sigs.k8s.io/), a tool that creates Kubernetes clusters
+inside containers.
 
 First of all, the lab machine should have Docker installed. Instructions about
 how to install Docker are [available here](../../Common/Containers-Install-Docker.md).

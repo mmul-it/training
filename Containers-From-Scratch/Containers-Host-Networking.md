@@ -2,10 +2,14 @@
 
 In this lab you will:
 
-1. Pull and run the `nginx` container image with the name `network-host-test` using the host networking.
-2. Check that the service will be reachable on localhost on the port exposed by the container.
+1. Pull and run the `nginx` container image with the name `network-host-test`
+   using the host networking.
+2. Check that the service will be reachable on localhost on the port exposed by
+   the container.
 3. Stop the `network-host-test` container.
-4. Run the `nginx` container image with the name `network-host-test` using the host networking and publishing the container 80 port to the 8888 port on the host.
+4. Run the `nginx` container image with the name `network-host-test` using the
+   host networking and publishing the container 80 port to the 8888 port on the
+   host.
 5. Is it possible? What happens?
 6. Stop the `network-host-test` container.
 
@@ -35,7 +39,8 @@ In this lab you will:
    network-host-test
    ```
 
-4. Use both `--network host` and `-p 8888:80` to check whether it is possible to publish the port:
+4. Use both `--network host` and `-p 8888:80` to check whether it is possible to
+   publish the port:
 
    ``` console
    $ docker run --detach --name network-host-test --rm \
@@ -53,7 +58,8 @@ In this lab you will:
    bb499f166a75865d0617c322e78f90724e857b1f404976a3c4a19f946347ba03
    ```
 
-   the publication of ports while using the host mode is impossible, there's a WARNING and it is just ignored.
+   the publication of ports while using the host mode is impossible, there's a
+   WARNING and it is just ignored.
 
 6. Stop the `network-host-test` container:
 

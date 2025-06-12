@@ -104,8 +104,8 @@ In this lab you will:
    </body></html>
    ```
 
-   The mariadb can't be reached by http, that is why we get '502 Bad Gateway', so
-   it is possible to remove it:
+   The mariadb can't be reached by http, that is why we get '502 Bad Gateway',
+   so it is possible to remove it:
 
    ```console
    $ oc get route

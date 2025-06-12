@@ -3,7 +3,8 @@
 A number of services will be exposed inside the Kind default subnet,
 specifically:
 
-- The Argo CD interface on the `kind-ctlplane` cluster, with the `172.18.0.100` IP.
+- The Argo CD interface on the `kind-ctlplane` cluster, with the `172.18.0.100`
+  IP.
 - The deployment on the `kind-test` cluster, with the `172.18.0.120` IP.
 - The deployment on the `kind-prod` cluster, with the `172.18.0.140` IP.
 

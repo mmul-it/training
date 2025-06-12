@@ -85,11 +85,13 @@ sast:
 EOF
 ```
 
-This will activate the pre-built SAST template in GitLab `Jobs/SAST.gitlab-ci.yml`
+This will activate the pre-built SAST template in GitLab
+`Jobs/SAST.gitlab-ci.yml`
 and launch all the tests for the files, using a debug log level and scanning
 also Kubernetes manifests (by default disabled).
 
-Eventually the scan results will be stored in a file named `gl-sast-report.json`.
+Eventually the scan results will be stored in a file named
+`gl-sast-report.json`.
 
 To make everything running, it will be enough to create a commit with all the
 newly created files:

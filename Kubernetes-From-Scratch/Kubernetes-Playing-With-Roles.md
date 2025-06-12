@@ -48,7 +48,9 @@ In this lab you will:
    clusterrolebinding.rbac.authorization.k8s.io/view-to-myuser created
    ```
 
-   Now, by using the `myuser@minikube` context it should be possible to get the resources for both namespace `myns` (which is empty right now) and the entire cluster:
+   Now, by using the `myuser@minikube` context it should be possible to get the
+   resources for both namespace `myns` (which is empty right now) and the entire
+   cluster:
 
    ```console
    $ kubectl config use-context myuser@minikube
@@ -81,7 +83,8 @@ In this lab you will:
    kube-system   replicaset.apps/coredns-565d847f94   1         1         1       124m
    ```
 
-3. The user `myuser` is able to view everything, but not to create anything in its namespace:
+3. The user `myuser` is able to view everything, but not to create anything in
+   its namespace:
 
    ```console
    $ kubectl config current-context
@@ -91,7 +94,9 @@ In this lab you will:
    error: failed to create deployment: deployments.apps is forbidden: User "myuser" cannot create resource "deployments" in API group "apps" in the namespace "myns"
    ```
 
-   Move back to admin user and define a role that will make it possible for `myuser` to create, delete and update resources like pods, replicaset and deployments in the `myns` namespace:
+   Move back to admin user and define a role that will make it possible for
+   `myuser` to create, delete and update resources like pods, replicaset and
+   deployments in the `myns` namespace:
 
    ```console
    $ kubectl config use-context minikube
@@ -112,7 +117,8 @@ In this lab you will:
    rolebinding.rbac.authorization.k8s.io/deploy-creator-to-myuser created
    ```
 
-4. Now it should be possible to create (and delete) a new deployment as `myuser`:
+4. Now it should be possible to create (and delete) a new deployment as
+   `myuser`:
 
    ```console
    $ kubectl config use-context myuser@minikube

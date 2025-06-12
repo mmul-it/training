@@ -278,10 +278,10 @@ can be detailed with plenty of options. In this example a `branch` field will be
 defined for each cluster and will determine from which Git branch the contents
 of the repository will be taken.
 
-Variables in Application Set are expressed between `{{` and `}}` as in `{{cluster}}`,
-and in this specific case the `{{branch}}` variable will be used to define the
-`targetRevision` of the source, so the branch from where to take the contents of
-the repository (check [argo-appset.yml](argo-appset.yml)):
+Variables in Application Set are expressed between `{{` and `}}` as in
+`{{cluster}}`, and in this specific case the `{{branch}}` variable will be used
+to define the `targetRevision` of the source, so the branch from where to take
+the contents of the repository (check [argo-appset.yml](argo-appset.yml)):
 
 ```console
 $ cat <<EOF > argo-appset.yml

@@ -224,8 +224,8 @@ In this lab you will:
    </html>
    ```
 
-   Note the playbook recap, and then when relaunching it again it will be different,
-   confirming that it operated in an idempotent way:
+   Note the playbook recap, and then when relaunching it again it will be
+   different, confirming that it operated in an idempotent way:
 
    ```console
    (ansible-venv) $ ansible-playbook playbook.yaml

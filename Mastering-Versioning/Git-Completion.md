@@ -9,7 +9,8 @@ In this lab you will:
    and commit them.
 3. Install and configure Git completion and make use of it from now on.
 4. Create a branch named `dev/the-longest-branch-name-you-ever-seen`.
-5. Helped by auto completion Switch to the `dev/the-longest-branch-name-you-ever-seen`
+5. Helped by auto completion Switch to the
+   `dev/the-longest-branch-name-you-ever-seen`
    branch modify documentation files and commit.
 6. Back to `main` branch change the `dev/the-longest-branch-name-you-ever-seen`
    branch name in `dev/T-34-bugfix`.
