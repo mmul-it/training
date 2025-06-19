@@ -147,7 +147,7 @@ In this lab you will:
    We want to move back to `c7aa82d`, So the command will be:
 
    ```console
-   git reset --hard c7aa82d
+   $ git reset --hard c7aa82d
    HEAD is now at c7aa82d Sixth.txt commit
    ```
 
