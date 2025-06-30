@@ -44,10 +44,6 @@ $ chgrp students /test
 $ ls -ld /test
 drwxr-x--- 2 root students 4096 Dec  3 18:40 /test
 
-<<<<<<< HEAD
-```console
-=======
->>>>>>> 08f7b1d7451b (Add Demos for various courses)
 $ chmod g+s /test
 (no output)
 

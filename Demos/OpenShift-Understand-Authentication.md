@@ -23,7 +23,7 @@ metadata:
 
 The password is base64 formatted, to decode it you can use the `base64` command:
 
-```
+```console
 $ echo JDJhJDEwJC52bE03SU16VmNhWG4zREdFaUpQMi4zbi5tajZsbHV1QjFhMWN4R2h3eVYzbGtsMGZTMVg2 | base64 --decode
 $2a$10$.vlM7IMzVcaXn3DGEiJP2.3n.mj6lluuB1a1cxGhwyV3lkl0fS1X6
 ```
