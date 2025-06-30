@@ -1,7 +1,7 @@
 name: Check markdown quality via Linter
 
 env:
-  KPA_PROJECT: kiratech
+  KPA_PROJECT: training
 
 on: [push]
 
@@ -15,6 +15,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Create symlink to workspace
-        run: ln -sf /__w/labs/labs /kpa/projects/${KPA_PROJECT}
+        run: ln -sf /__w/training/training /kpa/projects/${KPA_PROJECT}
       - name: Check markdown files for example project
         run: mdl -c /kpa/projects/${KPA_PROJECT}/.mdlrc $(find /kpa/projects/${KPA_PROJECT}/ -name '*.md')
