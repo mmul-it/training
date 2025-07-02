@@ -5,18 +5,27 @@
    ```yaml
    ---
    - hosts: localhost
-     gather_facts: true
+     gather_facts: yes
      tasks:
        - name: Print a message
          debug:
            msg: "This task has a proper syntax"
 
-       - name: This task has an indentation error
-         debug:
-           msg: "This task will cause a YAML formatting error"
-        - name: This task will cause a syntax error
-         debug:
-           msg: This task will fail due to missing quotes around the message
+       - name: Bad indentation task
+           debug:
+             msg: "This task has a bad indentation"
+
+       - name: Missing colon
+         debug
+           msg: "This will trigger a missing colon error"
+
+       - name: Too many spaces after dash
+           debug:
+               msg: "This line has excessive indentation"
+
+       - name: Trailing spaces    
+         debug:    
+           msg: "This has trailing spaces on keys and lines"
    ```
 
 2. Use the `yamllint` tool and `ansible-playbook --syntax-check` to understand
@@ -40,16 +49,17 @@
    JSON: Expecting value: line 1 column 1 (char 0)
 
    Syntax Error while loading YAML.
-     did not find expected '-' indicator
+     mapping values are not allowed in this context. mapping values are not allowed in this context
+     in "<unicode string>", line 10, column 14
 
-   The error appears to be in '/home/kirater/error_playbook.yml': line 12, column 6, but may
+   The error appears to be in '/home/rasca/error_playbook.yml': line 10, column 14, but may
    be elsewhere in the file depending on the exact syntax problem.
 
    The offending line appears to be:
 
-           msg: "This task will cause a YAML formatting error"
-        - name: This task will cause a syntax error
-        ^ here
+       - name: Bad indentation task
+           debug:
+                ^ here
    ```
 
    To start debugging, the `yamllint` package should be installed, by using
@@ -88,21 +98,26 @@
    JSON: Expecting value: line 1 column 1 (char 0)
 
    Syntax Error while loading YAML.
-     did not find expected '-' indicator
+     mapping values are not allowed in this context. mapping values are not allowed in this context
+     in "<unicode string>", line 10, column 14
 
-   The error appears to be in '/home/kirater/error_playbook.yml': line 12, column 6, but may
+   The error appears to be in '/home/rasca/error_playbook.yml': line 10, column 14, but may
    be elsewhere in the file depending on the exact syntax problem.
 
    The offending line appears to be:
 
-           msg: "This task will cause a YAML formatting error"
-        - name: This task will cause a syntax error
-        ^ here
+       - name: Bad indentation task
+           debug:
+                ^ here
    ```
 
    Which in fact don't make much difference from the initial error message.
 
-   So, looking fixing the errors, the new version of the playbook, will be:
+   Fixing the errors will be a matter of understanding the `yamllint` and
+   `ansible-playbook --syntax-check` output messages, and fix one after another
+   all the problems.
+
+   The fixed version of the playbook, will be:
 
    ```yaml
    ---
@@ -112,12 +127,22 @@
        - name: Print a message
          debug:
            msg: "This task has a proper syntax"
-       - name: This task has an indentation error
+
+       - name: Bad indentation task
          debug:
-           msg: "This task will cause a YAML formatting error"
-       - name: This task will cause a syntax error
+           msg: "This task has a bad indentation"
+
+       - name: Missing colon
          debug:
-           msg: "This task will fail due to missing quotes around the message"
+           msg: "This will trigger a missing colon error"
+
+       - name: Too many spaces after dash
+         debug:
+           msg: "This line has excessive indentation"
+
+       - name: Trailing spaces
+         debug:
+           msg: "This has trailing spaces on keys and lines"
    ```
 
    The tools will now give a better result:
@@ -136,29 +161,4 @@
 
    ```console
    (ansible-venv) $ ansible-playbook error_playbook.yml
-   [WARNING]: No inventory was parsed, only implicit localhost is available
-   [WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'
-
-   PLAY [localhost] ****************************************************************************************************
-
-   TASK [Gathering Facts] **********************************************************************************************
-   ok: [localhost]
-
-   TASK [Print a message] **********************************************************************************************
-   ok: [localhost] => {
-       "msg": "This task has a proper syntax"
-   }
-
-   TASK [This task has an indentation error] ***************************************************************************
-   ok: [localhost] => {
-       "msg": "This task will cause a YAML formatting error"
-   }
-
-   TASK [This task will cause a syntax error] **************************************************************************
-   ok: [localhost] => {
-       "msg": "This task will fail due to missing quotes around the message"
-   }
-
-   PLAY RECAP **********************************************************************************************************
-   localhost                  : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
    ```
