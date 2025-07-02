@@ -40,7 +40,7 @@ In this lab you will:
    EXPOSE $NCAT_PORT
    ```
 
-   There's a [downloadable copy](https://github.com/mmul-it/training/raw/master/Kubernetes-From-Scratch/Containers-Build-Custom-Image.Dockerfile)
+   There's a [downloadable copy](Containers-Build-Custom-Image.Dockerfile)
    available on this repository.
 
 3. Now it's time to use `docker build`:

@@ -105,6 +105,8 @@ In this lab you will:
 
    This will give you a full (mouse controlled) browser.
 
+   To exit carbonyl just press `Ctrl+C`.
+
 5. Stop the containers:
 
    ```console

@@ -40,7 +40,7 @@ In this lab you will:
    / # exit
    ```
 
-4. Using `docker network create` create the `test` subnet:
+4. Using `docker network create` create the custom network `test`:
 
    ```console
    $ docker network create test --subnet "172.16.99.0/24"
