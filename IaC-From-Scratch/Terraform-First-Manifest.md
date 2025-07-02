@@ -136,8 +136,8 @@ In this lab you will:
    Initializing the backend...
    Initializing provider plugins...
    - Finding latest version of kreuzwerker/docker...
-   - Installing kreuzwerker/docker v3.0.2...
-   - Installed kreuzwerker/docker v3.0.2 (self-signed, key ID BD080C4571C6104C)
+   - Installing kreuzwerker/docker v3.6.2...
+   - Installed kreuzwerker/docker v3.6.2 (self-signed, key ID BD080C4571C6104C)
    Partner and community providers are signed by their developers.
    If you'd like to know more about provider signing, you can read about it here:
    https://www.terraform.io/docs/cli/plugins/signing.html
@@ -216,10 +216,10 @@ In this lab you will:
    Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
    ```
 
-   Note that every time you will launch the `terraform apply` command, a new
-   container will be created, because the module does not record the ID. This
-   can be avoided by using the `ignore_changes` option inside the resource
-   declaration, as in:
+   Note that with previous versions of the docker provider every time you
+   launched the `terraform apply` command, a new container was created, because
+   the module didn't record the ID. This could have been be avoided by using
+   the `ignore_changes` option inside the resource declaration, as in:
 
    ```hcl
    resource "docker_container" "webserver" {
@@ -233,20 +233,6 @@ In this lab you will:
        ignore_changes = all
      }
    }
-   ```
-
-   With this applied the next `apply` will output:
-
-   ```console
-   $ terraform apply -auto-approve
-   docker_image.webserver: Refreshing state... [id=sha256:5ef79149e0ec84a7a9f9284c3f91aa3c20608f8391f5445eabe92ef07dbda03cnginx:latest]
-   docker_container.webserver: Refreshing state... [id=eaf6f3eb2b946379018352b120b7bf09ddebf96b0be44b439a4a48eb328cf9a6]
-
-   No changes. Your infrastructure matches the configuration.
-
-   Terraform has compared your real infrastructure against your configuration and found no differences, so no changes are needed.
-
-   Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
    ```
 
 5. All the tests can be made from the hosts:

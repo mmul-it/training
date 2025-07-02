@@ -127,13 +127,13 @@ In this lab you will:
 
    The second warning is about the Docker provider version missing, still in
    `main.tf` which should always match the one used to deploy the manifests, in
-   this case `3.0.2`:
+   this case `3.6.2`:
 
    ```hcl
      required_providers {
        docker = {
          source  = "kreuzwerker/docker"
-         version = "3.0.2"
+         version = "3.6.2"
        }
      }
    }
