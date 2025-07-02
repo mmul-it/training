@@ -1,0 +1,23 @@
+---
+- hosts: localhost
+  gather_facts: yes
+  tasks:
+    - name: Print a message
+      debug:
+        msg: "This task has a proper syntax"
+
+    - name: Bad indentation task
+        debug:
+          msg: "This task has a bad indentation"
+
+    - name: Missing colon
+      debug
+        msg: "This will trigger a missing colon error"
+
+    - name: Too many spaces after dash
+        debug:
+            msg: "This line has excessive indentation"
+
+    - name: Trailing spaces    
+      debug:    
+        msg: "This has trailing spaces on keys and lines"
