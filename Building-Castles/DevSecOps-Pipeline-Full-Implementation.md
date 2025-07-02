@@ -220,6 +220,12 @@ To ssh://172.16.99.1:2222/devsecops/myproject.git
 The original error is not there anymore, and the pipeline should now be
 green.
 
-**NOTE**: if Sonarqube fails again, check the quality gates, and create a custom
-quality gate associated to the project that will have `Conditions on New Code`
--> `Coverage` set to zero.
+### Code coverage
+
+If Sonarqube fails again, check the quality gates, and create a custom quality
+gate associated to the project that will have `Conditions on New Code` ->
+`Coverage` set to zero.
+
+Another viable solution would be to implement a unit test related to the example
+Java file, this is beyond the scope of this exercise, but is considered a best
+practice by Sonarqube.
