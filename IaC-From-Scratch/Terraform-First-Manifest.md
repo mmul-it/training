@@ -17,11 +17,11 @@ In this lab you will:
 
 1. To install Docker on the host just follow the instructions on the lab named
    [Containers-Install-Docker.md](https://github.com/mmul-it/training/blob/master/Common/Containers-Install-Docker.md).
-2. At time of writing, the latest `terraform` available version is the `1.9.1`,
+2. At time of writing, the latest `terraform` available version is the `1.9.8`,
    so to download and make it available to the host use these commands:
 
    ```console
-   $ TF_VERSION=1.9.1
+   $ TF_VERSION=1.9.8
    (no output)
 
    $ TF_ARCH=linux_amd64
@@ -39,11 +39,15 @@ In this lab you will:
    renamed 'terraform' -> '/usr/local/bin/terraform'
    ```
 
+   Note that if the `unzip` command is not present on the machine, it can be
+   installed for RHEL based systems with `sudo yum -y install unzip` and for
+   Debian systems with `sudo apt install -y unzip`.
+
    Now the `terraform` executable should be available everywhere:
 
    ```console
    $ terraform --version
-   Terraform v1.9.1
+   Terraform v1.9.8
    on linux_amd64
    ```
 

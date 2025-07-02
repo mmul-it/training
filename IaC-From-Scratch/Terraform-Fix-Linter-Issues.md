@@ -117,12 +117,12 @@ In this lab you will:
    best practice is to set the Terraform version that was used to test the
    manifests.
 
-   To fix this, set the `required_version` to `1.9.1`, the Terraform version
+   To fix this, set the `required_version` to `1.9.8`, the Terraform version
    used while deploying and testing these manifests:
 
    ```hcl
    terraform {
-     required_version = "1.9.1"
+     required_version = "1.9.8"
    ```
 
    The second warning is about the Docker provider version missing, still in
