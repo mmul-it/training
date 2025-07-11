@@ -6,6 +6,8 @@ CTLP="ctlplane"
 TEST="test"
 PROD="prod"
 
+WORKDIR=$(dirname "$0")
+
 # Because of the high number of processes that will be executed, some Linux
 # system tweaks are suggested:
 if grep -q "^fs.inotify.max_user_watches=" /etc/sysctl.conf; then
@@ -23,45 +25,26 @@ fi
 # Reload sysctl to apply changes
 sudo sysctl -p
 
-# Create the kind config files
-cat <<EOF > kind-${CTLP}-config.yml
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-networking:
-  apiServerAddress: "172.18.0.1"
-  apiServerPort: 6443
-nodes:
-- role: control-plane
-  image: kindest/node:v1.31.0
-EOF
+# In certain systems using the local DNS could lead to unexpected Kind/K8s
+# behaviors, like resolving every service address with the 127.0.0.2 IP.
+# Overriding docker dns configuration is a solution
+DOCKER_CONF='/etc/docker/daemon.json'
+DOCKER_DNS='8.8.8.8'
+if ! jq -e ".dns == [\"${DOCKER_DNS}\"]" "${DOCKER_CONF}" > /dev/null; then
+  # Add dns to Docker daemon
+  sudo jq ". + {dns: [\"${DOCKER_DNS}\"]}" "${DOCKER_CONF}" | sudo tee -a "${DOCKER_CONF}"
 
-cat <<EOF > kind-${TEST}-config.yml
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-networking:
-  apiServerAddress: "172.18.0.1"
-  apiServerPort: 7443
-nodes:
-- role: control-plane
-  image: kindest/node:v1.31.0
-EOF
+  # Restart Docker daemon
+  sudo systemctl restart docker
+fi
 
-cat <<EOF > kind-${PROD}-config.yml
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-networking:
-  apiServerAddress: "172.18.0.1"
-  apiServerPort: 8443
-nodes:
-- role: control-plane
-  image: kindest/node:v1.31.0
-EOF
-
+# Install clusters
 for K8S in ${CTLP} ${TEST} ${PROD}; do
   echo; echo "### Install kind cluster kind-${K8S} ###"; echo
-  kind create cluster --name ${K8S} --config kind-${K8S}-config.yml
+  kind create cluster --name ${K8S} --config ${WORKDIR}/kind-${K8S}-config.yml
 done
 
+# Install MetalLB
 export METALLB_VERSION='v0.14.8'
 for K8S in ${CTLP} ${TEST} ${PROD}; do
   echo; echo "### Install MetalLB for kind-${K8S} ###"; echo
@@ -71,68 +54,9 @@ for K8S in ${CTLP} ${TEST} ${PROD}; do
   kubectl wait --namespace metallb-system --for=condition=ready pod --selector=app=metallb --timeout=90s
 done
 
-cat <<EOF > kind-${CTLP}-metallb-pools.yml
-apiVersion: metallb.io/v1beta1
-kind: IPAddressPool
-metadata:
-  name: mypool
-  namespace: metallb-system
-spec:
-  addresses:
-  - 172.18.0.100-172.18.0.110
----
-apiVersion: metallb.io/v1beta1
-kind: L2Advertisement
-metadata:
-  name: mypool
-  namespace: metallb-system
-spec:
-  ipAddressPools:
-  - mypool
-EOF
-
-cat <<EOF > kind-${TEST}-metallb-pools.yml
-apiVersion: metallb.io/v1beta1
-kind: IPAddressPool
-metadata:
-  name: mypool
-  namespace: metallb-system
-spec:
-  addresses:
-  - 172.18.0.120-172.18.0.130
----
-apiVersion: metallb.io/v1beta1
-kind: L2Advertisement
-metadata:
-  name: mypool
-  namespace: metallb-system
-spec:
-  ipAddressPools:
-  - mypool
-EOF
-
-cat <<EOF > kind-${PROD}-metallb-pools.yml
-apiVersion: metallb.io/v1beta1
-kind: IPAddressPool
-metadata:
-  name: mypool
-  namespace: metallb-system
-spec:
-  addresses:
-  - 172.18.0.140-172.18.0.150
----
-apiVersion: metallb.io/v1beta1
-kind: L2Advertisement
-metadata:
-  name: mypool
-  namespace: metallb-system
-spec:
-  ipAddressPools:
-  - mypool
-EOF
-
+# Configure MetalLB
 for K8S in ${CTLP} ${TEST} ${PROD}; do
   echo; echo "### Configure MetalLB pools for kind-${K8S} ###"; echo
   kubectl config use-context kind-${K8S}
-  kubectl apply -f kind-${K8S}-metallb-pools.yml
+  kubectl apply -f ${WORKDIR}/kind-${K8S}-metallb-pools.yml
 done
