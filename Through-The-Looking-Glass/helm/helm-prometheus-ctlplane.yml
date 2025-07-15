@@ -35,3 +35,12 @@ prometheus:
           - targets:
             - '172.18.0.120:9090'
             - '172.18.0.140:9090'
+        relabel_configs:
+          - source_labels: [__address__]
+            regex: '172.18.0.120:9090'
+            target_label: federated_cluster
+            replacement: 'prod'
+          - source_labels: [__address__]
+            regex: '172.18.0.140:9090'
+            target_label: federated_cluster
+            replacement: 'test'

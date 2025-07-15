@@ -9,12 +9,8 @@ PROD="prod"
 WORKDIR=$(dirname "$0")
 
 ##############
-# Prometheus #
+# Helm repos #
 ##############
-
-# For FEDERATION check
-# https://stackoverflow.com/questions/64918491/prometheus-for-k8s-multi-clusters
-# https://prometheus.io/docs/prometheus/latest/federation/#configuring-federation
 
 echo; echo "### Add helm repositories ###"; echo
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -22,31 +18,26 @@ helm repo add grafana https://grafana.github.io/helm-charts
 helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 helm repo update
 
-for K8S in ${TEST} ${PROD}; do
+##############
+# Prometheus #
+##############
+
+# For FEDERATION check
+# https://stackoverflow.com/questions/64918491/prometheus-for-k8s-multi-clusters
+# https://prometheus.io/docs/prometheus/latest/federation/#configuring-federation
+for K8S in ${CTLP} ${TEST} ${PROD}; do
   echo; echo "### Install Prometheus on kind-${K8S} ###"; echo
   kubectl config use-context kind-${K8S}
   # Install
   helm install prometheus prometheus-community/kube-prometheus-stack \
     --namespace monitoring \
     --create-namespace \
-    --values ${WORKDIR}/helm-prometheus-federates.yml
+    --values ${WORKDIR}/helm-prometheus-${K8S}.yml
   # Expose
   kubectl -n monitoring expose service prometheus-kube-prometheus-prometheus \
     --name=prometheus-kube-prometheus-prometheus-lb \
     --type=LoadBalancer
 done
-
-echo; echo "### Install Prometheus on kind-${CTLP} ###"; echo
-kubectl config use-context kind-${CTLP}
-# Install
-helm install prometheus prometheus-community/kube-prometheus-stack \
-  --namespace monitoring \
-  --create-namespace \
-  --values ${WORKDIR}/helm-prometheus-ctlplane.yml
-# Expose
-kubectl -n monitoring expose service prometheus-kube-prometheus-prometheus \
-  --name=prometheus-kube-prometheus-prometheus-lb \
-  --type=LoadBalancer
 
 # To fix metrics expositions
 # Check https://artifacthub.io/packages/helm/kube-prometheus-stack-oci/kube-prometheus-stack/14.2.0#kubeproxy
