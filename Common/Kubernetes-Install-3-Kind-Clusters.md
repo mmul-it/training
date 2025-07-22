@@ -19,15 +19,15 @@ Because of the high number of processes that will be executed, some Linux system
 tweaks are suggested:
 
 ```console
-$ echo fs.inotify.max_user_watches=655360 | sudo tee -a /etc/sysctl.conf
-fs.inotify.max_user_watches=655360
+$ echo fs.inotify.max_user_watches=1310720 | sudo tee -a /etc/sysctl.conf
+fs.inotify.max_user_watches=1310720
 
-$ echo fs.inotify.max_user_instances=1280 | sudo tee -a /etc/sysctl.conf
-fs.inotify.max_user_instances=1280
+$ echo fs.inotify.max_user_instances=2560 | sudo tee -a /etc/sysctl.conf
+fs.inotify.max_user_instances=2560
 
 $ sudo sysctl -p
-fs.inotify.max_user_watches = 655360
-fs.inotify.max_user_instances = 1280
+fs.inotify.max_user_watches = 1310720
+fs.inotify.max_user_instances = 2560
 ```
 
 Check [this issue](https://github.com/kubernetes-sigs/kind/issues/2744) for
@@ -64,19 +64,12 @@ port:
 To do so, a specific configuration file should be created for each instance,
 and passed to the `kind create cluster` command.
 
-For the `kind-ctlplane` cluster (check [kind-ctlplane](kind-ctlplane-config.yml)):
+For the `kind-ctlplane` cluster download [kind-ctlplane-config.yml](kind-ctlplane-config.yml)
+and pass it to the `--config` option:
 
 ```console
-$ cat <<EOF > kind-ctlplane-config.yml
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-networking:
-  apiServerAddress: "172.18.0.1"
-  apiServerPort: 6443
-nodes:
-- role: control-plane
-  image: kindest/node:v1.31.0
-EOF
+$ curl -s -LO https://raw.githubusercontent.com/kiratech/labs/refs/heads/main/Common/kind/kind-ctlplane-config.yml
+(no output)
 
 $ kind create cluster --name ctlplane --config kind-ctlplane-config.yml
 Creating cluster "ctlplane" ...
@@ -94,19 +87,11 @@ kubectl cluster-info --context kind-ctlplane
 Thanks for using kind! 😊
 ```
 
-For the `kind-test` cluster (check [kind-test-config.yml](kind-test-config.yml)):
+For the `kind-test` cluster download [kind-test-config.yml](kind-test-config.yml):
 
 ```console
-$ cat <<EOF > kind-test-config.yml
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-networking:
-  apiServerAddress: "172.18.0.1"
-  apiServerPort: 7443
-nodes:
-- role: control-plane
-  image: kindest/node:v1.31.0
-EOF
+$ curl -s -LO https://raw.githubusercontent.com/kiratech/labs/refs/heads/main/Common/kind/kind-test-config.yml
+(no output)
 
 $ kind create cluster --name test --config kind-test-config.yml
 Creating cluster "test" ...
@@ -124,19 +109,11 @@ kubectl cluster-info --context kind-test
 Have a nice day! 👋
 ```
 
-For the `kind-prod` cluster (check [kind-prod-config.yml](kind-prod-config.yml)):
+For the `kind-prod` cluster download [kind-prod-config.yml](kind-prod-config.yml):
 
 ```console
-$ cat <<EOF > kind-prod-config.yml
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-networking:
-  apiServerAddress: "172.18.0.1"
-  apiServerPort: 8443
-nodes:
-- role: control-plane
-  image: kindest/node:v1.31.0
-EOF
+$ curl -s -LO https://raw.githubusercontent.com/kiratech/labs/refs/heads/main/Common/kind/kind-prod-config.yml
+(no output)
 
 $ kind create cluster --name prod --config kind-prod-config.yml
 Creating cluster "prod" ...

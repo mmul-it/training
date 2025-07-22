@@ -52,28 +52,12 @@ pod/speaker-62ws5 condition met
 
 To define the IP range that the MetalLB load balancer will assign two Kubernetes
 resources should be created, the `IPAddressPool` and the `L2Advertisement`
-(check [kind-ctlplane-metallb-pools.yml](kind-ctlplane-metallb-pools.yml)):
+download [kind-ctlplane-metallb-pools.yml](kind-ctlplane-metallb-pools.yml)) and
+pass it to the `kubectl apply -f` command:
 
 ```console
-$ cat <<EOF > kind-ctlplane-metallb-pools.yml
-apiVersion: metallb.io/v1beta1
-kind: IPAddressPool
-metadata:
-  name: mypool
-  namespace: metallb-system
-spec:
-  addresses:
-  - 172.18.0.100-172.18.0.110
----
-apiVersion: metallb.io/v1beta1
-kind: L2Advertisement
-metadata:
-  name: mypool
-  namespace: metallb-system
-spec:
-  ipAddressPools:
-  - mypool
-EOF
+$ curl -s -LO https://raw.githubusercontent.com/kiratech/labs/refs/heads/main/Common/kind/kind-ctlplane-metallb-pools.yml
+(no output)
 
 $ kubectl apply -f kind-ctlplane-metallb-pools.yml
 ipaddresspool.metallb.io/mypool created
@@ -110,29 +94,11 @@ pod/speaker-wtmgf condition met
 ```
 
 This time the load balancer IP range will be from `172.18.0.120` to
-`172.18.0.130`
-(check [kind-test-metallb-pools.yml](kind-test-metallb-pools.yml)):
+`172.18.0.130`, download [kind-test-metallb-pools.yml](kind-test-metallb-pools.yml):
 
 ```console
-$ cat <<EOF > kind-test-metallb-pools.yml
-apiVersion: metallb.io/v1beta1
-kind: IPAddressPool
-metadata:
-  name: mypool
-  namespace: metallb-system
-spec:
-  addresses:
-  - 172.18.0.120-172.18.0.130
----
-apiVersion: metallb.io/v1beta1
-kind: L2Advertisement
-metadata:
-  name: mypool
-  namespace: metallb-system
-spec:
-  ipAddressPools:
-  - mypool
-EOF
+$ curl -s -LO https://raw.githubusercontent.com/kiratech/labs/refs/heads/main/Common/kind/kind-test-metallb-pools.yml
+(no output)
 
 $ kubectl apply -f kind-test-metallb-pools.yml
 ipaddresspool.metallb.io/mypool created
@@ -165,29 +131,12 @@ pod/controller-756c6b677-znd5z condition met
 pod/speaker-gjznh condition met
 ```
 
-This time the IP range will be from `172.18.0.140` to `172.18.0.150`
-(check [kind-prod-metallb-pools.yml](kind-prod-metallb-pools.yml)):
+This time the IP range will be from `172.18.0.140` to `172.18.0.150`,
+download [kind-prod-metallb-pools.yml](kind-prod-metallb-pools.yml):
 
 ```console
-$ cat <<EOF > kind-prod-metallb-pools.yml
-apiVersion: metallb.io/v1beta1
-kind: IPAddressPool
-metadata:
-  name: mypool
-  namespace: metallb-system
-spec:
-  addresses:
-  - 172.18.0.140-172.18.0.150
----
-apiVersion: metallb.io/v1beta1
-kind: L2Advertisement
-metadata:
-  name: mypool
-  namespace: metallb-system
-spec:
-  ipAddressPools:
-  - mypool
-EOF
+$ curl -s -LO https://raw.githubusercontent.com/kiratech/labs/refs/heads/main/Common/kind/kind-prod-metallb-pools.yml
+(no output)
 
 $ kubectl apply -f kind-prod-metallb-pools.yml
 ipaddresspool.metallb.io/mypool created
@@ -199,4 +148,5 @@ Now all the three clusters will be able to expose service using their IP pools.
 ## Automation
 
 Note that all the above steps, including the [3 clusters installation](Kubernetes-Install-3-Kind-Clusters.md)
-can be automated by launching the script [kind/kind-create-infrastructure.sh](kind/kind-create-infrastructure.sh).
+can be automated by cloning this repository and launching the script
+[kind/kind-create-infrastructure.sh](kind/kind-create-infrastructure.sh).
