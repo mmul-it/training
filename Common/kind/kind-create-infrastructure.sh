@@ -11,15 +11,15 @@ WORKDIR=$(dirname "$0")
 # Because of the high number of processes that will be executed, some Linux
 # system tweaks are suggested:
 if grep -q "^fs.inotify.max_user_watches=" /etc/sysctl.conf; then
-  sudo sed -i 's/^fs.inotify.max_user_watches=.*/fs.inotify.max_user_watches=655360/' /etc/sysctl.conf
+  sudo sed -i 's/^fs.inotify.max_user_watches=.*/fs.inotify.max_user_watches=1310720/' /etc/sysctl.conf
 else
-  echo "fs.inotify.max_user_watches=655360" | sudo tee -a /etc/sysctl.conf
+  echo "fs.inotify.max_user_watches=1310720" | sudo tee -a /etc/sysctl.conf
 fi
 
 if grep -q "^fs.inotify.max_user_instances=" /etc/sysctl.conf; then
-  sudo sed -i 's/^fs.inotify.max_user_instances=.*/fs.inotify.max_user_instances=1280/' /etc/sysctl.conf
+  sudo sed -i 's/^fs.inotify.max_user_instances=.*/fs.inotify.max_user_instances=2560/' /etc/sysctl.conf
 else
-  echo "fs.inotify.max_user_instances=1280" | sudo tee -a /etc/sysctl.conf
+  echo "fs.inotify.max_user_instances=2560" | sudo tee -a /etc/sysctl.conf
 fi
 
 # Reload sysctl to apply changes
