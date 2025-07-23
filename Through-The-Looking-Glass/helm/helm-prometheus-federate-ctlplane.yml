@@ -1,0 +1,10 @@
+grafana:
+  enabled: false
+
+alertmanager:
+  enabled: false
+
+prometheus:
+  prometheusSpec:
+    externalLabels:
+      cluster: "ctlplane"

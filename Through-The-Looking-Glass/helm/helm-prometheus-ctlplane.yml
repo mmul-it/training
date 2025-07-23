@@ -1,8 +1,39 @@
+# Helm chart for the Prometheus that will collect metrics from all the others
+
+# Disable all monitoring components
 grafana:
   enabled: false
-
 alertmanager:
   enabled: false
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubelet:
+  enabled: false
+coreDns:
+  enabled: false
+nodeExporter:
+  enabled: false
+kubeProxy:
+  enabled: false
+kubeApiServer:
+  enabled: false
+kubeStateMetrics:
+  enabled: false
+kubeEtcd:
+  enabled: false
+
+# Disable auto service monitors and role creation
+prometheusOperator:
+  prometheusConfigReloader:
+    enableProbe: false
+  createCustomResource: false
+  admissionWebhooks:
+    enabled: false
+  cleanupCustomResource: false
+  rbac:
+    create: false
 
 prometheus:
   prometheusSpec:
@@ -18,7 +49,8 @@ prometheus:
       # This is used to scrape from the otel-collector exposed metrics
       - job_name: 'otel-collector'
         static_configs:
-          - targets: ['otel-collector-opentelemetry-collector.otel-collector.svc.cluster.local:9090']
+          - targets:
+            - otel-collector-opentelemetry-collector.otel-collector.svc.cluster.local:9090
       # This is used to scrape from the federated Prometheus on the prod
       # and test k8s clusters
       - job_name: 'federate'
@@ -26,21 +58,15 @@ prometheus:
         metrics_path: '/federate'
         params:
           'match[]':
-            - '{__name__=~"node_.*"}'
-            - '{__name__=~"kube_.*"}'
-            - '{__name__=~"container_.*"}'
-            - '{job="kubernetes-apiservers"}'
-            - 'up'
+            - '{__name__!=""}'
+            # Metrics can be also selected specifically
+            #- '{__name__=~"node_.*"}'
+            #- '{__name__=~"kube_.*"}'
+            #- '{__name__=~"container_.*"}'
+            #- '{job="kubernetes-apiservers"}'
+            #- 'up'
         static_configs:
           - targets:
+            - 'prometheus-federate-kube-p-prometheus.prometheus-federate.svc.cluster.local:9090'
             - '172.18.0.120:9090'
             - '172.18.0.140:9090'
-        relabel_configs:
-          - source_labels: [__address__]
-            regex: '172.18.0.120:9090'
-            target_label: federated_cluster
-            replacement: 'prod'
-          - source_labels: [__address__]
-            regex: '172.18.0.140:9090'
-            target_label: federated_cluster
-            replacement: 'test'
