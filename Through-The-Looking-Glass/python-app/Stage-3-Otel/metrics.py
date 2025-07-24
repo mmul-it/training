@@ -19,13 +19,18 @@ def init(metrics_endpoint, app_name):
     resource = Resource.create(attributes={"service.name": app_name})
 
     # Set up OTLP exporter to send metrics to the OpenTelemetry Collector
-    otlp_exporter = OTLPMetricExporter(endpoint=metrics_endpoint, insecure=True)  # Replace with your collector's endpoint
-    otlp_metric_reader = PeriodicExportingMetricReader(otlp_exporter, export_interval_millis=1000)  # Export every second
+    otlp_exporter = OTLPMetricExporter(endpoint=metrics_endpoint, insecure=True)
+
+    # Export every second
+    otlp_metric_reader = PeriodicExportingMetricReader(otlp_exporter, export_interval_millis=1000)
 
     # Initialize MeterProvider with the reader
     provider = MeterProvider(resource=resource, metric_readers=[otlp_metric_reader])
+
+    # Register the provider as the global one for the app
     metrics.set_meter_provider(provider)
 
+    # Get a meter instance scoped to this module
     meter = metrics.get_meter(__name__)
 
     # Define your metrics objects
