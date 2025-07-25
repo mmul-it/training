@@ -2,21 +2,41 @@
 
 Simulate a frontend/backend application traces.
 
-## The Jaeger installation
+## Preparation
 
-Jaeger can be deployed under Kubernetes, using Helm.
-
-Follow: [https://medium.com/@blackhorseya/deploying-opentelemetry-and-jaeger-with-helm-on-kubernetes-d86cc8ba0332]()
+The Helm chart used to install Jaeger are available at [https://jaegertracing.github.io/helm-charts](https://jaegertracing.github.io/helm-charts)
+and can be configured locally as follows:
 
 ```console
 $ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 "jaegertracing" has been added to your repositories
 
 $ helm repo update
-...
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "jaegertracing" chart repository
 Update Complete. ⎈Happy Helming!⎈
 
-$ helm upgrade --install jaeger jaegertracing/jaeger --namespace jaeger --create-namespace --values helm/helm-jaeger-ctlplane.yml
+```
+
+A pre filled Helm values file should be locally downloaded from this repository:
+
+- [helm/helm-jaeger-ctlplane.yml](helm/helm-jaeger-ctlplane.yml)
+
+This will configure Jaeger with essential services.
+
+An additional script, named [send-traces-to-Jaeger-via-curl.sh](send-traces-to-Jaeger-via-curl.sh)
+will be used to test traces shipment to the Jaeger instance.
+
+## The Jaeger installation
+
+This command will install Jaeger under Kubernetes using Helm with the previously
+downloaded values file:
+
+```console
+$ helm upgrade --install jaeger jaegertracing/jaeger \
+    --namespace jaeger \
+    --create-namespace \
+    --values helm-jaeger-ctlplane.yml
 Release "jaeger" does not exist. Installing it now.
 NAME: jaeger
 LAST DEPLOYED: Thu Dec 12 10:48:04 2024
@@ -60,10 +80,10 @@ service/jaeger-query-lb exposed
 ## Test manually
 
 Testing the Jaeger instance is possible with a simple `curl` command, by using
-the `send-traces-to-Jaeger-via-curl.sh:
+the `send-traces-to-Jaeger-via-curl.sh` script:
 
 ```console
-$ ./send-traces-to-Jaeger-via-curl.sh 
+$ ./send-traces-to-Jaeger-via-curl.sh
 SUCCESS. Trace DE8385685F7492CF sent to 172.18.0.109:9411.
 ```
 
