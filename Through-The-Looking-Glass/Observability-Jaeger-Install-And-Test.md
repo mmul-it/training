@@ -1,6 +1,6 @@
 # Lab | Manual test a Jaeger instance
 
-Simulate a frontend/backend application traces.
+Simulate a frontend/backend application traces using Jaeger.
 
 ## Preparation
 
@@ -60,8 +60,10 @@ You can log into the Jaeger Query UI here:
   kubectl port-forward --namespace jaeger $POD_NAME 8080:16686
 ```
 
-To access the service from the outside, a `LoadBalancer` service should be
-created:
+To access the service from the outside, two `LoadBalancer` services should be
+created, one related to the `jaeger-collector` (port 9411), where the traces
+will be sent, the other related to the `jaeger-query` (port 16686), that will
+be accessed for the queries:
 
 ```console
 $ kubectl -n jaeger expose svc jaeger-collector \
