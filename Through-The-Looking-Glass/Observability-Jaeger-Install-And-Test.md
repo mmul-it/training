@@ -33,7 +33,11 @@ This command will install Jaeger under Kubernetes using Helm with the previously
 downloaded values file:
 
 ```console
+$ export JAEGER_HELM_CHART='3.4.1'
+(no output)
+
 $ helm upgrade --install jaeger jaegertracing/jaeger \
+    --version ${JAEGER_HELM_CHART} \
     --namespace jaeger \
     --create-namespace \
     --values helm-jaeger-ctlplane.yml
@@ -66,16 +70,16 @@ will be sent, the other related to the `jaeger-query` (port 16686), that will
 be accessed for the queries:
 
 ```console
-$ kubectl -n jaeger expose svc jaeger-collector \
-    --name=jaeger-collector-lb \
-    --type=LoadBalancer \
-    --load-balancer-ip=172.18.0.109
+$ kubectl --namespace=jaeger expose svc jaeger-collector \
+    --name jaeger-collector-lb \
+    --type LoadBalancer \
+    --load-balancer-ip 172.18.0.109
 service/jaeger-collector-lb exposed
 
-$ kubectl -n jaeger expose svc jaeger-query \
-    --name=jaeger-query-lb \
-    --type=LoadBalancer \
-    --load-balancer-ip=172.18.0.110
+$ kubectl --namespace=jaeger expose svc jaeger-query \
+    --name jaeger-query-lb \
+    --type LoadBalancer \
+    --load-balancer-ip 172.18.0.110
 service/jaeger-query-lb exposed
 ```
 

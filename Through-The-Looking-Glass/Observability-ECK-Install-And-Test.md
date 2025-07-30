@@ -16,7 +16,11 @@ Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "elastic" chart repository
 Update Complete. ⎈Happy Helming!⎈
 
-$ helm install elastic-operator elastic/eck-operator -n elastic-system --create-namespace
+$ export ECK_OPERATOR_HELM_CHART='3.1.0'
+
+$ helm install elastic-operator elastic/eck-operator \
+    --version ${ECK_OPERATOR_HELM_CHART} \
+    --namespace elastic-system --create-namespace
 NAME: elastic-operator
 LAST DEPLOYED: Tue Jul 29 14:56:11 2025
 NAMESPACE: elastic-system
@@ -34,6 +38,8 @@ A standard ECK stack can be installed after fixing the `basic-eck.yaml` file
 [because of this bug](https://github.com/elastic/cloud-on-k8s/issues/6330) with:
 
 ```console
+$ export ECK_HELM_CHART='0.15.0'
+
 $ curl -sLO https://raw.githubusercontent.com/elastic/cloud-on-k8s/3.0/deploy/eck-stack/examples/logstash/basic-eck.yaml
 (no output)
 
@@ -41,6 +47,7 @@ $ sed -i '/daemonSet: null/d' basic-eck.yaml
 (no output)
 
 $ helm install eck-stack-with-logstash elastic/eck-stack \
+    --version ${ECK_HELM_CHART} \
     --values basic-eck.yaml \
     --create-namespace \
     --namespace eck
@@ -71,16 +78,16 @@ logs will be sent from filebeat, and `eck-stack-with-logstash-eck-kibana-kb-http
 ```console
 $ kubectl --context=kind-ctlplane --namespace=eck \
     expose service logstash-ls-beats-ls-beats \
-    --name=logstash-ls-beats-ls-beats-lb \
-    --type=LoadBalancer \
-    --load-balancer-ip=172.18.0.108
+    --name logstash-ls-beats-ls-beats-lb \
+    --type LoadBalancer \
+    --load-balancer-ip 172.18.0.108
 service/logstash-ls-beats-ls-beats-lb exposed
 
 $ kubectl --context=kind-ctlplane --namespace=eck \
     expose service eck-stack-with-logstash-eck-kibana-kb-http \
-    --name=eck-stack-with-logstash-eck-kibana-kb-http-lb \
-    --type=LoadBalancer \
-    --load-balancer-ip=172.18.0.107
+    --name eck-stack-with-logstash-eck-kibana-kb-http-lb \
+    --type LoadBalancer \
+    --load-balancer-ip 172.18.0.107
 service/eck-stack-with-logstash-eck-kibana-kb-http-lb exposed
 ```
 
@@ -131,7 +138,8 @@ To access the Kibana interface with the `elastic` user, you need to get the
 password that was generated for it:
 
 ```console
-$ kubectl -n eck get secret elasticsearch-es-elastic-user  -o go-template='{{.data.elastic | base64decode}}'
+$ kubectl --namespace eck get secret elasticsearch-es-elastic-user \
+    -o go-template='{{.data.elastic | base64decode}}'
 dx93u50Q8Mz9u19pSN01tLj
 ```
 

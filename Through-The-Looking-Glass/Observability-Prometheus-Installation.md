@@ -59,11 +59,15 @@ The IP addresses for the exposed service will be:
 This command sequence will install the Helm chart on each cluster:
 
 ```console
+$ export PROMETHEUS_HELM_CHART='75.15.1'
+(no output)
+
 $ for K8S in ctlplane test prod; do
   echo; echo "### Install Prometheus Federate on kind-${K8S} ###"; echo
   kubectl config use-context kind-${K8S}
   # Install
   helm upgrade --install prometheus-federate prometheus-community/kube-prometheus-stack \
+    --version ${PROMETHEUS_HELM_CHART} \
     --namespace prometheus-federate \
     --create-namespace \
     --values helm-prometheus-federate-${K8S}.yml
@@ -101,25 +105,25 @@ Exposing the different services with the defined IPs will be done by using the
 `kubectl expose` command:
 
 ```console
-$ kubectl --context=kind-ctlplane --namespace=prometheus-federate \
+$ kubectl --context kind-ctlplane --namespace prometheus-federate \
     expose service prometheus-federate-kube-p-prometheus \
-    --name=prometheus-federate-kube-p-prometheus-lb \
-    --type=LoadBalancer \
-    --load-balancer-ip=172.18.0.101
+    --name prometheus-federate-kube-p-prometheus-lb \
+    --type LoadBalancer \
+    --load-balancer-ip 172.18.0.101
 service/prometheus-federate-kube-p-prometheus-lb exposed
 
-$ kubectl --context=kind-test --namespace=prometheus-federate \
+$ kubectl --context kind-test --namespace prometheus-federate \
     expose service prometheus-federate-kube-p-prometheus \
-    --name=prometheus-federate-kube-p-prometheus-lb \
-    --type=LoadBalancer \
-    --load-balancer-ip=172.18.0.120
+    --name prometheus-federate-kube-p-prometheus-lb \
+    --type LoadBalancer \
+    --load-balancer-ip 172.18.0.120
 service/prometheus-federate-kube-p-prometheus-lb exposed
 
-$ kubectl --context=kind-prod --namespace=prometheus-federate \
+$ kubectl --context kind-prod --namespace prometheus-federate \
     expose service prometheus-federate-kube-p-prometheus \
-    --name=prometheus-federate-kube-p-prometheus-lb \
-    --type=LoadBalancer \
-    --load-balancer-ip=172.18.0.140
+    --name prometheus-federate-kube-p-prometheus-lb \
+    --type LoadBalancer \
+    --load-balancer-ip 172.18.0.140
 service/prometheus-federate-kube-p-prometheus-lb exposed
 ```
 
@@ -203,6 +207,7 @@ $ kubectl config use-context kind-ctlplane
 Switched to context "kind-ctlplane".
 
 $ helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
+  --version ${PROMETHEUS_HELM_CHART} \
   --namespace prometheus \
   --create-namespace \
   --values helm-prometheus-ctlplane.yml
@@ -218,9 +223,9 @@ This service will be exposed at the `172.18.0.100` IP:
 ```console
 $ kubectl --context kind-ctlplane --namespace prometheus \
     expose service prometheus-kube-prometheus-prometheus \
-    --name=prometheus-kube-prometheus-prometheus-lb \
-    --type=LoadBalancer \
-    --load-balancer-ip=172.18.0.100
+    --name prometheus-kube-prometheus-prometheus-lb \
+    --type LoadBalancer \
+    --load-balancer-ip 172.18.0.100
 service/prometheus-kube-prometheus-prometheus-lb exposed
 ```
 
