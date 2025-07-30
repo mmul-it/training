@@ -1,6 +1,6 @@
 # Lab | Manual test an ECK suite
 
-Simulate logs from command line to the Logstash component of the ECCK suite.
+Simulate logs from command line to the Logstash component of the ECK suite.
 
 ## Preparation
 
@@ -131,6 +131,20 @@ $  echo "This is my test log line" | filebeat -e -c filebeat-custom.yml
 ```
 
 The `filebeat` command will remain opened until you press Ctrl+C.
+
+It is also possible to test everything by using an infinite loop to simulate
+logs coming from application, in this way:
+
+```console
+$ while true; do
+    echo "$(date) - $(shuf -n1 -e 'INFO: info log message' 'WARN: warning log message' 'ERROR: error log message' 'DEBUG: debug log message')"
+    sleep 1
+  sone | filebeat -e -c filebeat-custom.yml
+...
+```
+
+This will send, every second, one of the four log sample messages to the
+Logstash instance.
 
 ### Access Kibana to see the logs
 
