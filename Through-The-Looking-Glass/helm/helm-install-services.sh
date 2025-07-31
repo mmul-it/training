@@ -120,7 +120,7 @@ helm upgrade --install otel-collector open-telemetry/opentelemetry-collector \
   --version ${OTEL_HELM_CHART} \
   --create-namespace \
   --namespace otel-collector \
-  -f ${WORKDIR}/helm-opentelemetry-collector.yml
+  -f ${WORKDIR}/helm-otel-collector-ctlplane.yml
 # Expose
 kubectl --namespace otel-collector delete service otel-collector-lb 2> /dev/null || true
 kubectl --namespace otel-collector expose service otel-collector-opentelemetry-collector \
