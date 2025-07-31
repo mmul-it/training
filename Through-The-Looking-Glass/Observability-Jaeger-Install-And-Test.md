@@ -4,7 +4,7 @@ Simulate a frontend/backend application traces using Jaeger.
 
 ## Preparation
 
-The Helm chart used to install Jaeger are available at [https://jaegertracing.github.io/helm-charts](https://jaegertracing.github.io/helm-charts)
+The Helm chart used to install Jaeger are available at [https://jaegertracing.github.io/helm-charts]()
 and can be configured locally as follows:
 
 ```console
@@ -20,12 +20,12 @@ Update Complete. ⎈Happy Helming!⎈
 
 A pre filled Helm values file should be locally downloaded from this repository:
 
-- [helm/helm-jaeger-ctlplane.yml](helm/helm-jaeger-ctlplane.yml)
+- [helm/helm-jaeger-ctlplane.yml]()
 
 This will configure Jaeger with essential services.
 
-An additional script, named [send-traces-to-Jaeger-via-curl.sh](send-traces-to-Jaeger-via-curl.sh)
-will be used to test traces shipment to the Jaeger instance.
+An additional script, named [send-traces-to-Jaeger-via-curl.sh]() will be used
+to test traces shipment to the Jaeger instance.
 
 ## The Jaeger installation
 

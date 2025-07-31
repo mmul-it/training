@@ -157,8 +157,8 @@ $ kubectl --namespace eck get secret elasticsearch-es-elastic-user \
 dx93u50Q8Mz9u19pSN01tLj
 ```
 
-And login into [https://172.18.0.107:5601](https://172.18.0.107:5601) (accepting
-the certificate) using the `elastic` user.
+And login into [https://172.18.0.107:5601]() (accepting the certificate) using
+the `elastic` user.
 
 You should be already able to see the log message pushed into the interface:
 

@@ -24,7 +24,7 @@ INFO:werkzeug:WARNING: This is a development server. Do not use it in a producti
 INFO:werkzeug:Press CTRL+C to quit
 ```
 
-The frontend application will be listening at the [http://172.18.0.1:5000](http://172.18.0.1:5000)
+The frontend application will be listening at the [http://172.18.0.1:5000]()
 address.
 
 ## Simulate traffic

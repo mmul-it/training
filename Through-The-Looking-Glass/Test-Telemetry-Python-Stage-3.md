@@ -131,7 +131,7 @@ $ kubectl -n otel-collector get svc otel-collector-lb -o jsonpath='{.status.load
 ### Prometheus
 
 The Prometheus instance needs to be configured to scrape from the
-`otel-collector` instance, and as declared in the [helm-prometheus-ctlplane.yml](helm-prometheus-ctlplane.yml)
+`otel-collector` instance, and as declared in the [helm/helm-prometheus-ctlplane.yml]()
 the specific configuration part is:
 
 ```yaml
@@ -209,7 +209,7 @@ Press CTRL+C to quit
  * Debugger PIN: 197-316-231
 ```
 
-The frontend application will, as usual, be listening at the [http://172.18.0.1:5000](http://172.18.0.1:5000)
+The frontend application will, as usual, be listening at the [http://172.18.0.1:5000]()
 address.
 
 Note that since the scrape configuration for Prometheus on the stage 2

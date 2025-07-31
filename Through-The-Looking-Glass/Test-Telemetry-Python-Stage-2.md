@@ -8,7 +8,7 @@ telemetry data to the backends.
 To make the app work properly at this stage the Prometheus instance configured
 inside the Kubernetes control plane should be configured with the ability to
 scrape from the Frontend and Backend `/metrics` locations, as declared in the
-[helm-prometheus-ctlplane.yml](helm-prometheus-ctlplane.yml) configuration file:
+[helm/helm-prometheus-ctlplane.yml]() configuration file:
 
 ```yaml
 grafana:
@@ -76,7 +76,7 @@ INFO:werkzeug:WARNING: This is a development server. Do not use it in a producti
 INFO:werkzeug:Press CTRL+C to quit
 ```
 
-The frontend application will, as usual, be listening at the [http://172.18.0.1:5000](http://172.18.0.1:5000)
+The frontend application will, as usual, be listening at the [http://172.18.0.1:5000]()
 address.
 
 Since the beginning, without invoking it, there will be some calls directed to

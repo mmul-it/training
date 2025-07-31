@@ -6,7 +6,7 @@ with one collector and three federated instances.
 
 ## Preparation
 
-The Helm chart used to intall Prometheus are available at [https://prometheus-community.github.io/helm-charts]()
+The Helm chart used to install Prometheus is available at [https://prometheus-community.github.io/helm-charts]()
 and can be configured locally as follows:
 
 ```console
@@ -22,10 +22,10 @@ Update Complete. ⎈Happy Helming!⎈
 For each instance a pre filled Helm values file should be locally downloaded
 from this repository:
 
-- [helm/helm-prometheus-ctlplane.yml](helm/helm-prometheus-ctlplane.yml)
-- [helm/helm-prometheus-federate-ctlplane.yml](helm/helm-prometheus-federate-ctlplane.yml)
-- [helm/helm-prometheus-federate-test.yml](helm/helm-prometheus-federate-test.yml)
-- [helm/helm-prometheus-federate-prod.yml](helm/helm-prometheus-federate-prod.yml)
+- [helm/helm-prometheus-ctlplane.yml]()
+- [helm/helm-prometheus-federate-ctlplane.yml]()
+- [helm/helm-prometheus-federate-test.yml]()
+- [helm/helm-prometheus-federate-prod.yml]()
 
 ## Prometheus federate installation
 
@@ -231,7 +231,7 @@ service/prometheus-kube-prometheus-prometheus-lb exposed
 
 ## Prometheus queries
 
-By pointing the collector address at [http://172.18.0.100:9090](http://172.18.0.100:9090)
+By pointing the collector address at [http://172.18.0.100:9090]()
 using a browser or a combination of `curl` and `jq` (to parse JSON output) it
 is possible to get the metrics from all the targets. Here are some examples.
 
