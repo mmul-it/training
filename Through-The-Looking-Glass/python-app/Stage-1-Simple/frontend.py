@@ -11,7 +11,7 @@ from flask import Flask, request
 # Initialize Flask App
 app = Flask(variables.APP_FRONTEND_NAME)
 
-# Set log level
+# Initialize basic logging
 logging.basicConfig(level=logging.INFO)
 
 # Define the / path for the application

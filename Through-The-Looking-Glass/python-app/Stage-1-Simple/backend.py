@@ -10,6 +10,7 @@ from flask import Flask, request
 # Initialize Flask App
 app = Flask(variables.APP_BACKEND_NAME)
 
+# Initialize basic logging
 logging.basicConfig(level=logging.INFO)
 
 # Define the /process path for the application

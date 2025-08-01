@@ -1,8 +1,8 @@
 from opentelemetry import metrics
+from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
 from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExporter
-from opentelemetry.sdk.resources import Resource
 
 from opentelemetry import trace
 from opentelemetry.trace import set_span_in_context
@@ -12,11 +12,14 @@ REQUEST_COUNTER = None
 REQUEST_LATENCY = None
 REQUEST_DURATION = None
 
+# METRICS
+
 def init(metrics_endpoint, app_name):
+    # Define meter variables as global to be used everywhere
     global REQUEST_COUNTER, REQUEST_LATENCY, REQUEST_DURATION
 
-    # Initialize OpenTelemetry metrics
-    resource = Resource.create(attributes={"service.name": app_name})
+    # Create OpenTelemetry resource
+    otlp_resource = Resource.create(attributes={"service.name": app_name})
 
     # Set up OTLP exporter to send metrics to the OpenTelemetry Collector
     otlp_exporter = OTLPMetricExporter(endpoint=metrics_endpoint, insecure=True)
@@ -25,10 +28,10 @@ def init(metrics_endpoint, app_name):
     otlp_metric_reader = PeriodicExportingMetricReader(otlp_exporter, export_interval_millis=1000)
 
     # Initialize MeterProvider with the reader
-    provider = MeterProvider(resource=resource, metric_readers=[otlp_metric_reader])
+    otlp_meter_provider = MeterProvider(resource=otlp_resource, metric_readers=[otlp_metric_reader])
 
     # Register the provider as the global one for the app
-    metrics.set_meter_provider(provider)
+    metrics.set_meter_provider(otlp_meter_provider)
 
     # Get a meter instance scoped to this module
     meter = metrics.get_meter(__name__)
