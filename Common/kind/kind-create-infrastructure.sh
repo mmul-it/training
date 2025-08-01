@@ -2,28 +2,29 @@
 
 set -e
 
-CTLP="ctlplane"
-TEST="test"
-PROD="prod"
+CTLP='ctlplane'
+TEST='test'
+PROD='prod'
 
 WORKDIR=$(dirname "$0")
 
 # Because of the high number of processes that will be executed, some Linux
 # system tweaks are suggested:
-if grep -q "^fs.inotify.max_user_watches=" /etc/sysctl.conf; then
-  sudo sed -i 's/^fs.inotify.max_user_watches=.*/fs.inotify.max_user_watches=1310720/' /etc/sysctl.conf
+SYSCTL_CONF='/etc/sysctl.d/kind.conf'
+if grep -q '^fs.inotify.max_user_watches=' ${SYSCTL_CONF}; then
+  sudo sed -i 's/^fs.inotify.max_user_watches=.*/fs.inotify.max_user_watches=1310720/' ${SYSCTL_CONF}
 else
-  echo "fs.inotify.max_user_watches=1310720" | sudo tee -a /etc/sysctl.conf
+  echo 'fs.inotify.max_user_watches=1310720' | sudo tee -a ${SYSCTL_CONF}
 fi
 
-if grep -q "^fs.inotify.max_user_instances=" /etc/sysctl.conf; then
-  sudo sed -i 's/^fs.inotify.max_user_instances=.*/fs.inotify.max_user_instances=2560/' /etc/sysctl.conf
+if grep -q '^fs.inotify.max_user_instances=' ${SYSCTL_CONF}; then
+  sudo sed -i 's/^fs.inotify.max_user_instances=.*/fs.inotify.max_user_instances=2560/' ${SYSCTL_CONF}
 else
-  echo "fs.inotify.max_user_instances=2560" | sudo tee -a /etc/sysctl.conf
+  echo 'fs.inotify.max_user_instances=2560' | sudo tee -a ${SYSCTL_CONF}
 fi
 
-# Reload sysctl to apply changes
-sudo sysctl -p
+# Reload systemd-sysctl to apply changes
+sudo systemctl reload systemd-sysctl.service
 
 # In certain systems using the local DNS could lead to unexpected Kind/K8s
 # behaviors, like resolving every service address with the 127.0.0.2 IP.
