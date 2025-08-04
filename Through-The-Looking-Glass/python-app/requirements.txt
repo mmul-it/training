@@ -1,5 +1,5 @@
 flask
-python-logging-loki
+python-logging-loki-v2
 prometheus-client
 opentelemetry-api==1.30.0
 opentelemetry-sdk==1.30.0

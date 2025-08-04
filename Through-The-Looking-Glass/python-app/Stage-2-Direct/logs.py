@@ -1,14 +1,12 @@
-import os
 import logging
 import logging_loki
-import requests
 
 # LOGS
 
 def init(logger_url, app_name):
     # Create a Loki log handler that adds a tag "application=<app_name>" to help
     # identify logs in Loki
-    loki_handler = logging_loki.LokiHandler(url=logger_url, tags={"application": app_name}, version="1")
+    loki_handler = logging_loki.LokiHandler(url=logger_url, tags={"application": app_name}, version="2")
 
     # Get or create a logger instance with the given application name
     logger = logging.getLogger(app_name)
