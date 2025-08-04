@@ -1,33 +1,25 @@
+---
 loki:
-  replicas: 1
-  schemaConfig:
-    configs:
-      - from: 2024-04-01
-        store: tsdb
-        object_store: filesystem
-        schema: v13
-        index:
-          prefix: loki_index_
-          period: 24h
-  ingester:
-    chunk_encoding: snappy
-    lifecycler:
-      ring:
-        replication_factor: 1
+  commonConfig:
+    replication_factor: 1
+  useTestSchema: true
+  storage:
+    bucketNames:
+      chunks: chunks
+      ruler: ruler
+      admin: admin
   auth_enabled: false
-
-deploymentMode: SimpleScalable
-
-limits_config:
-  index_gateway_shard_size: 1
-
-backend:
+  limits_config:
+    # Added after Stage 2 tests failing with
+    # ValueError: Unexpected Loki API response status code: 429
+    # Check: https://github.com/grafana/loki/issues/11836#issuecomment-2325531717
+    max_global_streams_per_user: 0
+deploymentMode: SingleBinary
+singleBinary:
   replicas: 1
 read:
-  replicas: 1
+  replicas: 0
 write:
-  replicas: 1
- 
-# Enable minio for storage
-minio:
-  enabled: true
+  replicas: 0
+backend:
+  replicas: 0
