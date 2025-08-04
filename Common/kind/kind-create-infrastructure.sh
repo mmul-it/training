@@ -24,7 +24,7 @@ else
 fi
 
 # Reload systemd-sysctl to apply changes
-sudo systemctl reload systemd-sysctl.service
+sudo systemctl restart systemd-sysctl.service
 
 # In certain systems using the local DNS could lead to unexpected Kind/K8s
 # behaviors, like resolving every service address with the 127.0.0.2 IP.
