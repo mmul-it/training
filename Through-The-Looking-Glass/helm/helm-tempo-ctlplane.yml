@@ -4,3 +4,6 @@ traces:
       enabled: true
     grpc:
       enabled: true
+  jaeger:
+    thrift_http:
+      enabled: true

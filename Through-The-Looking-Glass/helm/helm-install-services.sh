@@ -7,7 +7,7 @@ TEST="test"
 PROD="prod"
 
 PROMETHEUS_HELM_CHART='75.15.1'
-TEMPO_HELM_CHART='1.46.1'
+TEMPO_HELM_CHART='1.23.2'
 LOKI_HELM_CHART='6.33.0'
 OTEL_HELM_CHART='0.129.0'
 GRAFANA_HELM_CHART='9.3.0'
@@ -80,15 +80,16 @@ kubectl --namespace prometheus expose service prometheus-kube-prometheus-prometh
 
 echo; echo "### Install Tempo on kind-${CTLP} ###"; echo
 # Install
-helm upgrade --install tempo grafana/tempo-distributed \
+helm upgrade --install tempo grafana/tempo \
   --version ${TEMPO_HELM_CHART} \
   --namespace tempo \
   --create-namespace \
   --values ${WORKDIR}/helm-tempo-ctlplane.yml
 # Expose
-kubectl --namespace tempo delete service tempo-distributor-lb 2> /dev/null || true
-kubectl --namespace tempo expose service tempo-distributor \
-  --name tempo-distributor-lb \
+#  --name tempo-distributor-lb \
+kubectl --namespace tempo delete service tempo-lb 2> /dev/null || true
+kubectl --namespace tempo expose service tempo \
+  --name tempo-lb \
   --type LoadBalancer \
   --load-balancer-ip $(eval "echo \${TEMPO_${CTLP}}")
 
@@ -160,7 +161,7 @@ for K8S in ${CTLP} ${TEST} ${PROD}; do
 done
 kubectl config use-context kind-${CTLP}
 eval "SVC_PROMETHEUS_${CTLP}=$(kubectl --namespace prometheus get svc prometheus-kube-prometheus-prometheus-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
-eval "SVC_TEMPO_${CTLP}=$(kubectl --namespace tempo get svc tempo-distributor-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
+eval "SVC_TEMPO_${CTLP}=$(kubectl --namespace tempo get svc tempo-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
 eval "SVC_LOKI_${CTLP}=$(kubectl --namespace loki get svc loki-gateway-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
 eval "SVC_OTEL_${CTLP}=$(kubectl --namespace otel-collector get svc otel-collector-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
 eval "SVC_GRAFANA_${CTLP}=$(kubectl --namespace grafana get svc grafana-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}:{.spec.ports[0].port}')"
