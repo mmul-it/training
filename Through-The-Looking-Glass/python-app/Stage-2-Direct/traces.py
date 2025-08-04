@@ -1,43 +1,27 @@
-from opentelemetry import trace
-from opentelemetry.sdk.resources import Resource
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-from opentelemetry.instrumentation.requests import RequestsInstrumentor
-from opentelemetry.instrumentation.flask import FlaskInstrumentor
+from jaeger_client import Config
 
 # TRACES
 
-def init_provider(app_name):
-    # Create a Resource with service metadata (used for trace correlation and identification)
-    otlp_resource = Resource.create(attributes={"service.name": app_name})
+def init_tracer(traces_endpoint, app_name):
+    # Extract endpoint host and port
+    traces_host, traces_port = traces_endpoint.split(":")
 
-    # Initialize TracerProvider
-    otlp_tracer_provider = TracerProvider(resource=otlp_resource)
+    # Configure jaeger client
+    config = Config(
+        config={
+            'sampler': {'type': 'const', 'param': 1},
+            'logging': False,
+            'local_agent': {
+                'reporting_host': traces_host,
+                'reporting_port': traces_port,
+            },
+        },
+        service_name=app_name,
+        validate=True,
+    )
 
-    # Initialize the global TracerProvider with the defined resource
-    trace.set_tracer_provider(otlp_tracer_provider)
+    # Initialize tracer
+    tracer = config.initialize_tracer()
 
-    # Get a tracer instance for the application (used to create spans)
-    tracer = trace.get_tracer(app_name)
-
+    # Return the configured tracer so it can be used elsewhere
     return tracer
-
-
-def init_span(otlp_endpoint):
-    # Create an OTLP exporter to send spans to the specified backend (e.g., Tempo)
-    otlp_exporter = OTLPSpanExporter(endpoint=otlp_endpoint, insecure=True)
-
-    # Add a batch processor to handle span exporting efficiently
-    trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(otlp_exporter))
-
-    # Return the trace module for further use (optional, could be used to create spans)
-    return trace
-
-
-def init_flask(flask_app):
-    # Automatically instrument Flask app to generate spans for incoming HTTP requests
-    FlaskInstrumentor().instrument_app(flask_app)
-
-    # Automatically instrument HTTP client requests (e.g., requests.get)
-    RequestsInstrumentor().instrument()

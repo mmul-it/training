@@ -1,6 +1,8 @@
 flask
 python-logging-loki-v2
 prometheus-client
+jaeger-client
+six
 opentelemetry-api==1.30.0
 opentelemetry-sdk==1.30.0
 opentelemetry-instrumentation-logging
