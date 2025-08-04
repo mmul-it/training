@@ -8,7 +8,7 @@ echo "Starting traffic simulation..."
 
 while true; do
   # Generate a random number of parallel requests between 1 and 20
-  PARALLEL_REQUESTS=$((RANDOM % 50 + 1))
+  PARALLEL_REQUESTS=$((RANDOM % 10 + 1))
 
   # To simulate also direct calls to the BACKEND check if the random
   # number is even, and then call FRONTEND otherwise BACKEND
@@ -21,5 +21,5 @@ while true; do
   done
 
   # Wait a second and then restart
-  sleep 1  # Add a small delay between requests
+  sleep 3  # Add a small delay between requests
 done
