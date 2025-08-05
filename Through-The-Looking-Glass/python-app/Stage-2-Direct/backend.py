@@ -35,8 +35,6 @@ def process():
     with span:
         # Extract trace_id
         trace_id = format(span.trace_id, "x")
-        # Get the client IP remote address
-        client_ip = request.remote_addr
 
         # Simulate workload and record metrics based on trace_id
         start_time = time.time()
@@ -45,7 +43,7 @@ def process():
         metrics.record_request(duration, trace_id)
 
         # Record logs
-        message = f"Backend: Processing request from '{client_ip}'"
+        message = f"[Backend] Processing request from {request.remote_addr} source"
         logger.info(message, extra={"tags": {"trace_id": trace_id}})
 
         # Return with a message

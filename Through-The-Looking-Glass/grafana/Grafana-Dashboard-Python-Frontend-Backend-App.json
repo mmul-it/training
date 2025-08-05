@@ -29,7 +29,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "11.4.0"
+      "version": "12.1.0"
     },
     {
       "type": "panel",
@@ -41,7 +41,7 @@
       "type": "datasource",
       "id": "loki",
       "name": "Loki",
-      "version": "1.0.0"
+      "version": "12.1.0"
     },
     {
       "type": "datasource",
@@ -92,6 +92,7 @@
       "id": 1,
       "options": {
         "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
         "enableLogDetails": true,
         "prettifyLogMessage": false,
         "showCommonLabels": false,
@@ -100,13 +101,14 @@
         "sortOrder": "Descending",
         "wrapLogMessage": false
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "12.1.0",
       "targets": [
         {
           "datasource": {
             "type": "loki",
             "uid": "${DS_LOKI}"
           },
+          "direction": "backward",
           "editorMode": "builder",
           "expr": "{service_name=~\".+\"} |= `Frontend` or `Backend`",
           "queryType": "range",
@@ -140,7 +142,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "red",
@@ -173,7 +175,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "12.1.0",
       "targets": [
         {
           "datasource": {
@@ -183,7 +185,7 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "alice_request_duration_seconds",
+          "expr": "avg(alice_request_duration_seconds)",
           "fullMetaSearch": false,
           "hide": false,
           "includeNullMetadata": true,
@@ -201,10 +203,10 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "cheshire_request_duration_seconds",
+          "expr": "avg(cheshire_request_duration_seconds)",
           "fullMetaSearch": false,
           "hide": false,
-          "includeNullMetadata": true,
+          "includeNullMetadata": false,
           "instant": false,
           "legendFormat": "Backend request duration",
           "range": true,
@@ -264,7 +266,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "red",
@@ -290,11 +292,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "12.1.0",
       "targets": [
         {
           "datasource": {
@@ -304,7 +307,7 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "rate(alice_requests_total[$__rate_interval])",
+          "expr": "alice_requests_total",
           "fullMetaSearch": false,
           "hide": false,
           "includeNullMetadata": false,
@@ -322,7 +325,7 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "rate(cheshire_requests_total[$__rate_interval])",
+          "expr": "cheshire_requests_total",
           "fullMetaSearch": false,
           "hide": false,
           "includeNullMetadata": true,
@@ -385,7 +388,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "red",
@@ -411,11 +414,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "12.1.0",
       "targets": [
         {
           "datasource": {
@@ -425,7 +429,7 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "rate(alice_request_latency_seconds_bucket{le=\"5.0\"}[$__rate_interval])",
+          "expr": "sum by(instance) (rate(alice_request_latency_seconds_bucket[$__rate_interval]))",
           "format": "time_series",
           "fullMetaSearch": false,
           "hide": false,
@@ -444,7 +448,7 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "rate(cheshire_request_latency_seconds_bucket{le=\"5.0\"}[$__rate_interval])",
+          "expr": "sum by(instance) (rate(cheshire_request_latency_seconds_bucket[$__rate_interval]))",
           "format": "time_series",
           "fullMetaSearch": false,
           "includeNullMetadata": false,
@@ -459,20 +463,20 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "30s",
-  "schemaVersion": 40,
+  "refresh": "5s",
+  "schemaVersion": 41,
   "tags": [],
   "templating": {
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Python Frontend/Backend Monitoring",
   "uid": "aeerrjtbf8mpsc",
-  "version": 39,
+  "version": 3,
   "weekStart": ""
 }

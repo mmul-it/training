@@ -4,10 +4,6 @@ from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
 from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExporter
 
-from opentelemetry import trace
-from opentelemetry.trace import set_span_in_context
-from opentelemetry.context import attach, detach
-
 REQUEST_COUNTER = None
 REQUEST_LATENCY = None
 REQUEST_DURATION = None
@@ -36,24 +32,19 @@ def init(metrics_endpoint, app_name):
     # Get a meter instance scoped to this module
     meter = metrics.get_meter(__name__)
 
-    # Define your metrics objects
+    # Create metrics objects
     REQUEST_COUNTER = meter.create_counter(
         f"{app_name}_requests_total",
         description="Total number of processed requests (counter)",
-        unit="1",
-    )
-
+        unit="1")
     REQUEST_LATENCY = meter.create_histogram(
         f"{app_name}_request_latency_seconds",
         description="Latency for processing requests (histogram)",
-        unit="s",
-    )
-
+        unit="s")
     REQUEST_DURATION = meter.create_gauge(
         f"{app_name}_request_duration_seconds",
         description="Duration for processing single request (gauge)",
-        unit="s",
-    )
+        unit="s")
 
 def record_request(duration):
     REQUEST_COUNTER.add(1)

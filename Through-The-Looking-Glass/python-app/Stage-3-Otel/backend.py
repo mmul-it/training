@@ -36,6 +36,8 @@ def process_request():
         # Logs
         message = f"[Backend] Processing request from {request.remote_addr} source"
         logger.info(f"{message}")
+
+        # Return with a message
         return "Processed data in Backend!"
 
 # Execute Flask app

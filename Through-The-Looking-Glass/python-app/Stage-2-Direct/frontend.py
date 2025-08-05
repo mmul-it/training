@@ -7,7 +7,7 @@ import logs
 import metrics
 import variables
 
-from flask import Flask
+from flask import Flask, request
 from opentracing.propagation import Format
 
 # Flask app
@@ -44,7 +44,7 @@ def index():
         response = requests.get(variables.APP_BACKEND_URL, headers=headers)
 
         # Record logs
-        message = f"Frontend: request at '{variables.APP_BACKEND_URL}' endpoint completed"
+        message = f"[Frontend] Request from {request.remote_addr} to {variables.APP_BACKEND_URL} endpoint completed"
         logger.info(message, extra={"tags": {"trace_id": trace_id}})
 
         # Return with a message
