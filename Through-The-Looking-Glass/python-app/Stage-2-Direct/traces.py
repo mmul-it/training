@@ -13,7 +13,7 @@ def init_tracer(traces_endpoint, app_name):
             'logging': False,
             'local_agent': {
                 'reporting_host': traces_host,
-                'reporting_port': traces_port,
+                'reporting_port': int(traces_port),
             },
         },
         service_name=app_name,
