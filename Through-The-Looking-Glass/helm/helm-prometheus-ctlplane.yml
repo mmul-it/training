@@ -1,40 +1,4 @@
 # Helm chart for the Prometheus that will collect metrics from all the others
-
-# Disable all monitoring components
-grafana:
-  enabled: false
-alertmanager:
-  enabled: false
-kubeControllerManager:
-  enabled: false
-kubeScheduler:
-  enabled: false
-kubelet:
-  enabled: false
-coreDns:
-  enabled: false
-nodeExporter:
-  enabled: false
-kubeProxy:
-  enabled: false
-kubeApiServer:
-  enabled: false
-kubeStateMetrics:
-  enabled: false
-kubeEtcd:
-  enabled: false
-
-# Disable auto service monitors and role creation
-prometheusOperator:
-  prometheusConfigReloader:
-    enableProbe: false
-  createCustomResource: false
-  admissionWebhooks:
-    enabled: false
-  cleanupCustomResource: false
-  rbac:
-    create: false
-
 prometheus:
   prometheusSpec:
     enableFeatures:
@@ -70,3 +34,38 @@ prometheus:
             - 'prometheus-federate-kube-p-prometheus.prometheus-federate.svc.cluster.local:9090'
             - '172.18.0.120:9090'
             - '172.18.0.140:9090'
+
+# Disable all monitoring components
+grafana:
+  enabled: false
+alertmanager:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubelet:
+  enabled: false
+coreDns:
+  enabled: false
+nodeExporter:
+  enabled: false
+kubeProxy:
+  enabled: false
+kubeApiServer:
+  enabled: false
+kubeStateMetrics:
+  enabled: false
+kubeEtcd:
+  enabled: false
+
+# Disable auto service monitors and role creation
+prometheusOperator:
+  prometheusConfigReloader:
+    enableProbe: false
+  createCustomResource: false
+  admissionWebhooks:
+    enabled: false
+  cleanupCustomResource: false
+  rbac:
+    create: false

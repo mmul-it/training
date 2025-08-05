@@ -1,9 +1,11 @@
 mode: deployment
 
+# Use a specific image in the specific open-telemetry registry
 image:
   repository: "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib"
 
 config:
+  # Define OTLP as the unique way to receive telemetry data
   receivers:
     otlp:
       protocols:
@@ -12,11 +14,14 @@ config:
         http:
           endpoint: 0.0.0.0:4318
 
+  # Group telemetry data into batches for efficient delivery
+  # every 5 secs or 1024 items
   processors:
     batch:
       timeout: 5s
       send_batch_size: 1024
 
+  # Define where to send telemetry data
   exporters:
     # Tempo
     otlp/tempo:
@@ -28,26 +33,28 @@ config:
       endpoint: "http://loki-gateway.loki.svc.cluster.local/otlp"
       tls:
         insecure: true
-    # Prometheus
+    # Prometheus (OTel will be scraped from Prometheus K8s ctlplane instance)
     prometheus:
       endpoint: "0.0.0.0:9090"
-      enable_open_metrics: true
+      enable_open_metrics: true # Required to support exemplars
 
+  # Define service pipelines, one for each signal
   service:
     pipelines:
       traces:
         receivers: [otlp]
         processors: [batch]
-        exporters: [otlp/tempo]
+        exporters: [otlp/tempo] # Traces are exported using OTLP Tempo
       metrics:
         receivers: [otlp]
         processors: [batch]
-        exporters: [prometheus]  # Metrics are now being exported to OTLP for Prometheus to scrape
+        exporters: [prometheus]  # Metrics are exported for Prometheus to scrape
       logs:
         receivers: [otlp]
         processors: [batch]
         exporters: [otlphttp/loki]  # Logs are exported using OTLP HTTP to Loki
 
+# Open just the 9090 port so that Prometheus will be able to scrape
 ports:
   jaeger-compact:
     enabled: false
