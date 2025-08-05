@@ -1,9 +1,16 @@
+tempo:
+  # This makes grafana Traces drilldown work
+  metricsGenerator:
+    enabled: true
+
 traces:
+  # This is used by Stage 3 python app (OTLP)
   otlp:
     http:
       enabled: true
     grpc:
       enabled: true
+  # This is used by Stage 2 python app (jaeger-client)
   jaeger:
     thrift_http:
       enabled: true
