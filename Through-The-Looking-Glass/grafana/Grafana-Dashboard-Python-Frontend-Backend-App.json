@@ -145,8 +145,12 @@
                 "value": 0
               },
               {
-                "color": "red",
+                "color": "orange",
                 "value": 80
+              },
+              {
+                "color": "red",
+                "value": 90
               }
             ]
           }
@@ -185,7 +189,7 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "avg(alice_request_duration_seconds)",
+          "expr": "avg by(__name__) (alice_request_duration_seconds)",
           "fullMetaSearch": false,
           "hide": false,
           "includeNullMetadata": true,
@@ -203,7 +207,7 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "avg(cheshire_request_duration_seconds)",
+          "expr": "avg by(__name__) (cheshire_request_duration_seconds)",
           "fullMetaSearch": false,
           "hide": false,
           "includeNullMetadata": false,
@@ -477,6 +481,6 @@
   "timezone": "browser",
   "title": "Python Frontend/Backend Monitoring",
   "uid": "aeerrjtbf8mpsc",
-  "version": 3,
+  "version": 2,
   "weekStart": ""
 }

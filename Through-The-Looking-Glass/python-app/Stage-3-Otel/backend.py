@@ -27,13 +27,13 @@ metrics.init(variables.METRICS_ENDPOINT, variables.APP_BACKEND_NAME)
 def process_request():
     # Start the span
     with trace_provider.start_as_current_span(variables.APP_BACKEND_NAME):
-        # Metrics simulate CPU time
+        # Simulate workload and record metrics
         start_time = time.time()
         time.sleep(random.uniform(0.1, 2.0))
         duration = time.time() - start_time
         metrics.record_request(duration)
 
-        # Logs
+        # Record logs
         message = f"[Backend] Processing request from {request.remote_addr} source"
         logger.info(f"{message}")
 
@@ -42,4 +42,5 @@ def process_request():
 
 # Execute Flask app
 if __name__ == "__main__":
+     # Start the flask based backend web application
     app.run(debug=variables.APP_DEBUG, host=variables.APP_BACKEND_HOST, port=variables.APP_BACKEND_PORT)

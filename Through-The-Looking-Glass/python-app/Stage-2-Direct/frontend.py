@@ -34,16 +34,18 @@ def index():
         # Inject the span context into the headers array
         tracer.inject(span.context, Format.HTTP_HEADERS, headers)
 
-        # Simulate workload and record metrics based on trace_id
+        # Simulate frontend workload
         start_time = time.time()
         time.sleep(random.uniform(0.1, 2.0))
-        duration = time.time() - start_time
-        metrics.record_request(duration, trace_id)
 
         # Call the backend
         response = requests.get(variables.APP_BACKEND_URL, headers=headers)
 
-        # Record logs
+        # Record metrics with trace_id
+        duration = time.time() - start_time
+        metrics.record_request(duration, trace_id)
+
+        # Record logs with trace_id
         message = f"[Frontend] Request from {request.remote_addr} to {variables.APP_BACKEND_URL} endpoint completed"
         logger.info(message, extra={"tags": {"trace_id": trace_id}})
 

@@ -29,19 +29,24 @@ metrics.init(variables.METRICS_ENDPOINT, variables.APP_FRONTEND_NAME)
 def index():
     # Start the span
     with trace_provider.start_as_current_span(variables.APP_FRONTEND_NAME):
-        # Metrics simulate CPU time
+        # Simulate frontend workload
         start_time = time.time()
         time.sleep(random.uniform(0.1, 2.0))
-        duration = time.time() - start_time
-        metrics.record_request(duration)
 
         # Call the backend
         response = requests.get(variables.APP_BACKEND_URL)
 
-        # Logs
+        # Record metrics
+        duration = time.time() - start_time
+        metrics.record_request(duration)
+
+        # Record logs
         message = f"[Frontend] Request from {request.remote_addr} to {variables.APP_BACKEND_URL} endpoint completed"
         logger.info(f"{message}")
+
+        # Return with a message
         return f"Frontend received: {response.text}"
 
 if __name__ == "__main__":
+    # Start the flask based frontend web application
     app.run(debug=variables.APP_DEBUG, host=variables.APP_FRONTEND_HOST, port=variables.APP_FRONTEND_PORT)

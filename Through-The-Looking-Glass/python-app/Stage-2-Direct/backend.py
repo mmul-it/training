@@ -50,5 +50,5 @@ def process():
         return "Processed data in Backend!"
 
 if __name__ == "__main__":
-    # Start the flask based web application
+    # Start the flask based backend web application
     app.run(debug=variables.APP_DEBUG, host=variables.APP_BACKEND_HOST, port=variables.APP_BACKEND_PORT)
