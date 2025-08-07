@@ -24,8 +24,8 @@ A pre filled Helm values file should be locally downloaded from this repository:
 
 This will configure Jaeger with essential services.
 
-An additional script, named [send-traces-to-Jaeger-via-curl.sh]() will be used
-to test traces shipment to the Jaeger instance.
+An additional script, named [scripts/send-traces-to-Jaeger-via-curl.sh]() will
+be used to test traces shipment to the Jaeger instance.
 
 ## The Jaeger installation
 
@@ -86,10 +86,10 @@ service/jaeger-query-lb exposed
 ## Test manually
 
 Testing the Jaeger instance is possible with a simple `curl` command, by using
-the `send-traces-to-Jaeger-via-curl.sh` script:
+the `scripts/send-traces-to-Jaeger-via-curl.sh` script:
 
 ```console
-$ ./send-traces-to-Jaeger-via-curl.sh
+$ ./scripts/send-traces-to-Jaeger-via-curl.sh
 SUCCESS. Trace DE8385685F7492CF sent to 172.18.0.109:9411.
 ```
 
