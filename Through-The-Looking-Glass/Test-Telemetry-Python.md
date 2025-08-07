@@ -58,12 +58,32 @@ INFO:werkzeug:Press CTRL+C to quit
 
 There are three stages that expose pros and cons of each implementation:
 
-- [Test-Telemetry-Python-Stage-1.md](): the
-  simplest, direct output logging.
-- [Test-Telemetry-Python-Stage-2.md](): an
-  implementation where each telemetry data is loaded or exposed directly to the
-  backend.
-- [Test-Telemetry-Python-Stage-3.md](): an
-  implementation where everything passes through the OpenTelemetry Collector, a
-  centralized entity that takes care of distributing telemetry data to all the
-  backends.
+- [Test-Telemetry-Python-Stage-1.md](): the simplest, direct output logging.
+- [Test-Telemetry-Python-Stage-2.md](): an implementation where each telemetry 
+  data is loaded or exposed directly to the backend.
+- [Test-Telemetry-Python-Stage-3.md](): an implementation where everything
+  passes through the OpenTelemetry Collector, a centralized entity that takes
+  care of distributing telemetry data to all the backends.
+
+## Loading a Grafana dashboard
+
+A Grafana dashboard that shows the Full telemetry of the Python application is
+available inside this repository, in the expected JSON format
+[grafana/Grafana-Dashboard-Python-Frontend-Backend-App.json]().
+
+To activate it, first install all the components as described in:
+
+- [Prometheus-Installation.md]()
+- [Tempo-Installation.md]()
+- [Loki-Installation.md]()
+- [Grafana-Installation.md]()
+
+Then, after logging into the Grafana web interfaces, from `Dashboards` -> `New`
+-> `Import`, click `Upload dashboard JSON file` or drag and drop the JSON file.
+
+It will ask to select the Logs and Prometheus sources, which will be
+respectively `Loki` and `Prometheus`, and then while simulating the traffic, the
+Dashboard named `Python Frontend/Backend Monitoring` will start populating like
+this:
+
+![Grafana Telemetry Dashboard](images/Grafana-Telemetry-Dashboard.png)
