@@ -139,7 +139,7 @@ logs coming from application, in this way:
 $ while true; do
     echo "$(date) - $(shuf -n1 -e 'INFO: info log message' 'WARN: warning log message' 'ERROR: error log message' 'DEBUG: debug log message')"
     sleep 1
-  sone | filebeat -e -c filebeat-custom.yml
+  done | filebeat -e -c filebeat-custom.yml
 ...
 ```
 

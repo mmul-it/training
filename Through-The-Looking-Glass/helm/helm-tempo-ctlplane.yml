@@ -1,5 +1,5 @@
 tempo:
-  # This makes grafana Traces drilldown work
+  # This makes Grafana traces drilldown work
   metricsGenerator:
     enabled: true
 

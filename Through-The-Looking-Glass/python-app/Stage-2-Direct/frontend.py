@@ -28,7 +28,7 @@ def index():
         # Get the trace_id from the generated span
         trace_id = format(span.trace_id, "x")
 
-        # Define the empy headers array
+        # Define the empty headers array
         headers = {}
 
         # Inject the span context into the headers array

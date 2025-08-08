@@ -22,7 +22,6 @@ A pre filled Helm values file should be locally downloaded from this repository:
 
 - [helm/helm-grafana-ctlplane.yml]()
 
-
 ## Grafana Installation
 
 The Helm values file contains specific configuration for the Grafana instance,
@@ -93,7 +92,7 @@ In this configuration:
 - Each datasource is associated with the others so that the correlation derived
   from the `trace_id` will make it possible to create links and references in
   Grafana's dashboards.
- 
+
 One way to install the Grafana chart is using the `helm upgrade --install`
 command:
 

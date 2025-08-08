@@ -22,7 +22,6 @@ A pre filled Helm values file should be locally downloaded from this repository:
 
 - [helm/helm-loki-ctlplane.yml]()
 
-
 ## Loki Installation
 
 The Helm values file contains specific configuration for the Loki instance,

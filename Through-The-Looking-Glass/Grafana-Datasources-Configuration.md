@@ -7,11 +7,11 @@ with a Trace.
 ## Associate Loki logs and Tempo traces
 
 On the Grafana side the two data sources should be configured with the proper
-addresses, starting with Tempo
+addresses, starting with Tempo:
 
 ![Tempo conf](images/Grafana-Tempo-Datasource.png)
 
-And continuning with Loki:
+And continuing with Loki:
 
 ![Loki conf](images/Grafana-Loki-Datasource.png)
 
@@ -20,7 +20,7 @@ tempo data source:
 
 ![Loki Derived fields](images/Grafana-Loki-Datasource-Derived-fields-trace_id.png)
 
-Once the data source is available it wil be possible to `Explore` it, by
+Once the data source is available it will be possible to `Explore` it, by
 querying the application named `alice`:
 
 ![Loki Query](images/Grafana-Loki-01-query-application.png)

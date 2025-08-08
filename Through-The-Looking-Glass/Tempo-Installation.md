@@ -22,7 +22,6 @@ A pre filled Helm values file should be locally downloaded from this repository:
 
 - [helm/helm-tempo-ctlplane.yml]()
 
-
 ## Tempo Installation
 
 The Helm values file contains specific configuration for the Tempo instance,
