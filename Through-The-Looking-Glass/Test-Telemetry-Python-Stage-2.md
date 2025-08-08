@@ -5,56 +5,31 @@ telemetry data to the backends.
 
 ## Requirements
 
-To make the app work properly at this stage the Prometheus instance configured
-inside the Kubernetes control plane should be configured with the ability to
-scrape from the Frontend and Backend `/metrics` locations, as declared in the
-[helm/helm-prometheus-ctlplane.yml]() configuration file:
+To make the app work properly at this stage the **Prometheus**, **Loki** and
+**Tempo** instances needs to be installed as explained in the relative files:
 
-```yaml
-grafana:
-  enabled: false
+- [Prometheus-Installation-And-Test.md]()
+- [Tempo-Installation.md]()
+- [Loki-Installation.md]()
 
-alertmanager:
-  enabled: false
+This will make the contents of `python-app/Stage-2-Direct/variables.py` valid:
 
-prometheus:
-  prometheusSpec:
-    additionalScrapeConfigs:
-      # This is used to scrape from the python exposed metrics
-      - job_name: 'python-app'
-        static_configs:
-          - targets:
-            - '172.18.0.1:5000'
-            - '172.18.0.1:5001'
-...
+```python
+APP_DEBUG=False
+APP_FRONTEND_NAME='alice'
+APP_FRONTEND_HOST='172.18.0.1'
+APP_FRONTEND_PORT=5000
+APP_BACKEND_NAME='cheshire'
+APP_BACKEND_HOST='172.18.0.1'
+APP_BACKEND_PORT=5001
+APP_BACKEND_URL=f"http://{APP_BACKEND_HOST}:{APP_BACKEND_PORT}/process"
+TRACES_ENDPOINT='172.18.0.102:6831'                       # Tempo exposed IP
+LOGS_ENDPOINT='http://172.18.0.103:3100/loki/api/v1/push' # Loki exposed IP
 ```
 
-To be sure this is applied inside the existing Prometheus instance it is
-sufficient to upgrade via `helm` the installation:
-
-```console
-$ helm upgrade prometheus prometheus-community/kube-prometheus-stack --namespace prometheus --values helm-prometheus-ctlplane.yml
-NAME: prometheus
-LAST DEPLOYED: Fri Mar  7 11:42:58 2025
-NAMESPACE: prometheus
-STATUS: deployed
-REVISION: 2
-TEST SUITE: None
-NOTES:
-kube-prometheus-stack has been installed. Check its status by running:
-  kubectl --namespace prometheus get pods -l "release=prometheus"
-
-Get Grafana 'admin' user password by running:
-
-  kubectl --namespace prometheus get secrets prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
-
-Access Grafana local instance:
-
-  export POD_NAME=$(kubectl --namespace prometheus get pod -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=prometheus" -oname)
-  kubectl --namespace prometheus port-forward $POD_NAME 3000
-
-Visit https://github.com/prometheus-operator/kube-prometheus for instructions on how to create & configure Alertmanager and Prometheus instances using the Operator.
-```
+There's no need to configure a `METRICS_ENDPOINT`, since metrics will be exposed
+directly by each app at the `/metrics` url, and scraped by the Prometheus
+ctlplane instance.
 
 ## Start stage 2 of the app
 

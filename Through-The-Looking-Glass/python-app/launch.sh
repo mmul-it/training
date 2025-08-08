@@ -5,8 +5,8 @@ set -e
 # Get the stage to run
 STAGE=$1
 
-# Move in workdir
-pushd $STAGE
+# Check for dir existance
+[ -d "$STAGE" ] && pushd $STAGE || (echo "You need to pass a Stage directory!";  exit 1)
 
 # Prevent Python from creating __pycache__ directory
 export PYTHONDONTWRITEBYTECODE=1

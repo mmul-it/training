@@ -15,7 +15,7 @@ Working directory is `python-app` containing:
   - `Stage-1-Simple`: basic example.
   - `Stage-2-Direct`: an example that writes data directly to the telemetry
     backends.
-  - `Stage-3-Otel`: an example that writes data to an `open-telemetry` collector
+  - `Stage-3-OTel`: an example that writes data to an `open-telemetry` collector
     by using Python's open-telemetry libraries.
 
 ## Preparing the environment
@@ -73,7 +73,7 @@ available inside this repository, in the expected JSON format
 
 To activate it, first install all the components as described in:
 
-- [Prometheus-Installation.md]()
+- [Prometheus-Installation-And-Test.md]()
 - [Tempo-Installation.md]()
 - [Loki-Installation.md]()
 - [Grafana-Installation.md]()

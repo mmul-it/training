@@ -23,7 +23,6 @@ def init_provider(app_name):
 
     return tracer
 
-
 def init_span(otlp_endpoint):
     # Create an OTLP exporter to send spans to the specified backend (e.g., Tempo)
     otlp_exporter = OTLPSpanExporter(endpoint=otlp_endpoint, insecure=True)
@@ -33,7 +32,6 @@ def init_span(otlp_endpoint):
 
     # Return the trace module for further use (optional, could be used to create spans)
     return trace
-
 
 def init_flask(flask_app):
     # Automatically instrument Flask app to generate spans for incoming HTTP requests
