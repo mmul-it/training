@@ -52,8 +52,8 @@ pod/speaker-62ws5 condition met
 
 To define the IP range that the MetalLB load balancer will assign two Kubernetes
 resources should be created, the `IPAddressPool` and the `L2Advertisement`
-download [kind-ctlplane-metallb-pools.yml](kind/kind-ctlplane-metallb-pools.yml)) and
-pass it to the `kubectl apply -f` command:
+download [kind-ctlplane-metallb-pools.yml](kind/kind-ctlplane-metallb-pools.yml))
+and pass it to the `kubectl apply -f` command:
 
 ```console
 $ curl -s -LO https://raw.githubusercontent.com/kiratech/labs/refs/heads/main/Common/kind/kind-ctlplane-metallb-pools.yml
