@@ -11,21 +11,32 @@ and download the crc executable and the pull secret.
 
 ```console
 $ tar -xJvf crc-linux-amd64.tar.xz
-crc-linux-2.25.0-amd64/
-crc-linux-2.25.0-amd64/LICENSE
-crc-linux-2.25.0-amd64/crc
+crc-linux-*-amd64/
+crc-linux-*-amd64/LICENSE
+crc-linux-*-amd64/crc
 ```
 
 Copy the binary in your `$PATH`:
 
 ```console
-$ sudo cp crc-linux-2.25.0-amd64/crc /usr/local/bin/
+$ sudo cp crc-linux-*-amd64/crc /usr/local/bin/
 (no output)
 ```
 
 ## Start crc
 
-Launch `crc setup` (this might take a lot of time depending on your
+To start CRC on a Debian based system, first run the `machinectl` command as
+follows:
+
+```console
+$ sudo machinectl shell --uid=$UID
+Connected to the local host. Press ^] three times within 1s to exit session.
+
+$ sudo apt -y install virtiofsd
+...
+```
+
+Then launch `crc setup` (this might take a lot of time depending on your
 connection):
 
 ```console
