@@ -7,7 +7,7 @@ In this lab you will install Code Ready Containers, an OpenShift test cluster.
 Register at [https://cloud.redhat.com/openshift/create/local](https://cloud.redhat.com/openshift/create/local)
 and download the crc executable and the pull secret.
 
- Uncompress the crc binary:
+Uncompress the crc binary:
 
 ```console
 $ tar -xJvf crc-linux-amd64.tar.xz
@@ -23,21 +23,56 @@ $ sudo cp crc-linux-*-amd64/crc /usr/local/bin/
 (no output)
 ```
 
-## Start crc
-
-To start CRC on a Debian based system, first run the `machinectl` command as
-follows:
+And enable the user to be part of the `libvirt` group:
 
 ```console
-$ sudo machinectl shell --uid=$UID
-Connected to the local host. Press ^] three times within 1s to exit session.
+$ sudo usermod -a -G libvirt $USER
+(no output)
 
+$ newgrp libvirt
+(no output)
+```
+
+Remember that CRC is not suitable for Virtual Machines, unless you have tons of
+CPUs and RAM and the VM is configured with `host-passthrough` for the CPU, so
+that para-virtualization can happen.
+
+### Debian pre-requirements
+
+CRC is meant to be running on Red Hat based hosts. On a Debian based system,
+there are some requrements that need to be filled before starting the setup.
+
+If it's not available the `virtiofsd` service (a daemon for sharing host
+directories with virtual machines or other guest using virtio-fs) needs to be
+installed as follows:
+
+```console
 $ sudo apt -y install virtiofsd
 ...
 ```
 
-Then launch `crc setup` (this might take a lot of time depending on your
-connection):
+Then every time a `crc` command is launched, the `machinectl` command needs to
+be launched, so that the user can connect with the DBUS Linux system:
+
+```console
+$ sudo machinectl shell --uid=$UID
+Connected to the local host. Press ^] three times within 1s to exit session.
+```
+
+It is possible to avoid this by launching once and for all the `loginctl`
+command to enable lingering, to tell `systemd-logind` to always keep a user
+manager running, even without an active login session:
+
+```console
+$ sudo loginctl enable-linger $USER
+(no output)
+```
+
+From now on the `crc` binary should behave the same as in Red Hat based systems.
+
+## Start crc
+
+Launch `crc setup` (this might take a lot of time depending on you connection):
 
 ```console
 $ crc setup
