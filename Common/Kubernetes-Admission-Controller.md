@@ -163,32 +163,32 @@ trivy-admission-webhook.trivy-system.svc   1          7m23s
 ## Test the solution
 
 With everything in place, it is time for tests. We will deploy two different
-versions of nginx, one with no CRITICAL issues (`nginx:latest`) and the other
-with some of them (`nginx:1.18`):
+versions of nginx, one with no CRITICAL issues (`httpd:latest`) and the other
+with some of them (`httpd:2.4.64`):
 
 ```console
-$ kubectl --namespace myns create deployment nginx-latest \
-    --image public.ecr.aws/nginx/nginx:latest
-deployment.apps/nginx-latest created
+$ kubectl --namespace myns create deployment httpd-latest \
+    --image public.ecr.aws/docker/library/httpd:latest
+deployment.apps/httpd-latest created
 
-$ kubectl --namespace myns create deployment nginx-insecure \
-    --image public.ecr.aws/nginx/nginx:1.18
-deployment.apps/nginx-insecure created
+$ kubectl --namespace myns create deployment httpd-insecure \
+    --image public.ecr.aws/docker/library/httpd:2.4.64
+deployment.apps/httpd-insecure created
 ```
 
-The result will be this, with `nginx-insecure` not deployed:
+The result will be this, with `httpd-insecure` not deployed:
 
 ```console
 $ kubectl --namespace myns get all
 NAME                                READY   STATUS    RESTARTS   AGE
-pod/nginx-latest-8586ccc94b-9slg8   1/1     Running   0          103s
+pod/httpd-latest-8586ccc94b-9slg8   1/1     Running   0          103s
 
 NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/nginx-insecure   0/1     0            0           94s
-deployment.apps/nginx-latest     1/1     1            1           103s
+deployment.apps/httpd-insecure   0/1     0            0           94s
+deployment.apps/httpd-latest     1/1     1            1           103s
 
 NAME                                        DESIRED   CURRENT   READY   AGE
-replicaset.apps/nginx-latest-8586ccc94b     1         1         1       103s
+replicaset.apps/httpd-latest-8586ccc94b     1         1         1       103s
 ```
 
 Details about this behavior can be found inside Kubernetes events:
@@ -198,25 +198,26 @@ $ kubectl --namespace myns get events --sort-by='.metadata.creationTimestamp' -A
 NAMESPACE      LAST SEEN   TYPE      REASON                    OBJECT                                          MESSAGE
 ...
 ...
-myns           25s         Normal    ScalingReplicaSet         deployment/nginx-latest                         Scaled up replica set nginx-latest-8586ccc94b to 1
-myns           23s         Normal    SuccessfulCreate          replicaset/nginx-latest-8586ccc94b              Created pod: nginx-latest-8586ccc94b-9slg8
-myns           23s         Normal    Scheduled                 pod/nginx-latest-8586ccc94b-9slg8               Successfully assigned myns/nginx-latest-8586ccc94b-9slg8 to minikube
-myns           22s         Normal    Pulling                   pod/nginx-latest-8586ccc94b-9slg8               Pulling image "nginx:latest"
-myns           21s         Normal    Started                   pod/nginx-latest-8586ccc94b-9slg8               Started container nginx
-myns           21s         Normal    Created                   pod/nginx-latest-8586ccc94b-9slg8               Created container nginx
-myns           21s         Normal    Pulled                    pod/nginx-latest-8586ccc94b-9slg8               Successfully pulled image "nginx:latest" in 1.291453932s (1.291487398s including waiting)
-myns           16s         Normal    ScalingReplicaSet         deployment/nginx-insecure                       Scaled up replica set nginx-insecure-5785468788 to 1
-myns           1s          Warning   FailedCreate              replicaset/nginx-insecure-5785468788            Error creating: admission webhook "trivy-admission-webhook.trivy-system.svc" denied the request: Not all containers secure, failing ...
+myns           25s         Normal    ScalingReplicaSet         deployment/httpd-latest                         Scaled up replica set httpd-latest-8586ccc94b to 1
+myns           23s         Normal    SuccessfulCreate          replicaset/httpd-latest-8586ccc94b              Created pod: httpd-latest-8586ccc94b-9slg8
+myns           23s         Normal    Scheduled                 pod/httpd-latest-8586ccc94b-9slg8               Successfully assigned myns/httpd-latest-8586ccc94b-9slg8 to minikube
+myns           22s         Normal    Pulling                   pod/httpd-latest-8586ccc94b-9slg8               Pulling image "httpd:latest"
+myns           21s         Normal    Started                   pod/httpd-latest-8586ccc94b-9slg8               Started container httpd
+myns           21s         Normal    Created                   pod/httpd-latest-8586ccc94b-9slg8               Created container httpd
+myns           21s         Normal    Pulled                    pod/httpd-latest-8586ccc94b-9slg8               Successfully pulled image "httpd:latest" in 1.291453932s (1.291487398s including waiting)
+myns           16s         Normal    ScalingReplicaSet         deployment/httpd-insecure                       Scaled up replica set httpd-insecure-5785468788 to 1
+myns           1s          Warning   FailedCreate              replicaset/httpd-insecure-5785468788            Error creating: admission webhook "trivy-admission-webhook.trivy-system.svc" denied the request: Not all containers secure, failing ...
 ```
 
 Not all the containers inside the `nginx-insecure` pod are secure!
 
 **NOTE**: it might be that, by the time this exercise was created, the
-`nginx:latest` container version might be vulnarable as well as the
-`nginx:1.18`. To get an image not affected by any `CRITICAL` vulnerability
-it is possible to refer to the [Nginx Docker Hub page](https://hub.docker.com/_/nginx/tags)
-and look for a specific tag (tip: the `alpine` tags are usually not carrying
-vulnerabilities because of their lighter nature).
+`httpd:latest` container version might be vulnarable as well as the
+`httpd:2.4.64`. To get an image not affected by any `CRITICAL` vulnerability
+it is possible to refer to the [HTTPD GitHub page](https://github.com/apache/httpd/tags)
+and look for a specific tag (tip: the `candidate` tags are usually carrying
+vulnerabilities because of their experimental nature, full recent versions
+like `2.4.65` are usually safe).
 
 ## Deploy from a private registry
 
