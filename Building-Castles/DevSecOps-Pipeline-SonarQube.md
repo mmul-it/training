@@ -14,7 +14,7 @@ exposing these ports (Host/Container):
 $ cd && docker run --detach \
   --name sonarqube \
   --publish 9000:9000 \
-  sonarqube:lts
+  sonarqube:25.9.0.112764-community
 ```
 
 Check the progresses, until the web interface comes up:
