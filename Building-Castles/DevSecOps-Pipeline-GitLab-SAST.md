@@ -6,9 +6,7 @@ capabilities that will affect the CI process.
 ## Add some code into the repo
 
 We will need some code inside `myproject` to check GitLab's SAST
-functionalities, so we will create two kind of sources.
-
-A faulty Kubernetes Pod manifest:
+functionalities, so we will create a faulty Kubernetes Pod manifest:
 
 ```console
 $ pwd
@@ -18,6 +16,8 @@ $ mkdir -v manifests
 mkdir: created directory 'manifests'
 
 $ cat <<EOF > manifests/Pod.yml
+# Intentionally insecure minimal example for Kubesec/GitLab SAST
+# Kubesec commonly flags allowPrivilegeEscalation: true as critical
 apiVersion: v1
 kind: Pod
 metadata:
@@ -31,31 +31,21 @@ spec:
 EOF
 ```
 
-A faulty php source code:
+And a faulty Python code:
 
 ```console
-$ mkdir -v php
-mkdir: created directory 'php'
+$ pwd
+/home/kirater/myproject
 
-$ cat <<EOF > php/faulty.php
-<?php
-// This code contains a security vulnerability
+$ mkdir -v python
+mkdir: created directory 'python'
 
-// Extract user input from GET parameters
-\$id = \$_GET['id'];
-
-// SQL query without proper input validation
-\$query = "SELECT * FROM users WHERE id = \$id";
-
-// Execute the SQL query
-\$result = mysqli_query(\$connection, \$query);
-
-// Fetch the data
-\$data = mysqli_fetch_assoc($result);
-
-// Display the user's details
-echo "Username: " . \$data['username'] . "<br>";
-echo "Email: " . \$data['email'] . "<br>";
+$ cat <<EOF > python/script.py
+# Intentionally insecure minimal example for Semgrep/GitLab SAST
+# Semgrep commonly flags use of eval on untrusted input.
+user_input = input("data: ")
+result = eval(user_input)   # <-- insecure: Semgrep should flag this
+print(result)
 EOF
 ```
 
@@ -102,7 +92,7 @@ $ git add . && git commit -m "Activate CI"
  3 files changed, 43 insertions(+)
  create mode 100644 .gitlab-ci.yml
  create mode 100644 manifests/Pod.yml
- create mode 100644 php/faulty.php
+ create mode 100644 python/script.py
 
 $ git push
 Enumerating objects: 8, done.
@@ -127,14 +117,15 @@ And after some time everything should be green:
 ![DevSecOps-Pipeline-GitLab-SAST-CI-2.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-2.png)
 
 Which it seems good, apart from the fact that we introduced faulty code for
-both php sources and Kubernetes manifests, and by looking at the details of
+both Python script and Kubernetes manifests, and by looking at the details of
 the pipelines we should see something like this:
 
 ![DevSecOps-Pipeline-GitLab-SAST-CI-Kube-Critical.png](images/DevSecOps-Pipeline-GitLab-SAST-CI-Kube-Critical.png)
 
-And the same applies for PHP, but with no `Critical` vulnerabilities.
+And the same applies for Python, with an `High` vulnerability found.
 So, if we want to make this worthy, we need to instruct our pipeline to stop
-if it finds `Critical` vulnerabilites.
+if it finds `Critical` vulnerabilites for Kubesec and `High` vulnerabilites for
+Semgrep.
 
 ## Analyze reports
 
@@ -150,48 +141,43 @@ stages:
   - sast-analysis
 ```
 
-We will first define a variable named `BLOCKING_VULNERABILITY_SEVERITY` that
-will be set to the defined severity, in this case `Critical`:
+We will first define two variables named `KUBESEC_SEVERITY` and
+`SEMGREP_SEVERITY` that will be set to the relative severity value:
 
 ```yaml
 variables:
   ...
-  BLOCKING_VULNERABILITY_SEVERITY: "Critical"
+  SEMGREP_SEVERITY: "High"
+  KUBESEC_SEVERITY: "Critical"
 ```
 
-Then for each of the analysis we want to check we will define a related and
-connected job.
-
-For php:
+Then for the analysis we want to check we will define a related and connected
+job:
 
 ```yaml
-sast-analysis-php:
+sast-analysis-semgrep:
   stage: sast-analysis
   image: registry.gitlab.com/gitlab-ci-utils/curl-jq
   needs:
-    - job: phpcs-security-audit-sast
+    - job: semgrep-sast
   script:
-    - JQRESULT=$(jq -r --arg SEV "${BLOCKING_VULNERABILITY_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
+    - JQRESULT=$(jq -r --arg SEV "${SEMGREP_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
     - echo "JQRESULT -> $JQRESULT"
-    - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${BLOCKING_VULNERABILITY_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
-```
+    - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${SEMGREP_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
 
-Then for `kubesec`:
-
-```yaml
 sast-analysis-kubesec:
   stage: sast-analysis
   image: registry.gitlab.com/gitlab-ci-utils/curl-jq
   needs:
     - job: kubesec-sast
   script:
-    - JQRESULT=$(jq -r --arg SEV "${BLOCKING_VULNERABILITY_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
+    - JQRESULT=$(jq -r --arg SEV "${KUBESEC_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
     - echo "JQRESULT -> $JQRESULT"
-    - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${BLOCKING_VULNERABILITY_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
+    - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${KUBESEC_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
 ```
 
-In both cases (note that are both called `sast-analysis`), if there will be
-`Critical` vulnerabilities inside the json the pipeline will fail.
+Note that both stages are called `sast-analysis`, if there will be
+vulnerabilities inside the relative json, then the pipeline will fail.
 
 The resulting and final yaml will be something like this:
 
@@ -202,7 +188,8 @@ include:
 variables:
   SECURE_LOG_LEVEL: "debug"
   SCAN_KUBERNETES_MANIFESTS: "true"
-  BLOCKING_VULNERABILITY_SEVERITY: "Critical"
+  SEMGREP_SEVERITY: "High"
+  KUBESEC_SEVERITY: "Critical"
 
 stages:
   - test
@@ -214,15 +201,15 @@ sast:
     paths:
       - gl-sast-report.json
 
-sast-analysis-php:
+sast-analysis-semgrep:
   stage: sast-analysis
   image: registry.gitlab.com/gitlab-ci-utils/curl-jq
   needs:
-    - job: phpcs-security-audit-sast
+    - job: semgrep-sast
   script:
-    - JQRESULT=$(jq -r --arg SEV "${BLOCKING_VULNERABILITY_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
+    - JQRESULT=$(jq -r --arg SEV "${SEMGREP_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
     - echo "JQRESULT -> $JQRESULT"
-    - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${BLOCKING_VULNERABILITY_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
+    - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${SEMGREP_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
 
 sast-analysis-kubesec:
   stage: sast-analysis
@@ -230,9 +217,9 @@ sast-analysis-kubesec:
   needs:
     - job: kubesec-sast
   script:
-    - JQRESULT=$(jq -r --arg SEV "${BLOCKING_VULNERABILITY_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
+    - JQRESULT=$(jq -r --arg SEV "${KUBESEC_SEVERITY}" '.vulnerabilities[] | select(.severity==$SEV).description' gl-sast-report.json)
     - echo "JQRESULT -> $JQRESULT"
-    - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${BLOCKING_VULNERABILITY_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
+    - if [ "x$JQRESULT" != "x" ]; then echo -e "One or more ${KUBESEC_SEVERITY} vulnerabilities have been found:\n$JQRESULT"; exit 1; fi
 ```
 
 Committing the code and pushing the changes:
@@ -264,7 +251,10 @@ that was defined in the stage:
 
 The `Critical` vulnerability was detected.
 
-## Fix the problem
+The same applies for the Semgrep analysis, where there's a clear indication of
+the `eval` function usage inside the Python script.
+
+## Fix the problems
 
 To fix the detected problem we need to understand it from the analysis:
 
@@ -300,6 +290,32 @@ Writing objects: 100% (4/4), 417 bytes | 417.00 KiB/s, done.
 Total 4 (delta 1), reused 0 (delta 0), pack-reused 0
 To ssh://172.16.99.1:2222/devsecops/myproject.git
    12e7259..d9638d7  main -> main
+```
+
+Same will be done for the Python script:
+
+```python
+import ast
+user_input = input("data: ")
+print(ast.literal_eval(user_input)) # safe: only evaluates Python literals, not arbitrary code
+```
+
+This modification will be pushed as well:
+
+```console
+$ git add . && git commit -m "Fix Python script"
+[main a17809b] Fix Python script
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+$ git push
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (4/4), 413 bytes | 413.00 KiB/s, done.
+Total 4 (delta 1), reused 0 (delta 0), pack-reused 0 (from 0)
+To ssh://172.16.99.1:2222/devsecops/myproject.git
+   611b468..a17809b  main -> main
 ```
 
 Finally, after some time, the pipeline should be all green:
