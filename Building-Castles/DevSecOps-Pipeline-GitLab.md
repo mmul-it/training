@@ -17,7 +17,7 @@ $ docker run --detach \
   --publish 8080:80 \
   --publish 8443:443 \
   --publish 2222:22 \
-  gitlab/gitlab-ce:16.11.8-ce.0
+  gitlab/gitlab-ce:18.4.1-ce.0
 ...
 ```
 
@@ -26,7 +26,7 @@ Check the progresses, until the web interface comes up:
 ```console
 $ docker logs -f gitlab
 Thank you for using GitLab Docker Image!
-Current version: gitlab-ce=16.11.8-ce.0
+Current version: gitlab-ce=18.4.1-ce.0
 ...
 ```
 
@@ -181,7 +181,7 @@ $ docker run --detach \
   --privileged \
   --volume /var/run/docker.sock:/var/run/docker.sock \
   --volume $PWD/gitlab-runner:/etc/gitlab-runner \
-  gitlab/gitlab-runner:v16.11.3
+  gitlab/gitlab-runner:v18.4.0
 ...
 ```
 
