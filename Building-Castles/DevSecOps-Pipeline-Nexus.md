@@ -17,7 +17,7 @@ changed ownership of 'nexus' from kirater:docker to 200:200
 ```
 
 Then it will be possible to launch the Nexus instance using the
-`sonatype/nexus3` container, exposing these ports (Host/Container):
+`sonatype/nexus3:3.84.1` container, exposing these ports (Host/Container):
 
 - 8081:8081
 - 9443:9443
@@ -30,8 +30,8 @@ $ docker run --detach \
   --publish 9443:9443 \
   --publish 5000:5000 \
   --volume $PWD/nexus:/opt/sonatype/sonatype-work \
-  sonatype/nexus3
-Unable to find image 'sonatype/nexus3:latest' locally
+  sonatype/nexus3:3.84.1
+Unable to find image 'sonatype/nexus3:3.84.1' locally
 latest: Pulling from sonatype/nexus3
 36c12cb044ac: Pull complete
 8a1b09f0eced: Pull complete
@@ -41,7 +41,7 @@ f47ff8368d44: Pull complete
 cd8e246a9663: Pull complete
 68721705c831: Pull complete
 Digest: sha256:88044c8cdbbf1fea42b65b6c785bb88e4e2b2e96b3becd2bfce22f481216a951
-Status: Downloaded newer image for sonatype/nexus3:latest
+Status: Downloaded newer image for sonatype/nexus3:3.84.1
 1bfde8b8401841bb82e9c00ab6e0efc90860dbbe44771e74cc13e4218d4da162
 ```
 
@@ -52,7 +52,7 @@ $ docker logs -f nexus
 ...
 -------------------------------------------------
 
-Started Sonatype Nexus OSS 3.72.0-04
+Started Sonatype Nexus COMMUNITY 3.84.1-01
 
 -------------------------------------------------
 ```
