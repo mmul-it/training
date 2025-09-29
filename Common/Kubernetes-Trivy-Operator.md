@@ -9,7 +9,7 @@ on your Kubernetes cluster. To get one check [DevSecOps-Pipeline-Requirements.md
 As simple as:
 
 ```console
-$ export TRIVY_OPERATOR_VERSION=v0.22.0
+$ export TRIVY_OPERATOR_VERSION=v0.29.0
 
 $ kubectl apply -f https://raw.githubusercontent.com/aquasecurity/trivy-operator/${TRIVY_OPERATOR_VERSION}/deploy/static/trivy-operator.yaml
 customresourcedefinition.apiextensions.k8s.io/clustercompliancereports.aquasecurity.github.io configured
