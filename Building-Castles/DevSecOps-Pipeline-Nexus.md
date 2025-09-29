@@ -263,7 +263,7 @@ nothing to commit, working tree clean
 
 And then follow the progress from the GitLab interface:
 
-![DevSecOps-Pipeline-Nexus-GitLab-CI.png](images/DevSecOps-Pipeline-Nexus-GitLab-CI.png)
+![DevSecOps-Pipeline-GitLab-Nexus-CI.png](images/DevSecOps-Pipeline-GitLab-Nexus-CI.png)
 
 The final result should be the presence of the image inside the Nexus
 interface:

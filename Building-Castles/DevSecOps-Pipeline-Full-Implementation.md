@@ -97,7 +97,7 @@ was correctly completed, the pipeline will be automatically integrated with
 the `semgrep-sast` test stage, which means that GitLab discovered the `.java`
 file and processed it with the ideal tester:
 
-![DevSecOps-Pipeline-Simulate-Code-Problem-GitLab-CI.png](images/DevSecOps-Pipeline-Simulate-Code-Problem-GitLab-CI.png)
+![DevSecOps-Pipeline-Nexus-GitLab-CI.png](images/DevSecOps-Pipeline-Nexus-GitLab-CI.png)
 
 Second thing to note is that, unexpectedly, the pipeline will complete with
 no errors. The SonarQube stage completes as follows:
@@ -115,7 +115,7 @@ Job succeeded
 
 But by looking into the project details we will find a Failed status:
 
-![DevSecOps-Pipeline-Simulate-Code-Problem-Sonarqube-Code-Failure.png](images/DevSecOps-Pipeline-Simulate-Code-Problem-Sonarqube-Code-Failure.png)
+![DevSecOps-Pipeline-Sonarqube-Code-Failure.png](images/DevSecOps-Pipeline-Sonarqube-Code-Failure.png)
 
 This happens because we don't have a blocker for the pipeline.
 
@@ -163,22 +163,7 @@ To ssh://172.16.99.1:2222/devsecops/myproject.git
 A new pipeline will be started, and this should fail with a message like
 this:
 
-```console
-INFO: Analysis report uploaded in 13ms
-INFO: ------------- Check Quality Gate status
-INFO: Waiting for the analysis report to be processed (max 300s)
-INFO: ------------------------------------------------------------------------
-INFO: EXECUTION FAILURE
-INFO: ------------------------------------------------------------------------
-INFO: Total time: 10.559s
-INFO: Final Memory: 21M/114M
-INFO: ------------------------------------------------------------------------
-ERROR: Error during SonarScanner execution
-ERROR: QUALITY GATE STATUS: FAILED - View details on http://172.16.99.1:9000/dashboard?id=myproject
-ERROR:
-ERROR: Re-run SonarScanner using the -X switch to enable full debug logging.
-ERROR: Job failed: exit code 1
-```
+![DevSecOps-Pipeline-GitLab-Sonarqube-Quality-Gate-Failure.png](images/DevSecOps-Pipeline-GitLab-Sonarqube-Quality-Gate-Failure.png)
 
 ## Fix the code
 
@@ -217,13 +202,13 @@ To ssh://172.16.99.1:2222/devsecops/myproject.git
    d582dcf..00f0947  main -> main
 ```
 
-The original error is not there anymore, and the pipeline should now be
-green.
+The original error is not there anymore, but there's a possibility for the
+pipeline to not (yet) be green.
 
 ### Code coverage
 
-If Sonarqube fails again, check the quality gates, and create a custom quality
-gate associated to the project that will have `Conditions on New Code` ->
+If Sonarqube fails again, check the **Quality Gates**, and create a custom
+quality gate associated to the project that will have `Conditions on New Code` ->
 `Coverage` set to zero.
 
 Another viable solution would be to implement a unit test related to the example
