@@ -205,6 +205,60 @@ To ssh://172.16.99.1:2222/devsecops/myproject.git
 The original error is not there anymore, but there's a possibility for the
 pipeline to not (yet) be green.
 
+### Docker image improvements
+
+The way Docker image is generated might not considered safe by SonarQube,
+because of:
+
+- The missing tag of `FROM busybox`.
+- The `CMD` command that should instead be a script file called with exec.
+
+This translates in the creation of a new script called `` with these contents:
+
+```bash
+[kirater@training-adm myproject]$ cat start-ws.sh 
+#!/bin/sh
+
+/bin/nc -l -k -p ${NCAT_PORT} -e /bin/echo -e "${NCAT_HEADER}\n\n${NCAT_MESSAGE}"
+```
+
+And the new version of the `Dockerfile`:
+
+```Dockerfile
+FROM busybox:stable
+
+ENV NCAT_MESSAGE "Container test"
+ENV NCAT_HEADER "HTTP/1.1 200 OK"
+ENV NCAT_PORT "8888"
+
+RUN addgroup -S nonroot && \
+    adduser -S nonroot -G nonroot
+
+COPY start-ws.sh /usr/local/bin/start-ws.sh
+
+USER nonroot
+
+CMD ["/usr/local/bin/start-ws.sh"]
+```
+
+The new commit and push should fix the SonarQube analysis:
+
+```console
+$ git add . && git commit -m "Fix Dockerfile security"
+[main 4ce6817] Fix Dockerfile security
+ 2 file changed, 6 insertions(+), 2 deletions(-)
+
+$ git push
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 443 bytes | 443.00 KiB/s, done.
+Total 3 (delta 1), reused 0 (delta 0), pack-reused 0 (from 0)
+To ssh://172.16.99.1:2222/devsecops/myproject.git
+   8c08c91..4ce6817  main -> main
+```
+
 ### Code coverage
 
 If Sonarqube fails again, check the **Quality Gates**, and create a custom
