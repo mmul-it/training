@@ -60,7 +60,7 @@ selected.
 
 ## Modify pipeline to add SonarQube
 
-Modify the CI lab of `myproject` by involving Sonarqube, adding this content
+Modify the CI lab of `myproject` by involving SonarQube, adding this content
 to `.gitlab-ci.yml`:
 
 ```yaml
@@ -104,7 +104,7 @@ To ssh://172.16.99.1:2222/devsecops/myproject.git
 And then follow the progress from the GitLab interface, under the CI
 pipelines a new stage should be visible:
 
-![DevSecOps-Pipeline-GitLab-Sonarqube-CI.png](images/DevSecOps-Pipeline-GitLab-Sonarqube-CI.png)
+![DevSecOps-Pipeline-GitLab-SonarQube-CI.png](images/DevSecOps-Pipeline-GitLab-SonarQube-CI.png)
 
-The project `myproject` will now be visible also in the Sonarqube web
+The project `myproject` will now be visible also in the SonarQube web
 interface.

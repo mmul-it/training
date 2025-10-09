@@ -115,7 +115,7 @@ Job succeeded
 
 But by looking into the project details we will find a Failed status:
 
-![DevSecOps-Pipeline-Sonarqube-Code-Failure.png](images/DevSecOps-Pipeline-Sonarqube-Code-Failure.png)
+![DevSecOps-Pipeline-SonarQube-Code-Failure.png](images/DevSecOps-Pipeline-SonarQube-Code-Failure.png)
 
 This happens because we don't have a blocker for the pipeline.
 
@@ -163,7 +163,7 @@ To ssh://172.16.99.1:2222/devsecops/myproject.git
 A new pipeline will be started, and this should fail with a message like
 this:
 
-![DevSecOps-Pipeline-GitLab-Sonarqube-Quality-Gate-Failure.png](images/DevSecOps-Pipeline-GitLab-Sonarqube-Quality-Gate-Failure.png)
+![DevSecOps-Pipeline-GitLab-SonarQube-Quality-Gate-Failure.png](images/DevSecOps-Pipeline-GitLab-SonarQube-Quality-Gate-Failure.png)
 
 ## Fix the code
 
@@ -216,7 +216,7 @@ because of:
 This translates in the creation of a new script called `` with these contents:
 
 ```bash
-[kirater@training-adm myproject]$ cat start-ws.sh 
+[kirater@training-adm myproject]$ cat start-ws.sh
 #!/bin/sh
 
 /bin/nc -l -k -p ${NCAT_PORT} -e /bin/echo -e "${NCAT_HEADER}\n\n${NCAT_MESSAGE}"
@@ -261,10 +261,10 @@ To ssh://172.16.99.1:2222/devsecops/myproject.git
 
 ### Code coverage
 
-If Sonarqube fails again, check the **Quality Gates**, and create a custom
+If SonarQube fails again, check the **Quality Gates**, and create a custom
 quality gate associated to the project that will have `Conditions on New Code` ->
 `Coverage` set to zero.
 
 Another viable solution would be to implement a unit test related to the example
 Java file, this is beyond the scope of this exercise, but is considered a best
-practice by Sonarqube.
+practice by SonarQube.
