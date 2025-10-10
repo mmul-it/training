@@ -9,7 +9,7 @@ The Helm chart used to install Tempo is available at [https://grafana.github.io/
 and can be configured locally as follows:
 
 ```console
-$ helm repo add helm repo add grafana https://grafana.github.io/helm-charts
+$ helm repo add grafana https://grafana.github.io/helm-charts
 "grafana" has been added to your repositories
 
 $ helm repo update
@@ -58,6 +58,8 @@ One way to install the Tempo chart is using the `helm upgrade --install`
 command:
 
 ```console
+$ export TEMPO_HELM_CHART=1.23.2
+
 $ kubectl config use-context kind-ctlplane
 Switched to context "kind-ctlplane".
 
