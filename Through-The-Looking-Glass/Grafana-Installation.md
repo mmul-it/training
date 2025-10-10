@@ -9,7 +9,7 @@ The Helm chart used to install Grafana is available at [https://grafana.github.i
 and can be configured locally as follows:
 
 ```console
-$ helm repo add helm repo add grafana https://grafana.github.io/helm-charts
+$ helm repo add grafana https://grafana.github.io/helm-charts
 "grafana" has been added to your repositories
 
 $ helm repo update
@@ -103,7 +103,7 @@ Switched to context "kind-ctlplane".
 $ helm upgrade --install grafana grafana/grafana \
     --namespace grafana \
     --create-namespace \
-    --values helm-loki-ctlplane.yml
+    --values helm-grafana-ctlplane.yml
 ...
 ```
 
