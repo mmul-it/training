@@ -9,7 +9,7 @@ The Helm chart used to install OTel Collector is available at [https://open-tele
 and can be configured locally as follows:
 
 ```console
-$ helm repo add helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+$ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 "open-telemetry" has been added to your repositories
 
 $ helm repo update
