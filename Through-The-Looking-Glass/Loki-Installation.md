@@ -9,7 +9,7 @@ The Helm chart used to install Loki is available at [https://grafana.github.io/h
 and can be configured locally as follows:
 
 ```console
-$ helm repo add helm repo add grafana https://grafana.github.io/helm-charts
+$ helm repo add grafana https://grafana.github.io/helm-charts
 "grafana" has been added to your repositories
 
 $ helm repo update
@@ -86,7 +86,7 @@ The Loki installation creates a lot of services, but only one will be exposed to
 make the overall testing work, the one named `loki`:
 
 ```console
-kubectl --namespace tempo expose service loki \
+kubectl --namespace loki expose service loki \
   --name loki-lb \
   --type LoadBalancer \
   --load-balancer-ip 172.18.0.103
