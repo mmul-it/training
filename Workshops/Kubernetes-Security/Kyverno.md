@@ -219,3 +219,19 @@ After NetworkPolicy (external): UNREACHABLE
 The output demonstrates that **after** adding the additional Network Policy to
 allow communications between `frontend` and `backend`, just `frontend` is able
 to contact `backend`.
+
+Note that the **namespaces are automatically labeled** by the previously created
+`add-namespace-name-label` Cluster Policy.
+
+All the resources can be queried, and when you're done everything can be cleaned
+with:
+
+```console
+$  ./stage-2-default-network-policy-namespaces.sh clean
+Cleaning up things...
+clusterpolicy.kyverno.io "add-namespace-name-label" deleted
+clusterpolicy.kyverno.io "add-default-deny" deleted
+namespace "backend" deleted
+namespace "frontend" deleted
+namespace "external" deleted
+```

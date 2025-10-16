@@ -1,17 +1,25 @@
 #!/bin/bash
 
-kubectl delete namespace backend frontend external 
-                                      
+clean() {
+  kubectl delete namespace backend frontend external
+}
+
+if [ "$1" == "clean" ]; then
+  echo "Cleaning up things..."
+  clean
+  exit $?
+fi
+
 kubectl create namespace backend
-kubectl create namespace frontend                                           
-kubectl create namespace external                                           
-                                      
+kubectl create namespace frontend
+kubectl create namespace external
+
 kubectl --namespace backend create deployment backend  --image nginx:latest
 kubectl wait --namespace backend --for=condition=ready pod --selector=app=backend --timeout=90s
-                                                                            
+
 kubectl -n frontend run frontend --image=curlimages/curl:latest --restart=Never -- /bin/sh -c "while true; do sleep 3600; done"
 kubectl -n external run external --image=curlimages/curl:latest --restart=Never -- /bin/sh -c "while true; do sleep 3600; done"
-                                                                                                                                                         
+
 BACKENDIP=$(kubectl -n backend get pod -l app=backend -o jsonpath="{.items[0].status.podIP}")
 FRONTENDPOD=$(kubectl -n frontend get pod -l run=frontend -o jsonpath='{.items[0].metadata.name}')
 EXTERNALPOD=$(kubectl -n external get pod -l run=external -o jsonpath='{.items[0].metadata.name}')

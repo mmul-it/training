@@ -1,7 +1,15 @@
 #!/bin/bash
 
-kubectl delete --wait clusterpolicies add-namespace-name-label add-default-deny
-kubectl delete --wait namespace backend frontend external
+clean() {
+  kubectl delete --wait clusterpolicies add-namespace-name-label add-default-deny
+  kubectl delete --wait namespace backend frontend external
+}
+
+if [ "$1" == "clean" ]; then
+  echo "Cleaning up things..."
+  clean
+  exit $?
+fi
 
 kubectl create -f - <<EOF
 apiVersion: kyverno.io/v1
