@@ -22,6 +22,7 @@ The structure of the workshop will be based on stages:
 - Stage 0: [Install Minikube](../../Common/Kubernetes-Install-Minikube.md)
 - Stage 1: [Network Policies](Stage-1-Network-Policies.md).
 - Stage 2: [Kyverno, Policy as Code](Stage-2-Kyverno-Policy-as-Code.md).
+- Stage 3: [Cosign, Sign Container Images](Stage-3-Sign-Containers-with-Cosign.md).
 
 ## References
 
@@ -30,6 +31,7 @@ listed here:
 
 - [Kubernetes](https://kubernetes.io/), the container orchestration platform.
 - [Kyverno](https://kyverno.io/), declarative Policy as Code for Kubernetes.
+- [Cosign](https://github.com/sigstore/cosign), OCI containers signature tool.
 
 ## Author
 
