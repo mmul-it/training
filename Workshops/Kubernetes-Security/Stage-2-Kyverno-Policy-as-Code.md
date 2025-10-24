@@ -22,14 +22,17 @@ Verifying checksum... Done.
 Preparing to install helm into /usr/local/bin
 helm installed into /usr/local/bin/helm
 
-$ helm repo add kyverno https://kyverno.github.io/kyverno/                                                                       "kyverno" has been added to your repositories
+$ helm repo add kyverno https://kyverno.github.io/kyverno/
+"kyverno" has been added to your repositories
 
 $ helm repo update
 Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "kyverno" chart repository
 Update Complete. ⎈Happy Helming!⎈
 
-$ helm install kyverno kyverno/kyverno -n kyverno --create-namespace
+$ helm upgrade --install kyverno kyverno/kyverno \
+    --namespace kyverno --create-namespace \
+    --set admissionController.hostNetwork=true
 NAME: kyverno
 LAST DEPLOYED: Tue Oct 14 13:43:56 2025
 NAMESPACE: kyverno
