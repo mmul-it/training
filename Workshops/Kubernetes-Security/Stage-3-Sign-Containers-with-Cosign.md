@@ -16,7 +16,7 @@ an admission control based upon containers signature with Kyverno.
 The `cosign` binary is available on GitHub, and can be easily installed as follows:
 
 ```console
-$ export COSIGN_VERSION=v3.0.2
+$ export COSIGN_VERSION=v2.6.1
 (no output)
 
 $ sudo curl -sSfL https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 \
@@ -34,10 +34,10 @@ $ cosign version
  \______| \______/  |_______/    |__|  \______| |__| \__|
 cosign: A tool for Container Signing, Verification and Storage in an OCI registry.
 
-GitVersion:    v3.0.2
-GitCommit:     84449696f0658a5ef5f2abba87fdd3f8b17ca1be
+GitVersion:    v2.6.1
+GitCommit:     634fabe54f9fbbab55d821a83ba93b2d25bdba5f
 GitTreeState:  clean
-BuildDate:     2025-10-10T18:17:56Z
+BuildDate:     2025-09-26T17:24:36Z
 GoVersion:     go1.25.1
 Compiler:      gc
 Platform:      linux/amd64
@@ -137,7 +137,7 @@ $ docker build -f build/Dockerfile -t ncat-http-msg-port:1.0 build/
  => CACHED [3/3] COPY start-ws.sh /usr/local/bin/start-ws.sh                                                                      0.0s
  => exporting to image                                                                                                            0.1s
  => => exporting layers                                                                                                           0.0s
- => => writing image sha256:9fc1cf6f30e7a1c4b80a2eeba794eba3bc2279e292dd0e007d9b7efbba8a09f0                                      0.0s
+ => => writing image sha256:3a803fd6de72c9a9188ecdc60d508dc820cfd10c590fb37c06697017cc5fcd07                                      0.0s
  => => naming to docker.io/library/ncat-http-msg-port:1.0
 ```
 
@@ -166,7 +166,7 @@ The push refers to repository [ghcr.io/kiratech/ncat-http-msg-port]
 9f430253f8ea: Pushed
 6cd0376aea2a: Pushed
 b4cb8796a924: Pushed
-1.0: digest: sha256:dc52cb7aa471b909f7cdb70ee281ee9ee2ad0ce821dcb964785e5259a7bd4a5d size: 942
+1.0: digest: sha256:3a803fd6de72c9a9188ecdc60d508dc820cfd10c590fb37c06697017cc5fcd07 size: 942
 ```
 
 **NOTE**: it might be needed to "Change visibility" under [GitHub Package Settings](https://github.com/orgs/kiratech/packages/container/ncat-http-msg-port/settings)
@@ -181,19 +181,42 @@ To sign the container, first the digest of the pushed image is needed:
 $ docker buildx imagetools inspect ghcr.io/kiratech/ncat-http-msg-port:1.0
 Name:      ghcr.io/kiratech/ncat-http-msg-port:1.0
 MediaType: application/vnd.docker.distribution.manifest.v2+json
-Digest:    sha256:dc52cb7aa471b909f7cdb70ee281ee9ee2ad0ce821dcb964785e5259a7bd4a5d
+Digest:    sha256:3a803fd6de72c9a9188ecdc60d508dc820cfd10c590fb37c06697017cc5fcd07
 ```
 
 This will be used as a reference for the signature:
 
 ```console
-$ cosign sign --key cosign.key ghcr.io/kiratech/ncat-http-msg-port@sha256:dc52cb7aa471b909f7cdb70ee281ee9ee2ad0ce821dcb964785e5259a7bd4a5d
+$ cosign sign \
+    --yes=true \
+    --key cosign.key \
+    ghcr.io/kiratech/ncat-http-msg-port@sha256:3a803fd6de72c9a9188ecdc60d508dc820cfd10c590fb37c06697017cc5fcd07
+Enter password for private key:
+
+        The sigstore service, hosted by sigstore a Series of LF Projects, LLC, is provided pursuant to the Hosted Project Tools Terms of Use, available at https://lfprojects.org/policies/hosted-project-tools-terms-of-use/.
+        Note that if your submission includes personal data associated with this signed artifact, it will be part of an immutable record.
+        This may include the email address associated with the account with which you authenticate your contractual Agreement.
+        This information will be used for signing this artifact and will be stored in public transparency logs and cannot be removed later, and is subject to the Immutable Record notice at https://lfprojects.org/policies/hosted-project-tools-immutable-records/.
+
+By typing 'y', you attest that (1) you are not submitting the personal data of any other person; and (2) you understand and agree to the statement and the Agreement terms at the URLs listed above.
+tlog entry created with index: 637508105
+Pushing signature to: ghcr.io/kiratech/ncat-http-msg-port
+
 Enter password for private key:
 ```
 
-No output means that everything was successful. The effective signature can be
-verified by using `cosign verify`, and note that the result is the same while
-using the `1.0` tag or the entire container image digest:
+**NOTE**: recent cosign versions (>= 3.0.0) sign actions produce signatures that
+are not recognized by Kyverno, because of the new bundle format used. To
+generate signatures supported by Kyverno the two options
+`--use-signing-config=false --new-bundle-format=false` needs to be passed at
+command line.
+
+[This bug](https://github.com/sigstore/cosign/issues/4488#issuecomment-3432196825)
+on the Cosign's GitHub repository is covering the issue.
+
+Once the container images is signer, the effective signature can be verified by
+using `cosign verify`, and note that the result is the same while using the
+`1.0` tag or the entire container image digest:
 
 ```console
 $ cosign verify --key cosign.pub ghcr.io/kiratech/ncat-http-msg-port:1.0
@@ -204,17 +227,17 @@ The following checks were performed on each of these signatures:
   - Existence of the claims in the transparency log was verified offline
   - The signatures were verified against the specified public key
 
-[{"critical":{"identity":{"docker-reference":"ghcr.io/kiratech/ncat-http-msg-port:1.0"},"image":{"docker-manifest-digest":"sha256:dc52cb7aa471b909f7cdb70ee281ee9ee2ad0ce821dcb964785e5259a7bd4a5d"},"type":"https://sigstore.dev/cosign/sign/v1"},"optional":null}]
+[{"critical":{"identity":{"docker-reference":"ghcr.io/kiratech/ncat-http-msg-port:1.0"},"image":{"docker-manifest-digest":"sha256:3a803fd6de72c9a9188ecdc60d508dc820cfd10c590fb37c06697017cc5fcd07"},"type":"https://sigstore.dev/cosign/sign/v1"},"optional":null}]
 
-$ cosign verify --key cosign.pub ghcr.io/kiratech/ncat-http-msg-port@sha256:dc52cb7aa471b909f7cdb70ee281ee9ee2ad0ce821dcb964785e5259a7bd4a5d
+$ cosign verify --key cosign.pub ghcr.io/kiratech/ncat-http-msg-port@sha256:3a803fd6de72c9a9188ecdc60d508dc820cfd10c590fb37c06697017cc5fcd07
 
-Verification for ghcr.io/kiratech/ncat-http-msg-port@sha256:dc52cb7aa471b909f7cdb70ee281ee9ee2ad0ce821dcb964785e5259a7bd4a5d --
+Verification for ghcr.io/kiratech/ncat-http-msg-port@sha256:3a803fd6de72c9a9188ecdc60d508dc820cfd10c590fb37c06697017cc5fcd07 --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - Existence of the claims in the transparency log was verified offline
   - The signatures were verified against the specified public key
 
-[{"critical":{"identity":{"docker-reference":"ghcr.io/kiratech/ncat-http-msg-port@sha256:dc52cb7aa471b909f7cdb70ee281ee9ee2ad0ce821dcb964785e5259a7bd4a5d"},"image":{"docker-manifest-digest":"sha256:dc52cb7aa471b909f7cdb70ee281ee9ee2ad0ce821dcb964785e5259a7bd4a5d"},"type":"https://sigstore.dev/cosign/sign/v1"},"optional":null}]
+[{"critical":{"identity":{"docker-reference":"ghcr.io/kiratech/ncat-http-msg-port@sha256:3a803fd6de72c9a9188ecdc60d508dc820cfd10c590fb37c06697017cc5fcd07"},"image":{"docker-manifest-digest":"sha256:3a803fd6de72c9a9188ecdc60d508dc820cfd10c590fb37c06697017cc5fcd07"},"type":"https://sigstore.dev/cosign/sign/v1"},"optional":null}]
 ```
 
 ## Create the Kyverno ClusterPolicy
@@ -269,7 +292,7 @@ $ kubectl run goodpod --image=ghcr.io/kiratech/ncat-http-msg-port:1.0
 pod/goodpod created
 
 $ kubectl get pod goodpod -o jsonpath='{.metadata.annotations.kyverno\.io\/verify-images}'; echo
-{"ghcr.io/kiratech/ncat-http-msg-port@sha256:dc52cb7aa471b909f7cdb70ee281ee9ee2ad0ce821dcb964785e5259a7bd4a5d":"pass"}
+{"ghcr.io/kiratech/ncat-http-msg-port@sha256:3a803fd6de72c9a9188ecdc60d508dc820cfd10c590fb37c06697017cc5fcd07":"pass"}
 
 $ kubectl run notgoodpod --image=nginx
 Error from server: admission webhook "mutate.kyverno.svc-fail" denied the request:
