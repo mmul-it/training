@@ -18,7 +18,7 @@ In this lab you will:
 1. Launch the sleep command and then press `CTLR+Z`. Result should be:
 
    ```console
-   [kirater@machine ~] $ sleep 100
+   $ sleep 100
    ^Z
    [1]+  Stopped                 sleep 100
    ```

@@ -79,5 +79,6 @@ In this lab you will:
        exit 0
    fi
 
-   exit 1
+   # Exit status 3 will be returned if no previous condition was met.
+   exit 3
    ```

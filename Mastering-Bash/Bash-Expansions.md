@@ -34,11 +34,11 @@ In this lab you will:
    leave the default value for the second run:
 
    ```console
-   $ ./default_answer pizza
+   $ ./default_answer.sh pizza
    The answer to life, the universe and everything is pizza
    Name of the script is ./default_answer
 
-   $ ./default_answer
+   $ ./default_answer.sh
    The answer to life, the universe and everything is 42
    Name of the script is ./default_answer
    ```

@@ -11,7 +11,7 @@ In this lab you will:
 5. Append to the previously created file all the lines that contain a `:9` from
    `/etc/group` file.
 6. Sort the content of `results.txt` by name.
-7. Use the `less` pager to view the content of `/var/log/boot.log` and invoke an
+7. Use the `less` pager to view the content of `/etc/vimrc` and invoke an
    editor to edit the file.
 
 ## Solution
@@ -85,12 +85,14 @@ In this lab you will:
    unbound:x:994:
    ```
 
-7. Use the less pager to view the content of `/var/log/boot.log` and invoke an
+7. Use the less pager to view the content of `/etc/vimrc` and invoke an
    editor to edit the file:
 
    ```console
-   $ less /var/log/boot.log
+   $ less /etc/vimrc
    (less interface opens)
    ```
 
-   and then press `v`.
+   and then press `v`. You will see the `less` interface turning into a `vim`
+   one, but without the opportunity to make any change, since the file is not
+   owned by the `kirater` unprivileged user.
