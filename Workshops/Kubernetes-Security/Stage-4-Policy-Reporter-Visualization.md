@@ -50,7 +50,6 @@ policy-reporter-7d6b5c8f9d-4xzmh       1/1     Running   0          45s
 policy-reporter-ui-5f7b9d6c8d-2pqrt    1/1     Running   0          45s
 ```
 
-
 ## Testing Policy Reports
 
 You can use the provided script to automatically create test policies and pods:
@@ -246,7 +245,7 @@ $ helm install kyverno kyverno/kyverno -n kyverno \
 
 If `kubectl get policyreport` returns no results, verify that:
 
-1. Kyverno reports controller is running:
+Kyverno reports controller is running:
 
 ```console
 $ kubectl get pods -n kyverno -l app.kubernetes.io/component=reports-controller
@@ -254,7 +253,7 @@ NAME                                          READY   STATUS    RESTARTS   AGE
 kyverno-reports-controller-856b76d78d-2rq5f   1/1     Running   0          5m
 ```
 
-2. PolicyReport CRDs are installed:
+PolicyReport CRDs are installed:
 
 ```console
 $ kubectl get crd | grep policyreport
@@ -262,7 +261,7 @@ clusterpolicyreports.wgpolicyk8s.io       2025-12-19T15:25:04Z
 policyreports.wgpolicyk8s.io              2025-12-19T15:25:04Z
 ```
 
-3. Policies are in Audit mode (not Enforce) and have `background: true`:
+Policies are in Audit mode (not Enforce) and have `background: true`:
 
 ```console
 $ kubectl get clusterpolicy require-labels -o yaml | grep -A 2 "spec:"
@@ -291,5 +290,4 @@ $ kubectl logs -n kyverno -l app.kubernetes.io/component=reports-controller | gr
 Failed to watch error="failed to list *v1.ValidatingAdmissionPolicyBinding: the server could not find the requested resource"
 ```
 
-Solution: Downgrade to a compatible version (see Requisites section above).
-
+Solution: Downgrade to a compatible version (see Requisites section above)
