@@ -290,4 +290,4 @@ $ kubectl logs -n kyverno -l app.kubernetes.io/component=reports-controller | gr
 Failed to watch error="failed to list *v1.ValidatingAdmissionPolicyBinding: the server could not find the requested resource"
 ```
 
-Solution: Downgrade to a compatible version (see Requisites section above)
+Solution: Downgrade to a compatible version (see Requisites section above).
