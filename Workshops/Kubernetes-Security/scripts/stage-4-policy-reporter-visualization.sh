@@ -2,58 +2,7 @@
 
 set -e
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
-# Function to print colored output
-print_info() {
-    echo -e "${BLUE}ℹ${NC} $1"
-}
-
-print_success() {
-    echo -e "${GREEN}✓${NC} $1"
-}
-
-print_warning() {
-    echo -e "${YELLOW}⚠${NC} $1"
-}
-
-print_error() {
-    echo -e "${RED}✗${NC} $1"
-}
-
-print_header() {
-    echo ""
-    echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
-    echo -e "${GREEN}  $1${NC}"
-    echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
-    echo ""
-}
-
-# Function to wait for resources
-wait_for_resource() {
-    local resource=$1
-    local name=$2
-    local namespace=$3
-    local timeout=${4:-30}
-    
-    print_info "Waiting for $resource $name in namespace $namespace..."
-    local counter=0
-    while [ $counter -lt $timeout ]; do
-        if kubectl get $resource $name -n $namespace &> /dev/null; then
-            print_success "$resource $name is ready"
-            return 0
-        fi
-        sleep 2
-        counter=$((counter + 2))
-    done
-    print_warning "Timeout waiting for $resource $name"
-    return 1
-}
+source functions.source
 
 print_header "Stage 4: Policy Reporter Visualization - Testing"
 
