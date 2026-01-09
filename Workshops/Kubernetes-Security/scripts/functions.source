@@ -24,6 +24,12 @@ print_error() {
     echo -e "${RED}✗${NC} $1"
 }
 
+print_step() {
+    echo ""
+    echo -e "${GREEN}$1${NC}"
+    echo ""
+}
+
 print_header() {
     echo ""
     echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
