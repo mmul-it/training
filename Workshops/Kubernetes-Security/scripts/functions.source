@@ -38,23 +38,32 @@ print_header() {
     echo ""
 }
 
-# Function to wait for resources
-wait_for_resource() {
-    local resource=$1
-    local name=$2
-    local namespace=$3
-    local timeout=${4:-30}
+check_kyverno() {
+    print_info "Checking Kyverno..."
+    if ! kubectl get namespace kyverno &> /dev/null; then
+        print_error 'Kyverno is not installed. Please install it first.'
+        echo 'To install Kyverno:'
+        echo 'helm repo add kyverno https://kyverno.github.io/kyverno/'
+        echo 'helm update'
+        echo 'helm upgrade --install kyverno kyverno/kyverno \'
+        echo '    --create-namespace --namespace kyverno'
+        echo '    --version 3.1.4'
+        exit 1
+    fi
+    print_success "Kyverno is present."
+}
 
-    print_info "Waiting for $resource $name in namespace $namespace..."
-    local counter=0
-    while [ $counter -lt $timeout ]; do
-        if kubectl get $resource $name -n $namespace &> /dev/null; then
-            print_success "$resource $name is ready"
-            return 0
-        fi
-        sleep 2
-        counter=$((counter + 2))
-    done
-    print_warning "Timeout waiting for $resource $name"
-    return 1
+check_kyverno_policy_reporter() {
+    if ! kubectl get namespace policy-reporter &> /dev/null; then
+        print_error 'Policy Reporter is not installed. Please install it first.'
+        echo 'To install Kyverno Policy Reporter:'
+        echo 'helm repo add policy-reporter https://kyverno.github.io/policy-reporter'
+        echo 'helm update'
+        echo 'helm upgrade --install policy-reporter policy-reporter/policy-reporter \'
+        echo '    --create-namespace --namespace policy-reporter \'
+        echo '    --set ui.enabled=true \'
+        echo '    --set kyvernoPlugin.enabled=true \'
+        echo '    --set ui.plugins.kyverno=true'
+        exit 1
+    fi
 }

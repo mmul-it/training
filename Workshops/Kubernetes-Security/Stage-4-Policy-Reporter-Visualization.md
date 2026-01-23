@@ -63,17 +63,6 @@ $ ./stage-4-policy-reporter-visualization.sh
 ═══════════════════════════════════════════════════════════
   Stage 4: Policy Reporter Visualization - Testing
 ═══════════════════════════════════════════════════════════
-
-ℹ Checking prerequisites...
-✓ Prerequisites check passed
-
-═══════════════════════════════════════════════════════════
-  Creating Test Environment
-═══════════════════════════════════════════════════════════
-
-ℹ Creating namespace policy-test...
-namespace/policy-test created
-✓ Namespace created
 ...
 ```
 
@@ -91,7 +80,7 @@ NAME                                   KIND   NAME                           PAS
 843dab32-08bc-41de-9af3-1234a84a365e   Pod    non-compliant-latest-tag       2      1      0      0       0      7s
 d7908844-98a5-446a-a170-8faacfdb2741   Pod    compliant-pod                  3      0      0      0       0      8s
 
-kubectl -n policy-test describe policyreport 5d653b12-8fe9-4e17-8464-551f35fb76d5
+$ kubectl -n policy-test describe policyreport 5d653b12-8fe9-4e17-8464-551f35fb76d5
 Name:         5d653b12-8fe9-4e17-8464-551f35fb76d5
 Namespace:    policy-test
 Labels:       app.kubernetes.io/managed-by=kyverno

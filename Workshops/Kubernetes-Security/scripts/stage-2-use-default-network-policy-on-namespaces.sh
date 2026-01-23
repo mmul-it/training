@@ -21,12 +21,8 @@ fi
 
 print_step "Prerequisites"
 
-print_info "Checking Kyverno..."
-if ! kubectl get namespace kyverno &> /dev/null; then
-    print_error "Kyverno is not installed. Please install it first."
-    echo "Run: helm install kyverno kyverno/kyverno -n kyverno --create-namespace --version 3.1.4"
-    exit 1
-fi
+check_kyverno
+
 print_success "Prerequisites check passed"
 
 print_step "Preparation"
@@ -87,7 +83,6 @@ kubectl --namespace backend create deployment backend  --image nginx:latest
 kubectl wait --namespace backend --for=condition=ready pod --selector=app=backend --timeout=90s
 BACKENDIP=$(kubectl -n backend get pod -l app=backend -o jsonpath="{.items[0].status.podIP}")
 print_success "Deployment backend created."
-
 
 print_info "Running frontend Pod on frontend namespace..."
 kubectl -n frontend run frontend --image=curlimages/curl:latest --restart=Never -- /bin/sh -c "while true; do sleep 3600; done"
