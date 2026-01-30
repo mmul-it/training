@@ -25,7 +25,7 @@ content of these environmental variables that are passed in every pipeline run:
 Create a `Dockerfile` inside `myproject` with these contents:
 
 ```dockerfile
-FROM 
+FROM alpine:3.10
 
 ENV NCAT_MESSAGE "Container test"
 ENV NCAT_HEADER "HTTP/1.1 200 OK"
@@ -94,5 +94,13 @@ To ssh://172.16.99.1:2222/building-castles/myproject.git
 branch 'add-container-build' set up to track 'origin/add-container-build'.
 ```
 
+TODO:
 
+- ADD FIX CERTS:
 
+  ```console
+  sudo mkdir -p /etc/docker/certs.d/172.16.99.1\:5050/
+  sudo cp $GITLAB_HOME/config/ssl/172.16.99.1.crt /etc/docker/certs.d/172.16.99.1\:5050/172.16.99.1.crt
+  ```
+
+- ADD INVESTIGATION OF THE QUALITY OF THE IMAGE USING ULTIMATE TOOLS
