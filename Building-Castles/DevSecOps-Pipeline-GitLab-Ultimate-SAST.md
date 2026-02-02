@@ -3,7 +3,7 @@
 In this lab you will configure a git repository to be processed by GitLab SAST
 capabilities that will affect the CI process.
 
-## Set Security Policy at Group Level
+## Add SAST check Security Policy at Group Level
 
 As Admin, inside our GitLab Ultimate installation we created the
 `building-castles` group, and we are going to configure for every project in it
@@ -17,7 +17,7 @@ move into the group Policies page:
 Press the `New policy` button, and under `Merge request approval policy` press
 the `Select policy` button, and fill with these content the relative fields:
 
-- Name: `Check for High and Critical problems`.
+- Name: `Check for SAST High and Critical problems`.
 - Policy scope: Apply this policy to `all projects in this group` `without
   exceptions`.
 - Rules: When a `security scan` with `SAST` runs against `all protected
