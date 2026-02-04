@@ -70,12 +70,13 @@ import os
 
 app = Flask(__name__)
 
+# Expose the link to /ping in the default page, so that DAST can detect it
 @app.route("/")
 def index():
-    return "My Python fake API, call /ping to see something"
+    return "<html><body><a href=\"/ping?host=127.0.0.1\">Ping</a></body></html>"
 
-# Command Injection, the host variable could be overridden and should be
-# detected by a DAST scanner
+# Expose /ping API to execute command with a command injection problem to be
+# detected by DAST
 @app.route("/ping")
 def ping():
     host = request.args.get("host", "127.0.0.1")
@@ -89,7 +90,7 @@ Then we are going to change the `Dockerfile` so that it will execute the newly
 created script:
 
 ```Dockerfile
-FROM python:3.9-slim
+FROM python:3.14.2-alpine3.23
 
 RUN pip install flask
 
@@ -211,15 +212,191 @@ In the merge request summary page under `Assignees` and `Reviewers` select
 
 ## Manage the problems
 
-The analysis will show plenty of problems on all the three scanning method that
+The analysis will show plenty of problems on the various scanning method that
 were implemented, the one that we're interested on is the DAST one:
 
-- **OS Command Injection**: It is possible to execute arbitrary OS commands on 
+- **OS Command Injection**: _It is possible to execute arbitrary OS commands on 
   the target application server. OS Command Injection is a critical
-  vulnerability that can lead to a full system compromise.
+  vulnerability that can lead to a full system compromise_.
 
 Which is exactly what we aimed for.
 
-TODO:
+Note that the same kind of vulnerability should be detected also by SAST, in
+this form:
 
-- Fix the problem.
+- **Improper neutralization of special elements used in an OS Command ('OS
+  Command Injection')**: _Starting a process with a shell; seems safe, but may be
+  changed in the future, consider rewriting without shell_.
+
+Note also that it might be that the Container Scanning component will detect
+some vulnerabilities on the chosen base container image, in this case 
+`python:3.14.2-alpine3.23`. Problems related to the images are usually solvable
+with a following version, so it might be worth checking which versions are
+available in the container image page on the Docker Hub:
+
+[https://hub.docker.com/_/python](https://hub.docker.com/_/python)
+
+So, with a clear idea of the problem, it is easy to solve the problem, by
+changing the Python application, fixing things:
+
+```python
+from flask import Flask, request
+import subprocess
+import ipaddress
+
+app = Flask(__name__)
+
+# Expose the link to /ping in the default page, so that DAST can detect it
+@app.route("/")
+def index():
+    return "<html><body><a href=\"/ping?host=127.0.0.1\">Ping</a></body></html>"
+
+# Expose /ping API to execute command after checking parameters
+@app.route("/ping")
+def ping():
+    # Validate input (IP only)
+    host = request.args.get("host", "127.0.0.1")
+    try:
+        ipaddress.ip_address(host)
+    except ValueError:
+        abort(400, "Invalid IP address")
+
+    # Get the result using subprocess.run function
+    result = subprocess.run(
+        ["ping", "-c", "1", host],
+        capture_output=True,
+        text=True
+    )
+
+    # Return the result
+    return result.stdout
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+```
+
+The fix is related to:
+
+- Headers: by setting the `nosniff` and omitting versions in the response.
+- DAST: by checking that the `{host}` variable is an IP address.
+- SAST: by using `subprocess.run` to execute the command outside a shell.
+
+There are also two "Low" category issues detected by DAST, which could be
+acceptable by our policies, but we might want to fix in the code:
+
+- **Server header exposes version information**: _The target website returns the
+  Server header and version information of this website. By exposing these
+  values, attackers may attempt to identify if the target software is vulnerable
+  to known vulnerabilities, or catalog known sites running particular versions
+  to exploit in the future when a vulnerability is identified in the particular
+  version_.
+
+  This can be solved by changing the way the app gets exposed, by using for
+  example `gunicorn` and changing the Dockerfile as follows:
+
+  ```Dockerfile
+  FROM python:3.14.2-alpine3.23
+
+  RUN pip install flask gunicorn
+
+  COPY python/app.py /app.py
+
+  EXPOSE 5000
+
+  CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "1", "--access-logfile", "-", "app:app"]
+  ```
+
+- **Missing X-Content-Type-Options: nosniff**: _The X-Content-Type-Options
+  header with the value nosniff ensures that user agents do not attempt to guess
+  the format of the data being received. User Agents such as browsers, commonly
+  attempt to guess what the resource type being requested is, through a process
+  called MIME type sniffing.
+  Without this header being sent, the browser may misinterpret the data, leading
+  to MIME confusion attacks. If an attacker were able to upload files that are
+  accessible by using a browser, they could upload files that could be
+  interpreted as HTML and execute Cross-Site Scripting (XSS) attacks_.
+
+  This can be solved by adding `nosniff` to the header:
+
+  ```python
+  # Set proper headers for app responses
+  @app.after_request
+  def add_security_headers(response):
+      response.headers["X-Content-Type-Options"] = "nosniff"
+      return response
+  ```
+
+Even if these can be safely ignored, taking care of such problems is the right
+level of paranoia needed to enforce security.
+
+After this change, the usual workflow will be used to commit and push the
+change:
+
+```console
+$ git add . && git commit -m "Fix Python app code injection"
+[add-python-api 3a3eddd] Fix Python app code injection
+ 1 file changed, 5 insertions(+), 11 deletions(-)
+
+$ git push
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (4/4), 509 bytes | 509.00 KiB/s, done.
+Total 4 (delta 2), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: 
+remote: View merge request for add-python-api:
+remote:   https://172.16.99.1:8443/building-castles/myproject/-/merge_requests/4
+remote: 
+To ssh://172.16.99.1:2222/building-castles/myproject.git
+   e7683f4..3a3eddd  add-python-api -> add-python-api
+```
+
+Once the new code is pushed, and the problems are all solved, after becoming
+`MntDevSecOps` again, it will be possible to approve the merge.
+
+Select the merge from:
+
+[https://172.16.99.1:8443/building-castles/myproject/-/merge_requests/](https://172.16.99.1:8443/building-castles/myproject/-/merge_requests/)
+
+And follow the same process used to activate the CI, by approving the review and
+pressing `Merge`.
+
+To include the merge inside the `main` branch, on the terminal:
+
+```console
+$ git checkout main
+Switched to branch 'main'
+Your branch is up to date with 'origin/main'.
+
+$ git pull
+remote: Enumerating objects: 1, done.
+remote: Counting objects: 100% (1/1), done.
+remote: Total 1 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+Unpacking objects: 100% (1/1), 281 bytes | 281.00 KiB/s, done.
+From ssh://172.16.99.1:2222/building-castles/myproject
+   c40a0c9..931b0be  main       -> origin/main
+Updating c40a0c9..931b0be
+Fast-forward
+ .gitlab-ci.yml |  9 +++++++++
+ Dockerfile     | 13 +++++--------
+ python/app.py  | 40 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 54 insertions(+), 8 deletions(-)
+ create mode 100644 python/app.py
+
+$ git log --oneline
+931b0be (HEAD -> main, origin/main) Merge branch 'add-python-api' into 'main'
+52c84d4 (origin/add-python-api, add-python-api) Fix Python app code injection
+e7683f4 Add Python app and DAST check
+c40a0c9 Merge branch 'add-container-build' into 'main'
+183f301 (origin/add-container-build, add-container-build) Fix Alpine version
+6397d85 Add container test
+e90df89 Add container build and push
+518849d Merge branch 'first-test' into 'main'
+9d741e4 (origin/first-test, first-test) Fix Python script
+ad61426 Fix Pod manifest
+2189697 Introduce faulty code
+131b023 Merge branch 'activate-ci' into 'main'
+b85424e (origin/activate-ci, activate-ci) Activate CI
+8e74315 Initial commit
+```
