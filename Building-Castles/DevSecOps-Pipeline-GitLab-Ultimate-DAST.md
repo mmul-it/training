@@ -3,13 +3,13 @@
 In this lab you will configure a git repository to be processed by GitLab DAST
 capabilities that will affect the CI process.
 
-## Add SAST check Security Policy at Group Level
+## Add DAST check Security Policy at Group Level
 
 As Admin, inside our GitLab Ultimate installation we created the
 `building-castles` group, and we are going to configure for every project in it
 a policy that will prevent security problems from being merged.
 
-To activate a policy that will block merge requests if SAST problems are found,
+To activate a policy that will block merge requests if DAST problems are found,
 move into the group Policies page:
 
 [https://172.16.99.1:8443/groups/building-castles/-/security/policies](https://172.16.99.1:8443/groups/building-castles/-/security/policies)
