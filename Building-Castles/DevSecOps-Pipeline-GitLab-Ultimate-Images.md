@@ -12,7 +12,7 @@ integrated within GitLab.
 One way to understand where the Container Registry lives is by looking at the
 content of these environmental variables that are passed in every pipeline run:
 
-| Variable	         | Meaning                             |
+| Variable               | Meaning                             |
 |------------------------|-------------------------------------|
 | `CI_REGISTRY`          | Registry address                    |
 | `CI_REGISTRY_IMAGE`    | Complete path of the produced image |
@@ -196,7 +196,7 @@ Looking at the pipeline produced by the push a new (green) `container_scanning`
 action in the `test` stage will appear.
 
 Stop impersonating `AdmDevSecOps` and become `DevSecOps`. On the top of the page
-a message saying ` You pushed to add-container-build at building-castles
+a message saying `You pushed to add-container-build at building-castles
  / myproject 4 minutes ago` with a `Create merge request` button.
 
 Press the button, select `MntDevSecOps` as both `Assignees` and `Reviewers`, and

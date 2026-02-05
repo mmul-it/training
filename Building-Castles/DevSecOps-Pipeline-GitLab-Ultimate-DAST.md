@@ -179,10 +179,10 @@ Delta compression using up to 4 threads
 Compressing objects: 100% (6/6), done.
 Writing objects: 100% (6/6), 1.01 KiB | 1.01 MiB/s, done.
 Total 6 (delta 1), reused 0 (delta 0), pack-reused 0 (from 0)
-remote: 
+remote:
 remote: To create a merge request for add-python-api, visit:
 remote:   https://172.16.99.1:8443/building-castles/myproject/-/merge_requests/new?merge_request%5Bsource_branch%5D=add-python-api
-remote: 
+remote:
 To ssh://172.16.99.1:2222/building-castles/myproject.git
  * [new branch]      add-python-api -> add-python-api
 branch 'add-python-api' set up to track 'origin/add-python-api'.
@@ -215,7 +215,7 @@ In the merge request summary page under `Assignees` and `Reviewers` select
 The analysis will show plenty of problems on the various scanning method that
 were implemented, the one that we're interested on is the DAST one:
 
-- **OS Command Injection**: _It is possible to execute arbitrary OS commands on 
+- **OS Command Injection**: _It is possible to execute arbitrary OS commands on
   the target application server. OS Command Injection is a critical
   vulnerability that can lead to a full system compromise_.
 
@@ -229,12 +229,11 @@ this form:
   changed in the future, consider rewriting without shell_.
 
 Note also that it might be that the Container Scanning component will detect
-some vulnerabilities on the chosen base container image, in this case 
+some vulnerabilities on the chosen base container image, in this case
 `python:3.14.2-alpine3.23`. Problems related to the images are usually solvable
 with a following version, so it might be worth checking which versions are
-available in the container image page on the Docker Hub:
-
-[https://hub.docker.com/_/python](https://hub.docker.com/_/python)
+available in the container image page on the
+[Docker Hub](https://hub.docker.com/_/python).
 
 So, with a clear idea of the problem, it is easy to solve the problem, by
 changing the Python application, fixing things:
@@ -344,10 +343,10 @@ Delta compression using up to 4 threads
 Compressing objects: 100% (4/4), done.
 Writing objects: 100% (4/4), 509 bytes | 509.00 KiB/s, done.
 Total 4 (delta 2), reused 0 (delta 0), pack-reused 0 (from 0)
-remote: 
+remote:
 remote: View merge request for add-python-api:
 remote:   https://172.16.99.1:8443/building-castles/myproject/-/merge_requests/4
-remote: 
+remote:
 To ssh://172.16.99.1:2222/building-castles/myproject.git
    e7683f4..3a3eddd  add-python-api -> add-python-api
 ```
