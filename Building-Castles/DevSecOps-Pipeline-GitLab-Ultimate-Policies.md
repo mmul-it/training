@@ -282,7 +282,7 @@ It is crucial to understand that the correct workflow always starts with a
 branch creation.
 
 We are going to create a custom branch and push a change that exposes a
-password:
+private key:
 
 ```console
 $ git status
@@ -294,13 +294,13 @@ nothing to commit, working tree clean
 $ git checkout -b secret-detection-test
 Switched to a new branch 'secret-detection-test'
 
-$ echo 'PASSWORD=password1!' > reserved.env
+$ openssl genrsa -out ./myuser.key 2048
 (no output)
 
 $ git add . && git commit -m "Add secret exposing file"
 [secret-detection-test 075b54c] Add secret exposing file
  1 file changed, 1 insertion(+)
- create mode 100644 reserved.env
+ create mode 100644 myuser.key
 
 $ git push --set-upstream origin secret-detection-test
 Warning: Permanently added '[172.16.99.1]:2222' (ED25519) to the list of known hosts.
@@ -310,10 +310,10 @@ Delta compression using up to 4 threads
 Compressing objects: 100% (2/2), done.
 Writing objects: 100% (3/3), 301 bytes | 301.00 KiB/s, done.
 Total 3 (delta 1), reused 0 (delta 0), pack-reused 0 (from 0)
-remote: 
+remote:
 remote: To create a merge request for secret-detection-test, visit:
 remote:   https://172.16.99.1:8443/building-castles/myproject/-/merge_requests/new?merge_request%5Bsource_branch%5D=secret-detection-test
-remote: 
+remote:
 To ssh://172.16.99.1:2222/building-castles/myproject.git
  * [new branch]      secret-detection-test -> secret-detection-test
 branch 'secret-detection-test' set up to track 'origin/secret-detection-test'.
@@ -332,4 +332,76 @@ With a `Create merge request` button. Click on it.
 In the merge request summary page under `Assignees` and `Reviewers` select
 `MntDevSecOps` and press `Create merge request`.
 
-TODO: understand why no problems is detected even if the policy is in place.
+## Manage the problems
+
+After few seconds, the merge request will show the problems related the file
+that was committed, in the form of:
+
+- Security scanning detected 1 new potential vulnerability: `1 critical, 0 high,
+  and 0 others`
+
+The merge will be blocked, because 2 checks failed:
+
+- All required approvals must be given.
+- All policy rules must be satisfied.
+
+Solving the problem is just a matter of redacting the secret:
+
+```console
+$ echo 'This is redacted!' > myuser.key
+
+$ git add . && git commit -m "Fix secret file content"
+[secret-detection-test 16b83b1] Fix secret file content
+ 1 file changed, 1 insertion(+), 28 deletions(-)
+
+$ git push
+Warning: Permanently added '[172.16.99.1]:2222' (ED25519) to the list of known hosts.
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 280 bytes | 280.00 KiB/s, done.
+Total 3 (delta 1), reused 0 (delta 0), pack-reused 0 (from 0)
+remote:
+remote: View merge request for secret-detection-test:
+remote:   https://172.16.99.1:8443/building-castles/myproject/-/merge_requests/5
+remote:
+To ssh://172.16.99.1:2222/building-castles/myproject.git
+   58795ad..16b83b1  secret-detection-test -> secret-detection-test
+```
+
+After some time, depending on the impersonating user you will see:
+
+- As `DevSecOps` the message `Ready to merge by members who can write to the
+  target branch.`.
+- As `MntDevSecOps` the `Merge` button, that should become availbale because the
+  policies are now satisfied.
+
+To complete the process just do the merge as `MntDevSecOps` and update the local
+repository:
+
+```console
+$ git status
+On branch secret-detection-test
+Your branch is up to date with 'origin/secret-detection-test'.
+
+nothing to commit, working tree clean
+
+$ git checkout main
+Switched to branch 'main'
+Your branch is up to date with 'origin/main'.
+
+$ git pull
+Warning: Permanently added '[172.16.99.1]:2222' (ED25519) to the list of known hosts.
+remote: Enumerating objects: 1, done.
+remote: Counting objects: 100% (1/1), done.
+remote: Total 1 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+Unpacking objects: 100% (1/1), 278 bytes | 278.00 KiB/s, done.
+From ssh://172.16.99.1:2222/building-castles/myproject
+   931b0be..8a29487  main       -> origin/main
+Updating 931b0be..8a29487
+Fast-forward
+ myuser.key | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 myuser.key
+```
