@@ -32,15 +32,16 @@ Update Complete. ⎈Happy Helming!⎈
 
 $ helm upgrade --install kyverno kyverno/kyverno \
     --namespace kyverno --create-namespace \
-    --set admissionController.hostNetwork=true
+    --set admissionController.hostNetwork=true \
+    --version 3.7.1
 NAME: kyverno
 LAST DEPLOYED: Tue Oct 14 13:43:56 2025
 NAMESPACE: kyverno
 STATUS: deployed
 REVISION: 1
 NOTES:
-Chart version: 3.5.2
-Kyverno version: v1.15.2
+Chart version: 3.7.1
+Kyverno version: v1.17.1
 ...
 ```
 

@@ -46,8 +46,8 @@ check_kyverno() {
         echo 'helm repo add kyverno https://kyverno.github.io/kyverno/'
         echo 'helm update'
         echo 'helm upgrade --install kyverno kyverno/kyverno \'
-        echo '    --create-namespace --namespace kyverno'
-        echo '    --version 3.1.4'
+        echo '    --create-namespace --namespace kyverno \'
+        echo '    --version 3.7.1'
         exit 1
     fi
     print_success "Kyverno is present."

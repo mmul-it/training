@@ -13,6 +13,10 @@ Your system should have, at least:
 - Container or virtual machine manager, such as: Docker, QEMU, Hyperkit,
   Hyper-V, KVM, Parallels, Podman, VirtualBox, or VMware Fusion/Workstation.
 
+In case of a Linux host a good idea would be to use Minikube through Docker.
+Instructions on how to install and enable a user to run Docker are available at
+[Containers-Install-Docker.md](Containers-Install-Docker.md).
+
 ## Download Minikube
 
 Download and make it executable in `/usr/local/bin`:
@@ -58,55 +62,35 @@ $ minikube start
 
 ```
 
-### Using docker driver
+### Enable a specific insecure registry in Minikube
 
-Depending on the way you want to install Minikube you can pass different driver
-as paramenter to `minikube start`. By default it will try to use the Docker
-driver, so if you don't have Docker installed on your environment you might want
-to install it by [following the official instructions](https://docs.docker.com/engine/install/).
-
-For a RHEL based operating systems these are the steps to be followed:
-
-```console
-$ sudo yum install -y yum-utils
-...
-
-$ sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-Adding repo from: https://download.docker.com/linux/centos/docker-ce.repo
-
-$ sudo yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-...
-
-$ sudo systemctl start docker
-(no output)
-
-$ sudo systemctl enable docker
-Created symlink /etc/systemd/system/multi-user.target.wants/docker.service → /usr/lib/systemd/system/docker.service.
-```
-
-Remember that your user must be part of the `docker` system group.
-This can be done as follows:
-
-```console
-$ sudo usermod --append --groups docker kirater
-(no output)
-
-$ newgrp docker
-(no output)
-
-$ groups
-docker kirater
-```
-
-### Enable a specific insecure registry
-
-If you need to enable a specific insecure registry in your minikube
-installation, it is possible to pass the `--insecure-registries` options:
+If you need to enable a specific insecure registry in your Minikube
+installation, like it's needed for the **Building Castles** training series, it
+is possible to pass the `--insecure-registries` option:
 
 ```console
 $ minikube start --insecure-registry=172.16.99.1:5000
 ...
 ```
+
+This will consider `172.16.99.1:5000` container registry as an usable one inside
+the Minikube installation.
+
+### Enable a specific CNI in Minikube
+
+If you need to use a different CNI plugin in your Minikube installation it is
+possible to pass the `--cni` option, chosing the proper plugin.
+
+For the **Shifting Kubernetes left** security workshop a good choice would be
+`calico`, so the proper command line to install Minikube would be:
+
+```console
+$ minikube start  --cni calico
+...
+```
+
+This will improve the way Minikube manages the Network, by supporting features
+like _Network Policies_.
 
 ## Enable kubectl
 

@@ -62,7 +62,19 @@ cosign.pub
 
 In this example we will create a local container build to be pushed on the
 GitHub registry, [ghcr.io](ghcr.io). This means that we will need to create a
-token from the web interface and then login using `docker`:
+token from the web interface.
+
+Under `Settings`, go to `Developer Settings` and then under `Personal access
+tokens`, select `Tokens (classic)`, then click on `Generate new token (classic)`
+and enter a note like `For Kiratech Kubernetes Security Workshop packages` and
+be sure to select all the checkboxes related to:
+
+- `repo`
+- `write:packages`
+- `delete:packages`
+
+After clicking on `Generate` you will get a token that you will be able to use
+with the `docker login` command:
 
 ```console
 $ docker login ghcr.io
@@ -214,7 +226,7 @@ command line.
 [This bug](https://github.com/sigstore/cosign/issues/4488#issuecomment-3432196825)
 on the Cosign's GitHub repository is covering the issue.
 
-Once the container images is signer, the effective signature can be verified by
+Once the container images is signed, the effective signature can be verified by
 using `cosign verify`, and note that the result is the same while using the
 `1.0` tag or the entire container image digest:
 
@@ -277,6 +289,13 @@ spec:
                       MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEttnyHZwdv2FXGGYBD7StTZ68VlmT
                       cmcV1SV2s8NRa8HOBzxDB2+VKKN/c74W3rK2V80pAUNGKBHjKJ4iC++Yeg==
                       -----END PUBLIC KEY-----
+```
+
+To create the `ClusterPolicy` use the `kubectl create -f` command:
+
+```console
+$ kubectl create -f verify-signed-images.yaml
+clusterpolicy.kyverno.io/require-signed-images created
 ```
 
 This will fail (check `webhookConfiguration`) to launch Pods that will not have
