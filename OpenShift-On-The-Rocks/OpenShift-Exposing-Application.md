@@ -27,12 +27,16 @@ In this lab you will:
    Create the two applications:
 
    ```console
-   $ oc new-app mariadb MYSQL_USER=user MYSQL_PASSWORD=pass MYSQL_DATABASE=testdb -l db=mariadb
-   --> Found image bde1f31 (3 weeks old) in image stream "openshift/mariadb" under tag "10.3-el8" for "mariadb"
+   $ oc new-app --name=mariadb --image=docker.io/mariadb \
+         MARIADB_RANDOM_ROOT_PASSWORD=True \
+         MARIADB_USER=user \
+         MARIADB_PASSWORD=pass \
+         MARIADB_DATABASE=testdb
+   --> Found container image 2bb31c7 (2 weeks old) from docker.io for "docker.io/mariadb"
    ...
 
-   $ oc new-app tomcat
-   --> Found container image 36ef696 (12 days old) from Docker Hub for "tomcat"
+   $ oc new-app --name=tomcat --image=docker.io/tomcat
+   --> Found container image a76ed56 (2 weeks old) from docker.io for "docker.io/tomcat"
    ...
    ```
 
@@ -131,19 +135,25 @@ In this lab you will:
    $ oc get svc
    NAME        TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
    mariadb     ClusterIP   10.217.5.79    <none>        3306/TCP         8m5s
-   mariadbnp   NodePort    10.217.4.190   <none>        3306:31384/TCP   3s
+   mariadbnp   NodePort    10.217.4.190   <none>        3306:30493/TCP   3s
    tomcat      ClusterIP   10.217.5.9     <none>        8080/TCP         7m57s
    ```
 
-   This will expose the upper port 31384 on all the OpenShift nodes, in this
+   This will expose the upper port `30493` on all the OpenShift nodes, in this
    case only one, the crc host.
 
-   The crc ip can be obtained by using the `crc ip` command, and the `mysql`
-   client is part of the `mariab` package (`sudo yum -y install mariadb` on RHEL
-   based systems or `sudo apt install -y mariadb-client-core`):
+   The crc ip can be obtained by using the `crc ip` command, and the the port
+   (which is dynamically assigned) can be discovered by using this command:
+   `oc get service mariadbnp -o jsonpath='{.spec.ports[0].nodePort}'`.
+
+   Everything can be used with the `mysql` client is part of the `mariab`
+   package (`sudo yum -y install mariadb` on RHEL based systems or `sudo apt
+   install -y mariadb-client-core`):
 
    ```console
-   $ mysql --host=$(crc ip) --port=31384 --user=user --password=pass --database=testdb
+   $ mysql --host=$(crc ip) \
+           --port=$(oc get service mariadbnp -o jsonpath='{.spec.ports[0].nodePort}') \
+           --user=user --password=pass --database=testdb
    Welcome to the MariaDB monitor.  Commands end with ; or \g.
    Your MariaDB connection id is 12
    Server version: 10.3.28-MariaDB MariaDB Server
@@ -151,4 +161,13 @@ In this lab you will:
    Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
 
    Type 'help;' or '\h' for help. Type '
+
+   MariaDB [testdb]> SHOW DATABASES;
+   +--------------------+
+   | Database           |
+   +--------------------+
+   | information_schema |
+   | testdb             |
+   +--------------------+
+   2 rows in set (0.004 sec)
    ```

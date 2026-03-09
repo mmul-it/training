@@ -4,7 +4,7 @@ In this lab you will:
 
 1. As developer create a new project named `testdeploy`.
 2. Create an ImageStream named `webserver`, and import as `webserver:1.19-perl`
-   the image coming from `nginxinc/nginx-unprivileged:1.19-perl` into it,
+   the image coming from `docker.io/nginxinc/nginx-unprivileged:1.19-perl` into it,
    tagging it also `latest`.
 3. Create and expose a `Deployment` by using `oc new-app` naming it `webserver`
    and getting the image from the image stream `webserver:latest`.
@@ -45,10 +45,10 @@ In this lab you will:
    ```
 
    Now import into the newly created image stream the specific `1.19-perl`
-   image from the public registry `nginxinc/nginx-unprivileged:1.19-perl`:
+   image from the public registry `docker.io/nginxinc/nginx-unprivileged:1.19-perl`:
 
    ```console
-   $ oc import-image webserver:1.19-perl --from=nginxinc/nginx-unprivileged:1.19-perl --confirm
+   $ oc import-image webserver:1.19-perl --from=docker.io/nginxinc/nginx-unprivileged:1.19-perl --confirm
    imagestream.image.openshift.io/webserver imported
    ...
 
@@ -123,7 +123,7 @@ In this lab you will:
    command can be used as before:
 
    ```console
-   $ oc import-image webserver:1.21-perl --from=nginxinc/nginx-unprivileged:1.21-perl --confirm
+   $ oc import-image webserver:1.21-perl --from=docker.io/nginxinc/nginx-unprivileged:1.21-perl --confirm
    imagestream.image.openshift.io/webserver imported
    ...
    ```
@@ -165,7 +165,7 @@ In this lab you will:
 6. Apply the same process for the `1.24-perl` release:
 
    ```console
-   $ oc import-image webserver:1.24-perl --from=nginxinc/nginx-unprivileged:1.24-perl --confirm
+   $ oc import-image webserver:1.24-perl --from=docker.io/nginxinc/nginx-unprivileged:1.24-perl --confirm
    imagestream.image.openshift.io/webserver imported
 
    $ oc tag webserver:1.24-perl webserver:latest

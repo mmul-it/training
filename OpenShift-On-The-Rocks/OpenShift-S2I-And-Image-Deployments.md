@@ -133,8 +133,8 @@ In this lab you will:
    to the ```oc new-app``` command:
 
    ```console
-   $ oc new-app --image=nginxinc/nginx-unprivileged --name=nginx
-   --> Found container image 9715b46 (2 weeks old) from Docker Hub for "nginxinc/nginx-unprivileged"
+   $ oc new-app --image=docker.io/nginxinc/nginx-unprivileged --name=nginx
+   --> Found container image 9715b46 (2 weeks old) from Docker Hub for "docker.io/nginxinc/nginx-unprivileged"
    ...
    --> Success
    ...

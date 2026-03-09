@@ -31,7 +31,7 @@ In this lab you will:
    To specifically use the `nginx` image you'll need the '--image=' switch:
 
    ```console
-   $ oc new-app --name=testroute --image=nginxinc/nginx-unprivileged
+   $ oc new-app --name=testroute --image=docker.io/nginxinc/nginx-unprivileged
    --> Found container image 4cdc5dd (8 days old) from Docker Hub for "nginx"
    ...
    ```
