@@ -2,10 +2,10 @@
 
 In this lab you will:
 
-1. As developer create a new project named `testdeploy`.
+1. As developer create a new project named `is-test`.
 2. Create an ImageStream named `webserver`, and import as `webserver:1.19-perl`
-   the image coming from `docker.io/nginxinc/nginx-unprivileged:1.19-perl` into it,
-   tagging it also `latest`.
+   the image coming from `docker.io/nginxinc/nginx-unprivileged:1.19-perl` into
+   it, tagging it also `latest`.
 3. Create and expose a `Deployment` by using `oc new-app` naming it `webserver`
    and getting the image from the image stream `webserver:latest`.
 4. Check the automatically created trigger inside the `Deployment` named
@@ -14,21 +14,21 @@ In this lab you will:
    `latest`, and look if the trigger is executed.
 6. Import into the `webserver` Image Stream the `1.24-perl` image, tagging also
    this new one as `latest`, and look if the trigger is executed.
-7. Look at the rollout history understand why a rollback to a previous
-   deployment will not have results, and instead play with tags to move back to
-   the `1.19-perl` image release.
+7. Look at the rollout history and understand why a rollback to the previous 2
+   revision will have no results. Fix things so that a rollback to revision 2
+   will get the deployment exactly to the `1.19-perl` image release.
 
 ## Solution
 
-1. Login as `developer` and create the new `testdeploy` project:
+1. Login as `developer` and create the new `is-test` project:
 
    ```console
    $ oc login -u developer
    Logged into "https://api.crc.testing:6443" as "developer" using existing credentials.
    ...
 
-   $ oc new-project testdeploy
-   Now using project "testdeploy" on server "https://api.crc.testing:6443".
+   $ oc new-project is-test
+   Now using project "is-test" on server "https://api.crc.testing:6443".
    ...
    ```
 
@@ -41,7 +41,7 @@ In this lab you will:
 
    $ oc get is
    NAME        IMAGE REPOSITORY                                                               TAGS      UPDATED
-   webserver   default-route-openshift-image-registry.apps-crc.testing/testdeploy/webserver
+   webserver   default-route-openshift-image-registry.apps-crc.testing/is-test/webserver
    ```
 
    Now import into the newly created image stream the specific `1.19-perl`
@@ -54,7 +54,7 @@ In this lab you will:
 
    $ oc get is
    NAME        IMAGE REPOSITORY                                                               TAGS        UPDATED
-   webserver   default-route-openshift-image-registry.apps-crc.testing/testdeploy/webserver   1.19-perl   5 seconds ago
+   webserver   default-route-openshift-image-registry.apps-crc.testing/is-test/webserver   1.19-perl   5 seconds ago
    ```
 
    Now add the tag `latest` to the imported image so that it will be possible to
@@ -66,7 +66,7 @@ In this lab you will:
 
    $ oc get is
    NAME        IMAGE REPOSITORY                                                               TAGS               UPDATED
-   webserver   default-route-openshift-image-registry.apps-crc.testing/testdeploy/webserver   latest,1.19-perl   3 seconds ago
+   webserver   default-route-openshift-image-registry.apps-crc.testing/is-test/webserver   latest,1.19-perl   3 seconds ago
    ```
 
 3. By creating and exposing the new app we're going to get a deployment
@@ -76,12 +76,12 @@ In this lab you will:
 
    ```console
    $ oc new-app --name=webserver --image-stream=webserver:latest
-   --> Found image ee54951 (3 months old) in image stream "testdeploy/webserver" under tag "latest" for "webserver:latest"
+   --> Found image ee54951 (3 months old) in image stream "is-test/webserver" under tag "latest" for "webserver:latest"
 
    $ oc expose service webserver
    route.route.openshift.io/webserver exposed
 
-   $ curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
+   $ curl -s http://webserver-is-test.apps-crc.testing/unavailable | grep nginx
    <hr><center>nginx/1.19.10</center>
    ```
 
@@ -109,7 +109,7 @@ In this lab you will:
        "from": {
          "kind": "ImageStreamTag",
          "name": "webserver:latest",
-         "namespace": "testdeploy"
+         "namespace": "is-test"
        },
        "fieldPath": "spec.template.spec.containers[?(@.name==\"webserver\")].image"
      }
@@ -136,15 +136,15 @@ In this lab you will:
    Tag webserver:latest set to webserver@sha256:a6915075a63fc9da232500402f03268efb3b159e5882190a65090fe24510b3a3.
 
    $ oc status
-   In project testdeploy on server https://api.crc.testing:6443
+   In project is-test on server https://api.crc.testing:6443
 
-   http://webserver-testdeploy.apps-crc.testing to pod port 8080-tcp (svc/webserver)
+   http://webserver-is-test.apps-crc.testing to pod port 8080-tcp (svc/webserver)
      dc/webserver deploys istag/webserver:latest
        deployment #2 running for 9 seconds - 1 pod
        deployment #1 deployed 2 minutes ago
    4 infos identified, use 'oc status --suggest' to see details.
 
-   $ curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
+   $ curl -s http://webserver-is-test.apps-crc.testing/unavailable | grep nginx
    <hr><center>nginx/1.21.6</center>
    ```
 
@@ -172,16 +172,16 @@ In this lab you will:
    Tag webserver:latest set to webserver@sha256:33aa22ba83302a9fb73b19a9fca8a4a143084e990e7340c6b88b7318e6a72853.
 
    $ oc status
-   In project testdeploy on server https://api.crc.testing:6443
+   In project is-test on server https://api.crc.testing:6443
 
-   http://webserver-testdeploy.apps-crc.testing to pod port 8080-tcp (svc/webserver)
+   http://webserver-is-test.apps-crc.testing to pod port 8080-tcp (svc/webserver)
      dc/webserver deploys istag/webserver:latest
        deployment #3 deployed 14 seconds ago - 1 pod
        deployment #2 deployed about a minute ago
        deployment #1 deployed 3 minutes ago
    5 infos identified, use 'oc status --suggest' to see details.
 
-   $ curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
+   $ curl -s http://webserver-is-test.apps-crc.testing/unavailable | grep nginx
    <hr><center>nginx/1.24.0</center>
    ```
 
@@ -231,21 +231,85 @@ In this lab you will:
    5         ImageStream 'webserver' set to 1.19-perl
    6         ImageStream 'webserver' set to 1.19-perl
 
-   $ curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
+   $ curl -s http://webserver-is-test.apps-crc.testing/unavailable | grep nginx
    <hr><center>nginx/1.24.0</center>
    ```
 
-   The correct approach would be to change back the `latest` tag to point to the
-   `1.19-perl` image, as was done at the beginning:
+   The reason for this is simple and is dictated by the deployment trigger,
+   which looks like this:
 
    ```console
-   $ oc tag webserver:1.19-perl webserver:latest
-   Tag webserver:latest set to webserver@sha256:8974116f08df4cbeb69bee35437675b225e745e67e6075f43523d9f8230a1191.
+   $ oc get deployment webserver -o jsonpath='{.metadata.annotations.image\.openshift\.io/triggers}' | jq
+   [
+    {
+      "from": {
+        "kind": "ImageStreamTag",
+        "name": "webserver:latest",
+        "namespace": "is-test"
+      },
+      "fieldPath": "spec.template.spec.containers[?(@.name==\"webserver\")].image"
+    }
+   ]
    ```
 
-   This will produce the new deployment:
+   So when `latest` changes, a new deployment occurs. Each deployment records
+   the hash of the image used by the containers, which in our case is:
 
-   ```console
-   $ curl -s http://webserver-testdeploy.apps-crc.testing/unavailable | grep nginx
-   <hr><center>nginx/1.19.10</center>
-   ```
+   - **TAG**: `1.19-perl`
+     - _DIGEST_: `sha256:8974116f08df4cbeb69bee35437675b225e745e67e6075f43523d9f8230a1191`
+     - _Revision_: `2`
+   - **TAG**: `1.21-perl`
+     - _DIGEST_: `sha256:76c6749c04e02d48a2427ffbe4ef5ff12ee7ad3522a8c009f4e003c0361db6cf`
+     - _Revision_: `3`
+   - **TAG**: `1.24-perl`
+     - _DIGEST_: `sha256:28f1ec6894009918189eee10bed493f1df920dd87f2c44739927004673b16e4c`
+     - _Revision_: `4` (and latest)
+
+   When rollback occurs, the following sequence happens:
+
+   1. OpenShift creates a new deployment whose image points to the `1.19-perl`
+      hash (this becomes Revision 5).
+   2. The deployment trigger detects that the current deployment's hash is
+      different from latest (which still points to `1.24-perl`) and therefore
+      triggers a new deployment (Revision 6) that points back to latest.
+   3. Only by resetting the ImageStream's latest tag to point to `1.19-perl`
+      can we achieve a realistic rollback.
+
+   The solution described above is impractical and difficult to implement in the
+   real world. That's why I've corrected the lab so that now the rollback
+   sequence (remember, this is a manual operation) follows this process:
+
+   1. Manually delete the latest tag:
+
+      ```console
+      $ oc tag --delete webserver:latest
+      Deleted tag is-test/webserver:latest.
+      ```
+
+   2. Perform the rollback operation:
+
+      ```console
+      $ oc rollout undo deployment webserver --to-revision=2
+      deployment.apps/webserver rolled back
+      ```
+
+   3. OpenShift doesn't trigger anything since latest doesn't exist. It becomes
+      the user's choice to trigger manually, for example with:
+
+      ```console
+      $ oc tag webserver:1.19-perl webserver:latest
+      Tag webserver:latest set to webserver@sha256:8974116f08df4cbeb69bee35437675b225e745e67e6075f43523d9f8230a1191.
+      ```
+
+   This approach makes the workflow much more comprehensible and applicable to
+   a production context because:
+
+   - It's explicit: The user has full control over when and how the latest tag
+     is updated.
+   - It's predictable: No automatic triggers cause unexpected behavior.
+   - It mirrors real-world practices: In production, updating the "latest" tag
+     is typically a deliberate action, often part of a CI/CD pipeline.
+
+   This manual workflow gives you true rollback capability—when you roll back to
+   revision 2, you actually stay with that version until you explicitly decide
+   to update the latest tag again.
