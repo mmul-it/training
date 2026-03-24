@@ -14,7 +14,10 @@ $ export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n ar
 $ export OS=$(uname | awk '{print tolower($0)}')
 (no output)
 
-$ export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/v1.32.0
+$ export OPERATOR_SDK_VERSION=v1.42.0
+(no output)
+
+$ export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/${OPERATOR_SDK_VERSION}
 (no output)
 
 $ curl -LO ${OPERATOR_SDK_DL_URL}/operator-sdk_${OS}_${ARCH}
@@ -32,7 +35,7 @@ invoke `operator-sdk`:
 
 ```console
 $ operator-sdk version
-operator-sdk version: "v1.32.0", commit: "...", kubernetes version: "1.26.0", go version: "go1.19.13", GOOS: "linux", GOARCH: "amd64"
+operator-sdk version: "v1.42.0", commit: "ab5563df5499cafa4ea9d40d4b36b51899a4718e", kubernetes version: "1.33.1", go version: "go1.24.6", GOOS: "linux", GOARCH: "amd64"
 ```
 
 ## Filling all the prerequisites

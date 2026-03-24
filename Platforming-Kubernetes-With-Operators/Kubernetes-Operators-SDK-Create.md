@@ -6,13 +6,13 @@ specific Custom Resource to automate application deployments.
 ## Operator's initialization
 
 Initialize the operator's main directory by using the `operator-sdk init`
-command. The domain of our operator will be `kiratech.it`:
+command. The domain of our operator will be `kiratech.io`:
 
 ```bash
 $ mkdir -v kiraop && cd kiraop/
 mkdir: created directory 'kiraop'
 
-$ operator-sdk init --domain kiratech.it --plugins ansible
+$ operator-sdk init --domain kiratech.io --plugins ansible
 Writing kustomize manifests for you to edit...
 Next: define a resource with:
 $ operator-sdk create api
@@ -37,10 +37,10 @@ kiraop/
 4 directories, 6 files
 ```
 
-The operator will rely on a custom Ansible role that will be part of the group
-`cache` with version `v1alpha1`. Role will be named after the Custom Resource
-name, in this case `Akit`, and initialized by the `operator-sdk create api`
-command:
+The operator will rely on a custom Ansible role that will be part of the API
+group `kiratech.io`, version `v1alpha1`. Role will be named after the Custom
+Resource name, in this case `Akit`, and initialized by the
+`operator-sdk create api` command:
 
 ```bash
 $ ls roles
@@ -182,13 +182,48 @@ rules:
       - ingresses
       - deployments
       - services
-      - secrets
       - configmaps
+      - secrets
       - pods
       - pods/exec
       - pods/log
 ...
 ...
+```
+
+### Fixing existing issue with the Ansible plugin
+
+Due to [this issue](https://github.com/operator-framework/ansible-operator-plugins/issues/211),
+a fix to the `config/samples/kustomization.yaml` file should be applied, by
+removing the line that declares the `_v1alpha1_akit.yaml` file in the
+`resources:` list:
+
+```console
+$ sed -i -e '/^- _v1alpha1_akit.yaml/d' config/samples/kustomization.yaml
+(no output)
+
+$ cat config/samples/kustomization.yaml
+## Append samples of your project ##
+resources:
+- v1alpha1_akit.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples
+```
+
+Due to [this other issue](https://github.com/operator-framework/ansible-operator-plugins/issues/212)
+a fix to the `config/default/manager_metrics_patch.yaml` file in the list:
+
+```console
+$ sed -i '/# This patch adds the args to allow RBAC-based authn\/authz the metrics endpoint/,/^$/d' config/default/manager_metrics_patch.yaml
+
+$ cat config/default/manager_metrics_patch.yaml
+# This patch adds the args to allow exposing the metrics endpoint using HTTPS
+- op: add
+  path: /spec/template/spec/containers/0/args/0
+  value: --metrics-bind-address=:8443
+# This patch adds the args to allow securing the metrics endpoint
+- op: add
+  path: /spec/template/spec/containers/0/args/0
+  value: --metrics-secure
 ```
 
 ## Operator's container image build
@@ -235,7 +270,7 @@ $ IMG=quay.io/mmul/kiraop:v0.0.1 make deploy
 cd config/manager && /home/kirater/kiraop/bin/kustomize edit set image controller=quay.io/mmul/kiraop:v0.0.1
 /home/kirater/kiraop/bin/kustomize build config/default | kubectl apply -f -
 namespace/kiraop-system created
-customresourcedefinition.apiextensions.k8s.io/akits.kiratech.it created
+customresourcedefinition.apiextensions.k8s.io/akits.kiratech.io created
 serviceaccount/kiraop-controller-manager created
 role.rbac.authorization.k8s.io/kiraop-leader-election-role created
 clusterrole.rbac.authorization.k8s.io/kiraop-manager-role created
@@ -247,6 +282,9 @@ clusterrolebinding.rbac.authorization.k8s.io/kiraop-proxy-rolebinding created
 service/kiraop-controller-manager-metrics-service created
 deployment.apps/kiraop-controller-manager created
 ```
+
+An alternative to the `make deploy` command is to generate an operator YAML
+package, as explained in [Kubernetes-Operators-SDK-Package.md](Kubernetes-Operators-SDK-Package.md).
 
 Monitoring the status of the resources inside the `kiraop-system` namespace will
 tell when the operator is ready:
@@ -270,7 +308,7 @@ And the relative CRD available:
 
 ```console
 [kirater@training-kfs-minikube kiraop]$ kubectl get crd | grep akit
-akits.kiratech.it                                      2024-08-28T15:13:54Z
+akits.kiratech.io                                      2024-08-28T15:13:54Z
 ```
 
 ## Operator's tests
@@ -279,7 +317,7 @@ Testing the operator is possible by creating its CRD:
 
 ```console
 $ cat <<EOF | kubectl apply -f -
-apiVersion: kiratech.it/v1alpha1
+apiVersion: kiratech.io/v1alpha1
 kind: Akit
 metadata:
   name: akit-sample
@@ -287,7 +325,7 @@ spec:
   akit_namespace: mions
   akit_expose_lb: true
 EOF
-akit.cache.kiratech.it/akit-sample created
+akit.cache.kiratech.io/akit-sample created
 ```
 
 And monitor everything:
@@ -326,8 +364,8 @@ A user that wants to get details about the operator's Custom Resource will
 use `kubectl explain` as follows:
 
 ```console
-$ kubectl explain akits.kiratech.it
-GROUP:      kiratech.it
+$ kubectl explain akits.kiratech.io
+GROUP:      kiratech.io
 KIND:       Akit
 VERSION:    v1alpha1
 
@@ -345,4 +383,4 @@ FIELDS:
 ```
 
 The content of this was generated by the SDK and can be customized by editing
-the `config/crd/bases/kiratech.it_akits.yaml` file.
+the `config/crd/bases/kiratech.io_akits.yaml` file.
