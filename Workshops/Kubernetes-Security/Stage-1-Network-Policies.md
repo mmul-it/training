@@ -39,8 +39,6 @@ $ minikube stop && minikube delete && minikube start --cni=calico
 
 Given a situation where you have these three namespaces:
 
-kubectl delete namespace backend frontend external
-
 ```console
 $ kubectl create namespace backend
 namespace "backend" created
@@ -172,15 +170,33 @@ The output demonstrates that **before** applying the Network Policies all the
 communications between `frontend`, `external` and `backend` are allowed, and
 right after, just `frontend` is able to contact `backend`.
 
-Note that to make this work **namespaces must be labeled**.
+## Cleanup
 
-All the resources can be queried, and when you're done everything can be cleaned
-with:
+When you're done checking everything that has been created, it is mandatory to
+clean everything.
+
+Note that not doing this will prevent the correct execution of the further
+stages.
+
+### Using the Script
+
+It is possible to pass the `clean` argument to the script to clean everything:
 
 ```console
 $ ./stage-1-network-policies-namespaces.sh clean
 Cleaning up things...
 namespace "backend" deleted
+namespace "frontend" deleted
+namespace "external" deleted
+```
+
+### Manual Cleanup
+
+To manually remove the namespaces:
+
+```console
+$ kubectl delete namespaces backend frontend external
+namespace "backend" deleted 
 namespace "frontend" deleted
 namespace "external" deleted
 ```

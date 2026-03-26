@@ -18,6 +18,10 @@ If you haven't completed Stage 2, install Kyverno first
 **Important**: For Kubernetes 1.29 or older, use Kyverno version 3.1.4 or
 earlier to avoid compatibility issues with ValidatingAdmissionPolicy APIs.
 
+**Important**: For the correct deployment of the Policy Reporter the previously
+created `ClusterPolicies` should be cleaned up, check
+[Stage 2 cleanup instructions](Stage-2-Kyverno-Policy-as-Code.md#cleanup).
+
 ## Installing Policy Reporter
 
 Add the Policy Reporter Helm repository and install it with UI and Kyverno
@@ -169,29 +173,34 @@ The UI provides:
 
 ### Using the Script
 
-The test script includes an interactive cleanup option at the end. If you didn't
-run cleanup during the script execution, you can manually clean up:
+It is possible to pass the `clean` argument to the script to clean everything:
 
 ```console
-$ kubectl delete pod -n policy-test --all
-pod "compliant-pod" deleted
-pod "non-compliant-latest-tag" deleted
-pod "non-compliant-missing-labels" deleted
-
-$ kubectl delete clusterpolicy require-labels disallow-latest-tag
+$ ./stage-4-policy-reporter-visualization.sh clean
+namespace "policy-test" deleted
 clusterpolicy.kyverno.io "require-labels" deleted
 clusterpolicy.kyverno.io "disallow-latest-tag" deleted
-
-$ kubectl delete namespace policy-test
-namespace "policy-test" deleted
 ```
 
 ### Manual Cleanup
 
-To remove Policy Reporter:
+To manually remove the resources:
 
 ```console
-$ helm uninstall policy-reporter -n policy-reporter
+$ kubectl delete namespace policy-test
+namespace "policy-test" deleted
+
+$ kubectl delete clusterpolicy require-labels disallow-latest-tag
+clusterpolicy.kyverno.io "require-labels" deleted
+clusterpolicy.kyverno.io "disallow-latest-tag" deleted
+```
+
+### Uninstall Policy Reporter
+
+It is also possible to remove the Policy Reporter via `helm`:
+
+```console
+$ helm --namespace policy-reporter uninstall policy-reporter
 release "policy-reporter" uninstalled
 
 $ kubectl delete namespace policy-reporter

@@ -227,15 +227,51 @@ to contact `backend`.
 Note that the **namespaces are automatically labeled** by the previously created
 `add-namespace-name-label` Cluster Policy.
 
-All the resources can be queried, and when you're done everything can be cleaned
-with:
+## Cleanup
+
+When you're done checking everything that has been created, it is mandatory to
+clean everything.
+
+Note that not doing this will prevent the correct execution of the further 
+stages.
+
+### Using the Script
+
+It is possible to pass the `clean` argument to the script to clean everything:
 
 ```console
-$  ./stage-2-default-network-policy-namespaces.sh clean
+$ ./stage-2-default-network-policy-namespaces.sh clean
 Cleaning up things...
 clusterpolicy.kyverno.io "add-namespace-name-label" deleted
 clusterpolicy.kyverno.io "add-default-deny" deleted
 namespace "backend" deleted
 namespace "frontend" deleted
 namespace "external" deleted
+```
+
+### Manual Cleanup
+
+To manually remove the resources:
+
+```console
+$ kubectl delete clusterpolicy.kyverno.io add-namespace-name-label add-default-deny
+clusterpolicy.kyverno.io "add-namespace-name-label" deleted
+clusterpolicy.kyverno.io "add-default-deny" deleted
+
+$ kubectl delete namespaces backend frontend external
+namespace "backend" deleted
+namespace "frontend" deleted
+namespace "external" deleted
+```
+
+### Uninstalling Kyverno
+
+Optionally, it is also possible to remove Kyverno entirely via `helm`:
+
+```console
+$ helm --namespace kyverno uninstall kyverno
+release "kyverno" uninstalled
+
+$ kubectl delete namespace kyverno
+namespace "kyverno" deleted
 ```
