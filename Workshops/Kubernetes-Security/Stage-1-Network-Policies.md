@@ -196,7 +196,7 @@ To manually remove the namespaces:
 
 ```console
 $ kubectl delete namespaces backend frontend external
-namespace "backend" deleted 
+namespace "backend" deleted
 namespace "frontend" deleted
 namespace "external" deleted
 ```

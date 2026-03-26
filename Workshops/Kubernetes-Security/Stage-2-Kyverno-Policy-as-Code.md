@@ -232,7 +232,7 @@ Note that the **namespaces are automatically labeled** by the previously created
 When you're done checking everything that has been created, it is mandatory to
 clean everything.
 
-Note that not doing this will prevent the correct execution of the further 
+Note that not doing this will prevent the correct execution of the further
 stages.
 
 ### Using the Script

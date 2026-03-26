@@ -22,8 +22,8 @@ The structure of the workshop will be based on stages:
 - Stage 0: [Install Minikube](../../Common/Kubernetes-Install-Minikube.md)
 - Stage 1: [Network Policies](Stage-1-Network-Policies.md).
 - Stage 2: [Kyverno, Policy as Code](Stage-2-Kyverno-Policy-as-Code.md).
-- Stage 3: [Cosign, Sign Container Images](Stage-3-Sign-Containers-with-Cosign.md).
-- Stage 4: [Policy Reporter UI](Stage-4-Policy-Reporter-Visualization.md).
+- Stage 3: [Policy Reporter UI](Stage-3-Policy-Reporter-Visualization.md).
+- Stage 4: [Cosign, Sign Container Images](Stage-4-Sign-Containers-with-Cosign.md).
 
 ## References
 
