@@ -17,11 +17,11 @@ In this lab you will:
 
 1. To install Docker on the host just follow the instructions on the lab named
    [Containers-Install-Docker.md](https://github.com/mmul-it/training/blob/master/Common/Containers-Install-Docker.md).
-2. At time of writing, the latest `terraform` available version is the `1.9.8`,
+2. At time of writing, the latest `terraform` available version is the `1.14.8`,
    so to download and make it available to the host use these commands:
 
    ```console
-   $ TF_VERSION=1.9.8
+   $ TF_VERSION=1.14.8
    (no output)
 
    $ TF_ARCH=linux_amd64
@@ -47,7 +47,7 @@ In this lab you will:
 
    ```console
    $ terraform --version
-   Terraform v1.9.8
+   Terraform v1.14.8
    on linux_amd64
    ```
 
@@ -136,8 +136,8 @@ In this lab you will:
    Initializing the backend...
    Initializing provider plugins...
    - Finding latest version of kreuzwerker/docker...
-   - Installing kreuzwerker/docker v3.6.2...
-   - Installed kreuzwerker/docker v3.6.2 (self-signed, key ID BD080C4571C6104C)
+   - Installing kreuzwerker/docker v4.0.0...
+   - Installed kreuzwerker/docker v4.0.0 (self-signed, key ID 0DCE698927DAF8EC)
    Partner and community providers are signed by their developers.
    If you'd like to know more about provider signing, you can read about it here:
    https://www.terraform.io/docs/cli/plugins/signing.html
