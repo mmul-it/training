@@ -162,3 +162,6 @@ In this lab you will:
    Note that it is wise to launch the fetch command everytime you expect some
    remotes modifications, because otherwise new changes coming from the remote
    will not be available locally.
+
+   TODO: fix why all the additional branches are not viewable after fetching
+   all, only main is visible.
