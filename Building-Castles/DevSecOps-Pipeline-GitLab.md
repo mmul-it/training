@@ -4,21 +4,50 @@ In this lab you will install GitLab and configure its runner to play with CI.
 
 ## Launch GitLab
 
-Launch the GitLab instance using the `gitlab/gitlab-ce:latest` container,
-exposing these ports (Host/Container):
-
-- 8080:80
-- 8443:443
-- 2222:22
+Prepare the environment by creating the dedicated folders with the auto
+generated certificate for the `172.16.99.1` IP:
 
 ```console
-$ docker run --detach \
-  --name gitlab \
-  --publish 8080:80 \
-  --publish 8443:443 \
-  --publish 2222:22 \
-  gitlab/gitlab-ce:18.4.1-ce.0
+$ export GITLAB_HOME=$PWD/gitlab
+(no output)
+
+$ mkdir -v -p gitlab/config/ssl
+mkdir: created directory 'gitlab'
+mkdir: created directory 'gitlab/config'
+mkdir: created directory 'gitlab/config/ssl'
+
+$ export GITLAB_IP='172.16.99.1'
+(no output)
+
+$ openssl req -x509 -newkey rsa:4096 -days 365 -nodes \
+  -keyout gitlab/config/ssl/$GITLAB_IP.key \
+  -out gitlab/config/ssl/$GITLAB_IP.crt \
+  -subj "/CN=$GITLAB_IP" -addext "subjectAltName=IP:$GITLAB_IP"
 ...
+```
+
+Launch the GitLab instance using the `gitlab/gitlab-ce` container, exposing
+these ports (Host/Container):
+
+- 8443:8443 -> the `https` GitLab port (with an auto generated
+  self-signed certificate).
+- 2222:22 -> the `ssh` port for git actions.
+
+```console
+$ export GITLAB_VERSION=18.4.1-ce.0
+(no output)
+
+$ docker run \
+  --detach \
+  --name gitlab \
+  --publish 172.16.99.1:8443:443 \
+  --publish 172.16.99.1:2222:22 \
+  --volume $GITLAB_HOME/config:/etc/gitlab \
+  --volume $GITLAB_HOME/data:/var/opt/gitlab \
+  --env GITLAB_OMNIBUS_CONFIG="external_url 'https://172.16.99.1'; letsencrypt['enable'] = false;" \
+  --shm-size=2gb \
+  gitlab/gitlab-ce:$GITLAB_VERSION
+c516617dfd414f166117ebca02971e8a4ef63676789ad54d1612232dce45d6e1
 ```
 
 Check the progresses, until the web interface comes up:
@@ -49,7 +78,7 @@ Password: nGd+wEG+fIaw+reKUun3YbqrMXYK0JdDMEwE9SwOu1U=
 
 Login into interface and create a user:
 
-[http://172.16.99.1:8080/admin/users/new](http://172.16.99.1:8080/admin/users/new)
+[https://172.16.99.1:8443/admin/users/new](https://172.16.99.1:8443/admin/users/new)
 
 By giving these inputs:
 
@@ -69,13 +98,14 @@ $ cat ~/.ssh/id_rsa.pub
 ...
 ```
 
-And then add the key by Impersonating the newly created user:
+And then add the key by Impersonating the newly created user (click on
+`Impersonate`):
 
-[http://172.16.99.1:8080/admin/users/devsecops/impersonate](http://172.16.99.1:8080/admin/users/devsecops/impersonate)
+[https://172.16.99.1:8443/admin/users/devsecops/](https://172.16.99.1:8443/admin/users/devsecops/)
 
 And by adding the `id_rsa.pub` contents as a key for the user:
 
-[http://172.16.99.1:8080/-/profile/keys](http://172.16.99.1:8080/-/profile/keys)
+[https://172.16.99.1:8443/-/user_settings/ssh_keys](https://172.16.99.1:8443/-/user_settings/ssh_keys)
 
 Move out from impersonation by click on the `Stop impersonation` icon on the
 top right container.
@@ -98,20 +128,17 @@ Connection to 172.16.99.1 closed.
 Create a project with an initial push:
 
 ```console
-$ git config --global user.email "devsecops@example.com"
-(no output)
-
-$ git config --global user.name "devsecops"
-(no output)
-
-$ git config --global init.defaultBranch main
-(no output)
-
 $ mkdir -v myproject && cd myproject
 mkdir: created directory 'myproject'
 
 $ git init --initial-branch=main
 Initialized empty Git repository in /home/kirater/myproject/.git/
+
+$ git config user.email "devsecops@example.com"
+(no output)
+
+$ git config user.name "devsecops"
+(no output)
 
 $ echo 'My DevSecOps repo' > README.md
 (no output)
@@ -145,24 +172,11 @@ To ssh://172.16.99.1:2222/devsecops/myproject.git
 Branch 'main' set up to track remote branch 'main' from 'origin'.
 ```
 
-## Fix GitLab configuration
-
-Fix the IP address of the GitLab Git clone url.
-
-Using the web interface, as `Administrator` user, change the `Custom Git clone
-URL for HTTP(S)` value in the `Visibility and access controls` section at:
-
-[http://172.16.99.1:8080/admin/application_settings/general](http://172.16.99.1:8080/admin/application_settings/general)
-
-Adding the GitLab IP related url, in this case `http://172.16.99.1:8080`
-check [DevSecOps-Pipeline-Requirements.md](DevSecOps-Pipeline-Requirements.md)
-to find out how to get the IP host.
-
 ## Get token for GitLab runner
 
 Get the GitLab runner token registration at:
 
-[http://172.16.99.1:8080/devsecops/myproject/-/settings/ci_cd](http://172.16.99.1:8080/devsecops/myproject/-/settings/ci_cd)
+[https://172.16.99.1:8443/devsecops/myproject/-/settings/ci_cd](https://172.16.99.1:8443/devsecops/myproject/-/settings/ci_cd)
 
 Expanding the "Runners" section and selecting the three dots beside `New
 project runner` and finally copying the token, which will be something like
@@ -176,12 +190,16 @@ Set up the runner by launching its container:
 $ cd && mkdir -v gitlab-runner
 mkdir: created directory 'gitlab-runner'
 
+$ export GITLAB_RUNNER_VERSION=v18.4.0
+(no output)
+
 $ docker run --detach \
   --name gitlab-runner \
   --privileged \
   --volume /var/run/docker.sock:/var/run/docker.sock \
   --volume $PWD/gitlab-runner:/etc/gitlab-runner \
-  gitlab/gitlab-runner:v18.4.0
+  --volume $PWD/config/ssl:/etc/gitlab-runner/certs \
+  gitlab/gitlab-runner:$GITLAB_RUNNER_VERSION
 ...
 ```
 
@@ -190,7 +208,7 @@ docker host IP):
 
 ```console
 $ docker exec --interactive --tty gitlab-runner gitlab-runner register -n \
-  --url http://172.16.99.1:8080 \
+  --url https://172.16.99.1:8443 \
   --registration-token GR1348941uHeDhAB5DDA8r_5xvxsm \
   --executor docker \
   --description "My Docker Runner" \

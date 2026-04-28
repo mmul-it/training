@@ -4,10 +4,31 @@ In this lab you will install GitLab and configure its runner to play with CI.
 
 ## Launch GitLab
 
+Prepare the environment by creating the dedicated folders with the auto
+generated certificate for the `172.16.99.1` IP:
+
+```console
+$ export GITLAB_HOME=$PWD/gitlab
+(no output)
+
+$ mkdir -v -p gitlab/config/ssl
+mkdir: created directory 'gitlab'
+mkdir: created directory 'gitlab/config'
+mkdir: created directory 'gitlab/config/ssl'
+
+$ export GITLAB_IP='172.16.99.1'
+(no output)
+
+$ openssl req -x509 -newkey rsa:4096 -days 365 -nodes \
+  -keyout gitlab/config/ssl/$GITLAB_IP.key \
+  -out gitlab/config/ssl/$GITLAB_IP.crt \
+  -subj "/CN=$GITLAB_IP" -addext "subjectAltName=IP:$GITLAB_IP"
+...
+```
+
 Launch the GitLab Enterprise instance using the `gitlab/gitlab-ee` container,
 exposing these ports (Host/Container):
 
-- 8080:80 -> the `http` GitLab Ultimate UI port.
 - 8443:8443 -> the `https` GitLab Ultimate UI port (with an auto generated
   self-signed certificate).
 - 2222:22 -> the `ssh` port for git actions.
@@ -17,11 +38,10 @@ exposing these ports (Host/Container):
 $ GITLAB_VERSION=18.8.2-ee.0
 (no output)
 
-$ GITLAB_HOME=$HOME/gitlab \
+$ GITLAB_HOME=$PWD/gitlab \
   docker run \
   --detach \
   --name gitlab \
-  --publish 172.16.99.1:8080:80 \
   --publish 172.16.99.1:8443:8443 \
   --publish 172.16.99.1:2222:22 \
   --publish 172.16.99.1:5050:5050 \
@@ -67,19 +87,6 @@ GitLab Ultimate Subscription page:
 
 Insert the activation code and press `Activate`.
 
-## Fix GitLab configuration
-
-Fix the IP address of the GitLab Git clone url.
-
-Using the web interface, as `Administrator` user, change the `Custom Git clone
-URL for HTTP(S)` value in the `Visibility and access controls` section at:
-
-[https://172.16.99.1:8443/admin/application_settings/general](https://172.16.99.1:8443/admin/application_settings/general)
-
-Adding the GitLab IP related url, in this case `https://172.16.99.1:8443`
-check [DevSecOps-Pipeline-GitLab-Ultimate-Requirements.md](DevSecOps-Pipeline-GitLab-Ultimate-Requirements.md)
-to find out how to get the IP host.
-
 ## Get token for GitLab runner
 
 Get the GitLab runner token registration at:
@@ -94,18 +101,18 @@ the token, which will be something like `GR1348941uHeDhAB5DDA8r_5xvxsm`.
 Set up the runner by launching its container:
 
 ```console
-$ cd && mkdir -v gitlab-runner
-mkdir: created directory 'gitlab-runner'
-
 $ GITLAB_RUNNER_VERSION=v18.4.0
+(no output)
+
+$ GITLAB_RUNNER_HOME=$PWD/gitlab-runner
 (no output)
 
 $ docker run --detach \
   --name gitlab-runner \
   --privileged \
   --volume /var/run/docker.sock:/var/run/docker.sock \
-  --volume $PWD/gitlab-runner:/etc/gitlab-runner \
-  --volume $PWD/config/ssl:/etc/gitlab-runner/certs \
+  --volume $GITLAB_RUNNER_HOME/gitlab-runner:/etc/gitlab-runner \
+  --volume $GITLAB_HOME/config/ssl:/etc/gitlab-runner/certs \
   gitlab/gitlab-runner:$GITLAB_RUNNER_VERSION
 ...
 ```

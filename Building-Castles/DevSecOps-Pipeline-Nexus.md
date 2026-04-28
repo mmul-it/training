@@ -172,7 +172,7 @@ for details.
 
 Move to the GitLab interface in the `CI/CD Settings` of `myproject` at:
 
-[http://172.16.99.1:8080/devsecops/myproject/-/settings/ci_cd](http://172.16.99.1:8080/devsecops/myproject/-/settings/ci_cd)
+[https://172.16.99.1:8443/devsecops/myproject/-/settings/ci_cd](https://172.16.99.1:8443/devsecops/myproject/-/settings/ci_cd)
 
 Click `Expand` button of the `Variables` section and add:
 
