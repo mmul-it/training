@@ -95,7 +95,7 @@ In this lab you will:
 
    ```console
    $ cat <<EOF > .git/hooks/commit-msg
-   grep -q '^feat: \|^bug: ' \$1 &> /dev/null
+   echo "\$1" | grep -q '^feat: \|^bug: ' &> /dev/null
    if [ \$? -ne 0 ]
     then
      echo "[ERROR] Commit must start with 'feat:' or 'bug:'!"
