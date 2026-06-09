@@ -186,6 +186,14 @@ By passing just:
 
 And ensuring group is `building-castles` then pressing `Create project`.
 
+Be sure to disable the `Auto DevOps` for the project, go to:
+
+[https://172.16.99.1:8443/building-castles/myproject/-/settings/ci_cd#autodevops-settings](https://172.16.99.1:8443/building-castles/myproject/-/settings/ci_cd#autodevops-settings)
+
+And uncheck `Default to Auto DevOps pipeline`. This will prevent GitLab from
+adding any automatic CI pipeline, everything CI related will be managed manually
+inside this and other laboratories.
+
 ## Add members to myproject
 
 Go to:
@@ -194,8 +202,6 @@ Go to:
 
 and by pressing `Invite memebers`, add three members as:
 
-- Username: admdevsecops
-  Select a role: Owner
 - Username: mntdevsecops
   Select a role: Maintainer
 - Username: devsecops
