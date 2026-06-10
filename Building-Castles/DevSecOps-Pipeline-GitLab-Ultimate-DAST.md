@@ -136,6 +136,12 @@ build-image:
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
   - docker build -t "$CS_IMAGE" .
   - docker push "$CS_IMAGE"
+  after_script:
+  - |
+    if [ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]; then
+      docker tag "$CS_IMAGE" "$CI_REGISTRY_IMAGE:latest"
+      docker push "$CI_REGISTRY_IMAGE:latest"
+    fi
 
 sast:
   stage: test
@@ -149,6 +155,9 @@ dast:
     - name: "$CS_IMAGE"
       alias: app
 ```
+
+Note the inclusion of `after_script` that will tag as `latest` the pushed image
+_only if_ the branch is `$CI_DEFAULT_BRANCH`, which is normally `main`.
 
 Commit and push after checking the status of the repository:
 
