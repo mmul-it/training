@@ -12,10 +12,10 @@ and uses the container image that was created in the previously executed lab
 
 ## Create a GitLab token for pull operations
 
-Log into the GitLab web interface and become the `admdevsecops` user by
+Log into the GitLab web interface and become the `mntdevsecops` user by
 clocking `Impersonate` from the user page:
 
-[https://172.16.99.1:8443/admin/users/admdevsecops/](https://172.16.99.1:8443/admin/users/admdevsecops/)
+[https://172.16.99.1:8443/admin/users/mntdevsecops/](https://172.16.99.1:8443/admin/users/mntdevsecops/)
 
 Move into `myproject` project access tokens page:
 
@@ -24,7 +24,8 @@ Move into `myproject` project access tokens page:
 Press `Add new token` and set these values:
 
 - `Token name`: `Kubernetes pull`
-- Under `Select scopes` check `read_registry`
+- `Select a role`: `Developer
+- `Select scopes`: `read_registry`
 
 After pressing create copy the token. Note that if you lose it, you will need to
 regenerate it.
@@ -33,7 +34,7 @@ To test the effectiveness of the token it is possible to use `docker login` as
 follows:
 
 ```console
-$ echo "<TOKEN>" | docker login 172.16.99.1:5050 -u admdevsecops --password-stdin
+$ echo "<TOKEN>" | docker login 172.16.99.1:5050 -u mntdevsecops --password-stdin
 
 WARNING! Your credentials are stored unencrypted in '/home/kirater/.docker/config.json'.
 Configure a credential helper to remove this warning. See
@@ -60,7 +61,7 @@ Inside the namespace we will create the pull secret named
 $ kubectl create secret docker-registry gitlab-registry-secret \
   --namespace=myns \
   --docker-server=172.16.99.1:5050 \
-  --docker-username=admdevsecops \
+  --docker-username=mntdevsecops \
   --docker-password=<TOKEN>
 secret/gitlab-registry-secret created
 ```
