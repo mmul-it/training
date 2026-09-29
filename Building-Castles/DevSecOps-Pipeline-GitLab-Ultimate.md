@@ -16,7 +16,7 @@ Note that the GitLab instance will rely on the certificate that was generated
 in the previous [DevSecOps-Pipeline-GitLab-Ultimate-Requirements.md]() lab.
 
 ```console
-$ GITLAB_VERSION=18.8.2-ee.0
+$ GITLAB_VERSION=19.1.8-ee.0
 (no output)
 
 $ GITLAB_HOME=$PWD/gitlab \
@@ -28,8 +28,8 @@ $ GITLAB_HOME=$PWD/gitlab \
   --publish 172.16.99.1:5050:5050 \
   --volume $GITLAB_HOME/config:/etc/gitlab \
   --volume $GITLAB_HOME/data:/var/opt/gitlab \
-  --env GITLAB_OMNIBUS_CONFIG="external_url 'https://172.16.99.1:8443'; registry_external_url 'https://172.16.99.1:5050'" \
-  --shm-size=2gb \
+  --env GITLAB_OMNIBUS_CONFIG="external_url 'https://172.16.99.1:8443'; registry_external_url 'https://172.16.99.1:5050'; letsencrypt['enable'] = false" \
+  --shm-size=4gb \
   gitlab/gitlab-ee:$GITLAB_VERSION
 706346108a7168c07994c411815cfd60ddd65722131c4cfb9ff4ca37b828a26c
 ```
@@ -82,7 +82,7 @@ the token, which will be something like `GR1348941uHeDhAB5DDA8r_5xvxsm`.
 Set up the runner by launching its container:
 
 ```console
-$ GITLAB_RUNNER_VERSION=v18.4.0
+$ GITLAB_RUNNER_VERSION=v19.1.3
 (no output)
 
 $ GITLAB_RUNNER_HOME=$PWD/gitlab-runner
