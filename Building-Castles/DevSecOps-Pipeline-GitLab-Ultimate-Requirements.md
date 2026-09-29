@@ -85,24 +85,40 @@ command.
 ## Managing self signed GitLab Ultimate certificate
 
 We're going to expose the GitLab Ultimate container registry using the address
-`172.16.99.1:5050`, and since this service will be exposed using the self signed
-certificate created during the GitLab installation, whis is how it can be
-considered trusted:
+`172.16.99.1:5050`, and since this service will be exposed using a self signed
+certificate that needs to be generated as follows:
 
 ```console
-$ GITLAB_HOME=$HOME/gitlab
+$ export GITLAB_HOME=$PWD/gitlab
 (no output)
 
+$ mkdir -v -p gitlab/config/ssl
+mkdir: created directory 'gitlab'
+mkdir: created directory 'gitlab/config'
+mkdir: created directory 'gitlab/config/ssl'
+
+$ export GITLAB_IP='172.16.99.1'
+(no output)
+
+$ openssl req -x509 -newkey rsa:4096 -days 365 -nodes \
+  -keyout gitlab/config/ssl/$GITLAB_IP.key \
+  -out gitlab/config/ssl/$GITLAB_IP.crt \
+  -subj "/CN=$GITLAB_IP" -addext "subjectAltName=IP:$GITLAB_IP"
+...
+```
+
+We also need to make the Docker daemon trust this certificate:
+
+```console
 $ sudo mkdir -v -p /etc/docker/certs.d/172.16.99.1\:5050/
 mkdir: created directory '/etc/docker/certs.d/172.16.99.1:5050/'
 
 $ sudo cp -v $GITLAB_HOME/config/ssl/172.16.99.1.crt /etc/docker/certs.d/172.16.99.1\:5050/172.16.99.1.crt
 '/home/kirater/gitlab/config/ssl/172.16.99.1.crt' -> '/etc/docker/certs.d/172.16.99.1:5050/172.16.99.1.crt'
-```
 
-Note that this requirement could be filled only after the GitLab Ultimate
-container is started (and the certificate generated), so it might be necessary
-to come backe here after following the next lab.
+$ sudo systemctl restart docker
+(no output)
+```
 
 ## Minikube
 

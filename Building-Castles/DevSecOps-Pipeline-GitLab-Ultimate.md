@@ -4,28 +4,6 @@ In this lab you will install GitLab and configure its runner to play with CI.
 
 ## Launch GitLab
 
-Prepare the environment by creating the dedicated folders with the auto
-generated certificate for the `172.16.99.1` IP:
-
-```console
-$ export GITLAB_HOME=$PWD/gitlab
-(no output)
-
-$ mkdir -v -p gitlab/config/ssl
-mkdir: created directory 'gitlab'
-mkdir: created directory 'gitlab/config'
-mkdir: created directory 'gitlab/config/ssl'
-
-$ export GITLAB_IP='172.16.99.1'
-(no output)
-
-$ openssl req -x509 -newkey rsa:4096 -days 365 -nodes \
-  -keyout gitlab/config/ssl/$GITLAB_IP.key \
-  -out gitlab/config/ssl/$GITLAB_IP.crt \
-  -subj "/CN=$GITLAB_IP" -addext "subjectAltName=IP:$GITLAB_IP"
-...
-```
-
 Launch the GitLab Enterprise instance using the `gitlab/gitlab-ee` container,
 exposing these ports (Host/Container):
 
@@ -33,6 +11,9 @@ exposing these ports (Host/Container):
   self-signed certificate).
 - 2222:22 -> the `ssh` port for git actions.
 - 5050:5050 -> the GitLab Ultimate Container Registry service port.
+
+Note that the GitLab instance will rely on the certificate that was generated
+in the previous [DevSecOps-Pipeline-GitLab-Ultimate-Requirements.md]() lab.
 
 ```console
 $ GITLAB_VERSION=18.8.2-ee.0
