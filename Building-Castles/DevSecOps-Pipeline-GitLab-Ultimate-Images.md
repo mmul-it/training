@@ -44,6 +44,7 @@ Add the build process to the pipeline adding to `.gitlab-ci.yml` this code:
 ```yaml
 variables:
   ...
+  DOCKER_BUILDKIT: 0
   CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
 
 stages:
@@ -60,6 +61,13 @@ build-image:
 sast:
   stage: test
 ```
+
+**Note**: setting the variabile `DOCKER_BUILDKIT` to zero is needed because
+there's [an active bug](https://forum.gitlab.com/t/started-yesterday-docker-push-error-from-registry-blob-unknown-to-registry/134733/14)
+that today can be work-arounded by assigning that variable
+(`BUILDX_NO_DEFAULT_ATTESTATIONS: 1` would work as well).
+These options are deprecated, so it would be better to monitor [this issue](https://gitlab.com/gitlab-org/container-registry/-/work_items/2367)
+to check when they could be removed.
 
 Before the commit and push, a new branch should be created, so that it will be
 possible to create the merge request:
