@@ -18,8 +18,9 @@ Press the `New policy` button, and under `Merge request approval policy` press
 the `Select policy` button, and fill with these content the relative fields:
 
 - Name: `Check for SAST High and Critical problems`.
-- Policy scope: Apply this policy to `all projects in this group` `without
-  exceptions`.
+- Policy scope: Apply this policy to `all projects in this group`
+  `except projects`
+  `building-castles - Security policy project` `without group exceptions`.
 - Rules: When a `security scan` with `SAST` runs against `all protected
   branches` with `no exceptions` and finds `any` vulnerability type that matches
   all the following criteria:
