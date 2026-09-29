@@ -39,11 +39,15 @@ USER nonroot
 CMD /usr/bin/nc -l -k -p ${NCAT_PORT} -e /bin/echo -e "${NCAT_HEADER}\n\n${NCAT_MESSAGE}"
 ```
 
-Add the build process to the pipeline adding to `.gitlab-ci.yml` this code:
+Add the build process to the pipeline making `.gitlab-ci.yml` similar to this:
 
 ```yaml
+include:
+- template: Security/SAST.gitlab-ci.yml
+
 variables:
-  ...
+  SECURE_LOG_LEVEL: debug
+  SCAN_KUBERNETES_MANIFESTS: 'true'
   DOCKER_BUILDKIT: 0
   CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
 
@@ -157,6 +161,7 @@ include:
 variables:
   SECURE_LOG_LEVEL: debug
   SCAN_KUBERNETES_MANIFESTS: 'true'
+  DOCKER_BUILDKIT: 0
   CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
 
 stages:
