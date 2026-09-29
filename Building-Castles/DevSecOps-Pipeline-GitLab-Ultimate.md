@@ -91,6 +91,7 @@ $ GITLAB_RUNNER_HOME=$PWD/gitlab-runner
 $ docker run --detach \
   --name gitlab-runner \
   --privileged \
+  --env DOCKER_GROUP_ADD=989 \
   --volume /var/run/docker.sock:/var/run/docker.sock \
   --volume $GITLAB_RUNNER_HOME/gitlab-runner:/etc/gitlab-runner \
   --volume $GITLAB_HOME/config/ssl:/etc/gitlab-runner/certs \
@@ -98,8 +99,16 @@ $ docker run --detach \
 ...
 ```
 
-Register the runner inside GitLab (note the `--url` option pointing to the
-docker host IP):
+We're using a specific group for Docker (see `DOCKER_GROUP_ADD=989`) and mapping
+the Docker daemon socker (see `--volume /var/run/docker.sock:/var/run/docker.sock`)
+that will make it possible for the runner to properly launch containers.
+
+We're also mounting the `$GITLAB_HOME/config/ssl` folder of the GitLab instance
+(see `--volume $GITLAB_HOME/config/ssl:/etc/gitlab-runner/certs`) to share the
+auto generated certificate which will be trusted.
+
+To complete the GitLab runner setup, we'll register the runner (note the `--url`
+option pointing to the Docker host IP):
 
 ```console
 $ docker exec --interactive --tty gitlab-runner gitlab-runner register -n \
