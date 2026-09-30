@@ -128,6 +128,8 @@ the `Select policy` button, and fill with these content the relative fields:
   that matches all the following criteria:
   Severity is: `Critical, High`
   Status is: `New` `All vulnerability states`
+  Remove `Container Scanning Rule` by pressing on the trash bin so that any kind
+  of vulnerability will be matched.
 - Actions: Warn users with a bot comment and select approvers. The approvers are
   required unless developers dismiss the warn mode policy. After dismissal,
   approvers become optional.

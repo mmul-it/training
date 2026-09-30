@@ -276,7 +276,7 @@ the `Select policy` button, and fill with these content the relative fields:
   - Scan execution strategy: `Merge Request Security`
   - Security scans to execute: `Secret Detection`
 
-Pressing `Configure with a merge request` will take you to the `Update
+Pressing `Create new project with the new policy` will take you to the `Update
 security policies` page.
 
 After pressing the `Merge` button a policy checker for the entire group will be

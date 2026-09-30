@@ -32,7 +32,7 @@ the `Select policy` button, and fill with these content the relative fields:
   Developers may dismiss findings to proceed or receive `1` approval from:
   `Roles` `Maintainer, Owner`.
 
-Pressing `Create new project with the new policy` will take you to the `Update
+Pressing `Configure with a merge request` will take you to the `Update
 security policies` page.
 
 After pressing the `Merge` button a policy checker for the entire group will be
