@@ -123,7 +123,7 @@ In this lab you will:
 
    ```console
    $ kubectl --namespace scale-test autoscale deployment nginx \
-       --min 1 --max 3 --cpu-percent=50
+       --min 1 --max 3 --cpu=50
    horizontalpodautoscaler.autoscaling/nginnx autoscaled
    ```
 
@@ -170,9 +170,8 @@ In this lab you will:
    🌟  The 'metrics-server' addon is enable
    ```
 
-   Due to [this limitation](https://github.com/kubernetes-sigs/metrics-server/issues/989#issuecomment-1313971365)
-   to make the `<unknown>` value disappear a `request` must be added to the
-   deployment:
+   To properly collect and compare metrics, [as explained here](https://github.com/kubernetes-sigs/metrics-server/issues/989#issuecomment-1313971365),
+   an initial `request` of `200` millicores must be added to the  deployment:
 
    ```console
    $ kubectl --namespace scale-test set resources deployment nginx --requests=cpu=200m
@@ -183,7 +182,7 @@ In this lab you will:
    nginx   Deployment/nginx   0%/50%    1         3         1          3h39m
    ```
 
-   The `<unknown>` value is finally gone.
+   As shown, this will make the `<unknown>` become an effective value.
 
 7. Install `stress` in the `nginx` pod:
 
